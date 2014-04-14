@@ -1,0 +1,42 @@
+#########################################
+#                                       #
+#       TheOutfiled's Ignore file       #
+
+##### File globs to match ####
+syntax: glob
+# Resharper
+_ReSharper.*
+# Visual Studio Stuff
+*.obj
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.scc
+*.csproj.user
+obj/
+bin/
+[Dd]ebug*/
+[Rr]elease*/
+*.[Pp]ublish.xml
+# General
+*.orig
+*/Thumbs.db
+*/log.txt
+/Assets/
+/Build/
+*.DS_Store
