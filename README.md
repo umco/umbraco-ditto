@@ -8,9 +8,9 @@ There are no 3<sup>rd</sup> party dependencies, other than Umbraco 7 core itself
 
 ### Is Ditto a "Yet Another Code-First" approach?
 
-Nope! The goal of Ditto is to provide a simple way to convert your content nodes (`IPublishedContent`) into your desired POCO/model/object.
+Nope! The goal of Ditto is to provide a simple way to convert your content/media nodes (e.g. `IPublishedContent`) to your desired POCO/model/object.
 
-There is absolutely zero intention of attempting to generate DocumentTypes from your POCO/models.
+There is absolutely zero intention of generating Document-Types from your POCO/models.
 
 ## Usage
 
