@@ -12,9 +12,25 @@ Nope! The goal of Ditto is to provide a simple way to convert your content nodes
 
 There is absolutely zero intention of attempting to generate DocumentTypes from your POCO/models.
 
+
+## Installing Ditto
+
+Ditto can be installed from either Our Umbraco or NuGet package repositories
+
+To install from Our Umbraco, please download the package from:
+
+[http://our.umbraco.org/projects/developer-tools/ditto](http://our.umbraco.org/projects/developer-tools/ditto) 
+
+To install from NuGet, you can run the following command from within Visual Studio:
+
+	PM> Install-Package Our.Umbraco.Ditto
+
+
 ## Usage
 
 *...documentation coming soon...*
+
+	@(Model.Content.As<Article>.PageTitle)
 
 
 ## Configuration
@@ -25,7 +41,18 @@ There is absolutely zero intention of attempting to generate DocumentTypes from 
 
 Have a question?
 
+* [Ditto Forum](http://our.umbraco.org/projects/developer-tools/ditto/ditto-feedback/) on Our Umbraco
 * [Raise an issue](https://github.com/leekelleher/umbraco-ditto/issues) on GitHub
+
+
+## Contributing to this project
+
+Anyone and everyone is welcome to contribute. Please take a moment to
+review the [guidelines for contributing](CONTRIBUTING.md).
+
+* [Bug reports](CONTRIBUTING.md#bugs)
+* [Feature requests](CONTRIBUTING.md#features)
+* [Pull requests](CONTRIBUTING.md#pull-requests)
 
 
 ## Ditto Team
