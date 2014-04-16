@@ -40,4 +40,4 @@ Special thanks to [Darren Ferguson](https://github.com/darrenferguson) for inspi
 
 Copyright &copy; 2014 Umbrella Inc, Our Umbraco and other contributors
 
-Licensed under the MIT License
+Licensed under the [MIT License](LICENSE.md)
