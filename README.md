@@ -6,11 +6,11 @@ Ditto is a lightweight POCO mapper for Umbraco 7. It offers a generic, unopinion
 solution to the problem of using **strongly-typed models in your MVC views**.
 There are no 3<sup>rd</sup> party dependencies, other than Umbraco 7 core itself.
 
-### Is Ditto "Yet Another Code-First" approach?
+### Is Ditto a "Yet Another Code-First" approach?
 
-Nope! The goal of Ditto is to provide a simple way to convert your content nodes (`IPublishedContent`) into your desired POCO/model/object.
+Nope! The goal of Ditto is to provide a simple way to convert your content/media nodes (e.g. `IPublishedContent`) to your desired POCO/model/object.
 
-There is absolutely zero intention of attempting to generate DocumentTypes from your POCO/models.
+There is absolutely zero intention of generating Document-Types from your POCO/models.
 
 
 ## Installing Ditto
@@ -67,4 +67,4 @@ Special thanks to [Darren Ferguson](https://github.com/darrenferguson) for inspi
 
 Copyright &copy; 2014 Umbrella Inc, Our Umbraco and other contributors
 
-Licensed under the MIT License
+Licensed under the [MIT License](LICENSE.md)
