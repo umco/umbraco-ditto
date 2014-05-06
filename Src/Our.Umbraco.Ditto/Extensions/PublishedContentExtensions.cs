@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
-using Our.Umbraco.Ditto.Attributes;
-using Umbraco.Web.Models;
 
 namespace Our.Umbraco.Ditto
 {
-	public static class Ditto
+	public static class PublishedContentExtensions
 	{
 		public static T As<T>(this IPublishedContent content)
 			where T : class
@@ -27,7 +25,7 @@ namespace Our.Umbraco.Ditto
 				var constructorParams = constructor.GetParameters();
 
 				var args1 = new ConvertingTypeEventArgs { Content = content };
-				CallConvertingTypeHandler(args1);
+				EventHandlers.CallConvertingTypeHandler(args1);
 
 				if (args1.Cancel)
 					return null;
@@ -125,7 +123,7 @@ namespace Our.Umbraco.Ditto
 					ConvertedType = typeof(T)
 				};
 
-				CallConvertedTypeHandler(args2);
+				EventHandlers.CallConvertedTypeHandler(args2);
 
 				return args2.Converted as T;
 			}
@@ -136,54 +134,11 @@ namespace Our.Umbraco.Ditto
 		{
 			using (var t = DisposableTimer.DebugDuration<IEnumerable<T>>(string.Format("As ({0})", documentTypeAlias)))
 			{
-				return items
-					.Where(x => string.IsNullOrWhiteSpace(documentTypeAlias) || documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-					.Select(x => x.As<T>());
+				if (string.IsNullOrWhiteSpace(documentTypeAlias))
+					return items.Select(x => x.As<T>());
+
+				return items.Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias)).Select(x => x.As<T>());
 			}
 		}
-
-		public static T As<T>(this RenderModel model)
-			where T : RenderModel
-		{
-			using (var t = DisposableTimer.DebugDuration<T>(string.Format("As ({0})", model.Content.DocumentTypeAlias)))
-			{
-				return model.Content.As<T>();
-			}
-		}
-
-		#region Handlers
-
-		public static event EventHandler<ConvertingTypeEventArgs> ConvertingType;
-		public static event EventHandler<ConvertedTypeEventArgs> ConvertedType;
-
-		public static void CallConvertingTypeHandler(ConvertingTypeEventArgs args)
-		{
-			if (ConvertingType != null)
-				ConvertingType(null, args);
-		}
-
-		public static void CallConvertedTypeHandler(ConvertedTypeEventArgs args)
-		{
-			if (ConvertedType != null)
-				ConvertedType(null, args);
-		}
-
-		#endregion
 	}
-
-	#region EventArgs
-
-	public class ConvertingTypeEventArgs : CancelEventArgs
-	{
-		public IPublishedContent Content { get; set; }
-	}
-
-	public class ConvertedTypeEventArgs : EventArgs
-	{
-		public IPublishedContent Content { get; set; }
-		public object Converted { get; set; }
-		public Type ConvertedType { get; set; }
-	}
-
-	#endregion
 }
