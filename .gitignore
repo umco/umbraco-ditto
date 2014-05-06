@@ -40,3 +40,4 @@ bin/
 /Assets/
 /Build/
 *.DS_Store
+[Pp]ackages/*/**
