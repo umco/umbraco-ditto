@@ -3,12 +3,12 @@
 	<info>
 		<package>
 			<name>Ditto</name>
-			<version>0.0</version>
+			<version>0.0.0</version>
 			<license url="http://opensource.org/licenses/MIT">The MIT License (MIT)</license>
 			<url>http://our.umbraco.org/projects/developer-tools/ditto</url>
 			<requirements>
 				<major>7</major>
-				<minor>1</minor>
+				<minor>0</minor>
 				<patch>0</patch>
 			</requirements>
 		</package>
