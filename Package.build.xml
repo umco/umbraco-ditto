@@ -20,7 +20,7 @@
 	****************************************
   -->
   <PropertyGroup>
-	<PackageVersion>0.1.1</PackageVersion>
+	<PackageVersion>0.2.0</PackageVersion>
 	<ProjectName>Our.Umbraco.Ditto</ProjectName>
 	<BuildConfig>Release</BuildConfig>
   </PropertyGroup>
