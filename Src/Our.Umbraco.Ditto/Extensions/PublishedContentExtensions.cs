@@ -11,7 +11,9 @@ namespace Our.Umbraco.Ditto
 {
 	public static class PublishedContentExtensions
 	{
-		public static T As<T>(this IPublishedContent content)
+		public static T As<T>(this IPublishedContent content,
+			Action<ConvertingTypeEventArgs> convertingType = null,
+			Action<ConvertedTypeEventArgs> convertedType = null)
 			where T : class
 		{
 			using (var t = DisposableTimer.DebugDuration<T>(string.Format("As ({0})", content.DocumentTypeAlias)))
@@ -26,6 +28,9 @@ namespace Our.Umbraco.Ditto
 
 				var args1 = new ConvertingTypeEventArgs { Content = content };
 				EventHandlers.CallConvertingTypeHandler(args1);
+
+				if (!args1.Cancel && convertingType != null)
+					convertingType(args1);
 
 				if (args1.Cancel)
 					return null;
@@ -51,7 +56,7 @@ namespace Our.Umbraco.Ditto
 					using (var propertyLoopTimer = DisposableTimer.DebugDuration<T>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
 					{
 						var umbracoPropertyName = propertyInfo.Name;
-						var altUmbracoPropertyName = "";
+						var altUmbracoPropertyName = string.Empty;
 						var recursive = false;
 						object defaultValue = null;
 
@@ -125,19 +130,27 @@ namespace Our.Umbraco.Ditto
 
 				EventHandlers.CallConvertedTypeHandler(args2);
 
+				if (convertedType != null)
+					convertedType(args2);
+
 				return args2.Converted as T;
 			}
 		}
 
-		public static IEnumerable<T> As<T>(this IEnumerable<IPublishedContent> items, string documentTypeAlias = null)
+		public static IEnumerable<T> As<T>(this IEnumerable<IPublishedContent> items,
+			string documentTypeAlias = null,
+			Action<ConvertingTypeEventArgs> convertingType = null,
+			Action<ConvertedTypeEventArgs> convertedType = null)
 			where T : class
 		{
 			using (var t = DisposableTimer.DebugDuration<IEnumerable<T>>(string.Format("As ({0})", documentTypeAlias)))
 			{
 				if (string.IsNullOrWhiteSpace(documentTypeAlias))
-					return items.Select(x => x.As<T>());
+					return items.Select(x => x.As<T>(convertingType, convertedType));
 
-				return items.Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias)).Select(x => x.As<T>());
+				return items
+					.Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
+					.Select(x => x.As<T>(convertingType, convertedType));
 			}
 		}
 	}
