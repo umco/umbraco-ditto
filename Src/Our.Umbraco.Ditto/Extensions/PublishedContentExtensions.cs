@@ -16,6 +16,9 @@ namespace Our.Umbraco.Ditto
 			Action<ConvertedTypeEventArgs> convertedType = null)
 			where T : class
 		{
+			if (content == null)
+				return default(T);
+
 			using (var t = DisposableTimer.DebugDuration<T>(string.Format("As ({0})", content.DocumentTypeAlias)))
 			{
 				var type = typeof(T);
@@ -33,7 +36,7 @@ namespace Our.Umbraco.Ditto
 					convertingType(args1);
 
 				if (args1.Cancel)
-					return null;
+					return default(T);
 
 				if (constructorParams.Length == 0)
 				{

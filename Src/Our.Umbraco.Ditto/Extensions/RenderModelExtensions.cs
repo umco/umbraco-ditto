@@ -11,6 +11,9 @@ namespace Our.Umbraco.Ditto
 			Action<ConvertedTypeEventArgs> convertedType = null)
 			where T : RenderModel
 		{
+			if (model == null)
+				return default(T);
+
 			using (var t = DisposableTimer.DebugDuration<T>(string.Format("As ({0})", model.Content.DocumentTypeAlias)))
 			{
 				return model.Content.As<T>(convertingType, convertedType);
