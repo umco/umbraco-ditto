@@ -19,7 +19,7 @@ namespace Our.Umbraco.Ditto
 			if (content == null)
 				return default(T);
 
-			using (var t = DisposableTimer.DebugDuration<T>(string.Format("As ({0})", content.DocumentTypeAlias)))
+			using (var t = DisposableTimer.DebugDuration<T>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
 			{
 				var type = typeof(T);
 				T instance;
