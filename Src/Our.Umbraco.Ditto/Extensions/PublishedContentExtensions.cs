@@ -30,6 +30,7 @@ namespace Our.Umbraco.Ditto
 				var constructorParams = constructor.GetParameters();
 
 				var args1 = new ConvertingTypeEventArgs { Content = content };
+
 				EventHandlers.CallConvertingTypeHandler(args1);
 
 				if (!args1.Cancel && convertingType != null)
@@ -131,10 +132,10 @@ namespace Our.Umbraco.Ditto
 					ConvertedType = typeof(T)
 				};
 
-				EventHandlers.CallConvertedTypeHandler(args2);
-
 				if (convertedType != null)
 					convertedType(args2);
+
+				EventHandlers.CallConvertedTypeHandler(args2);
 
 				return args2.Converted as T;
 			}
