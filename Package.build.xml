@@ -20,7 +20,7 @@
 	****************************************
   -->
   <PropertyGroup>
-	<PackageVersion>1.0</PackageVersion>
+	<PackageVersion>0.3.0</PackageVersion>
 	<ProjectName>Our.Umbraco.Ditto</ProjectName>
 	<BuildConfig>Release</BuildConfig>
   </PropertyGroup>
@@ -52,12 +52,12 @@
         Encoding="ASCII"
         Files="$(ProjectDir)\Properties\AssemblyInfo.cs"
         Regex="AssemblyVersion\(&quot;.*&quot;\)\]" 
-        ReplacementText="AssemblyVersion(&quot;$(PackageVersion).0.0&quot;)]" />
+        ReplacementText="AssemblyVersion(&quot;$(PackageVersion)&quot;)]" />
   <FileUpdate
         Encoding="ASCII"
         Files="$(ProjectDir)\Properties\AssemblyInfo.cs"
         Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" 
-        ReplacementText="AssemblyFileVersion(&quot;$(PackageVersion).0.0&quot;)]" />
+        ReplacementText="AssemblyFileVersion(&quot;$(PackageVersion)&quot;)]" />
   </Target>
   
   <!-- COMPILE -->

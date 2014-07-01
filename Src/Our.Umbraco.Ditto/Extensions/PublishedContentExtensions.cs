@@ -1,22 +1,25 @@
 ﻿using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
-using Our.Umbraco.Ditto.Attributes;
-using Umbraco.Web.Models;
 
 namespace Our.Umbraco.Ditto
 {
-	public static class Ditto
+	public static class PublishedContentExtensions
 	{
-		public static T As<T>(this IPublishedContent content)
+		public static T As<T>(this IPublishedContent content,
+			Action<ConvertingTypeEventArgs> convertingType = null,
+			Action<ConvertedTypeEventArgs> convertedType = null)
 			where T : class
 		{
-			using (var t = DisposableTimer.DebugDuration<T>(string.Format("As ({0})", content.DocumentTypeAlias)))
+			if (content == null)
+				return default(T);
+
+			using (var t = DisposableTimer.DebugDuration<T>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
 			{
 				var type = typeof(T);
 				T instance;
@@ -27,10 +30,14 @@ namespace Our.Umbraco.Ditto
 				var constructorParams = constructor.GetParameters();
 
 				var args1 = new ConvertingTypeEventArgs { Content = content };
-				CallConvertingTypeHandler(args1);
+
+				EventHandlers.CallConvertingTypeHandler(args1);
+
+				if (!args1.Cancel && convertingType != null)
+					convertingType(args1);
 
 				if (args1.Cancel)
-					return null;
+					return default(T);
 
 				if (constructorParams.Length == 0)
 				{
@@ -52,8 +59,13 @@ namespace Our.Umbraco.Ditto
 				{
 					using (var propertyLoopTimer = DisposableTimer.DebugDuration<T>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
 					{
+						// check for the ignore attribute
+						var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
+						if (ignoreAttr != null)
+							continue;
+
 						var umbracoPropertyName = propertyInfo.Name;
-						var altUmbracoPropertyName = "";
+						var altUmbracoPropertyName = string.Empty;
 						var recursive = false;
 						object defaultValue = null;
 
@@ -96,7 +108,7 @@ namespace Our.Umbraco.Ditto
 							}
 							else
 							{
-								using (var typeConverterTimer = DisposableTimer.DebugDuration<T>(string.Format("TypeConverter ({1} {0})", propertyInfo.Name, content.Id)))
+								using (var typeConverterTimer = DisposableTimer.DebugDuration<T>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
 								{
 									var converterAttr = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
 									if (converterAttr != null)
@@ -125,65 +137,30 @@ namespace Our.Umbraco.Ditto
 					ConvertedType = typeof(T)
 				};
 
-				CallConvertedTypeHandler(args2);
+				if (convertedType != null)
+					convertedType(args2);
+
+				EventHandlers.CallConvertedTypeHandler(args2);
 
 				return args2.Converted as T;
 			}
 		}
 
-		public static IEnumerable<T> As<T>(this IEnumerable<IPublishedContent> items, string documentTypeAlias = null)
+		public static IEnumerable<T> As<T>(this IEnumerable<IPublishedContent> items,
+			string documentTypeAlias = null,
+			Action<ConvertingTypeEventArgs> convertingType = null,
+			Action<ConvertedTypeEventArgs> convertedType = null)
 			where T : class
 		{
 			using (var t = DisposableTimer.DebugDuration<IEnumerable<T>>(string.Format("As ({0})", documentTypeAlias)))
 			{
+				if (string.IsNullOrWhiteSpace(documentTypeAlias))
+					return items.Select(x => x.As<T>(convertingType, convertedType));
+
 				return items
-					.Where(x => string.IsNullOrWhiteSpace(documentTypeAlias) || documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-					.Select(x => x.As<T>());
+					.Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
+					.Select(x => x.As<T>(convertingType, convertedType));
 			}
 		}
-
-		public static T As<T>(this RenderModel model)
-			where T : RenderModel
-		{
-			using (var t = DisposableTimer.DebugDuration<T>(string.Format("As ({0})", model.Content.DocumentTypeAlias)))
-			{
-				return model.Content.As<T>();
-			}
-		}
-
-		#region Handlers
-
-		public static event EventHandler<ConvertingTypeEventArgs> ConvertingType;
-		public static event EventHandler<ConvertedTypeEventArgs> ConvertedType;
-
-		public static void CallConvertingTypeHandler(ConvertingTypeEventArgs args)
-		{
-			if (ConvertingType != null)
-				ConvertingType(null, args);
-		}
-
-		public static void CallConvertedTypeHandler(ConvertedTypeEventArgs args)
-		{
-			if (ConvertedType != null)
-				ConvertedType(null, args);
-		}
-
-		#endregion
 	}
-
-	#region EventArgs
-
-	public class ConvertingTypeEventArgs : CancelEventArgs
-	{
-		public IPublishedContent Content { get; set; }
-	}
-
-	public class ConvertedTypeEventArgs : EventArgs
-	{
-		public IPublishedContent Content { get; set; }
-		public object Converted { get; set; }
-		public Type ConvertedType { get; set; }
-	}
-
-	#endregion
 }

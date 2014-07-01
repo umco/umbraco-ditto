@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Our.Umbraco.Ditto.Attributes
+namespace Our.Umbraco.Ditto
 {
-	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 	public class UmbracoPropertyAttribute : Attribute
 	{
 		public string PropertyName { get; set; }
@@ -13,10 +13,7 @@ namespace Our.Umbraco.Ditto.Attributes
 
 		public object DefaultValue { get; set; }
 
-		public UmbracoPropertyAttribute(string propertyName,
-			string altPropertyName = "",
-			bool recursive = false,
-			object defaultValue = null)
+		public UmbracoPropertyAttribute(string propertyName, string altPropertyName = "", bool recursive = false, object defaultValue = null)
 		{
 			PropertyName = propertyName;
 			AltPropertyName = altPropertyName;
