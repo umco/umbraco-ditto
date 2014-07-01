@@ -2,7 +2,7 @@
 
 namespace Our.Umbraco.Ditto
 {
-	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 	public class UmbracoPropertyAttribute : Attribute
 	{
 		public string PropertyName { get; set; }
