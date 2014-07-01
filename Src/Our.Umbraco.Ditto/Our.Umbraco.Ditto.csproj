@@ -62,6 +62,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="EventArgs\EventHandlers.cs" />
     <Compile Include="EventArgs\ConvertingTypeEventArgs.cs" />

@@ -59,6 +59,11 @@ namespace Our.Umbraco.Ditto
 				{
 					using (var propertyLoopTimer = DisposableTimer.DebugDuration<T>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
 					{
+						// check for the ignore attribute
+						var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
+						if (ignoreAttr != null)
+							continue;
+
 						var umbracoPropertyName = propertyInfo.Name;
 						var altUmbracoPropertyName = string.Empty;
 						var recursive = false;
