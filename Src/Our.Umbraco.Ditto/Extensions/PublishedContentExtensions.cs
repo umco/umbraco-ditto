@@ -108,7 +108,7 @@ namespace Our.Umbraco.Ditto
 							}
 							else
 							{
-								using (var typeConverterTimer = DisposableTimer.DebugDuration<T>(string.Format("TypeConverter ({1} {0})", propertyInfo.Name, content.Id)))
+								using (var typeConverterTimer = DisposableTimer.DebugDuration<T>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
 								{
 									var converterAttr = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
 									if (converterAttr != null)
