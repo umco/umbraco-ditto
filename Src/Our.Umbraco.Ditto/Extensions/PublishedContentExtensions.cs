@@ -22,7 +22,7 @@ namespace Our.Umbraco.Ditto
 			using (DisposableTimer.DebugDuration<T>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
 			{
 				var type = typeof(T);
-				T instance;
+				var instance = default(T);
 
 				var constructor = type.GetConstructors()
 					.OrderBy(x => x.GetParameters().Length)
@@ -37,7 +37,7 @@ namespace Our.Umbraco.Ditto
 					convertingType(args1);
 
 				if (args1.Cancel)
-					return default(T);
+					return instance;
 
 				if (constructorParams.Length == 0)
 				{
