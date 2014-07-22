@@ -7,7 +7,7 @@
 	****************************************
 	-->
 	<PropertyGroup>
-		<RootDir>$(MSBuildProjectDirectory)</RootDir>
+		<RootDir>$(MSBuildProjectDirectory)\..</RootDir>
 		<MSBuildCommunityTasksPath>$(RootDir)\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
 		<MSBuildUmbracoTasksPath>$(RootDir)\Tools\MSBuildUmbracoTasks</MSBuildUmbracoTasksPath>
 	</PropertyGroup>
@@ -45,9 +45,7 @@
 	<!-- CLEAN -->
 	<Target Name="Clean">
 		<RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
-		<RemoveDir Directories="$(PackageDir)" Condition="Exists('$(PackageDir)')" />
 		<MakeDir Directories="$(BuildDir)" />
-		<MakeDir Directories="$(PackageDir)" />
 	</Target>
 
 	<!-- UPDATE ASSEMBLEY VERSION -->
@@ -67,8 +65,8 @@
 	<!-- PREPAIRE FILES -->
 	<Target Name="PrepairFiles" DependsOnTargets="Compile">
 		<ItemGroup>
-			<BinFiles Include="$(ProjectDir)\Bin\$(ProjectName).dll" />
-			<PackageFile Include="$(RootDir)\Package.xml" />
+			<BinFiles Include="$(ProjectDir)\bin\$(ProjectName).dll" />
+			<PackageFile Include="$(PackageDir)\package.xml" />
 		</ItemGroup>
 		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildDir)\bin" />
 		<Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildDir)" />
@@ -77,13 +75,13 @@
 	<!-- MANIFEST -->
 	<Target Name="Manifest" DependsOnTargets="PrepairFiles">
 		<ItemGroup>
-			<ManifestFiles Include="$(BuildDir)\**\*" Exclude="$(BuildDir)\Package.xml" />
+			<ManifestFiles Include="$(BuildDir)\**\*" Exclude="$(BuildDir)\package.xml" />
 		</ItemGroup>
-		<ManifestUpdate ManifestFile="$(BuildDir)\Package.xml"
+		<ManifestUpdate ManifestFile="$(BuildDir)\package.xml"
 			WorkingDirectory="$(BuildDir)"
 			MinimumRequiredUmbracoVersion="$(UmbracoVersion)"
 			PackageVersion="$(VersionMajor).$(VersionMinor).$(VersionPatch)$(VersionSuffix)"
-			Readme="$([System.IO.File]::ReadAllText(README.md))"
+			Readme="$([System.IO.File]::ReadAllText(package.txt))"
 			Files="@(ManifestFiles)" />
 	</Target>
 
@@ -92,7 +90,7 @@
 		<ItemGroup>
 			<PackageFiles Include="$(BuildDir)\**\*.*" />
 		</ItemGroup>
-		<Package ManifestFile="$(BuildDir)\Package.xml"
+		<Package ManifestFile="$(BuildDir)\package.xml"
 		   WorkingDirectory="$(BuildDir)"
 		   OutputDirectory="$(PackageDir)"
 		   Files="@(PackageFiles)" />
