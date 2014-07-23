@@ -19,10 +19,10 @@ namespace Our.Umbraco.Ditto
 			if (content == null)
 				return default(T);
 
-			using (var t = DisposableTimer.DebugDuration<T>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
+			using (DisposableTimer.DebugDuration<T>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
 			{
 				var type = typeof(T);
-				T instance;
+				var instance = default(T);
 
 				var constructor = type.GetConstructors()
 					.OrderBy(x => x.GetParameters().Length)
@@ -37,7 +37,7 @@ namespace Our.Umbraco.Ditto
 					convertingType(args1);
 
 				if (args1.Cancel)
-					return default(T);
+					return instance;
 
 				if (constructorParams.Length == 0)
 				{
@@ -57,7 +57,7 @@ namespace Our.Umbraco.Ditto
 
 				foreach (var propertyInfo in properties.Where(x => x.CanWrite))
 				{
-					using (var propertyLoopTimer = DisposableTimer.DebugDuration<T>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
+					using (DisposableTimer.DebugDuration<T>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
 					{
 						// check for the ignore attribute
 						var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
@@ -108,7 +108,7 @@ namespace Our.Umbraco.Ditto
 							}
 							else
 							{
-								using (var typeConverterTimer = DisposableTimer.DebugDuration<T>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
+								using (DisposableTimer.DebugDuration<T>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
 								{
 									var converterAttr = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
 									if (converterAttr != null)
@@ -152,7 +152,7 @@ namespace Our.Umbraco.Ditto
 			Action<ConvertedTypeEventArgs> convertedType = null)
 			where T : class
 		{
-			using (var t = DisposableTimer.DebugDuration<IEnumerable<T>>(string.Format("As ({0})", documentTypeAlias)))
+			using (DisposableTimer.DebugDuration<IEnumerable<T>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
 			{
 				if (string.IsNullOrWhiteSpace(documentTypeAlias))
 					return items.Select(x => x.As<T>(convertingType, convertedType));
