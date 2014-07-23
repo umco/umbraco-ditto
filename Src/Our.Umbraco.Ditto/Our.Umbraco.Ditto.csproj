@@ -46,18 +46,17 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
-    <Reference Include="umbraco, Version=1.0.5073.23298, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\UmbracoCms.Core.7.0.0\lib\umbraco.dll</HintPath>
+    <Reference Include="umbraco">
+      <HintPath>..\..\packages\UmbracoCms.Core.7.1.4\lib\umbraco.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Umbraco.Core, Version=1.0.5073.23294, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\UmbracoCms.Core.7.0.0\lib\Umbraco.Core.dll</HintPath>
+    <Reference Include="Umbraco.Core">
+      <HintPath>..\..\packages\UmbracoCms.Core.7.1.4\lib\Umbraco.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
