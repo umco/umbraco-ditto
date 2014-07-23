@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
+    <Compile Include="ModelFactory\DittoPublishedContentModelFactory.cs" />
     <Compile Include="EventArgs\EventHandlers.cs" />
     <Compile Include="EventArgs\ConvertingTypeEventArgs.cs" />
     <Compile Include="EventArgs\ConvertedTypeEventArgs.cs" />
