@@ -11,19 +11,17 @@ namespace Our.Umbraco.Ditto
 {
 	public static class PublishedContentExtensions
 	{
-		public static T As<T>(this IPublishedContent content,
+		internal static object As(this IPublishedContent content, Type type,
 			Action<ConvertingTypeEventArgs> convertingType = null,
 			Action<ConvertedTypeEventArgs> convertedType = null)
-			where T : class
 		{
+			object instance = null;
+
 			if (content == null)
-				return default(T);
+				return instance;
 
-			using (DisposableTimer.DebugDuration<T>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
+			using (DisposableTimer.DebugDuration(type, string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
 			{
-				var type = typeof(T);
-				var instance = default(T);
-
 				var constructor = type.GetConstructors()
 					.OrderBy(x => x.GetParameters().Length)
 					.First();
@@ -41,11 +39,11 @@ namespace Our.Umbraco.Ditto
 
 				if (constructorParams.Length == 0)
 				{
-					instance = Activator.CreateInstance(type) as T;
+					instance = Activator.CreateInstance(type);
 				}
 				else if (constructorParams.Length == 1 & constructorParams[0].ParameterType == typeof(IPublishedContent))
 				{
-					instance = Activator.CreateInstance(type, content) as T;
+					instance = Activator.CreateInstance(type, content);
 				}
 				else
 				{
@@ -57,7 +55,7 @@ namespace Our.Umbraco.Ditto
 
 				foreach (var propertyInfo in properties.Where(x => x.CanWrite))
 				{
-					using (DisposableTimer.DebugDuration<T>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
+					using (DisposableTimer.DebugDuration(type, string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
 					{
 						// check for the ignore attribute
 						var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
@@ -108,7 +106,7 @@ namespace Our.Umbraco.Ditto
 							}
 							else
 							{
-								using (DisposableTimer.DebugDuration<T>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
+								using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
 								{
 									var converterAttr = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
 									if (converterAttr != null)
@@ -134,7 +132,7 @@ namespace Our.Umbraco.Ditto
 				{
 					Content = content,
 					Converted = instance,
-					ConvertedType = typeof(T)
+					ConvertedType = type
 				};
 
 				if (convertedType != null)
@@ -142,8 +140,16 @@ namespace Our.Umbraco.Ditto
 
 				EventHandlers.CallConvertedTypeHandler(args2);
 
-				return args2.Converted as T;
+				return args2.Converted;
 			}
+		}
+
+		public static T As<T>(this IPublishedContent content,
+			Action<ConvertingTypeEventArgs> convertingType = null,
+			Action<ConvertedTypeEventArgs> convertedType = null)
+			where T : class
+		{
+			return content.As(typeof(T), convertingType, convertedType) as T;
 		}
 
 		public static IEnumerable<T> As<T>(this IEnumerable<IPublishedContent> items,
