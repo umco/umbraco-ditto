@@ -37,18 +37,18 @@ namespace Our.Umbraco.Ditto
 			if (_converters == null)
 				return content;
 
-			// store the result in the `RequestCache`, as `CreateModel` gets called multiple times.
+			var contentTypeAlias = content.DocumentTypeAlias;
+			Func<IPublishedContent, IPublishedContent> converter;
+
+			if (!_converters.TryGetValue(contentTypeAlias, out converter))
+				return content;
+
+			// HACK: [LK:2014-07-24] Using the `RequestCache` to store the result, as the model-factory can be called multiple times per request.
+			// The cache should only contain models have a corresponding converter, so in theory the result should be the same.
+			// Reason for caching, is that Ditto uses reflection to set property values, this can be a performance hit (especially when called multiple times).
 			return (IPublishedContent)ApplicationContext.Current.ApplicationCache.RequestCache.GetCacheItem(
 				string.Concat("DittoPublishedContentModelFactory.CreateModel_", content.Path),
-				() =>
-				{
-					var contentTypeAlias = content.DocumentTypeAlias;
-
-					Func<IPublishedContent, IPublishedContent> converter;
-					return _converters.TryGetValue(contentTypeAlias, out converter)
-						? converter(content)
-						: content;
-				});
+				() => { return converter(content); });
 		}
 	}
 }
