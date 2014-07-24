@@ -37,12 +37,18 @@ namespace Our.Umbraco.Ditto
 			if (_converters == null)
 				return content;
 
-			var contentTypeAlias = content.DocumentTypeAlias;
+			// store the result in the `RequestCache`, as `CreateModel` gets called multiple times.
+			return (IPublishedContent)ApplicationContext.Current.ApplicationCache.RequestCache.GetCacheItem(
+				string.Concat("DittoPublishedContentModelFactory.CreateModel_", content.Path),
+				() =>
+				{
+					var contentTypeAlias = content.DocumentTypeAlias;
 
-			Func<IPublishedContent, IPublishedContent> converter;
-			return _converters.TryGetValue(contentTypeAlias, out converter)
-				? converter(content)
-				: content;
+					Func<IPublishedContent, IPublishedContent> converter;
+					return _converters.TryGetValue(contentTypeAlias, out converter)
+						? converter(content)
+						: content;
+				});
 		}
 	}
 }
