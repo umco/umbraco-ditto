@@ -32,6 +32,10 @@ To install from NuGet, you can run the following command from within Visual Stud
 
 	@(Model.Content.As<Article>.PageTitle)
 
+### Video demonstrations
+
+* A short screencast giving [a brief introduction to Ditto](https://www.screenr.com/3oRN) (5 mins)
+
 
 ## Configuration
 

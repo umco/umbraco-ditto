@@ -7,7 +7,7 @@
 			<license url="http://opensource.org/licenses/MIT">The MIT License (MIT)</license>
 			<url>http://our.umbraco.org/projects/developer-tools/ditto</url>
 			<requirements>
-				<major>7</major>
+				<major>0</major>
 				<minor>0</minor>
 				<patch>0</patch>
 			</requirements>
