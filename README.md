@@ -1,6 +1,6 @@
 # Ditto
 
-<img align="right" height="300" src="Docs/umbraco-ditto.png">
+<img align="right" height="300" src="docs/umbraco-ditto.png">
 
 Ditto is a lightweight POCO mapper for Umbraco 7. It offers a generic, unopinionated
 solution to the problem of using **strongly-typed models in your MVC views**.
