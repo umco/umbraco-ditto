@@ -8,8 +8,8 @@
 	-->
 	<PropertyGroup>
 		<RootDir>$(MSBuildProjectDirectory)\..</RootDir>
-		<MSBuildCommunityTasksPath>$(RootDir)\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
-		<MSBuildUmbracoTasksPath>$(RootDir)\Tools\MSBuildUmbracoTasks</MSBuildUmbracoTasksPath>
+		<MSBuildCommunityTasksPath>$(RootDir)\tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+		<MSBuildUmbracoTasksPath>$(RootDir)\tools\MSBuildUmbracoTasks</MSBuildUmbracoTasksPath>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
@@ -22,18 +22,18 @@
 	-->
 	<PropertyGroup>
 		<VersionMajor>0</VersionMajor>
-		<VersionMinor>3</VersionMinor>
+		<VersionMinor>4</VersionMinor>
 		<VersionPatch>0</VersionPatch>
 		<VersionSuffix></VersionSuffix>
-		<UmbracoVersion>7.0.0</UmbracoVersion>
+		<UmbracoVersion>7.1.4</UmbracoVersion>
 		<ProjectName>Our.Umbraco.Ditto</ProjectName>
 		<BuildConfig>Release</BuildConfig>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<BuildDir>$(RootDir)\Build</BuildDir>
-		<PackageDir>$(RootDir)\Package</PackageDir>
-		<ProjectDir>$(RootDir)\Src\$(ProjectName)</ProjectDir>
+		<BuildDir>$(RootDir)\build</BuildDir>
+		<PackageDir>$(RootDir)\package</PackageDir>
+		<ProjectDir>$(RootDir)\src\$(ProjectName)</ProjectDir>
 	</PropertyGroup>
 
 	<!--
@@ -91,9 +91,10 @@
 			<PackageFiles Include="$(BuildDir)\**\*.*" />
 		</ItemGroup>
 		<Package ManifestFile="$(BuildDir)\package.xml"
-		   WorkingDirectory="$(BuildDir)"
-		   OutputDirectory="$(PackageDir)"
-		   Files="@(PackageFiles)" />
+			WorkingDirectory="$(BuildDir)"
+			OutputDirectory="$(RootDir)"
+			Files="@(PackageFiles)" />
+		<RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
 	</Target>
 
 </Project>
