@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Package">
 
-	<!--
-	****************************************
-	* IMPORTS
-	****************************************
-	-->
+	<!-- IMPORTS -->
 	<PropertyGroup>
 		<RootDir>$(MSBuildProjectDirectory)\..</RootDir>
+
 		<MSBuildCommunityTasksPath>$(RootDir)\tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
 		<MSBuildUmbracoTasksPath>$(RootDir)\tools\MSBuildUmbracoTasks</MSBuildUmbracoTasksPath>
 	</PropertyGroup>
@@ -15,11 +12,7 @@
 	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
 	<Import Project="$(MSBuildUmbracoTasksPath)\MSBuild.Umbraco.Tasks.Targets" />
 
-	<!--
-	****************************************
-	* PROPERTIES
-	****************************************
-	-->
+	<!-- PROPERTIES -->
 	<PropertyGroup>
 		<VersionMajor>0</VersionMajor>
 		<VersionMinor>4</VersionMinor>
@@ -31,16 +24,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<BuildDir>$(RootDir)\build</BuildDir>
-		<PackageDir>$(RootDir)\package</PackageDir>
+		<BuildDir>$(MSBuildProjectDirectory)\_build</BuildDir>
 		<ProjectDir>$(RootDir)\src\$(ProjectName)</ProjectDir>
 	</PropertyGroup>
 
-	<!--
-	****************************************
-	* TARGETS
-	****************************************
-	-->
+	<!-- TARGETS -->
 
 	<!-- CLEAN -->
 	<Target Name="Clean">
@@ -56,24 +44,24 @@
 			AssemblyInformationalVersion="$(VersionMajor).$(VersionMinor).$(VersionPatch)$(VersionSuffix)"/>
 	</Target>
 
-
 	<!-- COMPILE -->
 	<Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
 		<MSBuild Projects="$(ProjectDir)\$(ProjectName).csproj" Properties="Configuration=$(BuildConfig)" />
 	</Target>
 
-	<!-- PREPAIRE FILES -->
-	<Target Name="PrepairFiles" DependsOnTargets="Compile">
+	<!-- PREPARE FILES -->
+	<Target Name="PrepareFiles" DependsOnTargets="Compile">
 		<ItemGroup>
 			<BinFiles Include="$(ProjectDir)\bin\$(ProjectName).dll" />
-			<PackageFile Include="$(PackageDir)\package.xml" />
+			<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
 		</ItemGroup>
+		<TimestampOffset Files="@(BinFiles)" Offset="-11" />
 		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildDir)\bin" />
 		<Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildDir)" />
 	</Target>
 
 	<!-- MANIFEST -->
-	<Target Name="Manifest" DependsOnTargets="PrepairFiles">
+	<Target Name="Manifest" DependsOnTargets="PrepareFiles">
 		<ItemGroup>
 			<ManifestFiles Include="$(BuildDir)\**\*" Exclude="$(BuildDir)\package.xml" />
 		</ItemGroup>
