@@ -48,7 +48,10 @@ namespace Our.Umbraco.Ditto
 			// Reason for caching, is that Ditto uses reflection to set property values, this can be a performance hit (especially when called multiple times).
 			return (IPublishedContent)ApplicationContext.Current.ApplicationCache.RequestCache.GetCacheItem(
 				string.Concat("DittoPublishedContentModelFactory.CreateModel_", content.Path),
-				() => { return converter(content); });
+				() =>
+				{
+					return converter(content);
+				});
 		}
 	}
 }

@@ -16,7 +16,7 @@
 	<PropertyGroup>
 		<VersionMajor>0</VersionMajor>
 		<VersionMinor>4</VersionMinor>
-		<VersionPatch>0</VersionPatch>
+		<VersionPatch>1</VersionPatch>
 		<VersionSuffix></VersionSuffix>
 		<UmbracoVersion>7.1.4</UmbracoVersion>
 		<ProjectName>Our.Umbraco.Ditto</ProjectName>
@@ -52,7 +52,7 @@
 	<!-- PREPARE FILES -->
 	<Target Name="PrepareFiles" DependsOnTargets="Compile">
 		<ItemGroup>
-			<BinFiles Include="$(ProjectDir)\bin\$(ProjectName).dll" />
+			<BinFiles Include="$(ProjectDir)\bin\Release\$(ProjectName).dll" />
 			<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
 		</ItemGroup>
 		<TimestampOffset Files="@(BinFiles)" Offset="-11" />
