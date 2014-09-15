@@ -12,10 +12,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{7D5530
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Package", "Package", "{21985AFE-1750-4723-BAEC-210C8B5FE215}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\umbraco-package-boilerplate\package\package.proj = ..\..\umbraco-package-boilerplate\package\package.proj
-		..\..\umbraco-package-boilerplate\package\package.txt = ..\..\umbraco-package-boilerplate\package\package.txt
-		..\..\umbraco-package-boilerplate\package\package.xml = ..\..\umbraco-package-boilerplate\package\package.xml
+		..\package\package.proj = ..\package\package.proj
+		..\package\package.txt = ..\package\package.txt
+		..\package\package.xml = ..\package\package.xml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CF4E7DA-6359-479E-A64D-2023C743BA1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +32,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7D553013-FD27-46E7-BEFF-27593BD4E294} = {6CF4E7DA-6359-479E-A64D-2023C743BA1C}
+		{21985AFE-1750-4723-BAEC-210C8B5FE215} = {6CF4E7DA-6359-479E-A64D-2023C743BA1C}
 	EndGlobalSection
 EndGlobal
