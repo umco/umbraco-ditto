@@ -1,1 +1,1 @@
-Ditto is a lightweight POCO mapper for Umbraco 7.
+Ditto is a lightweight POCO mapper for Umbraco 7+
