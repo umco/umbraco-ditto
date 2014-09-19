@@ -87,9 +87,11 @@ Here is an example of using the `As<T>` method within your Razor view:
 	@poco.Content
 	<p><img src="@poco.Image" alt="[image]" /></p>
 
-##### Video demonstration
 
-* A short screencast giving [a brief introduction to Ditto](https://www.screenr.com/3oRN) (5 mins) 
+##### Video demonstrations
+
+* A short screencast giving [a brief introduction to Ditto](https://www.screenr.com/3oRN) (5 mins)
+* Lee Kelleher showcases Ditto on [uHangout EP40](https://www.youtube.com/watch?v=L40haIBLNS4)
 
 
 
