@@ -110,11 +110,9 @@
             Action<ConvertingTypeEventArgs> convertingType = null,
             Action<ConvertedTypeEventArgs> convertedType = null)
         {
-            object instance = null;
-
             if (content == null)
             {
-                return instance;
+                return null;
             }
 
             using (DisposableTimer.DebugDuration(type, string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
@@ -129,11 +127,16 @@
                 EventHandlers.CallConvertingTypeHandler(args1);
 
                 if (!args1.Cancel && convertingType != null)
+                {
                     convertingType(args1);
+                }
 
                 if (args1.Cancel)
-                    return instance;
+                {
+                    return null;
+                }
 
+                object instance;
                 if (constructorParams.Length == 0)
                 {
                     instance = Activator.CreateInstance(type);
@@ -210,8 +213,15 @@
                                     var converterAttr = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
                                     if (converterAttr != null)
                                     {
-                                        var converter = Activator.CreateInstance(Type.GetType(converterAttr.ConverterTypeName)) as TypeConverter;
-                                        propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
+                                        var toConvert = Type.GetType(converterAttr.ConverterTypeName);
+                                        if (toConvert != null)
+                                        {
+                                            var converter = Activator.CreateInstance(toConvert) as TypeConverter;
+                                            if (converter != null)
+                                            {
+                                                propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
+                                            }
+                                        }
                                     }
                                     else
                                     {
