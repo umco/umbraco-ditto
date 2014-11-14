@@ -1,17 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RenderModelExtensions.cs" company="Umbrella Inc, Our Umbraco and other contributors">
-//   Copyright Umbrella Inc, Our Umbraco and other contributors
-// </copyright>
-// <summary>
-//   Encapsulates extension methods for <see cref="RenderModel" />.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Our.Umbraco.Ditto.Extensions
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
-
-    using Our.Umbraco.Ditto.EventArgs;
 
     using global::Umbraco.Core;
     using global::Umbraco.Web.Models;

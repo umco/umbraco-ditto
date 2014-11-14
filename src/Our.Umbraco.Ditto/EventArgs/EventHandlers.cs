@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="EventHandlers.cs" company="Umbrella Inc, Our Umbraco and other contributors">
-//   Copyright Umbrella Inc, Our Umbraco and other contributors
-// </copyright>
-// <summary>
-//   Provides methods to handle firing specific conversion events.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Our.Umbraco.Ditto.EventArgs
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
 

@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConvertedTypeEventArgs.cs" company="Umbrella Inc, Our Umbraco and other contributors">
-//   Copyright Umbrella Inc, Our Umbraco and other contributors
-// </copyright>
-// <summary>
-//   Provides data for a converted event.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Our.Umbraco.Ditto.EventArgs
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
 

@@ -1,22 +1,10 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PublishedContentExtensions.cs" company="Umbrella Inc, Our Umbraco and other contributors">
-//   Copyright Umbrella Inc, Our Umbraco and other contributors
-// </copyright>
-// <summary>
-//   Encapsulates extension methods for <see cref="IPublishedContent" />.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Our.Umbraco.Ditto.Extensions
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
     using System.Reflection;
-
-    using Our.Umbraco.Ditto.Attributes;
-    using Our.Umbraco.Ditto.EventArgs;
 
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
@@ -131,12 +119,12 @@ namespace Our.Umbraco.Ditto.Extensions
 
             using (DisposableTimer.DebugDuration(type, string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
             {
-                ConstructorInfo constructor = type.GetConstructors()
+                var constructor = type.GetConstructors()
                     .OrderBy(x => x.GetParameters().Length)
                     .First();
-                ParameterInfo[] constructorParams = constructor.GetParameters();
+                var constructorParams = constructor.GetParameters();
 
-                ConvertingTypeEventArgs args1 = new ConvertingTypeEventArgs { Content = content };
+                var args1 = new ConvertingTypeEventArgs { Content = content };
 
                 EventHandlers.CallConvertingTypeHandler(args1);
 
@@ -159,26 +147,26 @@ namespace Our.Umbraco.Ditto.Extensions
                     throw new InvalidOperationException("Type {0} has invalid constructor parameters");
                 }
 
-                PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                Type contentType = content.GetType();
+                var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                var contentType = content.GetType();
 
-                foreach (PropertyInfo propertyInfo in properties.Where(x => x.CanWrite))
+                foreach (var propertyInfo in properties.Where(x => x.CanWrite))
                 {
                     using (DisposableTimer.DebugDuration(type, string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
                     {
                         // Check for the ignore attribute.
-                        DittoIgnoreAttribute ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
+                        var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
                         if (ignoreAttr != null)
                         {
                             continue;
                         }
 
-                        string umbracoPropertyName = propertyInfo.Name;
-                        string altUmbracoPropertyName = string.Empty;
-                        bool recursive = false;
+                        var umbracoPropertyName = propertyInfo.Name;
+                        var altUmbracoPropertyName = string.Empty;
+                        var recursive = false;
                         object defaultValue = null;
 
-                        UmbracoPropertyAttribute umbracoPropertyAttr = propertyInfo.GetCustomAttribute<UmbracoPropertyAttribute>();
+                        var umbracoPropertyAttr = propertyInfo.GetCustomAttribute<UmbracoPropertyAttribute>();
                         if (umbracoPropertyAttr != null)
                         {
                             umbracoPropertyName = umbracoPropertyAttr.PropertyName;
@@ -188,7 +176,7 @@ namespace Our.Umbraco.Ditto.Extensions
                         }
 
                         // Try fetching the value.
-                        PropertyInfo contentProperty = contentType.GetProperty(umbracoPropertyName);
+                        var contentProperty = contentType.GetProperty(umbracoPropertyName);
                         object propertyValue = contentProperty != null
                                                 ? contentProperty.GetValue(content, null)
                                                 : content.GetPropertyValue(umbracoPropertyName, recursive);
@@ -219,15 +207,15 @@ namespace Our.Umbraco.Ditto.Extensions
                             {
                                 using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
                                 {
-                                    TypeConverterAttribute converterAttr = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
+                                    var converterAttr = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
                                     if (converterAttr != null)
                                     {
-                                        TypeConverter converter = Activator.CreateInstance(Type.GetType(converterAttr.ConverterTypeName)) as TypeConverter;
+                                        var converter = Activator.CreateInstance(Type.GetType(converterAttr.ConverterTypeName)) as TypeConverter;
                                         propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
                                     }
                                     else
                                     {
-                                        Attempt<object> convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
+                                        var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
                                         if (convert.Success)
                                         {
                                             propertyInfo.SetValue(instance, convert.Result, null);
@@ -239,7 +227,7 @@ namespace Our.Umbraco.Ditto.Extensions
                     }
                 }
 
-                ConvertedTypeEventArgs args2 = new ConvertedTypeEventArgs
+                var args2 = new ConvertedTypeEventArgs
                 {
                     Content = content,
                     Converted = instance,

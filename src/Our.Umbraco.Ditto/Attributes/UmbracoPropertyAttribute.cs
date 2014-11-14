@@ -1,14 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UmbracoPropertyAttribute.cs" company="Umbrella Inc, Our Umbraco and other contributors">
-//   Copyright Umbrella Inc, Our Umbraco and other contributors
-// </copyright>
-// <summary>
-//   The Umbraco property attribute.
-//   Used for providing Umbraco with additional information about the property to aid conversion.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Our.Umbraco.Ditto.Attributes
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
 

@@ -1,14 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DittoIgnoreAttribute.cs" company="Umbrella Inc, Our Umbraco and other contributors">
-//   Copyright Umbrella Inc, Our Umbraco and other contributors
-// </copyright>
-// <summary>
-//   The Ditto ignore property attribute. Used for specifying that Umbraco should
-//   ignore this property during conversion.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Our.Umbraco.Ditto.Attributes
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
 

@@ -1,19 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DittoPublishedContentModelFactory.cs" company="Umbrella Inc, Our Umbraco and other contributors">
-//   Copyright Umbrella Inc, Our Umbraco and other contributors
-// </copyright>
-// <summary>
-//   The Ditto published content model factory for creating strong typed models.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Our.Umbraco.Ditto.ModelFactory
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
-    using Our.Umbraco.Ditto.Extensions;
 
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
@@ -37,7 +26,7 @@ namespace Our.Umbraco.Ditto.ModelFactory
         /// </param>
         public DittoPublishedContentModelFactory(IEnumerable<Type> types)
         {
-            Dictionary<string, Func<IPublishedContent, IPublishedContent>> converters = new Dictionary<string, Func<IPublishedContent, IPublishedContent>>(StringComparer.InvariantCultureIgnoreCase);
+            var converters = new Dictionary<string, Func<IPublishedContent, IPublishedContent>>(StringComparer.InvariantCultureIgnoreCase);
 
             foreach (var type in types.Where(x => typeof(IPublishedContent).IsAssignableFrom(x)))
             {
@@ -46,8 +35,8 @@ namespace Our.Umbraco.Ditto.ModelFactory
                     return x.As(type) as IPublishedContent;
                 };
 
-                PublishedContentModelAttribute attribute = type.GetCustomAttribute<PublishedContentModelAttribute>(false);
-                string typeName = attribute == null ? type.Name : attribute.ContentTypeAlias;
+                var attribute = type.GetCustomAttribute<PublishedContentModelAttribute>(false);
+                var typeName = attribute == null ? type.Name : attribute.ContentTypeAlias;
 
                 if (!converters.ContainsKey(typeName))
                 {
@@ -73,7 +62,7 @@ namespace Our.Umbraco.Ditto.ModelFactory
                 return content;
             }
 
-            string contentTypeAlias = content.DocumentTypeAlias;
+            var contentTypeAlias = content.DocumentTypeAlias;
             Func<IPublishedContent, IPublishedContent> converter;
 
             if (!this.converterCache.TryGetValue(contentTypeAlias, out converter))
