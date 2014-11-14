@@ -30,10 +30,9 @@
 
             foreach (var type in types.Where(x => typeof(IPublishedContent).IsAssignableFrom(x)))
             {
-                Func<IPublishedContent, IPublishedContent> func = (x) =>
-                {
-                    return x.As(type) as IPublishedContent;
-                };
+                // Fixes possible compiler issues caused by accessing closure in loop.
+                var innerType = type;
+                Func<IPublishedContent, IPublishedContent> func = x => x.As(innerType) as IPublishedContent;
 
                 var attribute = type.GetCustomAttribute<PublishedContentModelAttribute>(false);
                 var typeName = attribute == null ? type.Name : attribute.ContentTypeAlias;
@@ -75,10 +74,7 @@
             // Reason for caching, is that Ditto uses reflection to set property values, this can be a performance hit (especially when called multiple times).
             return (IPublishedContent)ApplicationContext.Current.ApplicationCache.RequestCache.GetCacheItem(
                 string.Concat("DittoPublishedContentModelFactory.CreateModel_", content.Path),
-                () =>
-                {
-                    return converter(content);
-                });
+                () => converter(content));
         }
     }
 }
