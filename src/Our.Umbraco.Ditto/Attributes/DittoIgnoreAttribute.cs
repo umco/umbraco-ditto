@@ -1,9 +1,13 @@
-﻿using System;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
-	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-	public class DittoIgnoreAttribute : Attribute
-	{
-	}
+    using System;
+
+    /// <summary>
+    /// The Ditto ignore property attribute. Used for specifying that Umbraco should
+    /// ignore this property during conversion.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public class DittoIgnoreAttribute : Attribute
+    {
+    }
 }

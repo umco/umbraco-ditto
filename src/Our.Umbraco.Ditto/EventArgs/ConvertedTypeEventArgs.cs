@@ -1,14 +1,27 @@
-﻿using System;
-using Umbraco.Core.Models;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
-	public class ConvertedTypeEventArgs : EventArgs
-	{
-		public IPublishedContent Content { get; set; }
+    using System;
 
-		public object Converted { get; set; }
-		
-		public Type ConvertedType { get; set; }
-	}
+    using global::Umbraco.Core.Models;
+
+    /// <summary>
+    /// Provides data for a converted event.
+    /// </summary>
+    public class ConvertedTypeEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Gets or sets the content.
+        /// </summary>
+        public IPublishedContent Content { get; set; }
+
+        /// <summary>
+        /// Gets or sets the converted object.
+        /// </summary>
+        public object Converted { get; set; }
+
+        /// <summary>
+        /// Gets or sets the converted type.
+        /// </summary>
+        public Type ConvertedType { get; set; }
+    }
 }
