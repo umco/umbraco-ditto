@@ -202,18 +202,19 @@
                         // Process the value.
                         if (propertyValue != null)
                         {
-                            if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
+                            // Try any custom type converters first. Check both on class or property.
+                            var converterAttribute = propertyInfo.GetCustomAttribute<TypeConverterAttribute>() ??
+                                (TypeConverterAttribute)propertyInfo.PropertyType.GetCustomAttributes().FirstOrDefault(a => a is TypeConverterAttribute);
+
+                            if (converterAttribute != null)
                             {
-                                propertyInfo.SetValue(instance, propertyValue, null);
-                            }
-                            else
-                            {
-                                using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                                if (converterAttribute.ConverterTypeName != null)
                                 {
-                                    var converterAttr = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
-                                    if (converterAttr != null)
+                                    // Time custom conversions.
+                                    using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
                                     {
-                                        var toConvert = Type.GetType(converterAttr.ConverterTypeName);
+                                        // Get the custom converter from the attribute and attempt to convert.
+                                        var toConvert = Type.GetType(converterAttribute.ConverterTypeName);
                                         if (toConvert != null)
                                         {
                                             var converter = Activator.CreateInstance(toConvert) as TypeConverter;
@@ -223,13 +224,21 @@
                                             }
                                         }
                                     }
-                                    else
+                                }
+                            }
+                            else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
+                            {
+                                // Simple types
+                                propertyInfo.SetValue(instance, propertyValue, null);
+                            }
+                            else
+                            {
+                                using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                                {
+                                    var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
+                                    if (convert.Success)
                                     {
-                                        var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
-                                        if (convert.Success)
-                                        {
-                                            propertyInfo.SetValue(instance, convert.Result, null);
-                                        }
+                                        propertyInfo.SetValue(instance, convert.Result, null);
                                     }
                                 }
                             }
