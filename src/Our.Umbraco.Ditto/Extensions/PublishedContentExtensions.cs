@@ -210,7 +210,7 @@
                                     var converterAttr = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
                                     if (converterAttr != null)
                                     {
-                                        var converter = Activator.CreateInstance(Type.GetType(converterAttr.ConverterTypeName)) as TypeConverter;
+                                        var converter = TypeDescriptor.GetConverter(Type.GetType(converterAttr.ConverterTypeName)) as TypeConverter;
                                         propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
                                     }
                                     else
