@@ -7,6 +7,7 @@
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Core.Models.PublishedContent;
+    using global::Umbraco.Web;
 
     /// <summary>
     /// The Ditto published content model factory for creating strong typed models.
@@ -56,6 +57,14 @@
         /// </returns>
         public IPublishedContent CreateModel(IPublishedContent content)
         {
+            // HACK: [LK:2014-12-04] It appears that when a Save & Publish is performed in the back-office, the model-factory's `CreateModel` is called.
+            // This can cause a null-reference exception in specific cases, as the `UmbracoContext.PublishedContentRequest` might be null.
+            // Ref: https://github.com/leekelleher/umbraco-ditto/issues/14
+            if (UmbracoContext.Current == null || UmbracoContext.Current.PublishedContentRequest == null)
+            {
+                return content;
+            }
+
             if (this.converterCache == null)
             {
                 return content;
