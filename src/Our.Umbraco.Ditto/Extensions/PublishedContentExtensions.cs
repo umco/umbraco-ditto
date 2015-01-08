@@ -185,7 +185,8 @@
                                                 : content.GetPropertyValue(umbracoPropertyName, recursive);
 
                         // Try fetching the alt value.
-                        if (propertyValue == null && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
+                        if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace()) 
+                            && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
                         {
                             contentProperty = contentType.GetProperty(altUmbracoPropertyName);
                             propertyValue = contentProperty != null
@@ -194,7 +195,8 @@
                         }
 
                         // Try setting the default value.
-                        if (propertyValue == null && defaultValue != null)
+                        if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+					        && defaultValue != null)
                         {
                             propertyValue = defaultValue;
                         }
