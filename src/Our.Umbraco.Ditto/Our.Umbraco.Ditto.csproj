@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
+    <Compile Include="Extensions\TypeInitializationExtensions.cs" />
     <Compile Include="Extensions\PublishedContentModelFactoryResolverExtensions.cs" />
     <Compile Include="ModelFactory\DittoPublishedContentModelFactory.cs" />
     <Compile Include="EventArgs\EventHandlers.cs" />

@@ -69,12 +69,7 @@
                 return content;
             }
 
-            // HACK: [LK:2014-07-24] Using the `RequestCache` to store the result, as the model-factory can be called multiple times per request.
-            // The cache should only contain models have a corresponding converter, so in theory the result should be the same.
-            // Reason for caching, is that Ditto uses reflection to set property values, this can be a performance hit (especially when called multiple times).
-            return (IPublishedContent)ApplicationContext.Current.ApplicationCache.RequestCache.GetCacheItem(
-                string.Concat("DittoPublishedContentModelFactory.CreateModel_", content.Path),
-                () => converter(content));
+            return converter(content);
         }
     }
 }
