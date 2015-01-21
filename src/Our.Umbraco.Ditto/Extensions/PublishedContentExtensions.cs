@@ -9,6 +9,7 @@
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Web;
+    using System.Web.Mvc;
 
     /// <summary>
     /// Encapsulates extension methods for <see cref="IPublishedContent"/>.
@@ -210,7 +211,7 @@
                                     var converterAttr = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
                                     if (converterAttr != null)
                                     {
-                                        var converter = Activator.CreateInstance(Type.GetType(converterAttr.ConverterTypeName)) as TypeConverter;
+                                        var converter = DependencyResolver.Current.GetService(Type.GetType(converterAttr.ConverterTypeName)) as TypeConverter;
                                         propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
                                     }
                                     else
