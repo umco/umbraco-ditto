@@ -271,9 +271,24 @@
                     // Process the value.
                     if (propertyValue != null)
                     {
-                        // Try any custom type converters first. Check both on class or property.
-                        var converterAttribute = propertyInfo.GetCustomAttribute<TypeConverterAttribute>() ??
-                            (TypeConverterAttribute)propertyInfo.PropertyType.GetCustomAttributes().FirstOrDefault(a => a is TypeConverterAttribute);
+                        // Try any custom type converters first.
+                        // 1: Check the property.
+                        // 2: Check any type arguments in generic enumerable types.
+                        // 3: Check the type itself.
+                        var converterAttribute = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
+                        if (converterAttribute == null)
+                        {
+                            var propertyType = propertyInfo.PropertyType;
+                            var typeInfo = propertyType.GetTypeInfo();
+                            if (propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any())
+                            {
+                                converterAttribute = typeInfo.GenericTypeArguments[0].GetCustomAttribute<TypeConverterAttribute>(true);
+                            }
+                            else
+                            {
+                                converterAttribute = propertyType.GetCustomAttribute<TypeConverterAttribute>(true);
+                            }
+                        }
 
                         if (converterAttribute != null)
                         {
