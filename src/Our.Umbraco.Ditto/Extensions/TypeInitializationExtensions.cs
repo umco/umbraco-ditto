@@ -11,7 +11,7 @@
     /// using reflection. Modified from the original class at.
     /// <see href="http://geekswithblogs.net/mrsteve/archive/2012/02/19/a-fast-c-sharp-extension-method-using-expression-trees-create-instance-from-type-again.aspx"/>
     /// </summary>
-    public static class TypeInitializationExtensions
+    internal static class TypeInitializationExtensions
     {
         /// <summary>
         /// Returns an instance of the <paramref name="type"/> on which the method is invoked.

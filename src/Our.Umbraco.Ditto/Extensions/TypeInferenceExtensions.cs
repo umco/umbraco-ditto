@@ -8,7 +8,7 @@
     /// Extensions methods for <see cref="T:System.Type"/> for inferring type properties.
     /// Most of this code was adapted from the Entity Framework
     /// </summary>
-    public static class TypeInferenceExtensions
+    internal static class TypeInferenceExtensions
     {
         /// <summary>
         /// Determines whether the specified type is a collection type.
