@@ -31,6 +31,11 @@
             = new ConcurrentDictionary<Type, PropertyInfo[]>();
 
         /// <summary>
+        /// Stores a private instance of <see cref="Umbraco.Web.UmbracoHelper"/>.
+        /// </summary>
+        private static UmbracoHelper UmbracoHelper;
+
+        /// <summary>
         /// Returns the given instance of <see cref="IPublishedContent"/> as the specified type.
         /// </summary>
         /// <param name="content">
@@ -268,6 +273,23 @@
                         && defaultValue != null)
                     {
                         propertyValue = defaultValue;
+                    }
+
+                    // Check if a dictionary item has been assigned
+                    if (propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+                    {
+                        var dictionaryValueAttr = propertyInfo.GetCustomAttribute<UmbracoDictionaryValueAttribute>();
+                        if (dictionaryValueAttr != null && !dictionaryValueAttr.DictionaryKey.IsNullOrWhiteSpace())
+                        {
+                            // HACK: [LK:2015-01-23] This feels hacky. I'd prefer to use `CultureDictionaryFactoryResolver`,
+                            // but it was marked as `internal` until v7.2.0
+                            if (UmbracoHelper == null)
+                            {
+                                UmbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+                            }
+
+                            propertyValue = UmbracoHelper.GetDictionaryValue(dictionaryValueAttr.DictionaryKey);
+                        }
                     }
 
                     // Process the value.
