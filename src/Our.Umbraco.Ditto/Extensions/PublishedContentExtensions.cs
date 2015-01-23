@@ -6,6 +6,7 @@
     using System.ComponentModel;
     using System.Linq;
     using System.Reflection;
+    using System.Web.Mvc;
 
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
@@ -301,7 +302,7 @@
                                     var toConvert = Type.GetType(converterAttribute.ConverterTypeName);
                                     if (toConvert != null)
                                     {
-                                        var converter = Activator.CreateInstance(toConvert) as TypeConverter;
+                                        var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
                                         if (converter != null)
                                         {
                                             propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
