@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
+    <Compile Include="Attributes\UmbracoDictionaryValueAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="ComponentModel\TypeConverters\MultiNodeTreePickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\MultipleMediaPickerConverter.cs" />

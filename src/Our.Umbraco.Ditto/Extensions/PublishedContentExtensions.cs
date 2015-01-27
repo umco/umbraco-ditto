@@ -270,6 +270,16 @@
                         propertyValue = defaultValue;
                     }
 
+                    // Check if a dictionary item has been assigned
+                    if (propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+                    {
+                        var dictionaryValueAttr = propertyInfo.GetCustomAttribute<UmbracoDictionaryValueAttribute>();
+                        if (dictionaryValueAttr != null && !dictionaryValueAttr.DictionaryKey.IsNullOrWhiteSpace())
+                        {
+                            propertyValue = ConverterHelper.UmbracoHelper.GetDictionaryValue(dictionaryValueAttr.DictionaryKey);
+                        }
+                    }
+
                     // Process the value.
                     if (propertyValue != null)
                     {
