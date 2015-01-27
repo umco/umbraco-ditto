@@ -7,6 +7,7 @@
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Core.Models.PublishedContent;
+    using global::Umbraco.Web;
 
     /// <summary>
     /// The Ditto published content model factory for creating strong typed models.
@@ -30,10 +31,9 @@
 
             foreach (var type in types.Where(x => typeof(IPublishedContent).IsAssignableFrom(x)))
             {
-                Func<IPublishedContent, IPublishedContent> func = (x) =>
-                {
-                    return x.As(type) as IPublishedContent;
-                };
+                // Fixes possible compiler issues caused by accessing closure in loop.
+                var innerType = type;
+                Func<IPublishedContent, IPublishedContent> func = x => x.As(innerType) as IPublishedContent;
 
                 var attribute = type.GetCustomAttribute<PublishedContentModelAttribute>(false);
                 var typeName = attribute == null ? type.Name : attribute.ContentTypeAlias;
@@ -57,6 +57,14 @@
         /// </returns>
         public IPublishedContent CreateModel(IPublishedContent content)
         {
+            // HACK: [LK:2014-12-04] It appears that when a Save & Publish is performed in the back-office, the model-factory's `CreateModel` is called.
+            // This can cause a null-reference exception in specific cases, as the `UmbracoContext.PublishedContentRequest` might be null.
+            // Ref: https://github.com/leekelleher/umbraco-ditto/issues/14
+            if (UmbracoContext.Current == null || UmbracoContext.Current.PublishedContentRequest == null)
+            {
+                return content;
+            }
+
             if (this.converterCache == null)
             {
                 return content;
@@ -70,15 +78,7 @@
                 return content;
             }
 
-            // HACK: [LK:2014-07-24] Using the `RequestCache` to store the result, as the model-factory can be called multiple times per request.
-            // The cache should only contain models have a corresponding converter, so in theory the result should be the same.
-            // Reason for caching, is that Ditto uses reflection to set property values, this can be a performance hit (especially when called multiple times).
-            return (IPublishedContent)ApplicationContext.Current.ApplicationCache.RequestCache.GetCacheItem(
-                string.Concat("DittoPublishedContentModelFactory.CreateModel_", content.Path),
-                () =>
-                {
-                    return converter(content);
-                });
+            return converter(content);
         }
     }
 }

@@ -16,8 +16,8 @@
 	<!-- PROPERTIES -->
 	<PropertyGroup>
 		<VersionMajor>0</VersionMajor>
-		<VersionMinor>4</VersionMinor>
-		<VersionPatch>1</VersionPatch>
+		<VersionMinor>5</VersionMinor>
+		<VersionPatch>0</VersionPatch>
 		<VersionSuffix></VersionSuffix>
 		<UmbracoVersion>7.1.4</UmbracoVersion>
 		<ProjectName>Our.Umbraco.Ditto</ProjectName>
@@ -50,7 +50,7 @@
 	<!-- PREPARE FILES -->
 	<Target Name="PrepareFiles" DependsOnTargets="Compile">
 		<ItemGroup>
-			<BinFiles Include="$(ProjectDir)\bin\Release\$(ProjectName).dll" />
+			<BinFiles Include="$(ProjectDir)\bin\$(BuildConfig)\$(ProjectName).dll" />
 			<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
 			<NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
 		</ItemGroup>
@@ -90,7 +90,7 @@
 	<!-- PACKAGE -->
 	<Target Name="Package" DependsOnTargets="ManifestNuGet">
 		<ItemGroup>
-			<PackageFiles Include="$(BuildDir)\**\*.*" />
+			<PackageFiles Include="$(BuildUmbDir)\**\*.*" />
 		</ItemGroup>
 		
 		<MSBuild.Umbraco.Tasks.Package ManifestFile="$(BuildUmbDir)\package.xml"
