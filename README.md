@@ -210,7 +210,7 @@ The factory will look for any POCO models that inherit from the `PublishedConten
 #### Video demonstrations
 
 * [Using Ditto with the `IPublishedContentModelFactory`](https://www.screenr.com/9oRN) (5 mins)
-* [Using a custom Umbraco MVC controller with `IPublishedContentModelFactory` and Ditto]() (5 mins)
+* [Using a custom Umbraco MVC controller with `IPublishedContentModelFactory` and Ditto](https://www.screenr.com/PPRN) (5 mins)
 
 
 
@@ -235,6 +235,7 @@ Have a question?
 
 * [Lee Kelleher](https://github.com/leekelleher)
 * [Matt Brailsford](https://github.com/mattbrailsford)
+* [James South](https://github.com/JimBobSquarePants)
 
 Special thanks to [Darren Ferguson](https://github.com/darrenferguson) for inspiration in his article "[Mapping Umbraco content to POCOs for strongly typed views](http://24days.in/umbraco/2013/mapping-content-to-pocos/)" on the [24 days in Umbraco](http://24days.in/umbraco/) advent calender.
 
