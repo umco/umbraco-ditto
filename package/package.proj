@@ -16,8 +16,8 @@
 	<!-- PROPERTIES -->
 	<PropertyGroup>
 		<VersionMajor>0</VersionMajor>
-		<VersionMinor>4</VersionMinor>
-		<VersionPatch>1</VersionPatch>
+		<VersionMinor>5</VersionMinor>
+		<VersionPatch>0</VersionPatch>
 		<VersionSuffix></VersionSuffix>
 		<UmbracoVersion>7.1.4</UmbracoVersion>
 		<ProjectName>Our.Umbraco.Ditto</ProjectName>
