@@ -6,6 +6,7 @@
     using System.ComponentModel;
     using System.Linq;
     using System.Reflection;
+    using System.Web;
     using System.Web.Mvc;
 
     using global::Umbraco.Core;
@@ -310,6 +311,12 @@
                                     }
                                 }
                             }
+                        }
+                        else if (propertyInfo.PropertyType == typeof(HtmlString))
+                        {
+                            // Handle Html strings so we don't have to set the attribute.
+                            HtmlStringConverter converter = new HtmlStringConverter();
+                            propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
                         }
                         else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
                         {
