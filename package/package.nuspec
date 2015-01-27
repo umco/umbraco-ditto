@@ -4,7 +4,7 @@
 		<id>Our.Umbraco.Ditto</id>
 		<version>0.0.0</version>
 		<title>Ditto</title>
-		<authors>Lee Kelleher,Matt Brailsford</authors>
+		<authors>Lee Kelleher,Matt Brailsford,James South</authors>
 		<owners>Umbrella Inc Ltd</owners>
 		<licenseUrl>https://github.com/leekelleher/umbraco-ditto/blob/master/LICENSE.md</licenseUrl>
 		<projectUrl>https://github.com/leekelleher/umbraco-ditto</projectUrl>
@@ -14,8 +14,8 @@
 		<description>
 			<![CDATA[Ditto - the friendly POCO mapper for Umbraco 7+]]>
 		</description>
-		<copyright>Copyright &#169; 2014 Umbrella Inc Ltd</copyright>
-		<tags>umbraco poco mapping</tags>
+		<copyright>Copyright &#169; 2014 Umbrella Inc Ltd, Our Umbraco and other contributors</copyright>
+		<tags>umbraco poco mapping strongly-typed</tags>
 		<dependencies>
 			<dependency id="UmbracoCms.Core" version="7.1.4" />
 		</dependencies>
