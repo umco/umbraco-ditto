@@ -85,17 +85,8 @@
             Action<ConvertedTypeEventArgs> convertedType = null)
             where T : class
         {
-            using (DisposableTimer.DebugDuration<IEnumerable<T>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
-            {
-                if (string.IsNullOrWhiteSpace(documentTypeAlias))
-                {
-                    return items.Select(x => x.As<T>(convertingType, convertedType));
-                }
-
-                return items
-                    .Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                    .Select(x => x.As<T>(convertingType, convertedType));
-            }
+            return items.As(typeof(T), documentTypeAlias, convertingType, convertedType)
+                .Select(x => x as T);
         }
 
         /// <summary>
@@ -119,7 +110,10 @@
         /// <exception cref="InvalidOperationException">
         /// Thrown if the given type has invalid constructors.
         /// </exception>
-        internal static object As(this IPublishedContent content, Type type, Action<ConvertingTypeEventArgs> convertingType = null, Action<ConvertedTypeEventArgs> convertedType = null)
+        public static object As(this IPublishedContent content,
+            Type type,
+            Action<ConvertingTypeEventArgs> convertingType = null,
+            Action<ConvertedTypeEventArgs> convertedType = null)
         {
             if (content == null)
             {
@@ -166,6 +160,49 @@
                 EventHandlers.CallConvertedTypeHandler(convertedArgs);
 
                 return convertedArgs.Converted;
+            }
+        }
+
+        /// <summary>
+        /// Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.
+        /// </summary>
+        /// <param name="items">
+        /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
+        /// </param>
+        /// <param name="type">
+        /// The <see cref="Type"/> of items to return.
+        /// </param>
+        /// <param name="documentTypeAlias">
+        /// The document type alias.
+        /// </param>
+        /// <param name="convertingType">
+        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// </param>
+        /// <param name="convertedType">
+        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// </param>
+        /// <typeparam name="T">
+        /// The <see cref="Type"/> of items to return.
+        /// </typeparam>
+        /// <returns>
+        /// The resolved <see cref="IEnumerable{T}"/>.
+        /// </returns>
+        public static IEnumerable<object> As(this IEnumerable<IPublishedContent> items,
+            Type type,
+            string documentTypeAlias = null,
+            Action<ConvertingTypeEventArgs> convertingType = null,
+            Action<ConvertedTypeEventArgs> convertedType = null)
+        {
+            using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
+            {
+                if (string.IsNullOrWhiteSpace(documentTypeAlias))
+                {
+                    return items.Select(x => x.As(type, convertingType, convertedType));
+                }
+
+                return items
+                    .Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
+                    .Select(x => x.As(type, convertingType, convertedType));
             }
         }
 
