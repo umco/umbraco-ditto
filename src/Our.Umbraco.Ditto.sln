@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildPackage", "BuildPackag
 		..\BuildPackage\Build.bat = ..\BuildPackage\Build.bat
 		..\BuildPackage\package.nuspec = ..\BuildPackage\package.nuspec
 		..\BuildPackage\package.proj = ..\BuildPackage\package.proj
-		..\BuildPackage\Package.xml = ..\BuildPackage\Package.xml
+		..\BuildPackage\package.xml = ..\BuildPackage\package.xml
 		..\BuildPackage\Test.bat = ..\BuildPackage\Test.bat
 	EndProjectSection
 EndProject
