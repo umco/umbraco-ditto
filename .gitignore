@@ -42,3 +42,6 @@ bin/
 *.DS_Store
 [Pp]ackages/*/**
 [Ss]rc/[Pp]ackages/*/**
+BuildPackage/Package/*
+BuildPackage/NuGetBuild/*
+BuildPackage/Build/*
