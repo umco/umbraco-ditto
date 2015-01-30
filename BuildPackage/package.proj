@@ -17,6 +17,7 @@
    <!-- SHARED PROPERTIES -->
   <PropertyGroup>
     <PackageName>Ditto</PackageName>
+    <MinUmbracoVersion>7.1.4</MinUmbracoVersion>
     <Readme>Ditto - the friendly POCO mapper for Umbraco 7+</Readme>
     <AuthorName>Lee Kelleher, Matt Brailsford</AuthorName>
     <AuthorUrl>http://our.umbraco.org</AuthorUrl>
@@ -35,7 +36,6 @@
 
   <!-- APPVEYOR PROPERTIES -->
   <PropertyGroup>
-    <MinUmbracoVersion>$(UMBRACO_PACKAGE_MIN_VERSION)</MinUmbracoVersion>
     <FileVersion>$(APPVEYOR_BUILD_VERSION)</FileVersion>
   </PropertyGroup>
   <Choose>
