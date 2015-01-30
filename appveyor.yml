@@ -14,3 +14,34 @@ build: off
 artifacts:
   - path: BuildPackage\Package\*.nupkg
   - path: BuildPackage\Package\*.zip
+
+#deploy:
+     # MyGet Deployment for builds & releases
+#  - provider: NuGet
+#    server: https://www.myget.org/MyFeedUrl
+#    api_key:
+#      secure: 
+#    artifact: /.*\.nupkg/
+#    on:
+#      branch: master
+
+     # NuGet Deployment for releases
+#  - provider: NuGet
+#    server: 
+#    api_key:
+#      secure: 
+#    artifact: /.*\.nupkg/
+#    on:
+#      branch: master
+#      appveyor_repo_tag: true 
+
+     # GitHub Deployment for releases
+#  - provider: GitHub
+#  auth_token:
+#     secure:  # your encrypted token from GitHub
+#  artifact: /.*\.nupkg/            # upload all NuGet packages to release assets
+#  draft: false
+#  prerelease: false
+#  on:
+#    branch: master                 # release from master branch only
+#    appveyor_repo_tag: true        # deploy on tag push only
