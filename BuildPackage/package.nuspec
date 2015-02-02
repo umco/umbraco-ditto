@@ -8,13 +8,13 @@
         <owners></owners>
         <projectUrl></projectUrl>
         <iconUrl></iconUrl>
-        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <requireLicenseAcceptance></requireLicenseAcceptance>
         <description></description>
         <summary></summary>
         <copyright></copyright>
         <licenseUrl></licenseUrl>
-        <language>en-GB</language>
-        <tags>umbraco poco mapping</tags>
+        <language></language>
+        <tags></tags>
         <dependencies>
             <dependency id="UmbracoCms.Core" version="0.0.0" />
         </dependencies>
