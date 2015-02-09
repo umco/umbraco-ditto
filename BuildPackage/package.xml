@@ -2,10 +2,10 @@
 <umbPackage>
 	<info>
 		<package>
-			<name>Ditto</name>
+			<name></name>
 			<version>0.0.0</version>
-			<license url="http://opensource.org/licenses/MIT">The MIT License (MIT)</license>
-			<url>http://our.umbraco.org/projects/developer-tools/ditto</url>
+			<license url=""></license>
+			<url></url>
 			<requirements>
 				<major>0</major>
 				<minor>0</minor>
@@ -13,11 +13,12 @@
 			</requirements>
 		</package>
 		<author>
-			<name>Lee Kelleher, Matt Brailsford</name>
-			<website>http://our.umbraco.org</website>
+			<name></name>
+			<website></website>
 		</author>
 		<readme><![CDATA[]]></readme>
 	</info>
+
 	<DocumentTypes />
 	<Templates />
 	<Stylesheets />
@@ -25,7 +26,11 @@
 	<DictionaryItems />
 	<Languages />
 	<DataTypes />
-	<Actions />
+
+	<Actions/>
+	
 	<control />
+
 	<files />
+
 </umbPackage>

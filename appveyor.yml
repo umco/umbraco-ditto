@@ -1,0 +1,47 @@
+# version format
+version: 0.5.1.{build}
+
+# UMBRACO_PACKAGE_PRERELEASE_SUFFIX will only be used for Release builds
+# example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
+install:
+  - cmd: set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
+  - cmd: cd BuildPackage
+  - cmd: Build.bat
+
+# to disable automatic builds
+build: off
+
+artifacts:
+  - path: BuildPackage\Package\*.nupkg
+  - path: BuildPackage\Package\*.zip
+
+deploy:
+     # MyGet Deployment for builds & releases
+  - provider: NuGet
+    server: https://www.myget.org/F/MYFEEDURL/
+    api_key:
+      secure: SASQGWG/
+    artifact: /.*\.nupkg/
+    on:
+      branch: master
+
+     # GitHub Deployment for releases
+  - provider: GitHub
+    auth_token:
+      secure: 
+    artifact: /.*\.zip/            # upload all Zip packages to release assets
+    draft: false
+    prerelease: false
+    on:
+      branch: master
+      appveyor_repo_tag: true        # deploy on tag push only
+
+     # NuGet Deployment for releases
+  - provider: NuGet
+    server: 
+    api_key:
+      secure:
+    artifact: /.*\.nupkg/
+    on:
+      branch: master
+      appveyor_repo_tag: true
