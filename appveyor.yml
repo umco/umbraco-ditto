@@ -20,7 +20,7 @@ deploy:
   - provider: NuGet
     server: https://www.myget.org/F/umbraco-ditto/
     api_key:
-      secure: Q1/4K8VSwr7BjwmKDTef8y5lOc7S+jK9ELuWy67y6OVRpjxmnF9M3Gfs1kT+ir8x/
+      secure: Q1/4K8VSwr7BjwmKDTef8y5lOc7S+jK9ELuWy67y6OVRpjxmnF9M3Gfs1kT+ir8x
     artifact: /.*\.nupkg/
     on:
       branch: master
