@@ -18,9 +18,9 @@ artifacts:
 deploy:
      # MyGet Deployment for builds & releases
   - provider: NuGet
-    server: https://www.myget.org/F/MYFEEDURL/
+    server: https://www.myget.org/F/umbraco-ditto/
     api_key:
-      secure: SASQGWG/
+      secure: Q1/4K8VSwr7BjwmKDTef8y5lOc7S+jK9ELuWy67y6OVRpjxmnF9M3Gfs1kT+ir8x/
     artifact: /.*\.nupkg/
     on:
       branch: master
@@ -28,7 +28,7 @@ deploy:
      # GitHub Deployment for releases
   - provider: GitHub
     auth_token:
-      secure: 
+      secure: pEozEGTqJutQwOidJU6BTB+Ix0NV4vrUnomhfeqheVz4RNwfxjEYLoqR4XabhlPz
     artifact: /.*\.zip/            # upload all Zip packages to release assets
     draft: false
     prerelease: false
@@ -40,7 +40,7 @@ deploy:
   - provider: NuGet
     server: 
     api_key:
-      secure:
+      secure: CGzDKxw4QI/z2VSe9ceiYlIabqGXHolgBgVNWWZjVAJ2V5WLF11IFdlp9r5Qp+Sw
     artifact: /.*\.nupkg/
     on:
       branch: master
