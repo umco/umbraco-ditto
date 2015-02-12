@@ -4,7 +4,6 @@
     using System.ComponentModel;
     using System.Globalization;
 
-    using global::Umbraco.Core.Models.PublishedContent;
     using global::Umbraco.Web;
 
     /// <summary>
@@ -13,7 +12,7 @@
     /// <typeparam name="T">
     /// The <see cref="Type"/> of the object to return.
     /// </typeparam>
-    public class MediaPickerConverter<T> : TypeConverter where T : PublishedContentModel
+    public class MediaPickerConverter<T> : TypeConverter where T : class 
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -49,14 +48,21 @@
                 return null;
             }
 
-            int nodeId = Convert.ToInt32(value);
-
+            var nodeId = Convert.ToInt32(value);
             if (nodeId > 0)
             {
-                UmbracoHelper umbracoHelper = ConverterHelper.UmbracoHelper;
-                T media = umbracoHelper.TypedMedia(nodeId).As<T>();
+                var umbracoHelper = ConverterHelper.UmbracoHelper;
+                var media = umbracoHelper.TypedMedia(nodeId);
 
-                return media;
+                // Ensure we are actually returning a media file.
+                if (media.HasProperty("umbracoFile"))
+                {
+                    return media.As<T>();
+                }
+
+                // It's most likely a folder, try its children.
+                // This returns an IEnumerable<T>
+                return media.Children().As<T>();
             }
 
             return base.ConvertFrom(context, culture, value);

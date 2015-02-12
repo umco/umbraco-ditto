@@ -70,6 +70,7 @@
     <Compile Include="ComponentModel\TypeConverters\ContentPickerConverter.cs" />
     <Compile Include="ComponentModel\ConverterHelper.cs" />
     <Compile Include="ComponentModel\TypeConverters\HtmlStringConverter.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\TypeInferenceExtensions.cs" />
     <Compile Include="Extensions\TypeInitializationExtensions.cs" />
     <Compile Include="Extensions\PublishedContentModelFactoryResolverExtensions.cs" />

@@ -7,8 +7,6 @@
     using System.Linq;
 
     using global::Umbraco.Core.Models;
-    using global::Umbraco.Core.Models.PublishedContent;
-    using global::Umbraco.Web;
 
     /// <summary>
     /// Provides a unified way of converting multi node tree picker properties to strong typed collections.
@@ -17,7 +15,7 @@
     /// <typeparam name="T">
     /// The <see cref="Type"/> of the node to return.
     /// </typeparam>
-    public class MultiNodeTreePickerConverter<T> : TypeConverter where T : PublishedContentModel
+    public class MultiNodeTreePickerConverter<T> : TypeConverter where T : class 
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -54,23 +52,23 @@
                 return Enumerable.Empty<T>();
             }
 
-            string s = value as string ?? value.ToString();
+            var s = value as string ?? value.ToString();
             if (!string.IsNullOrWhiteSpace(s))
             {
-                IEnumerable<T> multiNodeTreePicker = Enumerable.Empty<T>();
-                int[] nodeIds = s.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
+                var multiNodeTreePicker = Enumerable.Empty<T>();
+                var nodeIds = s.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
 
                 if (nodeIds.Any())
                 {
-                    UmbracoHelper umbracoHelper = ConverterHelper.UmbracoHelper;
-                    UmbracoObjectTypes objectType = UmbracoObjectTypes.Unknown;
-                    List<T> temp = new List<T>();
+                    var umbracoHelper = ConverterHelper.UmbracoHelper;
+                    var objectType = UmbracoObjectTypes.Unknown;
+                    var temp = new List<T>();
 
                     // Oh so ugly if you let Resharper do this.
                     // ReSharper disable once LoopCanBeConvertedToQuery
-                    foreach (int nodeId in nodeIds)
+                    foreach (var nodeId in nodeIds)
                     {
-                        IPublishedContent item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, umbracoHelper.TypedContent)
+                        var item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, umbracoHelper.TypedContent)
                              ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, umbracoHelper.TypedMedia)
                              ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, umbracoHelper.TypedMember);
 
@@ -80,8 +78,8 @@
                         }
                     }
 
-                    // Don't return the list, instead use 'Skip' to return an iterator that can't be cast back and mutated.
-                    multiNodeTreePicker = temp.Skip(0);
+                    // Don't return the list, instead return an iterator that can't be cast back and mutated.
+                    multiNodeTreePicker = temp.YieldItems();
                 }
 
                 return multiNodeTreePicker;
@@ -110,7 +108,7 @@
             }
 
             // Attempt to get the content
-            IPublishedContent content = typedMethod(nodeId);
+            var content = typedMethod(nodeId);
             if (content != null)
             {
                 // If we find the content, assign the expected type to the actual type so we don't have to 

@@ -358,7 +358,7 @@
                                                 {
                                                     // Generate a method using 'Cast' to convert the type back to IEnumerable<T>.
                                                     MethodInfo castMethod = typeof(Enumerable).GetMethod("Cast").MakeGenericMethod(parameterType);
-                                                    object enumerablePropertyValue = castMethod.Invoke(null, new object[] { converted.Yield() });
+                                                    object enumerablePropertyValue = castMethod.Invoke(null, new object[] { converted.YieldSingleItem() });
                                                     propertyInfo.SetValue(instance, enumerablePropertyValue, null);
                                                 }
                                                 else

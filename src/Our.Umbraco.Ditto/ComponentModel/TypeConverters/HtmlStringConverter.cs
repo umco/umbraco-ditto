@@ -5,7 +5,6 @@
     using System.Globalization;
     using System.Web;
 
-    using global::Umbraco.Web;
     using global::Umbraco.Web.Templates;
 
     /// <summary>
@@ -52,7 +51,7 @@
                 return null;
             }
 
-            string s = value.ToString();
+            var s = value.ToString();
             if (value is HtmlString)
             {
                 if (!string.IsNullOrWhiteSpace(s))
@@ -68,7 +67,7 @@
             {
                 if (!string.IsNullOrWhiteSpace(s))
                 {
-                    UmbracoHelper umbracoHelper = ConverterHelper.UmbracoHelper;
+                    var umbracoHelper = ConverterHelper.UmbracoHelper;
                     s = umbracoHelper.ReplaceLineBreaksForHtml(s);
                 }
 
