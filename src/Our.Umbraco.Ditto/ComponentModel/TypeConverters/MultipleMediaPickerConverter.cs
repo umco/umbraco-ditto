@@ -5,8 +5,6 @@
     using System.Globalization;
     using System.Linq;
 
-    using global::Umbraco.Web;
-
     /// <summary>
     /// Provides a unified way of converting multi media picker properties to strong typed collections.
     /// </summary>
@@ -53,7 +51,7 @@
             if (value is int)
             {
                 var id = (int)value;
-                UmbracoHelper umbracoHelper = ConverterHelper.UmbracoHelper;
+                var umbracoHelper = ConverterHelper.UmbracoHelper;
                 return umbracoHelper.TypedMedia(id).As<T>().YieldSingleItem();
             }
 
