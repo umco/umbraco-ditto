@@ -19,20 +19,20 @@
 		<PackageName>Ditto</PackageName>
 		<MinUmbracoVersion>7.1.4</MinUmbracoVersion>
 		<Readme>Ditto - the friendly POCO mapper for Umbraco 7+</Readme>
-		<AuthorName>Lee Kelleher, Matt Brailsford</AuthorName>
-		<AuthorUrl>http://our.umbraco.org</AuthorUrl>
+		<AuthorName>Lee Kelleher, Matt Brailsford, James South</AuthorName>
+		<AuthorUrl>https://github.com/leekelleher/umbraco-ditto/graphs/contributors</AuthorUrl>
 		<PackageLicenseName>MIT license</PackageLicenseName>
-		<PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+		<PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
 		<ProjectUrl>https://github.com/leekelleher/umbraco-ditto</ProjectUrl>
 	</PropertyGroup>
 
 	<!-- NUGET ONLY PROPERTIES -->
 	<PropertyGroup>
 		<PackageId>Our.Umbraco.Ditto</PackageId>
-		<Copyright>Copyright &#169; 2014 Umbrella Inc Ltd</Copyright>
+		<Copyright>Copyright &#169; 2014 Umbrella Inc Ltd, Our Umbraco and other contributors</Copyright>
 		<Owners>Umbrella Inc Ltd</Owners>
 		<IconUrl>https://raw.githubusercontent.com/leekelleher/umbraco-ditto/master/docs/umbraco-ditto.png</IconUrl>
-		<Tags>umbraco poco mapping</Tags>
+		<Tags>umbraco poco mapping strongly-typed</Tags>
 		<Language>en-GB</Language>
 		<RequireLicenseAcceptance>false</RequireLicenseAcceptance>
 	</PropertyGroup>
