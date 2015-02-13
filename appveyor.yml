@@ -11,8 +11,8 @@ install:
 build: off
 
 artifacts:
-  - path: BuildPackage\Package\*.nupkg
-  - path: BuildPackage\Package\*.zip
+  - path: artifacts\*.nupkg
+  - path: artifacts\*.zip
 
 deploy:
      # MyGet Deployment for builds & releases
