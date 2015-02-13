@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Package">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Package" ToolsVersion="4.0">
 
 	<!-- IMPORTS -->
 	<PropertyGroup>
@@ -64,7 +64,7 @@
 	</PropertyGroup>
 
 	<!-- TARGETS -->
-	<Target Name="GenProductVersion">
+	<Target Name="GetProductVersion">
 		<GetProductVersion BuildVersion="$(APPVEYOR_BUILD_VERSION)" BuildSuffix="$(VersionSuffix)">
 			<Output TaskParameter="ProductVersion" PropertyName="ProductVersion"/>
 		</GetProductVersion>
@@ -88,14 +88,14 @@
 
 	<!-- COMPILE -->
 	<Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
-		<MSBuild Projects="$(CoreProjectDir)\Our.Umbraco.Ditto.csproj" />
+		<MSBuild Projects="$(CoreProjectDir)\Our.Umbraco.Ditto.csproj" Properties="Configuration=Release" />
 	</Target>
 
 	<!-- PREPARE FILES -->
-	<Target Name="PrepairFiles" DependsOnTargets="Compile">
+	<Target Name="PrepareFiles" DependsOnTargets="Compile">
 		<ItemGroup>
-			<BinFiles Include="$(CoreProjectDir)\Bin\Debug\Our.Umbraco.Ditto.dll" />
-			<PackageFile Include="$(MSBuildProjectDirectory)\Package.xml" />
+			<BinFiles Include="$(CoreProjectDir)\bin\Debug\Our.Umbraco.Ditto.dll" />
+			<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
 			<NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
 		</ItemGroup>
 		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildDir)\bin" />
@@ -105,7 +105,7 @@
 	</Target>
 
 	<!-- MANIFEST UMBRACO -->
-	<Target Name="ManifestUmbraco" DependsOnTargets="PrepairFiles">
+	<Target Name="ManifestUmbraco" DependsOnTargets="PrepareFiles">
 		<ItemGroup>
 			<ManifestFiles Include="$(BuildDir)\**\*" Exclude="$(BuildDir)\Package.xml" />
 		</ItemGroup>
@@ -125,7 +125,7 @@
 	</Target>
 
 	<!-- MANIFEST FOR NUGET PACKAGE -->
-	<Target Name="ManifestNuGet" DependsOnTargets="PrepairFiles">
+	<Target Name="ManifestNuGet" DependsOnTargets="PrepareFiles">
 		<ItemGroup>
 			<ManifestFiles Include="$(BuildNuGetDir)\**\*" Exclude="$(BuildNuGetDir)\package.nuspec" />
 		</ItemGroup>
