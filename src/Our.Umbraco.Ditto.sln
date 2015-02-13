@@ -15,11 +15,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildPackage", "BuildPackage", "{302C02F0-CA95-430F-BD43-82D0CCEC08A3}"
 	ProjectSection(SolutionItems) = preProject
 		..\appveyor.yml = ..\appveyor.yml
-		..\BuildPackage\Build.bat = ..\BuildPackage\Build.bat
+		..\BuildPackage\build-appveyor.bat = ..\BuildPackage\build-appveyor.bat
+		..\BuildPackage\build-local.bat = ..\BuildPackage\build-local.bat
 		..\BuildPackage\package.nuspec = ..\BuildPackage\package.nuspec
 		..\BuildPackage\package.proj = ..\BuildPackage\package.proj
 		..\BuildPackage\package.xml = ..\BuildPackage\package.xml
-		..\BuildPackage\Test.bat = ..\BuildPackage\Test.bat
 	EndProjectSection
 EndProject
 Global
