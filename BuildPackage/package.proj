@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Package">
+
+	<!-- IMPORTS -->
+	<PropertyGroup>
+		<MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+		<MSBuildUmbracoTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildUmbracoTasks</MSBuildUmbracoTasksPath>
+		<MSBuildNugetTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildNugetTasks</MSBuildNugetTasksPath>
+		<AppVeyorUmbracoPath>$(MSBuildProjectDirectory)\Tools\AppVeyorUmbraco</AppVeyorUmbracoPath>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+	<Import Project="$(MSBuildUmbracoTasksPath)\MSBuild.Umbraco.Tasks.Targets" />
+	<Import Project="$(MSBuildNugetTasksPath)\MSBuild.NuGet.Tasks.Targets" />
+	<Import Project="$(AppVeyorUmbracoPath)\AppVeyorUmbraco.Targets" />
+
+	<!-- SHARED PROPERTIES -->
+	<PropertyGroup>
+		<PackageName>Ditto</PackageName>
+		<MinUmbracoVersion>7.1.4</MinUmbracoVersion>
+		<Readme>Ditto - the friendly POCO mapper for Umbraco 7+</Readme>
+		<AuthorName>Lee Kelleher, Matt Brailsford</AuthorName>
+		<AuthorUrl>http://our.umbraco.org</AuthorUrl>
+		<PackageLicenseName>MIT license</PackageLicenseName>
+		<PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+		<ProjectUrl>https://github.com/leekelleher/umbraco-ditto</ProjectUrl>
+	</PropertyGroup>
+
+	<!-- NUGET ONLY PROPERTIES -->
+	<PropertyGroup>
+		<PackageId>Our.Umbraco.Ditto</PackageId>
+		<Copyright>Copyright &#169; 2014 Umbrella Inc Ltd</Copyright>
+		<Owners>Umbrella Inc Ltd</Owners>
+		<IconUrl>https://raw.githubusercontent.com/leekelleher/umbraco-ditto/master/docs/umbraco-ditto.png</IconUrl>
+		<Tags>umbraco poco mapping</Tags>
+		<Language>en-GB</Language>
+		<RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+	</PropertyGroup>
+
+	<!-- APPVEYOR PROPERTIES -->
+	<PropertyGroup>
+		<FileVersion>$(APPVEYOR_BUILD_VERSION)</FileVersion>
+	</PropertyGroup>
+	<Choose>
+		<When Condition="$(APPVEYOR_BUILD_NUMBER) != '' And $(APPVEYOR_REPO_TAG) != 'true' ">
+			<PropertyGroup>
+				<VersionSuffix>build$(APPVEYOR_BUILD_NUMBER)</VersionSuffix>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<VersionSuffix>$(UMBRACO_PACKAGE_PRERELEASE_SUFFIX)</VersionSuffix>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
+
+	<!-- PATHS -->
+	<PropertyGroup>
+		<RootDir>$(MSBuildProjectDirectory)\..</RootDir>
+		<BuildDir>$(MSBuildProjectDirectory)\Build</BuildDir>
+		<PackageDir>$(MSBuildProjectDirectory)\Package</PackageDir>
+		<BuildNuGetDir>$(MSBuildProjectDirectory)\NugetBuild</BuildNuGetDir>
+		<CoreProjectDir>$(RootDir)\Src\Our.Umbraco.Ditto</CoreProjectDir>
+	</PropertyGroup>
+
+	<!-- TARGETS -->
+	<Target Name="GenProductVersion">
+		<GetProductVersion BuildVersion="$(APPVEYOR_BUILD_VERSION)" BuildSuffix="$(VersionSuffix)">
+			<Output TaskParameter="ProductVersion" PropertyName="ProductVersion"/>
+		</GetProductVersion>
+	</Target>
+
+	<!-- CLEAN -->
+	<Target Name="Clean" DependsOnTargets="GenProductVersion">
+		<RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
+		<RemoveDir Directories="$(PackageDir)" Condition="Exists('$(PackageDir)')" />
+		<MakeDir Directories="$(BuildDir)" />
+		<MakeDir Directories="$(PackageDir)" />
+		<MakeDir Directories="$(BuildNuGetDir)" />
+	</Target>
+
+	<!-- UPDATE PROJECT ASSEMBLEY VERSION -->
+	<Target Name="UpdateAssemblyInfo" DependsOnTargets="Clean">
+		<FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\AssemblyInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
+		<FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\AssemblyInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
+		<FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\AssemblyInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
+	</Target>
+
+	<!-- COMPILE -->
+	<Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
+		<MSBuild Projects="$(CoreProjectDir)\Our.Umbraco.Ditto.csproj" />
+	</Target>
+
+	<!-- PREPARE FILES -->
+	<Target Name="PrepairFiles" DependsOnTargets="Compile">
+		<ItemGroup>
+			<BinFiles Include="$(CoreProjectDir)\Bin\Debug\Our.Umbraco.Ditto.dll" />
+			<PackageFile Include="$(MSBuildProjectDirectory)\Package.xml" />
+			<NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
+		</ItemGroup>
+		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildDir)\bin" />
+		<Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildDir)" />
+		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
+		<Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
+	</Target>
+
+	<!-- MANIFEST UMBRACO -->
+	<Target Name="ManifestUmbraco" DependsOnTargets="PrepairFiles">
+		<ItemGroup>
+			<ManifestFiles Include="$(BuildDir)\**\*" Exclude="$(BuildDir)\Package.xml" />
+		</ItemGroup>
+		<ManifestUpdate
+			ManifestFile="$(BuildDir)\package.xml"
+			WorkingDirectory="$(BuildDir)"
+			MinimumRequiredUmbracoVersion="$(MinUmbracoVersion)"
+			PackageName="$(PackageName)"
+			PackageVersion="$(ProductVersion)"
+			AuthorName="$(AuthorName)"
+			AuthorUrl="$(AuthorUrl)"
+			Readme="$(Readme)"
+			PackageLicenseName="$(PackageLicenseName)"
+			PackageLicenseUrl="$(PackageLicenseUrl)"
+			PackageUrl="$(ProjectUrl)"
+			Files="@(ManifestFiles)" />
+	</Target>
+
+	<!-- MANIFEST FOR NUGET PACKAGE -->
+	<Target Name="ManifestNuGet" DependsOnTargets="PrepairFiles">
+		<ItemGroup>
+			<ManifestFiles Include="$(BuildNuGetDir)\**\*" Exclude="$(BuildNuGetDir)\package.nuspec" />
+		</ItemGroup>
+		<MSBuild.NuGet.Tasks.ManifestUpdate
+			ManifestFile="$(BuildNuGetDir)\package.nuspec"
+			WorkingDirectory="$(BuildNuGetDir)"
+			Title="$(PackageName)"
+			Description="$(Readme)"
+			Summary="$(Readme)"
+			Version="$(ProductVersion)"
+			MinimumRequiredUmbracoVersion ="$(MinUmbracoVersion)"
+			Authors="$(AuthorName)"
+			Owners="$(Owners)"
+			Copyright="$(Copyright)"
+			LicenseUrl="$(PackageLicenseUrl)"
+			ProjectUrl="$(ProjectUrl)"
+			Id="$(PackageId)"
+			IconUrl="$(IconUrl)"
+			Language="$(Language)"
+			RequireLicenseAcceptance="$(RequireLicenseAcceptance)"
+			Tags="$(Tags)"
+			Files="@(ManifestFiles)" />
+	</Target>
+
+	<!-- PACKAGE -->
+	<Target Name="Package" DependsOnTargets="ManifestUmbraco; ManifestNuGet">
+		<ItemGroup>
+			<PackageFiles Include="$(BuildDir)\**\*.*" />
+		</ItemGroup>
+
+		<Package ManifestFile="$(BuildDir)\Package.xml"
+			WorkingDirectory="$(BuildDir)"
+			OutputDirectory="$(PackageDir)"
+			Files="@(PackageFiles)" />
+
+		<MSBuild.NuGet.Tasks.Pack NuGetExePath="$(RootDir)\BuildPackage\Tools\NuGet.exe"
+			ManifestFile="$(BuildNuGetDir)\package.nuspec"
+			BasePath="$(BuildNuGetDir)"
+			Version="$(ProductVersion)"
+			OutputDirectory="$(PackageDir)" />
+
+		<RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
+		<RemoveDir Directories="$(BuildNuGetDir)" Condition="Exists('$(BuildNuGetDir)')" />
+
+	</Target>
+
+</Project>

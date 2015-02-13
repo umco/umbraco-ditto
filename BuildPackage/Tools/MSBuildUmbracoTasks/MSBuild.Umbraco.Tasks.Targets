@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-		<MSBuildUmbracoTasksPath Condition="'$(MSBuildUmbracoTasksPath)' == ''">$(MSBuildProjectDirectory)\MSBuildUmbracoTasks</MSBuildUmbracoTasksPath>
+		<MSBuildUmbracoTasksPath Condition="'$(MSBuildUmbracoTasksPath)' == ''">$(MSBuildProjectDirectory)\MSBuildTasks</MSBuildUmbracoTasksPath>
 		<MSBuildUmbracoTasksLib>$(MSBuildUmbracoTasksPath)\MSBuild.Umbraco.Tasks.dll</MSBuildUmbracoTasksLib>
 	</PropertyGroup>
 

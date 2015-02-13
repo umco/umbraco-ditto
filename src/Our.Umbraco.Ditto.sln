@@ -1,23 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto", "Our.Umbraco.Ditto\Our.Umbraco.Ditto.csproj", "{3A2482A4-AD19-4C26-A449-4287DA07AB16}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{7D553013-FD27-46E7-BEFF-27593BD4E294}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Package", "Package", "{21985AFE-1750-4723-BAEC-210C8B5FE215}"
-	ProjectSection(SolutionItems) = preProject
-		..\package\package.proj = ..\package\package.proj
-		..\package\package.txt = ..\package\package.txt
-		..\package\package.xml = ..\package\package.xml
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CF4E7DA-6359-479E-A64D-2023C743BA1C}"
+	ProjectSection(SolutionItems) = preProject
+		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
+		..\LICENSE.md = ..\LICENSE.md
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildPackage", "BuildPackage", "{302C02F0-CA95-430F-BD43-82D0CCEC08A3}"
+	ProjectSection(SolutionItems) = preProject
+		..\appveyor.yml = ..\appveyor.yml
+		..\BuildPackage\Build.bat = ..\BuildPackage\Build.bat
+		..\BuildPackage\package.nuspec = ..\BuildPackage\package.nuspec
+		..\BuildPackage\package.proj = ..\BuildPackage\package.proj
+		..\BuildPackage\package.xml = ..\BuildPackage\package.xml
+		..\BuildPackage\Test.bat = ..\BuildPackage\Test.bat
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,7 +37,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{7D553013-FD27-46E7-BEFF-27593BD4E294} = {6CF4E7DA-6359-479E-A64D-2023C743BA1C}
-		{21985AFE-1750-4723-BAEC-210C8B5FE215} = {6CF4E7DA-6359-479E-A64D-2023C743BA1C}
+		{302C02F0-CA95-430F-BD43-82D0CCEC08A3} = {6CF4E7DA-6359-479E-A64D-2023C743BA1C}
 	EndGlobalSection
 EndGlobal
