@@ -57,8 +57,8 @@
 	<!-- PATHS -->
 	<PropertyGroup>
 		<RootDir>$(MSBuildProjectDirectory)\..</RootDir>
-		<BuildDir>$(MSBuildProjectDirectory)\Build</BuildDir>
-		<BuildNuGetDir>$(MSBuildProjectDirectory)\NugetBuild</BuildNuGetDir>
+		<BuildUmbDir>$(MSBuildProjectDirectory)\_umbraco</BuildUmbDir>
+		<BuildNuGetDir>$(MSBuildProjectDirectory)\_nuget</BuildNuGetDir>
 		<ArtifactsDir>$(RootDir)\artifacts</ArtifactsDir>
 		<CoreProjectDir>$(RootDir)\src\Our.Umbraco.Ditto</CoreProjectDir>
 	</PropertyGroup>
@@ -71,10 +71,11 @@
 	</Target>
 
 	<!-- CLEAN -->
-	<Target Name="Clean" DependsOnTargets="GenProductVersion">
-		<RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
-		<MakeDir Directories="$(BuildDir)" />
+	<Target Name="Clean" DependsOnTargets="GetProductVersion">
+		<RemoveDir Directories="$(BuildUmbDir)" Condition="Exists('$(BuildUmbDir)')" />
+		<RemoveDir Directories="$(BuildNuGetDir)" Condition="Exists('$(BuildNuGetDir)')" />
 		<RemoveDir Directories="$(ArtifactsDir)" Condition="Exists('$(ArtifactsDir)')" />
+		<MakeDir Directories="$(BuildUmbDir)" />
 		<MakeDir Directories="$(BuildNuGetDir)" />
 		<MakeDir Directories="$(ArtifactsDir)" />
 	</Target>
@@ -103,8 +104,8 @@
 			<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
 			<NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
 		</ItemGroup>
-		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildDir)\bin" />
-		<Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildDir)" />
+		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
+		<Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)" />
 		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
 		<Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
 	</Target>
@@ -112,11 +113,11 @@
 	<!-- MANIFEST UMBRACO -->
 	<Target Name="ManifestUmbraco" DependsOnTargets="PrepareFiles">
 		<ItemGroup>
-			<ManifestFiles Include="$(BuildDir)\**\*" Exclude="$(BuildDir)\Package.xml" />
+			<ManifestFiles Include="$(BuildUmbDir)\**\*" Exclude="$(BuildUmbDir)\Package.xml" />
 		</ItemGroup>
 		<ManifestUpdate
-			ManifestFile="$(BuildDir)\package.xml"
-			WorkingDirectory="$(BuildDir)"
+			ManifestFile="$(BuildUmbDir)\package.xml"
+			WorkingDirectory="$(BuildUmbDir)"
 			MinimumRequiredUmbracoVersion="$(MinUmbracoVersion)"
 			PackageName="$(PackageName)"
 			PackageVersion="$(ProductVersion)"
@@ -158,11 +159,11 @@
 	<!-- PACKAGE -->
 	<Target Name="Package" DependsOnTargets="ManifestUmbraco; ManifestNuGet">
 		<ItemGroup>
-			<PackageFiles Include="$(BuildDir)\**\*.*" />
+			<PackageFiles Include="$(BuildUmbDir)\**\*.*" />
 		</ItemGroup>
 
-		<Package ManifestFile="$(BuildDir)\Package.xml"
-			WorkingDirectory="$(BuildDir)"
+		<Package ManifestFile="$(BuildUmbDir)\Package.xml"
+			WorkingDirectory="$(BuildUmbDir)"
 			OutputDirectory="$(ArtifactsDir)"
 			Files="@(PackageFiles)" />
 
@@ -172,7 +173,7 @@
 			Version="$(ProductVersion)"
 			OutputDirectory="$(ArtifactsDir)" />
 
-		<RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
+		<RemoveDir Directories="$(BuildUmbDir)" Condition="Exists('$(BuildUmbDir)')" />
 		<RemoveDir Directories="$(BuildNuGetDir)" Condition="Exists('$(BuildNuGetDir)')" />
 
 	</Target>
