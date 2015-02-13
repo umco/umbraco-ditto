@@ -378,8 +378,11 @@
                         else if (propertyInfo.PropertyType == typeof(HtmlString))
                         {
                             // Handle Html strings so we don't have to set the attribute.
-                            HtmlStringConverter converter = new HtmlStringConverter();
-                            propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
+                            var converter = new HtmlStringConverter();
+                            if (converter.CanConvertFrom(propertyValue.GetType()))
+                            {
+                                propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
+                            }
                         }
                         else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
                         {
