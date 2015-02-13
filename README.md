@@ -1,5 +1,10 @@
 # Ditto
 
+[![Build status](https://img.shields.io/appveyor/ci/leekelleher/umbraco-ditto.svg)](https://ci.appveyor.com/project/leekelleher/umbraco-ditto)
+[![NuGet release](https://img.shields.io/nuget/v/Our.Umbraco.Ditto.svg)](https://www.nuget.org/packages/Our.Umbraco.Ditto)
+[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/developer-tools/ditto)
+[![Chat on Gitter](https://img.shields.io/badge/gitter-join_chat-green.svg)](https://gitter.im/leekelleher/umbraco-ditto)
+
 <img align="right" height="300" src="docs/umbraco-ditto.png">
 
 Ditto is a lightweight POCO mapper for Umbraco 7. It offers a generic solution to the problem of using **strongly-typed models in your MVC views**.
@@ -32,6 +37,8 @@ To install from Our Umbraco, please download the package from:
 To [install from NuGet](https://www.nuget.org/packages/Our.Umbraco.Ditto), you can run the following command from within Visual Studio:
 
 	PM> Install-Package Our.Umbraco.Ditto
+
+We also have a [MyGet package repository](https://www.myget.org/F/umbraco-ditto/) - for bleeding-edge / development releases.
 
 #### Manual build
 
@@ -206,11 +213,13 @@ Ditto comes with a custom model factory, to enable this, use the following code:
 
 The factory will look for any POCO models that inherit from the `PublishedContentModel` class and automatically map those to the requested `IPublishedContent` objects.
 
+> **Warning:** If you have a POCO model that contains a reference to a child node, then this may create a circular-reference and cause the model-factory to enter an endless loop!
+
 
 #### Video demonstrations
 
 * [Using Ditto with the `IPublishedContentModelFactory`](https://www.screenr.com/9oRN) (5 mins)
-* [Using a custom Umbraco MVC controller with `IPublishedContentModelFactory` and Ditto]() (5 mins)
+* [Using a custom Umbraco MVC controller with `IPublishedContentModelFactory` and Ditto](https://www.screenr.com/PPRN) (5 mins)
 
 
 
@@ -235,8 +244,12 @@ Have a question?
 
 * [Lee Kelleher](https://github.com/leekelleher)
 * [Matt Brailsford](https://github.com/mattbrailsford)
+* [James South](https://github.com/JimBobSquarePants)
 
-Special thanks to [Darren Ferguson](https://github.com/darrenferguson) for inspiration in his article "[Mapping Umbraco content to POCOs for strongly typed views](http://24days.in/umbraco/2013/mapping-content-to-pocos/)" on the [24 days in Umbraco](http://24days.in/umbraco/) advent calender.
+### Special thanks
+
+* Thanks to [Darren Ferguson](https://github.com/darrenferguson) for inspiration in his article "[Mapping Umbraco content to POCOs for strongly typed views](http://24days.in/umbraco/2013/mapping-content-to-pocos/)" on the [24 days in Umbraco](http://24days.in/umbraco/) advent calender.
+* Thanks to [Jeavon Leopold](https://github.com/Jeavon) for adding AppVeyor support.
 
 
 ## License

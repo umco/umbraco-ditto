@@ -16,7 +16,7 @@ The issue tracker is the preferred channel for [bug reports](#bugs),
 requests](#pull-requests), but please respect the following restrictions:
 
 * Please **do not** use the issue tracker for personal support requests (use
-  [Our Umbraco](http://our.umbraco.org) or Twitter).
+  [Our Umbraco](http://our.umbraco.org/projects/developer-tools/ditto/ditto-feedback) or Twitter).
 
 * Please **do not** derail or troll issues. Keep the discussion on topic and
   respect the opinions of others.
@@ -98,7 +98,7 @@ project:
    # Clone your fork of the repo into the current directory
    git clone https://github.com/<your-username>/<repo-name>
    # Navigate to the newly cloned directory
-   cd <repo-name>
+   cd umbraco-ditto
    # Assign the original repo to a remote called "upstream"
    git remote add upstream https://github.com/<upstream-owner>/<repo-name>
    ```
@@ -106,11 +106,11 @@ project:
 2. If you cloned a while ago, get the latest changes from upstream:
 
    ```bash
-   git checkout <dev-branch>
-   git pull upstream <dev-branch>
+   git checkout develop
+   git pull upstream develop
    ```
 
-3. Create a new topic branch (off the main project development branch) to
+3. Create a new topic branch (off the main project `develop` branch) to
    contain your feature, change, or fix:
 
    ```bash
@@ -126,7 +126,7 @@ project:
 5. Locally merge (or rebase) the upstream development branch into your topic branch:
 
    ```bash
-   git pull [--rebase] upstream <dev-branch>
+   git pull [--rebase] upstream develop
    ```
 
 6. Push your topic branch up to your fork:

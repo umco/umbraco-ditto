@@ -1,13 +1,9 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Globalization;
     using System.Linq;
-
-    using global::Umbraco.Core.Models.PublishedContent;
-    using global::Umbraco.Web;
 
     /// <summary>
     /// Provides a unified way of converting multi media picker properties to strong typed collections.
@@ -15,7 +11,7 @@
     /// <typeparam name="T">
     /// The <see cref="Type"/> of the node to return.
     /// </typeparam>
-    public class MultipleMediaPickerConverter<T> : TypeConverter where T : PublishedContentModel
+    public class MultipleMediaPickerConverter<T> : TypeConverter where T : class
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -27,7 +23,7 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string))
+            if (sourceType == typeof(string) || sourceType == typeof(int))
             {
                 return true;
             }
@@ -51,16 +47,24 @@
                 return Enumerable.Empty<T>();
             }
 
-            string s = value as string;
+            // If a single item is selected, this is passed as an int, not a string.
+            if (value is int)
+            {
+                var id = (int)value;
+                var umbracoHelper = ConverterHelper.UmbracoHelper;
+                return umbracoHelper.TypedMedia(id).As<T>().YieldSingleItem();
+            }
+
+            var s = value as string;
             if (!string.IsNullOrWhiteSpace(s))
             {
-                IEnumerable<T> multiNodeTreePicker = Enumerable.Empty<T>();
-                int[] nodeIds = s.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
-                                 .Select(int.Parse).ToArray();
+                var multiNodeTreePicker = Enumerable.Empty<T>();
+                var nodeIds = s.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                               .Select(int.Parse).ToArray();
 
                 if (nodeIds.Any())
                 {
-                    UmbracoHelper umbracoHelper = ConverterHelper.UmbracoHelper;
+                    var umbracoHelper = ConverterHelper.UmbracoHelper;
                     multiNodeTreePicker = umbracoHelper.TypedMedia(nodeIds).Where(x => x != null).As<T>();
                 }
 

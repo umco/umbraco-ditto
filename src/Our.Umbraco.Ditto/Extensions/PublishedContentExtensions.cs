@@ -85,17 +85,8 @@
             Action<ConvertedTypeEventArgs> convertedType = null)
             where T : class
         {
-            using (DisposableTimer.DebugDuration<IEnumerable<T>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
-            {
-                if (string.IsNullOrWhiteSpace(documentTypeAlias))
-                {
-                    return items.Select(x => x.As<T>(convertingType, convertedType));
-                }
-
-                return items
-                    .Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                    .Select(x => x.As<T>(convertingType, convertedType));
-            }
+            return items.As(typeof(T), documentTypeAlias, convertingType, convertedType)
+                .Select(x => x as T);
         }
 
         /// <summary>
@@ -116,10 +107,11 @@
         /// <returns>
         /// The converted <see cref="Object"/> as the given type.
         /// </returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if the given type has invalid constructors.
-        /// </exception>
-        internal static object As(this IPublishedContent content, Type type, Action<ConvertingTypeEventArgs> convertingType = null, Action<ConvertedTypeEventArgs> convertedType = null)
+        public static object As(
+            this IPublishedContent content,
+            Type type,
+            Action<ConvertingTypeEventArgs> convertingType = null,
+            Action<ConvertedTypeEventArgs> convertedType = null)
         {
             if (content == null)
             {
@@ -170,6 +162,47 @@
         }
 
         /// <summary>
+        /// Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.
+        /// </summary>
+        /// <param name="items">
+        /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
+        /// </param>
+        /// <param name="type">
+        /// The <see cref="Type"/> of items to return.
+        /// </param>
+        /// <param name="documentTypeAlias">
+        /// The document type alias.
+        /// </param>
+        /// <param name="convertingType">
+        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// </param>
+        /// <param name="convertedType">
+        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// </param>
+        /// <returns>
+        /// The resolved <see cref="IEnumerable{T}"/>.
+        /// </returns>
+        public static IEnumerable<object> As(
+            this IEnumerable<IPublishedContent> items,
+            Type type,
+            string documentTypeAlias = null,
+            Action<ConvertingTypeEventArgs> convertingType = null,
+            Action<ConvertedTypeEventArgs> convertedType = null)
+        {
+            using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
+            {
+                if (string.IsNullOrWhiteSpace(documentTypeAlias))
+                {
+                    return items.Select(x => x.As(type, convertingType, convertedType));
+                }
+
+                return items
+                    .Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
+                    .Select(x => x.As(type, convertingType, convertedType));
+            }
+        }
+
+        /// <summary>
         /// Returns an object representing the given <see cref="Type"/>.
         /// </summary>
         /// <param name="content">
@@ -181,6 +214,9 @@
         /// <returns>
         /// The converted <see cref="Object"/> as the given type.
         /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if the given type has invalid constructors.
+        /// </exception>
         private static object GetTypedProperty(IPublishedContent content, Type type)
         {
             // Get the default constructor, parameters and create an instance of the type.
@@ -283,24 +319,18 @@
                     // Process the value.
                     if (propertyValue != null)
                     {
+                        var propertyType = propertyInfo.PropertyType;
+                        var typeInfo = propertyType.GetTypeInfo();
+                        var isEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
+
                         // Try any custom type converters first.
                         // 1: Check the property.
                         // 2: Check any type arguments in generic enumerable types.
                         // 3: Check the type itself.
-                        var converterAttribute = propertyInfo.GetCustomAttribute<TypeConverterAttribute>();
-                        if (converterAttribute == null)
-                        {
-                            var propertyType = propertyInfo.PropertyType;
-                            var typeInfo = propertyType.GetTypeInfo();
-                            if (propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any())
-                            {
-                                converterAttribute = typeInfo.GenericTypeArguments[0].GetCustomAttribute<TypeConverterAttribute>(true);
-                            }
-                            else
-                            {
-                                converterAttribute = propertyType.GetCustomAttribute<TypeConverterAttribute>(true);
-                            }
-                        }
+                        var converterAttribute =
+                            propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
+                            ?? (isEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
+                                                 : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
 
                         if (converterAttribute != null)
                         {
@@ -316,7 +346,30 @@
                                         var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
                                         if (converter != null)
                                         {
-                                            propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
+                                            // Handle Typeconverters returning single objects when we want an IEnumerable.
+                                            // Use case: Someone selects a folder of images rather than a single image with the media picker.
+                                            if (isEnumerableType)
+                                            {
+                                                var parameterType = typeInfo.GenericTypeArguments.First();
+                                                object converted = converter.ConvertFrom(propertyValue);
+
+                                                // Some converters return an IEnumerable so we check again.
+                                                if (!converted.GetType().IsEnumerableType())
+                                                {
+                                                    // Generate a method using 'Cast' to convert the type back to IEnumerable<T>.
+                                                    MethodInfo castMethod = typeof(Enumerable).GetMethod("Cast").MakeGenericMethod(parameterType);
+                                                    object enumerablePropertyValue = castMethod.Invoke(null, new object[] { converted.YieldSingleItem() });
+                                                    propertyInfo.SetValue(instance, enumerablePropertyValue, null);
+                                                }
+                                                else
+                                                {
+                                                    propertyInfo.SetValue(instance, converted, null);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
+                                            }
                                         }
                                     }
                                 }

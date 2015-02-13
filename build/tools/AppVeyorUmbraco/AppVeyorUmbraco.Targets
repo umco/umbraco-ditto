@@ -1,0 +1,27 @@
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask
+    TaskName="GetProductVersion"
+    TaskFactory="CodeTaskFactory"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" >
+	<ParameterGroup>
+      <BuildVersion ParameterType="System.String" Required="true" />
+	  <BuildSuffix ParameterType="System.String" Required="false" />
+	  <ProductVersion ParameterType="System.String" Output="true" />
+	</ParameterGroup>	
+    <Task>
+      <Using Namespace="System"/>
+      <Using Namespace="System.IO"/>
+      <Code Type="Fragment" Language="cs">
+<![CDATA[
+            var baseVersion = BuildVersion.Substring(0, BuildVersion.LastIndexOf('.'));
+            if (string.IsNullOrEmpty(BuildSuffix)){
+			        ProductVersion = baseVersion;
+            } else {
+              ProductVersion = baseVersion + "-" + BuildSuffix;
+            }
+//Log.LogError(OutputVer);
+]]>
+      </Code>
+    </Task>
+  </UsingTask>
+</Project>

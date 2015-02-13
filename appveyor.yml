@@ -1,0 +1,46 @@
+# version format
+version: 0.6.0.{build}
+
+# UMBRACO_PACKAGE_PRERELEASE_SUFFIX will only be used for Release builds
+# example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
+install:
+  - cmd: set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
+  - cmd: build-appveyor.cmd
+
+# to disable automatic builds
+build: off
+
+artifacts:
+  - path: artifacts\*.nupkg
+  - path: artifacts\*.zip
+
+deploy:
+     # MyGet Deployment for builds & releases
+  - provider: NuGet
+    server: https://www.myget.org/F/umbraco-ditto/
+    api_key:
+      secure: Q1/4K8VSwr7BjwmKDTef8y5lOc7S+jK9ELuWy67y6OVRpjxmnF9M3Gfs1kT+ir8x
+    artifact: /.*\.nupkg/
+    on:
+      branch: develop
+
+     # GitHub Deployment for releases
+  - provider: GitHub
+    auth_token:
+      secure: pEozEGTqJutQwOidJU6BTB+Ix0NV4vrUnomhfeqheVz4RNwfxjEYLoqR4XabhlPz
+    artifact: /.*\.zip/            # upload all Zip packages to release assets
+    draft: false
+    prerelease: false
+    on:
+      branch: master
+      appveyor_repo_tag: true        # deploy on tag push only
+
+     # NuGet Deployment for releases
+  - provider: NuGet
+    server: 
+    api_key:
+      secure: CGzDKxw4QI/z2VSe9ceiYlIabqGXHolgBgVNWWZjVAJ2V5WLF11IFdlp9r5Qp+Sw
+    artifact: /.*\.nupkg/
+    on:
+      branch: master
+      appveyor_repo_tag: true
