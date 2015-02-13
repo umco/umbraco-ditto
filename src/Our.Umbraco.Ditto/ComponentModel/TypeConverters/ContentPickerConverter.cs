@@ -10,7 +10,7 @@
     /// <typeparam name="T">
     /// The <see cref="Type"/> of the object to return.
     /// </typeparam>
-    public class ContentPickerConverter<T> : TypeConverter where T : class 
+    public class ContentPickerConverter<T> : TypeConverter where T : class
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -22,7 +22,6 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            // Handle both selected and empty states.
             if (sourceType == typeof(string) || sourceType == typeof(int))
             {
                 return true;
@@ -47,14 +46,37 @@
                 return null;
             }
 
-            var nodeId = Convert.ToInt32(value);
-            if (nodeId > 0)
+            if (value is int)
             {
-                var umbracoHelper = ConverterHelper.UmbracoHelper;
-                return umbracoHelper.TypedContent(nodeId).As<T>(); 
+                return ConvertFromInt((int)value);
+            }
+
+            int id;
+            if (value is string && int.TryParse((string)value, out id))
+            {
+                return ConvertFromInt(id);
             }
 
             return base.ConvertFrom(context, culture, value);
+        }
+
+        /// <summary>
+        /// Takes a content node ID, gets the corresponding <see cref="T:Umbraco.Core.Models.IPublishedContent"/> object,
+        /// then converts the object to the desired type.
+        /// </summary>
+        /// <param name="id">The content node ID.</param>
+        /// <returns>
+        /// An <see cref="T:System.Object" /> that represents the converted value.
+        /// </returns>
+        private object ConvertFromInt(int id)
+        {
+            if (id <= 0)
+            {
+                return null;
+            }
+
+            var umbracoHelper = ConverterHelper.UmbracoHelper;
+            return umbracoHelper.TypedContent(id).As<T>();
         }
     }
 }
