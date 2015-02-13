@@ -2,6 +2,7 @@
 
 [![Build status](https://img.shields.io/appveyor/ci/leekelleher/umbraco-ditto.svg)](https://ci.appveyor.com/project/leekelleher/umbraco-ditto)
 [![NuGet release](https://img.shields.io/nuget/v/Our.Umbraco.Ditto.svg)](https://www.nuget.org/packages/Our.Umbraco.Ditto)
+[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/developer-tools/ditto)
 [![Chat on Gitter](https://img.shields.io/badge/gitter-join_chat-green.svg)](https://gitter.im/leekelleher/umbraco-ditto)
 
 <img align="right" height="300" src="docs/umbraco-ditto.png">
