@@ -4,6 +4,7 @@
     using System.ComponentModel;
     using System.Globalization;
 
+    using global::Umbraco.Core;
     using global::Umbraco.Web;
 
     /// <summary>
@@ -12,7 +13,7 @@
     /// <typeparam name="T">
     /// The <see cref="Type"/> of the object to return.
     /// </typeparam>
-    public class MediaPickerConverter<T> : TypeConverter where T : class 
+    public class MediaPickerConverter<T> : TypeConverter where T : class
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -48,24 +49,47 @@
                 return null;
             }
 
-            var nodeId = Convert.ToInt32(value);
-            if (nodeId > 0)
+            if (value is int)
             {
-                var umbracoHelper = ConverterHelper.UmbracoHelper;
-                var media = umbracoHelper.TypedMedia(nodeId);
+                return ConvertFromInt((int)value);
+            }
 
-                // Ensure we are actually returning a media file.
-                if (media.HasProperty("umbracoFile"))
-                {
-                    return media.As<T>();
-                }
-
-                // It's most likely a folder, try its children.
-                // This returns an IEnumerable<T>
-                return media.Children().As<T>();
+            int id;
+            if (value is string && int.TryParse((string)value, out id))
+            {
+                return ConvertFromInt(id);
             }
 
             return base.ConvertFrom(context, culture, value);
+        }
+
+        /// <summary>
+        /// Takes a media node ID, gets the corresponding <see cref="T:Umbraco.Core.Models.IPublishedContent"/> object,
+        /// then converts the object to the desired type.
+        /// </summary>
+        /// <param name="id">The media node ID.</param>
+        /// <returns>
+        /// An <see cref="T:System.Object" /> that represents the converted value.
+        /// </returns>
+        private object ConvertFromInt(int id)
+        {
+            if (id <= 0)
+            {
+                return null;
+            }
+
+            var umbracoHelper = ConverterHelper.UmbracoHelper;
+            var media = umbracoHelper.TypedMedia(id);
+
+            // Ensure we are actually returning a media file.
+            if (media.HasProperty(Constants.Conventions.Media.File))
+            {
+                return media.As<T>();
+            }
+
+            // It's most likely a folder, try its children.
+            // This returns an IEnumerable<T>
+            return media.Children().As<T>();
         }
     }
 }
