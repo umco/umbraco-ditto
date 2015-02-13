@@ -3,10 +3,10 @@
 
 	<!-- IMPORTS -->
 	<PropertyGroup>
-		<MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
-		<MSBuildUmbracoTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildUmbracoTasks</MSBuildUmbracoTasksPath>
-		<MSBuildNugetTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildNugetTasks</MSBuildNugetTasksPath>
-		<AppVeyorUmbracoPath>$(MSBuildProjectDirectory)\Tools\AppVeyorUmbraco</AppVeyorUmbracoPath>
+		<MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+		<MSBuildUmbracoTasksPath>$(MSBuildProjectDirectory)\tools\MSBuildUmbracoTasks</MSBuildUmbracoTasksPath>
+		<MSBuildNugetTasksPath>$(MSBuildProjectDirectory)\tools\MSBuildNugetTasks</MSBuildNugetTasksPath>
+		<AppVeyorUmbracoPath>$(MSBuildProjectDirectory)\tools\AppVeyorUmbraco</AppVeyorUmbracoPath>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
@@ -60,7 +60,7 @@
 		<BuildDir>$(MSBuildProjectDirectory)\Build</BuildDir>
 		<PackageDir>$(MSBuildProjectDirectory)\Package</PackageDir>
 		<BuildNuGetDir>$(MSBuildProjectDirectory)\NugetBuild</BuildNuGetDir>
-		<CoreProjectDir>$(RootDir)\Src\Our.Umbraco.Ditto</CoreProjectDir>
+		<CoreProjectDir>$(RootDir)\src\Our.Umbraco.Ditto</CoreProjectDir>
 	</PropertyGroup>
 
 	<!-- TARGETS -->
