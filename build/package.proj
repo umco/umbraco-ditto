@@ -56,6 +56,7 @@
 
 	<!-- PATHS -->
 	<PropertyGroup>
+		<BuildConfig>Release</BuildConfig>
 		<RootDir>$(MSBuildProjectDirectory)\..</RootDir>
 		<BuildUmbDir>$(MSBuildProjectDirectory)\_umbraco</BuildUmbDir>
 		<BuildNuGetDir>$(MSBuildProjectDirectory)\_nuget</BuildNuGetDir>
@@ -94,13 +95,13 @@
 
 	<!-- COMPILE -->
 	<Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
-		<MSBuild Projects="$(CoreProjectDir)\Our.Umbraco.Ditto.csproj" Properties="Configuration=Release" />
+		<MSBuild Projects="$(CoreProjectDir)\Our.Umbraco.Ditto.csproj" Properties="Configuration=$(BuildConfig)" />
 	</Target>
 
 	<!-- PREPARE FILES -->
 	<Target Name="PrepareFiles" DependsOnTargets="Compile">
 		<ItemGroup>
-			<BinFiles Include="$(CoreProjectDir)\bin\Debug\Our.Umbraco.Ditto.dll" />
+			<BinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.Ditto.dll" />
 			<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
 			<NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
 		</ItemGroup>
