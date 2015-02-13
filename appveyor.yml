@@ -5,8 +5,7 @@ version: 0.6.0.{build}
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
 install:
   - cmd: set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
-  - cmd: cd BuildPackage
-  - cmd: build-appveyor.bat
+  - cmd: build-appveyor.cmd
 
 # to disable automatic builds
 build: off
