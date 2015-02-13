@@ -344,7 +344,7 @@
                                     if (toConvert != null)
                                     {
                                         var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
-                                        if (converter != null)
+                                        if (converter != null && converter.CanConvertFrom(propertyType))
                                         {
                                             // Handle Typeconverters returning single objects when we want an IEnumerable.
                                             // Use case: Someone selects a folder of images rather than a single image with the media picker.
