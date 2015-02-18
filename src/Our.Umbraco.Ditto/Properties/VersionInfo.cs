@@ -14,6 +14,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("0.5.*")]
-[assembly: AssemblyInformationalVersion("0.5.0")]
+[assembly: AssemblyInformationalVersion("0.5.1")]
 
 
