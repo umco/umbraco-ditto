@@ -114,7 +114,7 @@
 	<!-- MANIFEST UMBRACO -->
 	<Target Name="ManifestUmbraco" DependsOnTargets="PrepareFiles">
 		<ItemGroup>
-			<ManifestFiles Include="$(BuildUmbDir)\**\*" Exclude="$(BuildUmbDir)\Package.xml" />
+			<ManifestFiles Include="$(BuildUmbDir)\**\*" Exclude="$(BuildUmbDir)\package.xml" />
 		</ItemGroup>
 		<ManifestUpdate
 			ManifestFile="$(BuildUmbDir)\package.xml"
