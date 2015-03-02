@@ -7,15 +7,13 @@
 
     using global::Umbraco.Core;
 
-    using umbraco;
-
     /// <summary>
-    /// Provides a unified way of converting multi media picker properties to strong typed collections.
+    /// Provides a unified way of converting ultimate picker properties to strong typed collections.
     /// </summary>
     /// <typeparam name="T">
     /// The <see cref="Type"/> of the node to return.
     /// </typeparam>
-    public class MultipleMediaPickerConverter<T> : TypeConverter where T : class
+    public class UltimatePickerConverter<T> : TypeConverter where T : class 
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -27,6 +25,7 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
+            // Handle both selected and empty states.
             if (sourceType == typeof(string) || sourceType == typeof(int))
             {
                 return true;
@@ -48,39 +47,54 @@
         {
             if (value == null)
             {
-                return Enumerable.Empty<T>();
+                if (typeof(T).IsEnumerableType())
+                {
+                    return Enumerable.Empty<T>();
+                }
+
+                return null;
             }
 
-            // If a single item is selected, this is passed as an int, not a string.
+            // If a single item is selected, this comes back as an int, not a string.
             if (value is int)
             {
                 var id = (int)value;
                 var umbracoHelper = ConverterHelper.UmbracoHelper;
-                return umbracoHelper.TypedMedia(id).As<T>().YieldSingleItem();
+
+                // CheckBoxList, ListBox
+                if (typeof(T).IsEnumerableType())
+                {
+                    return umbracoHelper.TypedContent(id).As<T>().YieldSingleItem();
+                }
+
+                // AutoComplete, DropDownList, RadioButton
+                return umbracoHelper.TypedContent(id).As<T>();
             }
 
-            var s = value as string;
+            string s = value as string ?? value.ToString();
             if (!string.IsNullOrWhiteSpace(s))
             {
-                var multiNodeTreePicker = Enumerable.Empty<T>();
-
                 int n;
-                var nodeIds = 
-                    XmlHelper.CouldItBeXml(s)
-                    ? uQuery.GetXmlIds(s)
-                    : s
+                var nodeIds = s
                     .ToDelimitedList()
                     .Select(x => int.TryParse(x, out n) ? n : -1)
                     .Where(x => x > 0)
                     .ToArray();
-
+                   
                 if (nodeIds.Any())
                 {
                     var umbracoHelper = ConverterHelper.UmbracoHelper;
-                    multiNodeTreePicker = umbracoHelper.TypedMedia(nodeIds).Where(x => x != null).As<T>();
-                }
+                    var ultimatePicker = umbracoHelper.TypedContent(nodeIds).Where(x => x != null).As<T>();
 
-                return multiNodeTreePicker;
+                    // CheckBoxList, ListBox
+                    if (typeof(T).IsEnumerableType())
+                    {
+                        return ultimatePicker;
+                    }
+
+                    // AutoComplete, DropDownList, RadioButton
+                    return ultimatePicker.FirstOrDefault();
+                }
             }
 
             return base.ConvertFrom(context, culture, value);
