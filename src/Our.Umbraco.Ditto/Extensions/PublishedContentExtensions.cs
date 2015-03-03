@@ -344,7 +344,7 @@
                                     if (toConvert != null)
                                     {
                                         var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
-                                        if (converter != null)
+                                        if (converter != null && converter.CanConvertFrom(propertyValue.GetType()))
                                         {
                                             // Handle Typeconverters returning single objects when we want an IEnumerable.
                                             // Use case: Someone selects a folder of images rather than a single image with the media picker.
@@ -378,8 +378,11 @@
                         else if (propertyInfo.PropertyType == typeof(HtmlString))
                         {
                             // Handle Html strings so we don't have to set the attribute.
-                            HtmlStringConverter converter = new HtmlStringConverter();
-                            propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
+                            var converter = new HtmlStringConverter();
+                            if (converter.CanConvertFrom(propertyValue.GetType()))
+                            {
+                                propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
+                            }
                         }
                         else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
                         {
