@@ -5,6 +5,8 @@
     using System.Globalization;
     using System.Linq;
 
+    using global::Umbraco.Core;
+
     /// <summary>
     /// Provides a unified way of converting multi media picker properties to strong typed collections.
     /// </summary>
@@ -59,8 +61,13 @@
             if (!string.IsNullOrWhiteSpace(s))
             {
                 var multiNodeTreePicker = Enumerable.Empty<T>();
-                var nodeIds = s.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
-                               .Select(int.Parse).ToArray();
+
+                int n;
+                var nodeIds = s
+                    .ToDelimitedList()
+                    .Select(x => int.TryParse(x, out n) ? n : -1)
+                    .Where(x => x > 0)
+                    .ToArray();
 
                 if (nodeIds.Any())
                 {

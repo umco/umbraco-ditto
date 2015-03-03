@@ -4,6 +4,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using System.Web;
@@ -283,6 +284,9 @@
                         defaultValue = umbracoPropertyAttr.DefaultValue;
                     }
 
+                    // This is conditionally assigned and used to pass a context below.
+                    var actualPropertyName = umbracoPropertyName;
+
                     // Try fetching the value.
                     var contentProperty = contentType.GetProperty(umbracoPropertyName);
                     object propertyValue = contentProperty != null
@@ -297,6 +301,8 @@
                         propertyValue = contentProperty != null
                                             ? contentProperty.GetValue(content, null)
                                             : content.GetPropertyValue(altUmbracoPropertyName, recursive);
+
+                        actualPropertyName = altUmbracoPropertyName;
                     }
 
                     // Try setting the default value.
@@ -313,6 +319,7 @@
                         if (dictionaryValueAttr != null && !dictionaryValueAttr.DictionaryKey.IsNullOrWhiteSpace())
                         {
                             propertyValue = ConverterHelper.UmbracoHelper.GetDictionaryValue(dictionaryValueAttr.DictionaryKey);
+                            actualPropertyName = dictionaryValueAttr.DictionaryKey;
                         }
                     }
 
@@ -344,14 +351,18 @@
                                     if (toConvert != null)
                                     {
                                         var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
-                                        if (converter != null)
+                                        if (converter != null && converter.CanConvertFrom(propertyValue.GetType()))
                                         {
+                                            // Create context to pass to converter implementations.
+                                            // This contains the IPublishedContent and the currently converting property name.
+                                            var context = new PublishedContentContext(content, actualPropertyName);
+                                            object converted = converter.ConvertFrom(context, CultureInfo.CurrentCulture, propertyValue);
+
                                             // Handle Typeconverters returning single objects when we want an IEnumerable.
                                             // Use case: Someone selects a folder of images rather than a single image with the media picker.
                                             if (isEnumerableType)
                                             {
                                                 var parameterType = typeInfo.GenericTypeArguments.First();
-                                                object converted = converter.ConvertFrom(propertyValue);
 
                                                 // Some converters return an IEnumerable so we check again.
                                                 if (!converted.GetType().IsEnumerableType())
@@ -368,7 +379,7 @@
                                             }
                                             else
                                             {
-                                                propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
+                                                propertyInfo.SetValue(instance, converted, null);
                                             }
                                         }
                                     }
@@ -379,7 +390,11 @@
                         {
                             // Handle Html strings so we don't have to set the attribute.
                             HtmlStringConverter converter = new HtmlStringConverter();
-                            propertyInfo.SetValue(instance, converter.ConvertFrom(propertyValue), null);
+                            if (converter.CanConvertFrom(propertyValue.GetType()))
+                            {
+                                var context = new PublishedContentContext(content, actualPropertyName);
+                                propertyInfo.SetValue(instance, converter.ConvertFrom(context, CultureInfo.CurrentCulture, propertyValue), null);
+                            }
                         }
                         else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
                         {

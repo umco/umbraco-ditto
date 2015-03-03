@@ -5,6 +5,7 @@
     using System.Globalization;
     using System.Web;
 
+    using global::Umbraco.Core.Dynamics;
     using global::Umbraco.Web.Templates;
 
     /// <summary>
@@ -27,7 +28,7 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string) || sourceType == typeof(HtmlString))
+            if (sourceType == typeof(string) || sourceType == typeof(HtmlString) || sourceType == typeof(DynamicXml))
             {
                 return true;
             }
@@ -51,27 +52,34 @@
                 return null;
             }
 
-            var s = value.ToString();
-            if (value is HtmlString)
-            {
-                if (!string.IsNullOrWhiteSpace(s))
-                {
-                    s = TemplateUtilities.ParseInternalLinks(s);
-                }
-
-                return new HtmlString(s);
-            }
-
-            // This lets us convert textbox multiple data type properties to HtmlString's 
             if (value is string)
             {
-                if (!string.IsNullOrWhiteSpace(s))
+                var text = value.ToString();
+
+                if (!string.IsNullOrWhiteSpace(text))
                 {
                     var umbracoHelper = ConverterHelper.UmbracoHelper;
-                    s = umbracoHelper.ReplaceLineBreaksForHtml(s);
+                    text = umbracoHelper.ReplaceLineBreaksForHtml(text);
                 }
 
-                return new HtmlString(s);
+                return new HtmlString(text);
+            }
+
+            if (value is HtmlString)
+            {
+                var html = value.ToString();
+
+                if (!string.IsNullOrWhiteSpace(html))
+                {
+                    html = TemplateUtilities.ParseInternalLinks(html);
+                }
+
+                return new HtmlString(html);
+            }
+
+            if (value is DynamicXml)
+            {
+                return ((DynamicXml)value).ToHtml();
             }
 
             return base.ConvertFrom(context, culture, value);

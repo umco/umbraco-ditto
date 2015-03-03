@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto", "Our.Umbraco.Ditto\Our.Umbraco.Ditto.csproj", "{3A2482A4-AD19-4C26-A449-4287DA07AB16}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CF4E7DA-6359-479E-A64D-2023C743BA1C}"
@@ -16,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Package", "Build Pack
 	ProjectSection(SolutionItems) = preProject
 		..\appveyor.yml = ..\appveyor.yml
 		..\build-appveyor.cmd = ..\build-appveyor.cmd
-		..\build-local.cmd = ..\build-local.cmd
+		..\build.cmd = ..\build.cmd
 		..\build\package.nuspec = ..\build\package.nuspec
 		..\build\package.proj = ..\build\package.proj
 		..\build\package.xml = ..\build\package.xml
