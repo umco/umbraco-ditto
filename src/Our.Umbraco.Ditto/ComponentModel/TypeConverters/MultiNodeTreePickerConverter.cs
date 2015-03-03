@@ -9,8 +9,6 @@
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
 
-    using umbraco;
-
     /// <summary>
     /// Provides a unified way of converting multi node tree picker properties to strong typed collections.
     /// Adapted from <see href="https://github.com/Jeavon/Umbraco-Core-Property-Value-Converters/blob/v2/Our.Umbraco.PropertyConverters/MultiNodeTreePickerPropertyConverter.cs"/>
@@ -61,7 +59,7 @@
 
                 int n;
                 var nodeIds = XmlHelper.CouldItBeXml(s)
-                    ? uQuery.GetXmlIds(s)
+                    ? ConverterHelper.GetXmlIds(s)
                     : s
                         .ToDelimitedList()
                         .Select(x => int.TryParse(x, out n) ? n : -1)

@@ -48,13 +48,14 @@
 
             if (value is int)
             {
-                return ConvertFromInt((int)value);
+                return this.ConvertFromInt((int)value);
             }
 
             int id;
-            if (value is string && int.TryParse((string)value, out id))
+            var s = value as string;
+            if (s != null && int.TryParse(s, out id))
             {
-                return ConvertFromInt(id);
+                return this.ConvertFromInt(id);
             }
 
             return base.ConvertFrom(context, culture, value);

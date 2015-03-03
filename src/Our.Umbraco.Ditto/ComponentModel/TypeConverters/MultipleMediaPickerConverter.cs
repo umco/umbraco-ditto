@@ -7,8 +7,6 @@
 
     using global::Umbraco.Core;
 
-    using umbraco;
-
     /// <summary>
     /// Provides a unified way of converting multi media picker properties to strong typed collections.
     /// </summary>
@@ -67,7 +65,7 @@
                 int n;
                 var nodeIds = 
                     XmlHelper.CouldItBeXml(s)
-                    ? uQuery.GetXmlIds(s)
+                    ? ConverterHelper.GetXmlIds(s)
                     : s
                         .ToDelimitedList()
                         .Select(x => int.TryParse(x, out n) ? n : -1)
