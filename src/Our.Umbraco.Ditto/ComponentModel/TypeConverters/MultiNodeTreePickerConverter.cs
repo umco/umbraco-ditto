@@ -63,10 +63,10 @@
                 var nodeIds = XmlHelper.CouldItBeXml(s)
                     ? uQuery.GetXmlIds(s)
                     : s
-                    .ToDelimitedList()
-                    .Select(x => int.TryParse(x, out n) ? n : -1)
-                    .Where(x => x > 0)
-                    .ToArray();
+                        .ToDelimitedList()
+                        .Select(x => int.TryParse(x, out n) ? n : -1)
+                        .Where(x => x > 0)
+                        .ToArray();
 
                 if (nodeIds.Any())
                 {
