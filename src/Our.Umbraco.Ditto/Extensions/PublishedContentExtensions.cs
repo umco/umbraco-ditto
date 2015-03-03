@@ -350,7 +350,7 @@
                                     if (toConvert != null)
                                     {
                                         var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
-                                        if (converter != null)
+                                        if (converter != null && converter.CanConvertFrom(propertyValue.GetType()))
                                         {
                                             // Create context to pass to converter implementations.
                                             // This contains the IPublishedContent and the currently converting property name.
@@ -391,8 +391,11 @@
                         {
                             // Handle Html strings so we don't have to set the attribute.
                             HtmlStringConverter converter = new HtmlStringConverter();
-                            var context = new PublishedContentContext(content, actualPropertyName);
-                            propertyInfo.SetValue(instance, converter.ConvertFrom(context, null, propertyValue), null);
+                            if (converter.CanConvertFrom(propertyValue.GetType()))
+                            {
+                                var context = new PublishedContentContext(content, actualPropertyName);
+                                propertyInfo.SetValue(instance, converter.ConvertFrom(context, null, propertyValue), null);
+                            }
                         }
                         else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
                         {
