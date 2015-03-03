@@ -4,6 +4,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using System.Web;
@@ -355,9 +356,7 @@
                                             // Create context to pass to converter implementations.
                                             // This contains the IPublishedContent and the currently converting property name.
                                             var context = new PublishedContentContext(content, actualPropertyName);
-
-                                            // TODO: Should we pass the current culture when converting?
-                                            object converted = converter.ConvertFrom(context, null, propertyValue);
+                                            object converted = converter.ConvertFrom(context, CultureInfo.CurrentCulture, propertyValue);
 
                                             // Handle Typeconverters returning single objects when we want an IEnumerable.
                                             // Use case: Someone selects a folder of images rather than a single image with the media picker.
@@ -392,7 +391,7 @@
                             // Handle Html strings so we don't have to set the attribute.
                             HtmlStringConverter converter = new HtmlStringConverter();
                             var context = new PublishedContentContext(content, actualPropertyName);
-                            propertyInfo.SetValue(instance, converter.ConvertFrom(context, null, propertyValue), null);
+                            propertyInfo.SetValue(instance, converter.ConvertFrom(context, CultureInfo.CurrentCulture, propertyValue), null);
                         }
                         else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
                         {
