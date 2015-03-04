@@ -6,6 +6,7 @@
     using System.Linq;
 
     using global::Umbraco.Core;
+    using global::Umbraco.Core.Models;
 
     /// <summary>
     /// Provides a unified way of converting multi media picker properties to strong typed collections.
@@ -25,7 +26,7 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string) || sourceType == typeof(int))
+            if (sourceType == typeof(string) || sourceType == typeof(int) || sourceType == typeof(IPublishedContent))
             {
                 return true;
             }
@@ -57,13 +58,20 @@
                 return umbracoHelper.TypedMedia(id).As<T>().YieldSingleItem();
             }
 
+            // DictionaryPublishedContent 
+            IPublishedContent content = value as IPublishedContent;
+            if (content != null)
+            {
+                return content.As<T>();
+            }
+
             var s = value as string;
             if (!string.IsNullOrWhiteSpace(s))
             {
                 var multiNodeTreePicker = Enumerable.Empty<T>();
 
                 int n;
-                var nodeIds = 
+                var nodeIds =
                     XmlHelper.CouldItBeXml(s)
                     ? ConverterHelper.GetXmlIds(s)
                     : s

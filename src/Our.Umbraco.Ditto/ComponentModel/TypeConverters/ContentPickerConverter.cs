@@ -4,6 +4,8 @@
     using System.ComponentModel;
     using System.Globalization;
 
+    using global::Umbraco.Core.Models;
+
     /// <summary>
     /// Provides a unified way of converting content picker properties to strong typed model.
     /// </summary>
@@ -22,7 +24,7 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string) || sourceType == typeof(int))
+            if (sourceType == typeof(string) || sourceType == typeof(int) || sourceType == typeof(IPublishedContent))
             {
                 return true;
             }
@@ -49,6 +51,13 @@
             if (value is int)
             {
                 return this.ConvertFromInt((int)value);
+            }
+
+            // DictionaryPublishedContent 
+            IPublishedContent content = value as IPublishedContent;
+            if (content != null)
+            {
+                return content.As<T>();
             }
 
             int id;
