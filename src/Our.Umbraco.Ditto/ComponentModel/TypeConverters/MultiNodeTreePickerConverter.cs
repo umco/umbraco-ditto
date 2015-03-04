@@ -28,7 +28,7 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string) || sourceType == typeof(int))
+            if (sourceType == typeof(string) || sourceType == typeof(int) || typeof(IPublishedContent).IsAssignableFrom(sourceType))
             {
                 return true;
             }
@@ -50,6 +50,13 @@
             if (value == null)
             {
                 return Enumerable.Empty<T>();
+            }
+
+            // DictionaryPublishedContent 
+            IPublishedContent content = value as IPublishedContent;
+            if (content != null)
+            {
+                return content.As<T>();
             }
 
             var s = value as string ?? value.ToString();
