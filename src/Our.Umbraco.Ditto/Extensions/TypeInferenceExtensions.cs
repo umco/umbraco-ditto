@@ -43,7 +43,7 @@
         /// </returns>
         public static Type TryGetElementType(this Type type, Type interfaceOrBaseType)
         {
-            if (!type.IsGenericTypeDefinition())
+            if (!type.IsGenericTypeDefinition)
             {
                 Type[] types = GetGenericTypeImplementations(type, interfaceOrBaseType).ToArray();
 
@@ -64,7 +64,7 @@
         /// </returns>
         public static IEnumerable<Type> GetGenericTypeImplementations(this Type type, Type interfaceOrBaseType)
         {
-            if (!type.IsGenericTypeDefinition())
+            if (!type.IsGenericTypeDefinition)
             {
                 return (interfaceOrBaseType.IsInterface ? type.GetInterfaces() : type.GetBaseTypes())
                         .Union(new[] { type })
@@ -89,16 +89,6 @@
 
                 type = type.BaseType;
             }
-        }
-
-        /// <summary>
-        /// Determines whether the specified type is a generic type definition.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>True if the type represents a generic type definition; otherwise, false.</returns>
-        public static bool IsGenericTypeDefinition(this Type type)
-        {
-            return type.IsGenericTypeDefinition;
         }
     }
 }
