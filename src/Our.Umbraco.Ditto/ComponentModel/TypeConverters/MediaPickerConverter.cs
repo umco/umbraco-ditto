@@ -5,6 +5,7 @@
     using System.Globalization;
 
     using global::Umbraco.Core;
+    using global::Umbraco.Core.Models;
     using global::Umbraco.Web;
 
     /// <summary>
@@ -25,7 +26,7 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string) || sourceType == typeof(int))
+            if (sourceType == typeof(string) || sourceType == typeof(int) || sourceType == typeof(IPublishedContent))
             {
                 return true;
             }
@@ -51,13 +52,21 @@
 
             if (value is int)
             {
-                return ConvertFromInt((int)value);
+                return this.ConvertFromInt((int)value);
+            }
+
+            // DictionaryPublishedContent 
+            IPublishedContent content = value as IPublishedContent;
+            if (content != null)
+            {
+                return content.As<T>();
             }
 
             int id;
-            if (value is string && int.TryParse((string)value, out id))
+            var s = value as string;
+            if (s != null && int.TryParse(s, out id))
             {
-                return ConvertFromInt(id);
+                return this.ConvertFromInt(id);
             }
 
             return base.ConvertFrom(context, culture, value);
