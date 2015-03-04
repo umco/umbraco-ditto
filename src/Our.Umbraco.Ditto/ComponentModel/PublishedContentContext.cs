@@ -15,18 +15,19 @@
         /// Initializes a new instance of the <see cref="PublishedContentContext"/> class.
         /// </summary>
         /// <param name="instance">
-        /// The instance.
+        /// The <see cref="IPublishedContent"/> that is being converted from.
         /// </param>
-        /// <param name="propertyName">
-        /// The property name.
+        /// <param name="descriptor">
+        /// The <see cref="PropertyDescriptor"/> for the property on the target type that contains
+        /// the currently converting property.
         /// </param>
-        public PublishedContentContext(object instance, string propertyName)
+        public PublishedContentContext(object instance, PropertyDescriptor descriptor)
         {
             this.Instance = instance;
 
-            // This will only work for properties contained directly within the 
-            // IPublishedContent. Id, Name etc..
-            this.PropertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyName];
+            // This is the property descriptor for the property on the POCO that is 
+            // getting converted.
+            this.PropertyDescriptor = descriptor;
         }
 
         /// <summary>
