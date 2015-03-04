@@ -58,11 +58,13 @@
                 var multiNodeTreePicker = Enumerable.Empty<T>();
 
                 int n;
-                var nodeIds = s
-                    .ToDelimitedList()
-                    .Select(x => int.TryParse(x, out n) ? n : -1)
-                    .Where(x => x > 0)
-                    .ToArray();
+                var nodeIds = XmlHelper.CouldItBeXml(s)
+                    ? ConverterHelper.GetXmlIds(s)
+                    : s
+                        .ToDelimitedList()
+                        .Select(x => int.TryParse(x, out n) ? n : -1)
+                        .Where(x => x > 0)
+                        .ToArray();
 
                 if (nodeIds.Any())
                 {

@@ -3,16 +3,17 @@
     using System;
     using System.ComponentModel;
     using System.Globalization;
+    using System.Linq;
 
-    using global::Umbraco.Core.Models;
+    using global::Umbraco.Core;
 
     /// <summary>
-    /// Provides a unified way of converting content picker properties to strong typed model.
+    /// Provides a unified way of converting ultimate picker properties to strong typed collections.
     /// </summary>
     /// <typeparam name="T">
-    /// The <see cref="Type"/> of the object to return.
+    /// The <see cref="Type"/> of the node to return.
     /// </typeparam>
-    public class ContentPickerConverter<T> : TypeConverter where T : class
+    public class UltimatePickerConverter<T> : TypeConverter where T : class 
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -24,7 +25,8 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string) || sourceType == typeof(int) || sourceType == typeof(IPublishedContent))
+            // Handle both selected and empty states.
+            if (sourceType == typeof(string) || sourceType == typeof(int))
             {
                 return true;
             }
@@ -45,48 +47,57 @@
         {
             if (value == null)
             {
+                if (typeof(T).IsEnumerableType())
+                {
+                    return Enumerable.Empty<T>();
+                }
+
                 return null;
             }
 
+            // If a single item is selected, this comes back as an int, not a string.
             if (value is int)
             {
-                return this.ConvertFromInt((int)value);
+                var id = (int)value;
+                var umbracoHelper = ConverterHelper.UmbracoHelper;
+
+                // CheckBoxList, ListBox
+                if (typeof(T).IsEnumerableType())
+                {
+                    return umbracoHelper.TypedContent(id).As<T>().YieldSingleItem();
+                }
+
+                // AutoComplete, DropDownList, RadioButton
+                return umbracoHelper.TypedContent(id).As<T>();
             }
 
-            // DictionaryPublishedContent 
-            IPublishedContent content = value as IPublishedContent;
-            if (content != null)
+            string s = value as string ?? value.ToString();
+            if (!string.IsNullOrWhiteSpace(s))
             {
-                return content.As<T>();
-            }
+                int n;
+                var nodeIds = s
+                    .ToDelimitedList()
+                    .Select(x => int.TryParse(x, out n) ? n : -1)
+                    .Where(x => x > 0)
+                    .ToArray();
+                   
+                if (nodeIds.Any())
+                {
+                    var umbracoHelper = ConverterHelper.UmbracoHelper;
+                    var ultimatePicker = umbracoHelper.TypedContent(nodeIds).Where(x => x != null).As<T>();
 
-            int id;
-            var s = value as string;
-            if (s != null && int.TryParse(s, out id))
-            {
-                return this.ConvertFromInt(id);
+                    // CheckBoxList, ListBox
+                    if (typeof(T).IsEnumerableType())
+                    {
+                        return ultimatePicker;
+                    }
+
+                    // AutoComplete, DropDownList, RadioButton
+                    return ultimatePicker.FirstOrDefault();
+                }
             }
 
             return base.ConvertFrom(context, culture, value);
-        }
-
-        /// <summary>
-        /// Takes a content node ID, gets the corresponding <see cref="T:Umbraco.Core.Models.IPublishedContent"/> object,
-        /// then converts the object to the desired type.
-        /// </summary>
-        /// <param name="id">The content node ID.</param>
-        /// <returns>
-        /// An <see cref="T:System.Object" /> that represents the converted value.
-        /// </returns>
-        private object ConvertFromInt(int id)
-        {
-            if (id <= 0)
-            {
-                return null;
-            }
-
-            var umbracoHelper = ConverterHelper.UmbracoHelper;
-            return umbracoHelper.TypedContent(id).As<T>();
         }
     }
 }
