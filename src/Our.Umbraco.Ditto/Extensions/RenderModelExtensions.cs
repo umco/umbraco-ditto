@@ -32,7 +32,7 @@
             this RenderModel model,
             Action<ConvertingTypeEventArgs> convertingType = null,
             Action<ConvertedTypeEventArgs> convertedType = null)
-            where T : RenderModel
+            where T : class
         {
             if (model == null)
             {
