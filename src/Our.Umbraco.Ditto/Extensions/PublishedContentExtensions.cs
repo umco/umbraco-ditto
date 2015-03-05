@@ -84,10 +84,11 @@
             this IEnumerable<IPublishedContent> items,
             string documentTypeAlias = null,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
             where T : class
         {
-            return items.As(typeof(T), documentTypeAlias, convertingType, convertedType)
+            return items.As(typeof(T), documentTypeAlias, convertingType, convertedType, culture)
                 .Select(x => x as T);
         }
 
@@ -190,18 +191,19 @@
             Type type,
             string documentTypeAlias = null,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
         {
             using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
             {
                 if (string.IsNullOrWhiteSpace(documentTypeAlias))
                 {
-                    return items.Select(x => x.As(type, convertingType, convertedType));
+                    return items.Select(x => x.As(type, convertingType, convertedType, culture));
                 }
 
                 return items
                     .Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                    .Select(x => x.As(type, convertingType, convertedType));
+                    .Select(x => x.As(type, convertingType, convertedType, culture));
             }
         }
 
