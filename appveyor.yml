@@ -18,6 +18,7 @@ deploy:
      # MyGet Deployment for builds & releases
   - provider: NuGet
     server: https://www.myget.org/F/umbraco-ditto/
+    symbol_server: https://nuget.symbolsource.org/MyGet/umbraco-ditto
     api_key:
       secure: Q1/4K8VSwr7BjwmKDTef8y5lOc7S+jK9ELuWy67y6OVRpjxmnF9M3Gfs1kT+ir8x
     artifact: /.*\.nupkg/
