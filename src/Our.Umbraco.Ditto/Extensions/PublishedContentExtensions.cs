@@ -52,10 +52,11 @@
         public static T As<T>(
             this IPublishedContent content,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
             where T : class
         {
-            return content.As(typeof(T), convertingType, convertedType) as T;
+            return content.As(typeof(T), convertingType, convertedType, culture) as T;
         }
 
         /// <summary>
@@ -112,7 +113,8 @@
             this IPublishedContent content,
             Type type,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
         {
             if (content == null)
             {
@@ -141,7 +143,7 @@
                 }
 
                 // Create an object and fetch it as the type.
-                object instance = GetTypedProperty(content, type);
+                object instance = GetTypedProperty(content, type, culture);
 
                 // Fire the converted event
                 var convertedArgs = new ConvertedTypeEventArgs
@@ -218,8 +220,17 @@
         /// <exception cref="InvalidOperationException">
         /// Thrown if the given type has invalid constructors.
         /// </exception>
-        private static object GetTypedProperty(IPublishedContent content, Type type)
+        private static object GetTypedProperty(
+            IPublishedContent content,
+            Type type,
+            CultureInfo culture = null)
         {
+            // Check if the culture has been set, otherwise use from Umbraco.
+            if (culture == null)
+            {
+                culture = UmbracoContext.Current.PublishedContentRequest.Culture;
+            }
+
             // Get the default constructor, parameters and create an instance of the type.
             // Try and return from the cache first. TryGetValue is faster than GetOrAdd.
             ParameterInfo[] constructorParams;
@@ -344,7 +355,6 @@
                                         {
                                             // Create context to pass to converter implementations.
                                             // This contains the IPublishedContent and the currently converting property name.
-                                            var culture = UmbracoContext.Current.PublishedContentRequest.Culture;
                                             var context = new PublishedContentContext(content, actualPropertyName);
                                             object converted = converter.ConvertFrom(context, culture, propertyValue);
 
@@ -382,7 +392,6 @@
                             HtmlStringConverter converter = new HtmlStringConverter();
                             if (converter.CanConvertFrom(propertyValue.GetType()))
                             {
-                                var culture = UmbracoContext.Current.PublishedContentRequest.Culture;
                                 var context = new PublishedContentContext(content, actualPropertyName);
                                 propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
                             }
