@@ -52,10 +52,11 @@
         public static T As<T>(
             this IPublishedContent content,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
             where T : class
         {
-            return content.As(typeof(T), convertingType, convertedType) as T;
+            return content.As(typeof(T), convertingType, convertedType, culture) as T;
         }
 
         /// <summary>
@@ -83,10 +84,11 @@
             this IEnumerable<IPublishedContent> items,
             string documentTypeAlias = null,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
             where T : class
         {
-            return items.As(typeof(T), documentTypeAlias, convertingType, convertedType)
+            return items.As(typeof(T), documentTypeAlias, convertingType, convertedType, culture)
                 .Select(x => x as T);
         }
 
@@ -112,7 +114,8 @@
             this IPublishedContent content,
             Type type,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
         {
             if (content == null)
             {
@@ -141,7 +144,7 @@
                 }
 
                 // Create an object and fetch it as the type.
-                object instance = GetTypedProperty(content, type);
+                object instance = GetTypedProperty(content, type, culture);
 
                 // Fire the converted event
                 var convertedArgs = new ConvertedTypeEventArgs
@@ -188,18 +191,19 @@
             Type type,
             string documentTypeAlias = null,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
         {
             using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
             {
                 if (string.IsNullOrWhiteSpace(documentTypeAlias))
                 {
-                    return items.Select(x => x.As(type, convertingType, convertedType));
+                    return items.Select(x => x.As(type, convertingType, convertedType, culture));
                 }
 
                 return items
                     .Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                    .Select(x => x.As(type, convertingType, convertedType));
+                    .Select(x => x.As(type, convertingType, convertedType, culture));
             }
         }
 
@@ -218,8 +222,17 @@
         /// <exception cref="InvalidOperationException">
         /// Thrown if the given type has invalid constructors.
         /// </exception>
-        private static object GetTypedProperty(IPublishedContent content, Type type)
+        private static object GetTypedProperty(
+            IPublishedContent content,
+            Type type,
+            CultureInfo culture = null)
         {
+            // Check if the culture has been set, otherwise use from Umbraco.
+            if (culture == null)
+            {
+                culture = UmbracoContext.Current.PublishedContentRequest.Culture;
+            }
+
             // Get the default constructor, parameters and create an instance of the type.
             // Try and return from the cache first. TryGetValue is faster than GetOrAdd.
             ParameterInfo[] constructorParams;
@@ -339,7 +352,6 @@
                                         {
                                             // Create context to pass to converter implementations.
                                             // This contains the IPublishedContent and the currently converting property descriptor.
-                                            var culture = UmbracoContext.Current.PublishedContentRequest.Culture;
                                             var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
                                             var context = new PublishedContentContext(content, descriptor);
                                             object converted = converter.ConvertFrom(context, culture, propertyValue);
@@ -379,7 +391,6 @@
                             if (converter.CanConvertFrom(propertyValue.GetType()))
                             {
                                 // This contains the IPublishedContent and the currently converting property descriptor.
-                                var culture = UmbracoContext.Current.PublishedContentRequest.Culture;
                                 var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
                                 var context = new PublishedContentContext(content, descriptor);
                                 propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
