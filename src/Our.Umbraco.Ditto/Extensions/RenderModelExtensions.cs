@@ -32,7 +32,7 @@
             this RenderModel model,
             Action<ConvertingTypeEventArgs> convertingType = null,
             Action<ConvertedTypeEventArgs> convertedType = null)
-            where T : RenderModel
+            where T : class
         {
             if (model == null)
             {
@@ -41,7 +41,7 @@
 
             using (DisposableTimer.DebugDuration<T>(string.Format("RenderModel As ({0})", model.Content.DocumentTypeAlias)))
             {
-                return model.Content.As<T>(convertingType, convertedType);
+                return model.Content.As<T>(convertingType, convertedType, model.CurrentCulture);
             }
         }
     }

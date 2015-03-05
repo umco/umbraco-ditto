@@ -52,10 +52,11 @@
         public static T As<T>(
             this IPublishedContent content,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
             where T : class
         {
-            return content.As(typeof(T), convertingType, convertedType) as T;
+            return content.As(typeof(T), convertingType, convertedType, culture) as T;
         }
 
         /// <summary>
@@ -83,10 +84,11 @@
             this IEnumerable<IPublishedContent> items,
             string documentTypeAlias = null,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
             where T : class
         {
-            return items.As(typeof(T), documentTypeAlias, convertingType, convertedType)
+            return items.As(typeof(T), documentTypeAlias, convertingType, convertedType, culture)
                 .Select(x => x as T);
         }
 
@@ -112,7 +114,8 @@
             this IPublishedContent content,
             Type type,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
         {
             if (content == null)
             {
@@ -141,7 +144,7 @@
                 }
 
                 // Create an object and fetch it as the type.
-                object instance = GetTypedProperty(content, type);
+                object instance = GetTypedProperty(content, type, culture);
 
                 // Fire the converted event
                 var convertedArgs = new ConvertedTypeEventArgs
@@ -188,18 +191,19 @@
             Type type,
             string documentTypeAlias = null,
             Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
         {
             using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
             {
                 if (string.IsNullOrWhiteSpace(documentTypeAlias))
                 {
-                    return items.Select(x => x.As(type, convertingType, convertedType));
+                    return items.Select(x => x.As(type, convertingType, convertedType, culture));
                 }
 
                 return items
                     .Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                    .Select(x => x.As(type, convertingType, convertedType));
+                    .Select(x => x.As(type, convertingType, convertedType, culture));
             }
         }
 
@@ -218,8 +222,17 @@
         /// <exception cref="InvalidOperationException">
         /// Thrown if the given type has invalid constructors.
         /// </exception>
-        private static object GetTypedProperty(IPublishedContent content, Type type)
+        private static object GetTypedProperty(
+            IPublishedContent content,
+            Type type,
+            CultureInfo culture = null)
         {
+            // Check if the culture has been set, otherwise use from Umbraco.
+            if (culture == null)
+            {
+                culture = UmbracoContext.Current.PublishedContentRequest.Culture;
+            }
+
             // Get the default constructor, parameters and create an instance of the type.
             // Try and return from the cache first. TryGetValue is faster than GetOrAdd.
             ParameterInfo[] constructorParams;
@@ -284,9 +297,6 @@
                         defaultValue = umbracoPropertyAttr.DefaultValue;
                     }
 
-                    // This is conditionally assigned and used to pass a context below.
-                    var actualPropertyName = umbracoPropertyName;
-
                     // Try fetching the value.
                     var contentProperty = contentType.GetProperty(umbracoPropertyName);
                     object propertyValue = contentProperty != null
@@ -301,8 +311,6 @@
                         propertyValue = contentProperty != null
                                             ? contentProperty.GetValue(content, null)
                                             : content.GetPropertyValue(altUmbracoPropertyName, recursive);
-
-                        actualPropertyName = altUmbracoPropertyName;
                     }
 
                     // Try setting the default value.
@@ -310,17 +318,6 @@
                         && defaultValue != null)
                     {
                         propertyValue = defaultValue;
-                    }
-
-                    // Check if a dictionary item has been assigned
-                    if (propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
-                    {
-                        var dictionaryValueAttr = propertyInfo.GetCustomAttribute<UmbracoDictionaryValueAttribute>();
-                        if (dictionaryValueAttr != null && !dictionaryValueAttr.DictionaryKey.IsNullOrWhiteSpace())
-                        {
-                            propertyValue = ConverterHelper.UmbracoHelper.GetDictionaryValue(dictionaryValueAttr.DictionaryKey);
-                            actualPropertyName = dictionaryValueAttr.DictionaryKey;
-                        }
                     }
 
                     // Process the value.
@@ -354,9 +351,10 @@
                                         if (converter != null && converter.CanConvertFrom(propertyValue.GetType()))
                                         {
                                             // Create context to pass to converter implementations.
-                                            // This contains the IPublishedContent and the currently converting property name.
-                                            var context = new PublishedContentContext(content, actualPropertyName);
-                                            object converted = converter.ConvertFrom(context, CultureInfo.CurrentCulture, propertyValue);
+                                            // This contains the IPublishedContent and the currently converting property descriptor.
+                                            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                                            var context = new PublishedContentContext(content, descriptor);
+                                            object converted = converter.ConvertFrom(context, culture, propertyValue);
 
                                             // Handle Typeconverters returning single objects when we want an IEnumerable.
                                             // Use case: Someone selects a folder of images rather than a single image with the media picker.
@@ -392,8 +390,10 @@
                             HtmlStringConverter converter = new HtmlStringConverter();
                             if (converter.CanConvertFrom(propertyValue.GetType()))
                             {
-                                var context = new PublishedContentContext(content, actualPropertyName);
-                                propertyInfo.SetValue(instance, converter.ConvertFrom(context, CultureInfo.CurrentCulture, propertyValue), null);
+                                // This contains the IPublishedContent and the currently converting property descriptor.
+                                var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                                var context = new PublishedContentContext(content, descriptor);
+                                propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
                             }
                         }
                         else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
