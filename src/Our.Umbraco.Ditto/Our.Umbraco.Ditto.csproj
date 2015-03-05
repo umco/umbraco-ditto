@@ -79,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
-    <Compile Include="Attributes\UmbracoDictionaryValueAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="ComponentModel\PublishedContentContext.cs" />
     <Compile Include="ComponentModel\TypeConverters\UltimatePickerConverter.cs" />
