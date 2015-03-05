@@ -43,6 +43,9 @@
         /// <param name="convertedType">
         /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
         /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/>
+        /// </param>
         /// <typeparam name="T">
         /// The <see cref="Type"/> of items to return.
         /// </typeparam>
@@ -74,6 +77,7 @@
         /// <param name="convertedType">
         /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
         /// </param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <typeparam name="T">
         /// The <see cref="Type"/> of items to return.
         /// </typeparam>
@@ -107,6 +111,7 @@
         /// <param name="convertedType">
         /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
         /// </param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <returns>
         /// The converted <see cref="Object"/> as the given type.
         /// </returns>
@@ -183,6 +188,9 @@
         /// <param name="convertedType">
         /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
         /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/>.
+        /// </param>
         /// <returns>
         /// The resolved <see cref="IEnumerable{T}"/>.
         /// </returns>
@@ -216,6 +224,7 @@
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <returns>
         /// The converted <see cref="Object"/> as the given type.
         /// </returns>
@@ -336,24 +345,26 @@
                             ?? (isEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
                                                  : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
 
-                        if (converterAttribute != null)
+                        if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
                         {
-                            if (converterAttribute.ConverterTypeName != null)
+                            // Time custom conversions.
+                            using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
                             {
-                                // Time custom conversions.
-                                using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                                // Get the custom converter from the attribute and attempt to convert.
+                                var toConvert = Type.GetType(converterAttribute.ConverterTypeName);
+                                if (toConvert != null)
                                 {
-                                    // Get the custom converter from the attribute and attempt to convert.
-                                    var toConvert = Type.GetType(converterAttribute.ConverterTypeName);
-                                    if (toConvert != null)
+                                    var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
+
+                                    if (converter != null)
                                     {
-                                        var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
-                                        if (converter != null && converter.CanConvertFrom(propertyValue.GetType()))
+                                        // Create context to pass to converter implementations.
+                                        // This contains the IPublishedContent and the currently converting property descriptor.
+                                        var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                                        var context = new PublishedContentContext(content, descriptor);
+
+                                        if (converter.CanConvertFrom(context, propertyValue.GetType()))
                                         {
-                                            // Create context to pass to converter implementations.
-                                            // This contains the IPublishedContent and the currently converting property descriptor.
-                                            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                                            var context = new PublishedContentContext(content, descriptor);
                                             object converted = converter.ConvertFrom(context, culture, propertyValue);
 
                                             // Handle Typeconverters returning single objects when we want an IEnumerable.
@@ -388,11 +399,13 @@
                         {
                             // Handle Html strings so we don't have to set the attribute.
                             HtmlStringConverter converter = new HtmlStringConverter();
+
+                            // This contains the IPublishedContent and the currently converting property descriptor.
+                            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                            var context = new PublishedContentContext(content, descriptor);
+
                             if (converter.CanConvertFrom(propertyValue.GetType()))
                             {
-                                // This contains the IPublishedContent and the currently converting property descriptor.
-                                var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                                var context = new PublishedContentContext(content, descriptor);
                                 propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
                             }
                         }
