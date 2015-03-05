@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto", "Our.Umbraco.Ditto\Our.Umbraco.Ditto.csproj", "{3A2482A4-AD19-4C26-A449-4287DA07AB16}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CF4E7DA-6359-479E-A64D-2023C743BA1C}"
@@ -12,15 +10,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildPackage", "BuildPackage", "{302C02F0-CA95-430F-BD43-82D0CCEC08A3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Package", "Build Package", "{302C02F0-CA95-430F-BD43-82D0CCEC08A3}"
 	ProjectSection(SolutionItems) = preProject
 		..\appveyor.yml = ..\appveyor.yml
-		..\BuildPackage\Build.bat = ..\BuildPackage\Build.bat
-		..\BuildPackage\package.nuspec = ..\BuildPackage\package.nuspec
-		..\BuildPackage\package.proj = ..\BuildPackage\package.proj
-		..\BuildPackage\package.xml = ..\BuildPackage\package.xml
-		..\BuildPackage\Test.bat = ..\BuildPackage\Test.bat
+		..\build-appveyor.cmd = ..\build-appveyor.cmd
+		..\build.cmd = ..\build.cmd
+		..\build\package.nuspec = ..\build\package.nuspec
+		..\build\package.proj = ..\build\package.proj
+		..\build\package.xml = ..\build\package.xml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto.ModelFactory", "Our.Umbraco.Ditto.ModelFactory\Our.Umbraco.Ditto.ModelFactory.csproj", "{956A042E-6DF1-4157-9D61-4CE9EF90263B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +32,10 @@ Global
 		{3A2482A4-AD19-4C26-A449-4287DA07AB16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A2482A4-AD19-4C26-A449-4287DA07AB16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A2482A4-AD19-4C26-A449-4287DA07AB16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{956A042E-6DF1-4157-9D61-4CE9EF90263B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{956A042E-6DF1-4157-9D61-4CE9EF90263B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{956A042E-6DF1-4157-9D61-4CE9EF90263B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{956A042E-6DF1-4157-9D61-4CE9EF90263B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

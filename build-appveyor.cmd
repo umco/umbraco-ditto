@@ -2,6 +2,6 @@ ECHO APPVEYOR_REPO_BRANCH: %APPVEYOR_REPO_BRANCH%
 ECHO APPVEYOR_REPO_TAG: %APPVEYOR_REPO_TAG%
 ECHO APPVEYOR_BUILD_NUMBER : %APPVEYOR_BUILD_NUMBER%
 ECHO APPVEYOR_BUILD_VERSION : %APPVEYOR_BUILD_VERSION%
-cd ..\BuildPackage\
-Call Tools\nuget.exe restore ..\Src\Our.Umbraco.Ditto.sln
-Call "%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe" package.proj
+
+CALL src\.nuget\NuGet.exe restore src\Our.Umbraco.Ditto.sln
+CALL "%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe" build\package.proj

@@ -1,19 +1,18 @@
 # version format
-version: 0.5.1.{build}
+version: 0.6.0.{build}
 
 # UMBRACO_PACKAGE_PRERELEASE_SUFFIX will only be used for Release builds
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
 install:
   - cmd: set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
-  - cmd: cd BuildPackage
-  - cmd: Build.bat
+  - cmd: build-appveyor.cmd
 
 # to disable automatic builds
 build: off
 
 artifacts:
-  - path: BuildPackage\Package\*.nupkg
-  - path: BuildPackage\Package\*.zip
+  - path: artifacts\*.nupkg
+  - path: artifacts\*.zip
 
 deploy:
      # MyGet Deployment for builds & releases
@@ -23,7 +22,7 @@ deploy:
       secure: Q1/4K8VSwr7BjwmKDTef8y5lOc7S+jK9ELuWy67y6OVRpjxmnF9M3Gfs1kT+ir8x
     artifact: /.*\.nupkg/
     on:
-      branch: master
+      branch: develop
 
      # GitHub Deployment for releases
   - provider: GitHub
