@@ -11,7 +11,7 @@
     /// Provides helper methods to aid with conversion. Not much in here for now but who knows 
     /// what the future has in store?
     /// </summary>
-    internal static class ConverterHelper
+    public static class ConverterHelper
     {
         /// <summary>
         /// Gets the <see cref="UmbracoHelper"/> for querying published content or media.
