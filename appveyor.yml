@@ -1,10 +1,10 @@
 # version format
-version: 0.6.0.{build}
+version: 0.6.1.{build}
 
 # UMBRACO_PACKAGE_PRERELEASE_SUFFIX will only be used for Release builds
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
 install:
-  - cmd: set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
+  - cmd: set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=
   - cmd: build-appveyor.cmd
 
 # to disable automatic builds
