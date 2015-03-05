@@ -295,9 +295,6 @@
                         defaultValue = umbracoPropertyAttr.DefaultValue;
                     }
 
-                    // This is conditionally assigned and used to pass a context below.
-                    var actualPropertyName = umbracoPropertyName;
-
                     // Try fetching the value.
                     var contentProperty = contentType.GetProperty(umbracoPropertyName);
                     object propertyValue = contentProperty != null
@@ -312,8 +309,6 @@
                         propertyValue = contentProperty != null
                                             ? contentProperty.GetValue(content, null)
                                             : content.GetPropertyValue(altUmbracoPropertyName, recursive);
-
-                        actualPropertyName = altUmbracoPropertyName;
                     }
 
                     // Try setting the default value.
@@ -354,8 +349,9 @@
                                         if (converter != null && converter.CanConvertFrom(propertyValue.GetType()))
                                         {
                                             // Create context to pass to converter implementations.
-                                            // This contains the IPublishedContent and the currently converting property name.
-                                            var context = new PublishedContentContext(content, actualPropertyName);
+                                            // This contains the IPublishedContent and the currently converting property descriptor.
+                                            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                                            var context = new PublishedContentContext(content, descriptor);
                                             object converted = converter.ConvertFrom(context, culture, propertyValue);
 
                                             // Handle Typeconverters returning single objects when we want an IEnumerable.
@@ -392,7 +388,9 @@
                             HtmlStringConverter converter = new HtmlStringConverter();
                             if (converter.CanConvertFrom(propertyValue.GetType()))
                             {
-                                var context = new PublishedContentContext(content, actualPropertyName);
+                                // This contains the IPublishedContent and the currently converting property descriptor.
+                                var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                                var context = new PublishedContentContext(content, descriptor);
                                 propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
                             }
                         }
