@@ -355,8 +355,9 @@
                                         {
                                             // Create context to pass to converter implementations.
                                             // This contains the IPublishedContent and the currently converting property name.
+                                            var culture = UmbracoContext.Current.PublishedContentRequest.Culture;
                                             var context = new PublishedContentContext(content, actualPropertyName);
-                                            object converted = converter.ConvertFrom(context, CultureInfo.CurrentCulture, propertyValue);
+                                            object converted = converter.ConvertFrom(context, culture, propertyValue);
 
                                             // Handle Typeconverters returning single objects when we want an IEnumerable.
                                             // Use case: Someone selects a folder of images rather than a single image with the media picker.
@@ -392,8 +393,9 @@
                             HtmlStringConverter converter = new HtmlStringConverter();
                             if (converter.CanConvertFrom(propertyValue.GetType()))
                             {
+                                var culture = UmbracoContext.Current.PublishedContentRequest.Culture;
                                 var context = new PublishedContentContext(content, actualPropertyName);
-                                propertyInfo.SetValue(instance, converter.ConvertFrom(context, CultureInfo.CurrentCulture, propertyValue), null);
+                                propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
                             }
                         }
                         else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
