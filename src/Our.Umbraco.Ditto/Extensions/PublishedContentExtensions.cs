@@ -388,7 +388,33 @@
                                             }
                                             else
                                             {
-                                                propertyInfo.SetValue(instance, converted, null);
+                                                // Return single expected items from converters returning an IEnumerable.
+                                                if (converted.GetType().IsEnumerableType())
+                                                {
+                                                    // Generate a method using 'FirstOrDefault' to convert the type back to T.
+                                                    MethodInfo firstMethod = typeof(Enumerable)
+                                                        .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                                                        .First(
+                                                            m =>
+                                                            {
+                                                                if (m.Name != "FirstOrDefault")
+                                                                {
+                                                                    return false;
+                                                                }
+
+                                                                var parameters = m.GetParameters();
+                                                                return parameters.Length == 1
+                                                                       && parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+                                                            })
+                                                        .MakeGenericMethod(propertyType);
+
+                                                    object singleValue = firstMethod.Invoke(null, new[] { converted });
+                                                    propertyInfo.SetValue(instance, singleValue, null);
+                                                }
+                                                else
+                                                {
+                                                    propertyInfo.SetValue(instance, converted, null);
+                                                }
                                             }
                                         }
                                     }
