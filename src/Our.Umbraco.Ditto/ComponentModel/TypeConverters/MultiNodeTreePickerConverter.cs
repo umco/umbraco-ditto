@@ -100,7 +100,9 @@
                 return multiNodeTreePicker;
             }
 
-            return base.ConvertFrom(context, culture, value);
+            // [ML] - return default list as its always nice to avoid null reference exceptions on lists =)
+
+            return Enumerable.Empty<T>();
         }
 
         /// <summary>

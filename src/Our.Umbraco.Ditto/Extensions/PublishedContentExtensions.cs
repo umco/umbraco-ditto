@@ -1,4 +1,9 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System.Collections;
+using Newtonsoft.Json;
+using Our.Umbraco.Ditto.Models.Archetype;
+using Our.Umbraco.Ditto.Models.Archetype.Abstract;
+
+namespace Our.Umbraco.Ditto
 {
     using System;
     using System.Collections.Concurrent;
@@ -19,6 +24,9 @@
     /// </summary>
     public static class PublishedContentExtensions
     {
+        private static readonly ConcurrentDictionary<string, Type> ArchetypeCache
+           = new ConcurrentDictionary<string, Type>();
+
         /// <summary>
         /// The cache for storing constructor parameter information.
         /// </summary>
@@ -216,6 +224,294 @@
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type">
+        /// The <see cref="Type"/> to convert too.
+        /// </param>
+        /// <param name="instance">
+        /// The <see cref="object"/> to populate.
+        /// </param>
+        /// <param name="propertyValue">
+        /// The <see cref="object"/> whos property we will populate with.
+        /// </param>
+        /// <param name="actualPropertyName">
+        /// The actual <see cref="string"/> name of the property.
+        /// </param>
+        /// <param name="propertyInfo"></param>
+        /// The <see cref="PropertyInfo"/> of the property to set on the object
+        /// <param name="content">
+        /// The <see cref="IPublishedContent"/> of which to use as a base for populating content
+        /// </param>
+        /// <param name="isArchetype">
+        /// A <see cref="bool"/> specifying if is of type archetype
+        /// </param>
+        private static void SetValue(Type type, object instance, object propertyValue, PropertyInfo propertyInfo, IPublishedContent content = null, bool isArchetype = false)
+        {
+            if (propertyValue != null)
+            {
+                var propertyType = propertyInfo.PropertyType;
+                var typeInfo = propertyType.GetTypeInfo();
+                var isEnumerableType = propertyType.IsEnumerableType() &&
+                                       typeInfo.GenericTypeArguments.Any();
+
+                // Try any custom type converters first.
+                // 1: Check the property.
+                // 2: Check any type arguments in generic enumerable types.
+                // 3: Check the type itself.
+
+                var converterAttribute =
+                    propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
+                    ??
+                    (isEnumerableType
+                         ? typeInfo.GenericTypeArguments.First()
+                                   .GetCustomAttribute<TypeConverterAttribute>(true)
+                         : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
+
+                if (isArchetype)
+                {
+                    /* [ML]: TODO - There must be a better way to do this to avoid an archetype dependency with its model binding to CMS json. */
+
+                    var json = propertyValue is string ? propertyValue as string : JsonConvert.SerializeObject(propertyValue, new JsonSerializerSettings
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    });
+
+                    var jsonModel = JsonConvert.DeserializeObject<ArchetypeCMSModel>(json);
+
+                    var data = GetTypedArchetype(content, propertyType, jsonModel);
+
+                    propertyInfo.SetValue(instance, data, null);
+                }
+                else if (converterAttribute != null && content != null)
+                {
+                    if (converterAttribute.ConverterTypeName != null)
+                    {
+                        // Time custom conversions.
+                        using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                        {
+                            // Get the custom converter from the attribute and attempt to convert.
+
+                            var toConvert = Type.GetType(converterAttribute.ConverterTypeName);
+
+                            if (toConvert != null)
+                            {
+                                var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
+
+                                if (converter != null && converter.CanConvertFrom(propertyValue.GetType()))
+                                {
+                                    // Create context to pass to converter implementations.
+                                    // This contains the IPublishedContent and the currently converting property name.
+
+                                    var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                                    var context = new PublishedContentContext(content, descriptor);
+                                    var culture = UmbracoContext.Current.PublishedContentRequest.Culture;
+                                    var converted = converter.ConvertFrom(context, culture, propertyValue);
+
+                                    if (converted != null)
+                                    {
+                                        // Handle Typeconverters returning single objects when we want an IEnumerable.
+                                        // Use case: Someone selects a folder of images rather than a single image with the media picker.
+
+                                        if (isEnumerableType)
+                                        {
+                                            var parameterType = typeInfo.GenericTypeArguments.First();
+
+                                            // Some converters return an IEnumerable so we check again.
+                                            if (!converted.GetType().IsEnumerableType())
+                                            {
+                                                // Generate a method using 'Cast' to convert the type back to IEnumerable<T>.
+                                                MethodInfo castMethod = typeof(Enumerable).GetMethod("Cast").MakeGenericMethod(parameterType);
+                                                object enumerablePropertyValue = castMethod.Invoke(null, new object[] { converted.YieldSingleItem() });
+                                                propertyInfo.SetValue(instance, enumerablePropertyValue, null);
+                                            }
+                                            else
+                                            {
+                                                propertyInfo.SetValue(instance, converted, null);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Return single expected items from converters returning an IEnumerable.
+                                            if (converted.GetType().IsEnumerableType())
+                                            {
+                                                // Generate a method using 'FirstOrDefault' to convert the type back to T.
+                                                MethodInfo firstMethod = typeof(Enumerable)
+                                                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                                                    .First(
+                                                        m =>
+                                                        {
+                                                            if (m.Name != "FirstOrDefault")
+                                                            {
+                                                                return false;
+                                                            }
+
+                                                            var parameters = m.GetParameters();
+                                                            return parameters.Length == 1
+                                                                   && parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+                                                        })
+                                                    .MakeGenericMethod(propertyType);
+
+                                                object singleValue = firstMethod.Invoke(null, new[] { converted });
+                                                propertyInfo.SetValue(instance, singleValue, null);
+                                            }
+                                            else
+                                            {
+                                                propertyInfo.SetValue(instance, converted, null);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (propertyInfo.PropertyType == typeof(HtmlString) || propertyInfo.PropertyType == typeof(IHtmlString))
+                {
+                    // Handle Html strings so we don't have to set the attribute.
+                    var converter = new HtmlStringConverter();
+
+                    if (converter.CanConvertFrom(propertyValue.GetType()))
+                    {
+                        var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                        var context = new PublishedContentContext(content, descriptor);
+                        var culture = UmbracoContext.Current.PublishedContentRequest.Culture;
+
+                        propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
+                    }
+                }
+                else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
+                {
+                    // Simple types
+                    propertyInfo.SetValue(instance, propertyValue, null);
+                }
+                else
+                {
+                    using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                    {
+                        var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
+                        if (convert.Success)
+                        {
+                            propertyInfo.SetValue(instance, convert.Result, null);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static PropertyInfo[] AddToPropertyCache(Type type)
+        {
+            PropertyInfo[] properties;
+            PropertyCache.TryGetValue(type, out properties);
+
+            if (properties == null)
+            {
+                properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                        .Where(x => x.CanWrite)
+                        .ToArray();
+
+                PropertyCache.TryAdd(type, properties);
+            }
+
+            return properties;
+        }
+
+        private static object GetTypedArchetype(IPublishedContent content, Type entityType, ArchetypeCMSModel archetype)
+        {
+            var isGenericList = entityType.IsGenericType && (entityType.GetGenericTypeDefinition() == typeof(IList<>) || entityType.GetGenericTypeDefinition() == typeof(List<>));
+
+            Type archetypeListType = null;
+
+            archetypeListType = isGenericList ? entityType.GetGenericArguments().FirstOrDefault() : entityType;
+
+            if (archetypeListType == null)
+            {
+                throw new NullReferenceException(string.Format("The type ({0}) can not be inferred?", entityType.Name));
+            }
+
+            // ML - Build a generic list from the type fuond above
+
+            var constructedListType = typeof(List<>).MakeGenericType(archetypeListType);
+            var list = (IList)Activator.CreateInstance(constructedListType);
+
+            if (archetype != null && (archetype.Fieldsets != null && archetype.Fieldsets.Any()))
+            {
+                if (archetype.Fieldsets != null && archetype.Fieldsets.Any())
+                {
+                    foreach (var fieldset in archetype.Fieldsets)
+                    {
+                        if (fieldset.Properties != null && fieldset.Properties.Any())
+                        {
+                            Type instanceType = null;
+
+                            ArchetypeCache.TryGetValue(fieldset.Alias, out instanceType);
+
+                            if (instanceType == null)
+                            {
+                                instanceType = TypeInferenceExtensions.GetTypeByName(fieldset.Alias, typeof(ArchetypeModel)).FirstOrDefault();
+
+                                if (instanceType != null)
+                                {
+                                    ArchetypeCache.TryAdd(fieldset.Alias, instanceType);
+
+                                    AddToPropertyCache(instanceType);
+                                }
+                            }
+
+                            if (instanceType != null)
+                            {
+                                // ML - Create an instance for each archetype object
+
+                                var instance = Activator.CreateInstance(instanceType) as ArchetypeModel;
+
+                                if (instance != null)
+                                {
+                                    instance.Alias = fieldset.Alias;
+
+                                    PropertyInfo[] properties = null;
+                                    PropertyCache.TryGetValue(instanceType, out properties);
+
+                                    if (properties != null && properties.Any())
+                                    {
+                                        foreach (var property in fieldset.Properties)
+                                        {
+                                            var propertyInfo = properties.FirstOrDefault(i => i.Name.ToLower() == property.Alias.ToLower());
+
+                                            if (propertyInfo != null)
+                                            {
+                                                var isArchetype = false;
+                                                var umbracoPropertyAttr = propertyInfo.GetCustomAttribute<UmbracoPropertyAttribute>();
+
+                                                if (umbracoPropertyAttr != null)
+                                                {
+                                                    isArchetype = umbracoPropertyAttr.IsArchetype;
+                                                }
+
+                                                SetValue(instanceType, instance, property.Value, propertyInfo, content, isArchetype);
+                                            }
+                                        }
+
+                                        // [ML] - If this is not a generic type, then return the first item
+
+                                        if (!isGenericList)
+                                        {
+                                            return instance;
+                                        }
+
+                                        list.Add(instance);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            return isGenericList ? list : null;
+        }
+
+        /// <summary>
         /// Returns an object representing the given <see cref="Type"/>.
         /// </summary>
         /// <param name="content">
@@ -271,13 +567,8 @@
             }
 
             // Collect all the properties of the given type and loop through writable ones.
-            PropertyInfo[] properties;
-            PropertyCache.TryGetValue(type, out properties);
-            if (properties == null)
-            {
-                properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(x => x.CanWrite).ToArray();
-                PropertyCache.TryAdd(type, properties);
-            }
+            
+            var properties = AddToPropertyCache(type);
 
             var contentType = content.GetType();
 
@@ -296,162 +587,39 @@
                     var altUmbracoPropertyName = string.Empty;
                     var recursive = false;
                     object defaultValue = null;
+                    var isArchetype = false;
 
                     var umbracoPropertyAttr = propertyInfo.GetCustomAttribute<UmbracoPropertyAttribute>();
+
                     if (umbracoPropertyAttr != null)
                     {
                         umbracoPropertyName = umbracoPropertyAttr.PropertyName;
                         altUmbracoPropertyName = umbracoPropertyAttr.AltPropertyName;
                         recursive = umbracoPropertyAttr.Recursive;
                         defaultValue = umbracoPropertyAttr.DefaultValue;
+                        isArchetype = umbracoPropertyAttr.IsArchetype;
                     }
 
                     // Try fetching the value.
                     var contentProperty = contentType.GetProperty(umbracoPropertyName);
-                    object propertyValue = contentProperty != null
-                                            ? contentProperty.GetValue(content, null)
-                                            : content.GetPropertyValue(umbracoPropertyName, recursive);
+                    object propertyValue = contentProperty != null ? contentProperty.GetValue(content, null) : content.GetPropertyValue(umbracoPropertyName, recursive);
 
                     // Try fetching the alt value.
-                    if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
-                        && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
+                    if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace()) && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
                     {
                         contentProperty = contentType.GetProperty(altUmbracoPropertyName);
-                        propertyValue = contentProperty != null
-                                            ? contentProperty.GetValue(content, null)
-                                            : content.GetPropertyValue(altUmbracoPropertyName, recursive);
+
+                        propertyValue = contentProperty != null ? contentProperty.GetValue(content, null) : content.GetPropertyValue(altUmbracoPropertyName, recursive);
                     }
 
                     // Try setting the default value.
-                    if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
-                        && defaultValue != null)
+                    if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace()) && defaultValue != null)
                     {
                         propertyValue = defaultValue;
                     }
 
-                    // Process the value.
-                    if (propertyValue != null)
-                    {
-                        var propertyType = propertyInfo.PropertyType;
-                        var typeInfo = propertyType.GetTypeInfo();
-                        var isEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
 
-                        // Try any custom type converters first.
-                        // 1: Check the property.
-                        // 2: Check any type arguments in generic enumerable types.
-                        // 3: Check the type itself.
-                        var converterAttribute =
-                            propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
-                            ?? (isEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
-                                                 : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
-
-                        if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
-                        {
-                            // Time custom conversions.
-                            using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
-                            {
-                                // Get the custom converter from the attribute and attempt to convert.
-                                var toConvert = Type.GetType(converterAttribute.ConverterTypeName);
-                                if (toConvert != null)
-                                {
-                                    var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
-
-                                    if (converter != null)
-                                    {
-                                        // Create context to pass to converter implementations.
-                                        // This contains the IPublishedContent and the currently converting property descriptor.
-                                        var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                                        var context = new PublishedContentContext(content, descriptor);
-
-                                        if (converter.CanConvertFrom(context, propertyValue.GetType()))
-                                        {
-                                            object converted = converter.ConvertFrom(context, culture, propertyValue);
-
-                                            // Handle Typeconverters returning single objects when we want an IEnumerable.
-                                            // Use case: Someone selects a folder of images rather than a single image with the media picker.
-                                            if (isEnumerableType)
-                                            {
-                                                var parameterType = typeInfo.GenericTypeArguments.First();
-
-                                                // Some converters return an IEnumerable so we check again.
-                                                if (!converted.GetType().IsEnumerableType())
-                                                {
-                                                    // Generate a method using 'Cast' to convert the type back to IEnumerable<T>.
-                                                    MethodInfo castMethod = typeof(Enumerable).GetMethod("Cast").MakeGenericMethod(parameterType);
-                                                    object enumerablePropertyValue = castMethod.Invoke(null, new object[] { converted.YieldSingleItem() });
-                                                    propertyInfo.SetValue(instance, enumerablePropertyValue, null);
-                                                }
-                                                else
-                                                {
-                                                    propertyInfo.SetValue(instance, converted, null);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                // Return single expected items from converters returning an IEnumerable.
-                                                if (converted.GetType().IsEnumerableType())
-                                                {
-                                                    // Generate a method using 'FirstOrDefault' to convert the type back to T.
-                                                    MethodInfo firstMethod = typeof(Enumerable)
-                                                        .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                                                        .First(
-                                                            m =>
-                                                            {
-                                                                if (m.Name != "FirstOrDefault")
-                                                                {
-                                                                    return false;
-                                                                }
-
-                                                                var parameters = m.GetParameters();
-                                                                return parameters.Length == 1
-                                                                       && parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
-                                                            })
-                                                        .MakeGenericMethod(propertyType);
-
-                                                    object singleValue = firstMethod.Invoke(null, new[] { converted });
-                                                    propertyInfo.SetValue(instance, singleValue, null);
-                                                }
-                                                else
-                                                {
-                                                    propertyInfo.SetValue(instance, converted, null);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else if (propertyInfo.PropertyType == typeof(HtmlString))
-                        {
-                            // Handle Html strings so we don't have to set the attribute.
-                            HtmlStringConverter converter = new HtmlStringConverter();
-
-                            // This contains the IPublishedContent and the currently converting property descriptor.
-                            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                            var context = new PublishedContentContext(content, descriptor);
-
-                            if (converter.CanConvertFrom(propertyValue.GetType()))
-                            {
-                                propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
-                            }
-                        }
-                        else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
-                        {
-                            // Simple types
-                            propertyInfo.SetValue(instance, propertyValue, null);
-                        }
-                        else
-                        {
-                            using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
-                            {
-                                var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
-                                if (convert.Success)
-                                {
-                                    propertyInfo.SetValue(instance, convert.Result, null);
-                                }
-                            }
-                        }
-                    }
+                    SetValue(type, instance, propertyValue, propertyInfo, content, isArchetype);
                 }
             }
 

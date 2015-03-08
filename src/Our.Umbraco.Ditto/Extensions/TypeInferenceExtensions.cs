@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System.Reflection;
+
+namespace Our.Umbraco.Ditto
 {
     using System;
     using System.Collections.Generic;
@@ -8,7 +10,7 @@
     /// Extensions methods for <see cref="T:System.Type"/> for inferring type properties.
     /// Most of this code was adapted from the Entity Framework
     /// </summary>
-    internal static class TypeInferenceExtensions
+    public static class TypeInferenceExtensions
     {
         /// <summary>
         /// Determines whether the specified type is a collection type.
@@ -88,6 +90,34 @@
                 yield return type;
 
                 type = type.BaseType;
+            }
+        }
+
+        /// <summary>
+        /// Gets a all Type instances matching the specified class name with just non-namespace qualified class name.
+        /// </summary>
+        /// <param name="className">Name of the class sought.</param>
+        /// <param name="baseType"></param>
+        /// <returns>Types that have the class name specified. They may not be in the same namespace.</returns>
+        public static IEnumerable<Type> GetTypeByName(string className, Type baseType)
+        {
+            /* [ML] - Look away kids, forgive me. We could improve performance with an optional app setting to filter assemblies 
+             * but this method executes in low milliseconds, hopefully with caching of these results we'll be ok
+             */
+
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(i => !i.FullName.ToLower().StartsWith("system") && !i.FullName.ToLower().StartsWith("microsoft") && !i.FullName.ToLower().StartsWith("windows")).ToList();
+
+            foreach (var assembly in assemblies)
+            {
+                var assemblyTypes = assembly.GetTypes();
+
+                foreach (var type in assemblyTypes)
+                {
+                    if (type.Name.ToLower() == className.ToLower() && (baseType == null || baseType.IsAssignableFrom(type)))
+                    {
+                        yield return type;
+                    }
+                }
             }
         }
     }

@@ -24,12 +24,13 @@
         /// <param name="defaultValue">
         /// The default value.
         /// </param>
-        public UmbracoPropertyAttribute(string propertyName, string altPropertyName = "", bool recursive = false, object defaultValue = null)
+        public UmbracoPropertyAttribute(string propertyName, string altPropertyName = "", bool recursive = false, object defaultValue = null, bool isArchetype = false)
         {
             this.PropertyName = propertyName;
             this.AltPropertyName = altPropertyName;
             this.Recursive = recursive;
             this.DefaultValue = defaultValue;
+            this.IsArchetype = false;
         }
 
         /// <summary>
@@ -51,5 +52,10 @@
         /// Gets or sets the default value.
         /// </summary>
         public object DefaultValue { get; set; }
+
+        /// <summary>
+        /// Defines if property is an Archetype
+        /// </summary>
+        public bool IsArchetype { get; set; }
     }
 }
