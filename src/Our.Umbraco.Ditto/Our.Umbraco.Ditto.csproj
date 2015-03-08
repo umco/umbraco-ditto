@@ -81,6 +81,7 @@
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="ComponentModel\PublishedContentContext.cs" />
+    <Compile Include="ComponentModel\TypeConverters\MemberPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\UltimatePickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\MultiNodeTreePickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\MultipleMediaPickerConverter.cs" />
