@@ -50,16 +50,17 @@
                 return null;
             }
 
-            if (value is int)
-            {
-                return this.ConvertFromInt((int)value);
-            }
-
             // DictionaryPublishedContent 
             IPublishedContent content = value as IPublishedContent;
             if (content != null)
             {
-                return content.As<T>();
+                // Use the id so we get folder sanitation.
+                return this.ConvertFromInt(content.Id);
+            }
+
+            if (value is int)
+            {
+                return this.ConvertFromInt((int)value);
             }
 
             int id;

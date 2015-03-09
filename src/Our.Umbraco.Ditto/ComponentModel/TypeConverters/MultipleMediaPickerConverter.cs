@@ -50,19 +50,19 @@
                 return Enumerable.Empty<T>();
             }
 
+            // DictionaryPublishedContent 
+            IPublishedContent content = value as IPublishedContent;
+            if (content != null)
+            {
+                return content.As<T>();
+            }
+
             // If a single item is selected, this is passed as an int, not a string.
             if (value is int)
             {
                 var id = (int)value;
                 var umbracoHelper = ConverterHelper.UmbracoHelper;
                 return umbracoHelper.TypedMedia(id).As<T>().YieldSingleItem();
-            }
-
-            // DictionaryPublishedContent 
-            IPublishedContent content = value as IPublishedContent;
-            if (content != null)
-            {
-                return content.As<T>();
             }
 
             var s = value as string;
