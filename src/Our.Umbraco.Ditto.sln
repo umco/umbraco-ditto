@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Package", "Build Pack
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto.ModelFactory", "Our.Umbraco.Ditto.ModelFactory\Our.Umbraco.Ditto.ModelFactory.csproj", "{956A042E-6DF1-4157-9D61-4CE9EF90263B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto.Tests", "Our.Umbraco.Ditto.Tests\Our.Umbraco.Ditto.Tests.csproj", "{A64197BB-B054-4E08-99E0-7029424FA4D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{956A042E-6DF1-4157-9D61-4CE9EF90263B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{956A042E-6DF1-4157-9D61-4CE9EF90263B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{956A042E-6DF1-4157-9D61-4CE9EF90263B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A64197BB-B054-4E08-99E0-7029424FA4D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A64197BB-B054-4E08-99E0-7029424FA4D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A64197BB-B054-4E08-99E0-7029424FA4D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A64197BB-B054-4E08-99E0-7029424FA4D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

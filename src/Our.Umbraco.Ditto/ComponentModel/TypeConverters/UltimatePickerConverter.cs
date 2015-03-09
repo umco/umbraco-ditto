@@ -97,7 +97,7 @@
                 }
             }
 
-            return base.ConvertFrom(context, culture, value);
+            return Enumerable.Empty<T>();
         }
     }
 }
