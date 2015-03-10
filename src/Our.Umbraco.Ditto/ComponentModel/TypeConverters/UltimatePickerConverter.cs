@@ -13,7 +13,7 @@
     /// <typeparam name="T">
     /// The <see cref="Type"/> of the node to return.
     /// </typeparam>
-    public class UltimatePickerConverter<T> : TypeConverter where T : class 
+    public class UltimatePickerConverter<T> : TypeConverter where T : class
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -77,10 +77,10 @@
                 int n;
                 var nodeIds = s
                     .ToDelimitedList()
-                    .Select(x => int.TryParse(x, out n) ? n : -1)
+                    .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
                     .Where(x => x > 0)
                     .ToArray();
-                   
+
                 if (nodeIds.Any())
                 {
                     var umbracoHelper = ConverterHelper.UmbracoHelper;

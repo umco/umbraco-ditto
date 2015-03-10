@@ -76,7 +76,7 @@
                     ? ConverterHelper.GetXmlIds(s)
                     : s
                         .ToDelimitedList()
-                        .Select(x => int.TryParse(x, out n) ? n : -1)
+                        .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
                         .Where(x => x > 0)
                         .ToArray();
 

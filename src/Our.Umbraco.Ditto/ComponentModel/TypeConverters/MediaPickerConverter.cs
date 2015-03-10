@@ -65,7 +65,7 @@
 
             int id;
             var s = value as string;
-            if (s != null && int.TryParse(s, out id))
+            if (s != null && int.TryParse(s, NumberStyles.Any, culture, out id))
             {
                 return this.ConvertFromInt(id);
             }
