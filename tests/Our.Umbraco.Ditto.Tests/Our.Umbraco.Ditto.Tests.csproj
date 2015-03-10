@@ -91,6 +91,9 @@
     <Reference Include="MiniProfiler">
       <HintPath>..\..\src\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\..\src\packages\Moq.4.2.1502.0911\lib\net40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\..\src\packages\MySql.Data.6.6.5\lib\net40\MySql.Data.dll</HintPath>
     </Reference>
@@ -125,6 +128,7 @@
       <Private>True</Private>
       <HintPath>..\..\src\packages\Microsoft.AspNet.WebApi.Client.4.0.30506.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\..\src\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.Helpers.dll</HintPath>
@@ -181,6 +185,9 @@
     <Reference Include="umbraco.providers">
       <HintPath>..\..\src\packages\UmbracoCms.Core.6.2.5\lib\umbraco.providers.dll</HintPath>
     </Reference>
+    <Reference Include="Umbraco.Tests">
+      <HintPath>..\lib\Umbraco.Tests.6.2.5\Umbraco.Tests.dll</HintPath>
+    </Reference>
     <Reference Include="Umbraco.Web.UI">
       <HintPath>..\..\src\packages\UmbracoCms.Core.6.2.5\lib\Umbraco.Web.UI.dll</HintPath>
       <Private>True</Private>
@@ -215,8 +222,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
