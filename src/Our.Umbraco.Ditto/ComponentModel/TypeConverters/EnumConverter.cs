@@ -83,11 +83,11 @@
             {
                 long convertedValue = 0;
                 Type type = typeof(TEnum);
-                IEnumerable<string> enumerable = (IEnumerable<string>)value;
+                List<string> enumerable = ((IEnumerable<string>)value).ToList();
 
                 if (enumerable.Any())
                 {
-                    foreach (string v in (IEnumerable<string>)value)
+                    foreach (string v in enumerable)
                     {
                         TEnum fallback;
                         Enum.TryParse(v, true, out fallback);
