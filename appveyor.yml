@@ -7,6 +7,10 @@ install:
   - cmd: set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=
   - cmd: build-appveyor.cmd
 
+test:
+  assemblies:
+    - 'Our.Umbraco.Ditto.Tests.dll'
+
 # to disable automatic builds
 build: off
 
