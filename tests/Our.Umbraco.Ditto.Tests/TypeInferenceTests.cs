@@ -10,7 +10,7 @@
     /// <summary>
     /// The type inference tests.
     /// </summary>
-    [TestFixture]
+    [TestFixture] 
     public class TypeInferenceTests
     {
         /// <summary>
