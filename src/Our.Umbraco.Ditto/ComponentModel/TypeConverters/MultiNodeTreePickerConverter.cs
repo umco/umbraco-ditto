@@ -31,6 +31,7 @@
             if (sourceType == typeof(string)
                 || sourceType == typeof(int)
                 || typeof(IPublishedContent).IsAssignableFrom(sourceType)
+                || (sourceType.IsEnumerableType() && sourceType.GenericTypeArguments[0] == typeof(IPublishedContent))
                 || (sourceType.IsEnumerableType() && sourceType.GenericTypeArguments[0] == typeof(string))
                 || (sourceType.IsEnumerableType() && sourceType.GenericTypeArguments[0] == typeof(int)))
             {
@@ -56,17 +57,25 @@
                 return Enumerable.Empty<T>();
             }
 
-            // DictionaryPublishedContent 
+            // Single IPublishedContent 
             IPublishedContent content = value as IPublishedContent;
             if (content != null)
             {
                 return content.As<T>();
             }
 
+            var type = value.GetType();
+
+            // Multiple IPublishedContent 
+            if (type.IsEnumerableType() && type.GenericTypeArguments[0] == typeof(IPublishedContent))
+            {
+                return ((IEnumerable<IPublishedContent>)value).As<T>();
+            }
+
             int[] nodeIds = { };
 
-            // First try enumerable types.
-            if (value.GetType().IsEnumerableType() && value.GetType() != typeof(string))
+            // First try enumerable strings, ints.
+            if (type.IsEnumerableType() && type != typeof(string))
             {
                 var enumerable = value as IEnumerable<string>;
                 int n;
