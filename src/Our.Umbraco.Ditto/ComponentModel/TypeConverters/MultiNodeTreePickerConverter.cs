@@ -66,7 +66,7 @@
             int[] nodeIds = { };
 
             // First try enumerable types.
-            if (value.GetType().IsEnumerableType())
+            if (value.GetType().IsEnumerableType() && value.GetType() != typeof(string))
             {
                 var enumerable = value as IEnumerable<string>;
                 int n;
