@@ -31,9 +31,9 @@
             if (sourceType == typeof(string)
                 || sourceType == typeof(int)
                 || typeof(IPublishedContent).IsAssignableFrom(sourceType)
-                || (sourceType.IsEnumerableType() && sourceType.GenericTypeArguments[0] == typeof(IPublishedContent))
-                || (sourceType.IsEnumerableType() && sourceType.GenericTypeArguments[0] == typeof(string))
-                || (sourceType.IsEnumerableType() && sourceType.GenericTypeArguments[0] == typeof(int)))
+                || sourceType.IsEnumerableOfType(typeof(IPublishedContent))
+                || sourceType.IsEnumerableOfType(typeof(string))
+                || sourceType.IsEnumerableOfType(typeof(int)))
             {
                 return true;
             }
@@ -67,7 +67,7 @@
             var type = value.GetType();
 
             // Multiple IPublishedContent 
-            if (type.IsEnumerableType() && type.GenericTypeArguments[0] == typeof(IPublishedContent))
+            if (type.IsEnumerableOfType(typeof(IPublishedContent)))
             {
                 return ((IEnumerable<IPublishedContent>)value).As<T>();
             }

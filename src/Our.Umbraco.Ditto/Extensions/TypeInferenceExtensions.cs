@@ -4,12 +4,32 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using global::Umbraco.Core.Models;
+
     /// <summary>
     /// Extensions methods for <see cref="T:System.Type"/> for inferring type properties.
     /// Most of this code was adapted from the Entity Framework
     /// </summary>
     internal static class TypeInferenceExtensions
     {
+        /// <summary>
+        /// Determines whether the specified type is an enumerable of the given argument type.
+        /// </summary>
+        /// <param name="type">
+        /// The type.
+        /// </param>
+        /// <param name="typeArgument">
+        /// The generic type argument.
+        /// </param>
+        /// <returns>
+        /// True if the type is an enumerable of the given argument type otherwise; false.
+        /// </returns>
+        public static bool IsEnumerableOfType(this Type type, Type typeArgument)
+        {
+            return (type.TryGetElementType(typeof(IEnumerable<>)) != null)
+                && type.GenericTypeArguments.Any(t => t == typeArgument);
+        }
+
         /// <summary>
         /// Determines whether the specified type is a collection type.
         /// </summary>
