@@ -389,7 +389,7 @@
                                             else
                                             {
                                                 // Return single expected items from converters returning an IEnumerable.
-                                                if (converted.GetType().IsEnumerableType())
+                                                if (converted != null && converted.GetType().IsEnumerableType())
                                                 {
                                                     // Generate a method using 'FirstOrDefault' to convert the type back to T.
                                                     MethodInfo firstMethod = typeof(Enumerable)
