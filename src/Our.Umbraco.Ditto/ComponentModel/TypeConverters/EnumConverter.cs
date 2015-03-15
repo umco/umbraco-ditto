@@ -6,6 +6,8 @@
     using System.Globalization;
     using System.Linq;
 
+    using global::Umbraco.Core;
+
     /// <summary>
     /// Provides a unified way of converting objects to an <see cref="Enum"/>.
     /// </summary>
@@ -33,7 +35,8 @@
                 (sourceType == typeof(string)
                 || sourceType == typeof(int)
                 || sourceType.IsEnum
-                || (sourceType.IsEnumerableType() && sourceType.GenericTypeArguments[0] == typeof(string))))
+                || (sourceType.IsEnumerableType() && sourceType.GenericTypeArguments[0] == typeof(string))
+                || sourceType == typeof(Enum[])))
             {
                 return true;
             }
@@ -57,11 +60,32 @@
                 return default(TEnum);
             }
 
+            Type type = typeof(TEnum);
             if (value is string)
             {
-                TEnum fallback;
-                Enum.TryParse(value.ToString(), true, out fallback);
-                return fallback;
+                string strValue = (string)value;
+                if (strValue.IndexOf(',') != -1)
+                {
+                    long convertedValue = 0;
+                    IList<string> values = strValue.ToDelimitedList();
+                    foreach (string v in values)
+                    {
+                        TEnum fallback;
+                        Enum.TryParse(v, true, out fallback);
+
+                        // OR assignment. Stolen from ComponentModel EnumConverter.
+                        convertedValue |= Convert.ToInt64(fallback, culture);
+                    }
+
+                    return Enum.ToObject(type, convertedValue);
+                }
+                // ReSharper disable once RedundantIfElseBlock
+                else
+                {
+                    TEnum fallback;
+                    Enum.TryParse(value.ToString(), true, out fallback);
+                    return fallback;
+                }
             }
 
             if (value is int)
@@ -76,13 +100,13 @@
             if (value.GetType().IsEnum)
             {
                 // This should work for most cases where enums base type is int.
-                return Enum.ToObject(typeof(TEnum), Convert.ToInt64(value, culture));
+                return Enum.ToObject(type, Convert.ToInt64(value, culture));
             }
 
+            // TODO: Use test in main develop branch for string.
             if (value.GetType().IsEnumerableType())
             {
                 long convertedValue = 0;
-                Type type = typeof(TEnum);
                 List<string> enumerable = ((IEnumerable<string>)value).ToList();
 
                 if (enumerable.Any())
@@ -91,8 +115,6 @@
                     {
                         TEnum fallback;
                         Enum.TryParse(v, true, out fallback);
-
-                        // OR assignment. Stolen from ComponentModel EnumConverter.
                         convertedValue |= Convert.ToInt64(fallback, culture);
                     }
 
@@ -100,6 +122,17 @@
                 }
 
                 return default(TEnum);
+            }
+
+            if (value is Enum[])
+            {
+                long finalValue = 0;
+                foreach (Enum e in (Enum[])value)
+                {
+                    finalValue |= Convert.ToInt64(e, culture);
+                }
+
+                return Enum.ToObject(type, finalValue);
             }
 
             return base.ConvertFrom(context, culture, value);
