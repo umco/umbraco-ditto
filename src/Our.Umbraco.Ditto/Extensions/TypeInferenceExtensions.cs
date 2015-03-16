@@ -4,8 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using global::Umbraco.Core.Models;
-
     /// <summary>
     /// Extensions methods for <see cref="T:System.Type"/> for inferring type properties.
     /// Most of this code was adapted from the Entity Framework
@@ -26,8 +24,8 @@
         /// </returns>
         public static bool IsEnumerableOfType(this Type type, Type typeArgument)
         {
-            return (type.TryGetElementType(typeof(IEnumerable<>)) != null)
-                && type.GenericTypeArguments.Any(t => t == typeArgument);
+            Type t = type.TryGetElementType(typeof(IEnumerable<>));
+            return t != null && t.IsAssignableFrom(typeArgument);
         }
 
         /// <summary>
@@ -55,7 +53,7 @@
         /// and if so return the element type of the collection. If the type implements the generic interface several times
         /// <c>null</c> will be returned.
         /// </summary>
-        /// <param name="type"> The type to examine. </param>
+        /// <param name="type">The type to examine. </param>
         /// <param name="interfaceOrBaseType"> The generic type to be queried for. </param>
         /// <returns> 
         /// <c>null</c> if <paramref name="interfaceOrBaseType"/> isn't implemented or implemented multiple times,
@@ -66,7 +64,6 @@
             if (!type.IsGenericTypeDefinition)
             {
                 Type[] types = GetGenericTypeImplementations(type, interfaceOrBaseType).ToArray();
-
                 return types.Length == 1 ? types[0].GetGenericArguments().FirstOrDefault() : null;
             }
 
