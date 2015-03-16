@@ -24,7 +24,12 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string) || sourceType == typeof(int) || typeof(IPublishedContent).IsAssignableFrom(sourceType))
+            // We can pass null here.
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (sourceType == null
+                || sourceType == typeof(string)
+                || sourceType == typeof(int)
+                || typeof(IPublishedContent).IsAssignableFrom(sourceType))
             {
                 return true;
             }

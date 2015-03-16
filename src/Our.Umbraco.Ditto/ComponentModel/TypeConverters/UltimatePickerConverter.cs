@@ -25,8 +25,11 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            // Handle both selected and empty states.
-            if (sourceType == typeof(string) || sourceType == typeof(int))
+            // We can pass null here.
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (sourceType == null
+                || sourceType == typeof(string)
+                || sourceType == typeof(int))
             {
                 return true;
             }

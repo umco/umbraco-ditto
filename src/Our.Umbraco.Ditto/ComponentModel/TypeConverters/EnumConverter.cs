@@ -32,7 +32,11 @@
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
             if (typeof(TEnum).IsEnum &&
-                (sourceType == typeof(string)
+
+                // We can pass null here.
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                (sourceType == null
+                || sourceType == typeof(string)
                 || sourceType == typeof(int)
                 || sourceType.IsEnum
                 || sourceType.IsEnumerableOfType(typeof(string))
