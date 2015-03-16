@@ -35,7 +35,7 @@
                 (sourceType == typeof(string)
                 || sourceType == typeof(int)
                 || sourceType.IsEnum
-                || (sourceType.IsEnumerableType() && sourceType.GenericTypeArguments[0] == typeof(string))
+                || sourceType.IsEnumerableOfType(typeof(string))
                 || sourceType == typeof(Enum[])))
             {
                 return true;
@@ -67,7 +67,7 @@
                 if (strValue.IndexOf(',') != -1)
                 {
                     long convertedValue = 0;
-                    IList<string> values = strValue.ToDelimitedList();
+                    var values = strValue.ToDelimitedList();
                     foreach (string v in values)
                     {
                         TEnum fallback;
@@ -103,11 +103,10 @@
                 return Enum.ToObject(type, Convert.ToInt64(value, culture));
             }
 
-            // TODO: Use test in main develop branch for string.
-            if (value.GetType().IsEnumerableType())
+            if (type.IsEnumerableOfType(typeof(string)))
             {
                 long convertedValue = 0;
-                List<string> enumerable = ((IEnumerable<string>)value).ToList();
+                var enumerable = ((IEnumerable<string>)value).ToList();
 
                 if (enumerable.Any())
                 {
@@ -124,10 +123,11 @@
                 return default(TEnum);
             }
 
-            if (value is Enum[])
+            var enums = value as Enum[];
+            if (enums != null)
             {
                 long finalValue = 0;
-                foreach (Enum e in (Enum[])value)
+                foreach (Enum e in enums)
                 {
                     finalValue |= Convert.ToInt64(e, culture);
                 }
