@@ -101,13 +101,14 @@
                 }
             }
 
-            if (value.GetType().IsEnum)
+            var valueType = value.GetType();
+            if (valueType.IsEnum)
             {
                 // This should work for most cases where enums base type is int.
                 return Enum.ToObject(type, Convert.ToInt64(value, culture));
             }
 
-            if (type.IsEnumerableOfType(typeof(string)))
+            if (valueType.IsEnumerableOfType(typeof(string)))
             {
                 long convertedValue = 0;
                 var enumerable = ((IEnumerable<string>)value).ToList();
@@ -130,13 +131,13 @@
             var enums = value as Enum[];
             if (enums != null)
             {
-                long finalValue = 0;
+                long convertedValue = 0;
                 foreach (Enum e in enums)
                 {
-                    finalValue |= Convert.ToInt64(e, culture);
+                    convertedValue |= Convert.ToInt64(e, culture);
                 }
 
-                return Enum.ToObject(type, finalValue);
+                return Enum.ToObject(type, convertedValue);
             }
 
             return base.ConvertFrom(context, culture, value);
