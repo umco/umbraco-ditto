@@ -330,43 +330,49 @@
                     }
 
                     // Process the value.
-                    if (propertyValue != null)
+                    var propertyType = propertyInfo.PropertyType;
+                    var typeInfo = propertyType.GetTypeInfo();
+                    var isEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
+
+                    // Try any custom type converters first.
+                    // 1: Check the property.
+                    // 2: Check any type arguments in generic enumerable types.
+                    // 3: Check the type itself.
+                    var converterAttribute =
+                        propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
+                        ?? (isEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
+                                                : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
+
+                    if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
                     {
-                        var propertyType = propertyInfo.PropertyType;
-                        var typeInfo = propertyType.GetTypeInfo();
-                        var isEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
-
-                        // Try any custom type converters first.
-                        // 1: Check the property.
-                        // 2: Check any type arguments in generic enumerable types.
-                        // 3: Check the type itself.
-                        var converterAttribute =
-                            propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
-                            ?? (isEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
-                                                 : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
-
-                        if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
+                        // Time custom conversions.
+                        using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
                         {
-                            // Time custom conversions.
-                            using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                            // Get the custom converter from the attribute and attempt to convert.
+                            var toConvert = Type.GetType(converterAttribute.ConverterTypeName);
+                            if (toConvert != null)
                             {
-                                // Get the custom converter from the attribute and attempt to convert.
-                                var toConvert = Type.GetType(converterAttribute.ConverterTypeName);
-                                if (toConvert != null)
+                                var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
+
+                                if (converter != null)
                                 {
-                                    var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
+                                    // Create context to pass to converter implementations.
+                                    // This contains the IPublishedContent and the currently converting property descriptor.
+                                    var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                                    var context = new PublishedContentContext(content, descriptor);
 
-                                    if (converter != null)
+                                    Type propertyValueType = null;
+                                    if (propertyValue != null)
                                     {
-                                        // Create context to pass to converter implementations.
-                                        // This contains the IPublishedContent and the currently converting property descriptor.
-                                        var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                                        var context = new PublishedContentContext(content, descriptor);
+                                        propertyValueType = propertyValue.GetType();
+                                    }
 
-                                        if (converter.CanConvertFrom(context, propertyValue.GetType()))
+                                    if (converter.CanConvertFrom(context, propertyValueType))
+                                    {
+                                        object converted = converter.ConvertFrom(context, culture, propertyValue);
+
+                                        if (converted != null)
                                         {
-                                            object converted = converter.ConvertFrom(context, culture, propertyValue);
-
                                             // Handle Typeconverters returning single objects when we want an IEnumerable.
                                             // Use case: Someone selects a folder of images rather than a single image with the media picker.
                                             if (isEnumerableType)
@@ -404,7 +410,7 @@
 
                                                                 var parameters = m.GetParameters();
                                                                 return parameters.Length == 1
-                                                                       && parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+                                                                        && parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
                                                             })
                                                         .MakeGenericMethod(propertyType);
 
@@ -421,34 +427,40 @@
                                 }
                             }
                         }
-                        else if (propertyInfo.PropertyType == typeof(HtmlString))
-                        {
-                            // Handle Html strings so we don't have to set the attribute.
-                            HtmlStringConverter converter = new HtmlStringConverter();
+                    }
+                    else if (propertyInfo.PropertyType == typeof(HtmlString))
+                    {
+                        // Handle Html strings so we don't have to set the attribute.
+                        HtmlStringConverter converter = new HtmlStringConverter();
 
-                            // This contains the IPublishedContent and the currently converting property descriptor.
-                            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                            var context = new PublishedContentContext(content, descriptor);
+                        // This contains the IPublishedContent and the currently converting property descriptor.
+                        var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                        var context = new PublishedContentContext(content, descriptor);
 
-                            if (converter.CanConvertFrom(propertyValue.GetType()))
-                            {
-                                propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
-                            }
-                        }
-                        else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
+                        Type propertyValueType = null;
+                        if (propertyValue != null)
                         {
-                            // Simple types
-                            propertyInfo.SetValue(instance, propertyValue, null);
+                            propertyValueType = propertyValue.GetType();
                         }
-                        else
+
+                        if (converter.CanConvertFrom(propertyValueType))
                         {
-                            using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                            propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
+                        }
+                    }
+                    else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
+                    {
+                        // Simple types
+                        propertyInfo.SetValue(instance, propertyValue, null);
+                    }
+                    else
+                    {
+                        using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                        {
+                            var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
+                            if (convert.Success)
                             {
-                                var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
-                                if (convert.Success)
-                                {
-                                    propertyInfo.SetValue(instance, convert.Result, null);
-                                }
+                                propertyInfo.SetValue(instance, convert.Result, null);
                             }
                         }
                     }
