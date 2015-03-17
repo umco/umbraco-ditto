@@ -239,7 +239,13 @@
             // Check if the culture has been set, otherwise use from Umbraco.
             if (culture == null)
             {
-                culture = UmbracoContext.Current.PublishedContentRequest.Culture;
+                if (UmbracoContext.Current.PublishedContentRequest != null)
+                {
+                    culture = UmbracoContext.Current.PublishedContentRequest.Culture;
+                }
+
+                // fallback
+                culture = CultureInfo.CurrentCulture;
             }
 
             // Get the default constructor, parameters and create an instance of the type.
