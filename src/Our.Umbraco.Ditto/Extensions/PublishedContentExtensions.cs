@@ -32,6 +32,28 @@
             = new ConcurrentDictionary<Type, PropertyInfo[]>();
 
         /// <summary>
+        /// A method using 'Cast' to convert the type back to <see cref="IEnumerable{T}"/>.
+        /// </summary>
+        private static readonly MethodInfo CastMethod = typeof(Enumerable).GetMethod("Cast");
+
+        /// <summary>
+        /// A method using <see cref="IEnumerable{T}"/> 'FirstOrDefault' to convert the type back to T.
+        /// </summary>
+        private static readonly MethodInfo FirstOrDefault =
+            typeof(Enumerable).GetMethods(BindingFlags.Public | BindingFlags.Static).First(
+                m =>
+                {
+                    if (m.Name != "FirstOrDefault")
+                    {
+                        return false;
+                    }
+
+                    var parameters = m.GetParameters();
+                    return parameters.Length == 1
+                           && parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+                });
+
+        /// <summary>
         /// Returns the given instance of <see cref="IPublishedContent"/> as the specified type.
         /// </summary>
         /// <param name="content">
@@ -287,8 +309,6 @@
                 PropertyCache.TryAdd(type, properties);
             }
 
-            var contentType = content.GetType();
-
             foreach (var propertyInfo in properties)
             {
                 using (DisposableTimer.DebugDuration(type, string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
@@ -300,182 +320,201 @@
                         continue;
                     }
 
-                    var umbracoPropertyName = propertyInfo.Name;
-                    var altUmbracoPropertyName = string.Empty;
-                    var recursive = false;
-                    object defaultValue = null;
+                    // Get the value from Umbraco.
+                    object propertyValue = GetUmbracoValue(content, propertyInfo);
 
-                    var umbracoPropertyAttr = propertyInfo.GetCustomAttribute<UmbracoPropertyAttribute>();
-                    if (umbracoPropertyAttr != null)
+                    // Set the value.
+                    SetTypedValue(content, type, culture, propertyInfo, propertyValue, ref instance);
+                }
+            }
+
+            return instance;
+        }
+
+        /// <summary>
+        /// Returns the cached value from Umbraco that matches the given type and property.
+        /// </summary>
+        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
+        /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
+        private static object GetUmbracoValue(IPublishedContent content, PropertyInfo propertyInfo)
+        {
+            var contentType = content.GetType();
+            var umbracoPropertyName = propertyInfo.Name;
+            var altUmbracoPropertyName = string.Empty;
+            var recursive = false;
+            object defaultValue = null;
+
+            var umbracoPropertyAttr = propertyInfo.GetCustomAttribute<UmbracoPropertyAttribute>();
+            if (umbracoPropertyAttr != null)
+            {
+                umbracoPropertyName = umbracoPropertyAttr.PropertyName;
+                altUmbracoPropertyName = umbracoPropertyAttr.AltPropertyName;
+                recursive = umbracoPropertyAttr.Recursive;
+                defaultValue = umbracoPropertyAttr.DefaultValue;
+            }
+
+            // Try fetching the value.
+            var contentProperty = contentType.GetProperty(umbracoPropertyName);
+            object propertyValue = contentProperty != null
+                                    ? contentProperty.GetValue(content, null)
+                                    : content.GetPropertyValue(umbracoPropertyName, recursive);
+
+            // Try fetching the alt value.
+            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+                && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
+            {
+                contentProperty = contentType.GetProperty(altUmbracoPropertyName);
+                propertyValue = contentProperty != null
+                                    ? contentProperty.GetValue(content, null)
+                                    : content.GetPropertyValue(altUmbracoPropertyName, recursive);
+            }
+
+            // Try setting the default value.
+            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+                && defaultValue != null)
+            {
+                propertyValue = defaultValue;
+            }
+
+            return propertyValue;
+        }
+
+        /// <summary>
+        /// Set the typed value to the given instance.
+        /// </summary>
+        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="type">The <see cref="Type"/> of items to return.</param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
+        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
+        /// <param name="propertyValue">The property value.</param>
+        /// <param name="instance">The instance to assign the value to.</param>
+        private static void SetTypedValue(IPublishedContent content, Type type, CultureInfo culture, PropertyInfo propertyInfo, object propertyValue, ref object instance)
+        {
+            // Process the value.
+            var propertyType = propertyInfo.PropertyType;
+            var typeInfo = propertyType.GetTypeInfo();
+            var isEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
+
+            // Try any custom type converters first.
+            // 1: Check the property.
+            // 2: Check any type arguments in generic enumerable types.
+            // 3: Check the type itself.
+            var converterAttribute =
+                propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
+                ?? (isEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
+                                        : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
+
+            if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
+            {
+                // Time custom conversions.
+                using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                {
+                    // Get the custom converter from the attribute and attempt to convert.
+                    var toConvert = Type.GetType(converterAttribute.ConverterTypeName);
+                    if (toConvert != null)
                     {
-                        umbracoPropertyName = umbracoPropertyAttr.PropertyName;
-                        altUmbracoPropertyName = umbracoPropertyAttr.AltPropertyName;
-                        recursive = umbracoPropertyAttr.Recursive;
-                        defaultValue = umbracoPropertyAttr.DefaultValue;
-                    }
+                        var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
 
-                    // Try fetching the value.
-                    var contentProperty = contentType.GetProperty(umbracoPropertyName);
-                    object propertyValue = contentProperty != null
-                                            ? contentProperty.GetValue(content, null)
-                                            : content.GetPropertyValue(umbracoPropertyName, recursive);
-
-                    // Try fetching the alt value.
-                    if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
-                        && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
-                    {
-                        contentProperty = contentType.GetProperty(altUmbracoPropertyName);
-                        propertyValue = contentProperty != null
-                                            ? contentProperty.GetValue(content, null)
-                                            : content.GetPropertyValue(altUmbracoPropertyName, recursive);
-                    }
-
-                    // Try setting the default value.
-                    if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
-                        && defaultValue != null)
-                    {
-                        propertyValue = defaultValue;
-                    }
-
-                    // Process the value.
-                    var propertyType = propertyInfo.PropertyType;
-                    var typeInfo = propertyType.GetTypeInfo();
-                    var isEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
-
-                    // Try any custom type converters first.
-                    // 1: Check the property.
-                    // 2: Check any type arguments in generic enumerable types.
-                    // 3: Check the type itself.
-                    var converterAttribute =
-                        propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
-                        ?? (isEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
-                                                : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
-
-                    if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
-                    {
-                        // Time custom conversions.
-                        using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                        if (converter != null)
                         {
-                            // Get the custom converter from the attribute and attempt to convert.
-                            var toConvert = Type.GetType(converterAttribute.ConverterTypeName);
-                            if (toConvert != null)
+                            // Create context to pass to converter implementations.
+                            // This contains the IPublishedContent and the currently converting property descriptor.
+                            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                            var context = new PublishedContentContext(content, descriptor);
+
+                            Type propertyValueType = null;
+                            if (propertyValue != null)
                             {
-                                var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
+                                propertyValueType = propertyValue.GetType();
+                            }
 
-                                if (converter != null)
+                            // We're deliberately passing null.
+                            // ReSharper disable once AssignNullToNotNullAttribute
+                            if (converter.CanConvertFrom(context, propertyValueType))
+                            {
+                                object converted = converter.ConvertFrom(context, culture, propertyValue);
+
+                                if (converted != null)
                                 {
-                                    // Create context to pass to converter implementations.
-                                    // This contains the IPublishedContent and the currently converting property descriptor.
-                                    var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                                    var context = new PublishedContentContext(content, descriptor);
-
-                                    Type propertyValueType = null;
-                                    if (propertyValue != null)
+                                    // Handle Typeconverters returning single objects when we want an IEnumerable.
+                                    // Use case: Someone selects a folder of images rather than a single image with the media picker.
+                                    if (isEnumerableType)
                                     {
-                                        propertyValueType = propertyValue.GetType();
-                                    }
+                                        var parameterType = typeInfo.GenericTypeArguments.First();
 
-                                    if (converter.CanConvertFrom(context, propertyValueType))
-                                    {
-                                        object converted = converter.ConvertFrom(context, culture, propertyValue);
-
-                                        if (converted != null)
+                                        // Some converters return an IEnumerable so we check again.
+                                        if (!converted.GetType().IsEnumerableType())
                                         {
-                                            // Handle Typeconverters returning single objects when we want an IEnumerable.
-                                            // Use case: Someone selects a folder of images rather than a single image with the media picker.
-                                            if (isEnumerableType)
-                                            {
-                                                var parameterType = typeInfo.GenericTypeArguments.First();
-
-                                                // Some converters return an IEnumerable so we check again.
-                                                if (!converted.GetType().IsEnumerableType())
-                                                {
-                                                    // Generate a method using 'Cast' to convert the type back to IEnumerable<T>.
-                                                    MethodInfo castMethod = typeof(Enumerable).GetMethod("Cast").MakeGenericMethod(parameterType);
-                                                    object enumerablePropertyValue = castMethod.Invoke(null, new object[] { converted.YieldSingleItem() });
-                                                    propertyInfo.SetValue(instance, enumerablePropertyValue, null);
-                                                }
-                                                else
-                                                {
-                                                    propertyInfo.SetValue(instance, converted, null);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                // Return single expected items from converters returning an IEnumerable.
-                                                if (converted.GetType().IsEnumerableType())
-                                                {
-                                                    // Generate a method using 'FirstOrDefault' to convert the type back to T.
-                                                    MethodInfo firstMethod = typeof(Enumerable)
-                                                        .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                                                        .First(
-                                                            m =>
-                                                            {
-                                                                if (m.Name != "FirstOrDefault")
-                                                                {
-                                                                    return false;
-                                                                }
-
-                                                                var parameters = m.GetParameters();
-                                                                return parameters.Length == 1
-                                                                        && parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
-                                                            })
-                                                        .MakeGenericMethod(propertyType);
-
-                                                    object singleValue = firstMethod.Invoke(null, new[] { converted });
-                                                    propertyInfo.SetValue(instance, singleValue, null);
-                                                }
-                                                else
-                                                {
-                                                    propertyInfo.SetValue(instance, converted, null);
-                                                }
-                                            }
+                                            // Generate a method using 'Cast' to convert the type back to IEnumerable<T>.
+                                            var cast = CastMethod.MakeGenericMethod(parameterType);
+                                            object enumerablePropertyValue = cast.Invoke(null, new object[] { converted.YieldSingleItem() });
+                                            propertyInfo.SetValue(instance, enumerablePropertyValue, null);
+                                        }
+                                        else
+                                        {
+                                            propertyInfo.SetValue(instance, converted, null);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Return single expected items from converters returning an IEnumerable.
+                                        if (converted.GetType().IsEnumerableType())
+                                        {
+                                            // Generate a method using 'FirstOrDefault' to convert the type back to T.
+                                            var first = FirstOrDefault.MakeGenericMethod(propertyType);
+                                            object singleValue = first.Invoke(null, new[] { converted });
+                                            propertyInfo.SetValue(instance, singleValue, null);
+                                        }
+                                        else
+                                        {
+                                            propertyInfo.SetValue(instance, converted, null);
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                    else if (propertyInfo.PropertyType == typeof(HtmlString))
-                    {
-                        // Handle Html strings so we don't have to set the attribute.
-                        HtmlStringConverter converter = new HtmlStringConverter();
+                }
+            }
+            else if (propertyInfo.PropertyType == typeof(HtmlString))
+            {
+                // Handle Html strings so we don't have to set the attribute.
+                HtmlStringConverter converter = new HtmlStringConverter();
 
-                        // This contains the IPublishedContent and the currently converting property descriptor.
-                        var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                        var context = new PublishedContentContext(content, descriptor);
+                // This contains the IPublishedContent and the currently converting property descriptor.
+                var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                var context = new PublishedContentContext(content, descriptor);
 
-                        Type propertyValueType = null;
-                        if (propertyValue != null)
-                        {
-                            propertyValueType = propertyValue.GetType();
-                        }
+                Type propertyValueType = null;
+                if (propertyValue != null)
+                {
+                    propertyValueType = propertyValue.GetType();
+                }
 
-                        if (converter.CanConvertFrom(propertyValueType))
-                        {
-                            propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
-                        }
-                    }
-                    else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
+                // We're deliberately passing null.
+                // ReSharper disable once AssignNullToNotNullAttribute
+                if (converter.CanConvertFrom(context, propertyValueType))
+                {
+                    propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
+                }
+            }
+            else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
+            {
+                // Simple types
+                propertyInfo.SetValue(instance, propertyValue, null);
+            }
+            else
+            {
+                using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                {
+                    var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
+                    if (convert.Success)
                     {
-                        // Simple types
-                        propertyInfo.SetValue(instance, propertyValue, null);
-                    }
-                    else
-                    {
-                        using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
-                        {
-                            var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
-                            if (convert.Success)
-                            {
-                                propertyInfo.SetValue(instance, convert.Result, null);
-                            }
-                        }
+                        propertyInfo.SetValue(instance, convert.Result, null);
                     }
                 }
             }
-
-            return instance;
         }
     }
 }
