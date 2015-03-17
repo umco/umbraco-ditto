@@ -243,9 +243,11 @@
                 {
                     culture = UmbracoContext.Current.PublishedContentRequest.Culture;
                 }
-
-                // fallback
-                culture = CultureInfo.CurrentCulture;
+                else
+                {
+                    // fallback
+                    culture = CultureInfo.CurrentCulture;
+                }
             }
 
             // Get the default constructor, parameters and create an instance of the type.
