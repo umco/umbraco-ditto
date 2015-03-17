@@ -439,8 +439,8 @@
                                         if (!converted.GetType().IsEnumerableType())
                                         {
                                             // Generate a method using 'Cast' to convert the type back to IEnumerable<T>.
-                                            CastMethod.MakeGenericMethod(parameterType);
-                                            object enumerablePropertyValue = CastMethod.Invoke(null, new object[] { converted.YieldSingleItem() });
+                                            var cast = CastMethod.MakeGenericMethod(parameterType);
+                                            object enumerablePropertyValue = cast.Invoke(null, new object[] { converted.YieldSingleItem() });
                                             propertyInfo.SetValue(instance, enumerablePropertyValue, null);
                                         }
                                         else
@@ -454,8 +454,8 @@
                                         if (converted.GetType().IsEnumerableType())
                                         {
                                             // Generate a method using 'FirstOrDefault' to convert the type back to T.
-                                            FirstOrDefault.MakeGenericMethod(propertyType);
-                                            object singleValue = FirstOrDefault.Invoke(null, new[] { converted });
+                                            var first = FirstOrDefault.MakeGenericMethod(propertyType);
+                                            object singleValue = first.Invoke(null, new[] { converted });
                                             propertyInfo.SetValue(instance, singleValue, null);
                                         }
                                         else
