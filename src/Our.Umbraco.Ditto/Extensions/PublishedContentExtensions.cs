@@ -236,10 +236,10 @@
             Type type,
             CultureInfo culture = null)
         {
-            // Check if the culture has been set, otherwise use from Umbraco.
+            // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
             if (culture == null)
             {
-                if (UmbracoContext.Current.PublishedContentRequest != null)
+                if (UmbracoContext.Current != null && UmbracoContext.Current.PublishedContentRequest != null)
                 {
                     culture = UmbracoContext.Current.PublishedContentRequest.Culture;
                 }
