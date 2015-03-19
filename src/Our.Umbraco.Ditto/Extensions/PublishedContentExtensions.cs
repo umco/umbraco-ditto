@@ -1,6 +1,7 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
+    using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -30,28 +31,6 @@
         /// </summary>
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PropertyCache
             = new ConcurrentDictionary<Type, PropertyInfo[]>();
-
-        /// <summary>
-        /// A method using 'Cast' to convert the type back to <see cref="IEnumerable{T}"/>.
-        /// </summary>
-        private static readonly MethodInfo CastMethod = typeof(Enumerable).GetMethod("Cast");
-
-        /// <summary>
-        /// A method using <see cref="IEnumerable{T}"/> 'FirstOrDefault' to convert the type back to T.
-        /// </summary>
-        private static readonly MethodInfo FirstOrDefault =
-            typeof(Enumerable).GetMethods(BindingFlags.Public | BindingFlags.Static).First(
-                m =>
-                {
-                    if (m.Name != "FirstOrDefault")
-                    {
-                        return false;
-                    }
-
-                    var parameters = m.GetParameters();
-                    return parameters.Length == 1
-                           && parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
-                });
 
         /// <summary>
         /// Returns the given instance of <see cref="IPublishedContent"/> as the specified type.
@@ -115,7 +94,55 @@
             where T : class
         {
             return items.As(typeof(T), documentTypeAlias, convertingType, convertedType, culture)
-                .Select(x => x as T);
+                        .Select(x => x as T);
+        }
+
+        /// <summary>
+        /// Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.
+        /// </summary>
+        /// <param name="items">
+        /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
+        /// </param>
+        /// <param name="type">
+        /// The <see cref="Type"/> of items to return.
+        /// </param>
+        /// <param name="documentTypeAlias">
+        /// The document type alias.
+        /// </param>
+        /// <param name="convertingType">
+        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// </param>
+        /// <param name="convertedType">
+        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/>.
+        /// </param>
+        /// <returns>
+        /// The resolved <see cref="IEnumerable{T}"/>.
+        /// </returns>
+        public static IEnumerable<object> As(
+            this IEnumerable<IPublishedContent> items,
+            Type type,
+            string documentTypeAlias = null,
+            Action<ConvertingTypeEventArgs> convertingType = null,
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
+        {
+            using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
+            {
+                if (string.IsNullOrWhiteSpace(documentTypeAlias))
+                {
+                    return items.Select(x => x.As(type, convertingType, convertedType, culture));
+                }
+
+                var typedItems = items
+                                .Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
+                                .Select(x => x.As(type, convertingType, convertedType, culture));
+
+                // We need to cast back here as nothing is strong typed anymore.
+                return (IEnumerable<object>)EnumerableInvocations.Cast(type, typedItems);
+            }
         }
 
         /// <summary>
@@ -189,51 +216,6 @@
                 EventHandlers.CallConvertedTypeHandler(convertedArgs);
 
                 return convertedArgs.Converted;
-            }
-        }
-
-        /// <summary>
-        /// Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.
-        /// </summary>
-        /// <param name="items">
-        /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
-        /// </param>
-        /// <param name="type">
-        /// The <see cref="Type"/> of items to return.
-        /// </param>
-        /// <param name="documentTypeAlias">
-        /// The document type alias.
-        /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
-        /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
-        /// </param>
-        /// <param name="culture">
-        /// The <see cref="CultureInfo"/>.
-        /// </param>
-        /// <returns>
-        /// The resolved <see cref="IEnumerable{T}"/>.
-        /// </returns>
-        public static IEnumerable<object> As(
-            this IEnumerable<IPublishedContent> items,
-            Type type,
-            string documentTypeAlias = null,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null,
-            CultureInfo culture = null)
-        {
-            using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
-            {
-                if (string.IsNullOrWhiteSpace(documentTypeAlias))
-                {
-                    return items.Select(x => x.As(type, convertingType, convertedType, culture));
-                }
-
-                return items
-                    .Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                    .Select(x => x.As(type, convertingType, convertedType, culture));
             }
         }
 
@@ -446,14 +428,17 @@
                                         // Some converters return an IEnumerable so we check again.
                                         if (!converted.GetType().IsEnumerableType())
                                         {
-                                            // Generate a method using 'Cast' to convert the type back to IEnumerable<T>.
-                                            var cast = CastMethod.MakeGenericMethod(parameterType);
-                                            object enumerablePropertyValue = cast.Invoke(null, new object[] { converted.YieldSingleItem() });
+                                            // Using 'Cast' to convert the type back to IEnumerable<T>.
+                                            object enumerablePropertyValue = EnumerableInvocations.Cast(
+                                                        parameterType,
+                                                        converted.YieldSingleItem());
+
                                             propertyInfo.SetValue(instance, enumerablePropertyValue, null);
                                         }
                                         else
                                         {
-                                            propertyInfo.SetValue(instance, converted, null);
+                                            // Nothing is strong typed anymore.
+                                            propertyInfo.SetValue(instance, EnumerableInvocations.Cast(parameterType, (IEnumerable)converted), null);
                                         }
                                     }
                                     else
@@ -461,9 +446,8 @@
                                         // Return single expected items from converters returning an IEnumerable.
                                         if (converted.GetType().IsEnumerableType())
                                         {
-                                            // Generate a method using 'FirstOrDefault' to convert the type back to T.
-                                            var first = FirstOrDefault.MakeGenericMethod(propertyType);
-                                            object singleValue = first.Invoke(null, new[] { converted });
+                                            // Use 'FirstOrDefault' to convert the type back to T.
+                                            object singleValue = EnumerableInvocations.FirstOrDefault(propertyType, (IEnumerable)converted);
                                             propertyInfo.SetValue(instance, singleValue, null);
                                         }
                                         else

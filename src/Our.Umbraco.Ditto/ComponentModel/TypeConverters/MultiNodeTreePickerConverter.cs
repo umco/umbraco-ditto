@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Globalization;
     using System.Linq;
 
@@ -13,10 +14,7 @@
     /// Provides a unified way of converting multi node tree picker properties to strong typed collections.
     /// Adapted from <see href="https://github.com/Jeavon/Umbraco-Core-Property-Value-Converters/blob/v2/Our.Umbraco.PropertyConverters/MultiNodeTreePickerPropertyConverter.cs"/>
     /// </summary>
-    /// <typeparam name="T">
-    /// The <see cref="Type"/> of the node to return.
-    /// </typeparam>
-    public class MultiNodeTreePickerConverter<T> : TypeConverter where T : class
+    public class MultiNodeTreePickerConverter : TypeConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -55,16 +53,23 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
+            Debug.Assert(context.PropertyDescriptor != null, "context.PropertyDescriptor != null");
+            var propertyType = context.PropertyDescriptor.PropertyType;
+            var isGenericType = propertyType.IsGenericType;
+            var targetType = isGenericType
+                                ? propertyType.GenericTypeArguments.First()
+                                : propertyType;
+
             if (value == null)
             {
-                return Enumerable.Empty<T>();
+                return EnumerableInvocations.Empty(targetType);
             }
 
             // Single IPublishedContent 
             IPublishedContent content = value as IPublishedContent;
             if (content != null)
             {
-                return content.As<T>();
+                return content.As(targetType, null, null, culture);
             }
 
             var type = value.GetType();
@@ -72,13 +77,14 @@
             // Multiple IPublishedContent 
             if (type.IsEnumerableOfType(typeof(IPublishedContent)))
             {
-                return ((IEnumerable<IPublishedContent>)value).As<T>();
+                return ((IEnumerable<IPublishedContent>)value)
+                        .As(targetType, targetType.Name, null, null, culture);
             }
 
             int[] nodeIds = { };
 
             // First try enumerable strings, ints.
-            if (type.IsEnumerableType() && type != typeof(string))
+            if (isGenericType)
             {
                 var enumerable = value as IEnumerable<string>;
                 int n;
@@ -108,7 +114,7 @@
             {
                 var umbracoHelper = ConverterHelper.UmbracoHelper;
                 var objectType = UmbracoObjectTypes.Unknown;
-                var temp = new List<T>();
+                var multiPicker = new List<object>();
 
                 // Oh so ugly if you let Resharper do this.
                 // ReSharper disable once LoopCanBeConvertedToQuery
@@ -120,12 +126,12 @@
 
                     if (item != null)
                     {
-                        temp.Add(item.As<T>());
+                        multiPicker.Add(item.As(targetType, null, null, culture));
                     }
                 }
 
                 // Don't return the list, instead return an iterator that can't be cast back and mutated.
-                return temp.YieldItems();
+                return multiPicker.YieldItems();
             }
 
             return base.ConvertFrom(context, culture, value);

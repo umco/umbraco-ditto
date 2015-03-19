@@ -2,17 +2,16 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Globalization;
+    using System.Linq;
 
     using global::Umbraco.Core.Models;
 
     /// <summary>
     /// Provides a unified way of converting content picker properties to strong typed model.
     /// </summary>
-    /// <typeparam name="T">
-    /// The <see cref="Type"/> of the object to return.
-    /// </typeparam>
-    public class ContentPickerConverter<T> : TypeConverter where T : class
+    public class ContentPickerConverter : TypeConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -53,23 +52,30 @@
                 return null;
             }
 
+            Debug.Assert(context.PropertyDescriptor != null, "context.PropertyDescriptor != null");
+            var propertyType = context.PropertyDescriptor.PropertyType;
+            var isGenericType = propertyType.IsGenericType;
+            var targetType = isGenericType
+                                ? propertyType.GenericTypeArguments.First()
+                                : propertyType;
+
             // DictionaryPublishedContent 
             IPublishedContent content = value as IPublishedContent;
             if (content != null)
             {
-                return content.As<T>();
+                return content.As(targetType, null, null, culture);
             }
 
             if (value is int)
             {
-                return this.ConvertFromInt((int)value);
+                return this.ConvertFromInt((int)value, targetType, culture);
             }
 
             int id;
             var s = value as string;
             if (s != null && int.TryParse(s, NumberStyles.Any, culture, out id))
             {
-                return this.ConvertFromInt(id);
+                return this.ConvertFromInt(id, targetType, culture);
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -80,10 +86,13 @@
         /// then converts the object to the desired type.
         /// </summary>
         /// <param name="id">The content node ID.</param>
+        /// <param name="targetType">
+        /// The property <see cref="Type"/> to convert to.</param>
+        /// <param name="culture">The <see cref="CultureInfo" /> to use as the current culture.</param>
         /// <returns>
-        /// An <see cref="T:System.Object" /> that represents the converted value.
+        /// An <see cref="T:System.Object"/> that represents the converted value.
         /// </returns>
-        private object ConvertFromInt(int id)
+        private object ConvertFromInt(int id, Type targetType, CultureInfo culture)
         {
             if (id <= 0)
             {
@@ -91,7 +100,7 @@
             }
 
             var umbracoHelper = ConverterHelper.UmbracoHelper;
-            return umbracoHelper.TypedContent(id).As<T>();
+            return umbracoHelper.TypedContent(id).As(targetType, null, null, culture);
         }
     }
 }

@@ -80,6 +80,8 @@
   <ItemGroup>
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
+    <Compile Include="Common\EnumerableInvocations.cs" />
+    <Compile Include="Common\MethodBaseCacheItem.cs" />
     <Compile Include="ComponentModel\PublishedContentContext.cs" />
     <Compile Include="ComponentModel\TypeConverters\EnumConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\MemberPickerConverter.cs" />
