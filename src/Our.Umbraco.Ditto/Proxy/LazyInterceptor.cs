@@ -1,0 +1,66 @@
+﻿namespace Our.Umbraco.Ditto
+{
+    using System;
+    using System.Collections.Generic;
+
+    /// <summary>
+    /// Intercepts virtual properties in classes.
+    /// </summary>
+    public class LazyInterceptor : IInterceptor
+    {
+        /// <summary>
+        /// The lazy dictionary.
+        /// </summary>
+        private readonly Dictionary<string, Lazy<object>> lazyDictionary = new Dictionary<string, Lazy<object>>();
+
+        /// <summary>
+        /// The base target instance from which the proxy type is derived.
+        /// </summary>
+        private readonly object target;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LazyInterceptor"/> class.
+        /// </summary>
+        /// <param name="target">
+        /// The base target instance from which the proxy type is derived.
+        /// </param>
+        /// <param name="values">
+        /// The dictionary of values containing the property name to replace and the value to replace it with.
+        /// </param>
+        public LazyInterceptor(object target, Dictionary<string, object> values)
+        {
+            this.target = target;
+
+            foreach (KeyValuePair<string, object> kp in values)
+            {
+                KeyValuePair<string, object> pair = kp;
+                this.lazyDictionary.Add(kp.Key, new Lazy<object>(() => pair.Value));
+            }
+        }
+
+        /// <summary>
+        /// Intercepts the method in the proxy to return a replaced value.
+        /// </summary>
+        /// <param name="info">
+        /// The <see cref="InvocationInfo"/> containing information about the current
+        /// invoked method or property.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/> replacing the original.
+        /// </returns>
+        public object Intercept(InvocationInfo info)
+        {
+            string key = info.TargetMethod.Name.TrimStart("get_".ToCharArray());
+
+            if (this.lazyDictionary.ContainsKey(key))
+            {
+                return this.lazyDictionary[key].Value;
+            }
+            Func<object, object[], object> baseResult =
+                (Func<object, object[], object>)
+                Delegate.CreateDelegate(typeof(Func<string, char, int>), info.TargetMethod);
+
+            return baseResult(this.target, info.Arguments);
+        }
+    }
+}

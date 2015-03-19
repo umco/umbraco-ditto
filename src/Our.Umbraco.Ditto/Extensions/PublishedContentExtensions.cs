@@ -394,6 +394,7 @@
             // Process the value.
             var propertyType = propertyInfo.PropertyType;
             var typeInfo = propertyType.GetTypeInfo();
+            var isVirtual = propertyInfo.GetAccessors()[0].IsVirtual;
             var isEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
 
             // Try any custom type converters first.
@@ -403,7 +404,7 @@
             var converterAttribute =
                 propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
                 ?? (isEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
-                                        : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
+                                     : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
 
             if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
             {
