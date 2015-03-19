@@ -17,8 +17,7 @@
             var pos = BuildVersion.LastIndexOf('.');
             var len = BuildVersion.Length - pos - 1;
             
-            var buildNumber = ("00000" + BuildVersion.Substring(pos + 1, len));
-            var buildNumberWithZeros = buildNumber.Substring(buildNumber.Length - 6);
+            var buildNumberWithZeros = BuildVersion.Substring(pos + 1, len).PadLeft(6, '0');
 
             var baseVersion = BuildVersion.Substring(0, pos);
 
