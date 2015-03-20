@@ -131,14 +131,16 @@
         {
             using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
             {
+                IEnumerable<object> typedItems;
                 if (string.IsNullOrWhiteSpace(documentTypeAlias))
                 {
-                    return items.Select(x => x.As(type, convertingType, convertedType, culture));
+                    typedItems = items.Select(x => x.As(type, convertingType, convertedType, culture));
                 }
-
-                var typedItems = items
-                                .Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                                .Select(x => x.As(type, convertingType, convertedType, culture));
+                else
+                {
+                    typedItems = items.Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
+                                      .Select(x => x.As(type, convertingType, convertedType, culture));
+                }
 
                 // We need to cast back here as nothing is strong typed anymore.
                 return (IEnumerable<object>)EnumerableInvocations.Cast(type, typedItems);
