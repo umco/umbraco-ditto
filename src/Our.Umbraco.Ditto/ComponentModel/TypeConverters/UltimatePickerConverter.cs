@@ -8,6 +8,7 @@
     using System.Linq;
 
     using global::Umbraco.Core;
+    using global::Umbraco.Core.Models;
 
     /// <summary>
     /// Provides a unified way of converting ultimate picker properties to strong typed collections.
@@ -94,7 +95,7 @@
                 if (nodeIds.Any())
                 {
                     var umbracoHelper = ConverterHelper.UmbracoHelper;
-                    var ultimatePicker = new List<object>();
+                    var ultimatePicker = new List<IPublishedContent>();
 
                     // ReSharper disable once LoopCanBeConvertedToQuery
                     foreach (var nodeId in nodeIds)
@@ -103,20 +104,18 @@
 
                         if (item != null)
                         {
-                            ultimatePicker.Add(item.As(targetType, null, null, culture));
+                            ultimatePicker.Add(item);
                         }
                     }
 
                     // CheckBoxList, ListBox
                     if (isGenericType)
                     {
-                        // Don't return the list, instead return an iterator 
-                        // that can't be cast back and mutated.
-                        return ultimatePicker.YieldItems();
+                        return ultimatePicker.As(targetType, targetType.Name, null, null, culture);
                     }
 
                     // AutoComplete, DropDownList, RadioButton
-                    return ultimatePicker.FirstOrDefault();
+                    return ultimatePicker.As(targetType, targetType.Name, null, null, culture).FirstOrDefault();
                 }
             }
 

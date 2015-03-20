@@ -114,7 +114,7 @@
             {
                 var umbracoHelper = ConverterHelper.UmbracoHelper;
                 var objectType = UmbracoObjectTypes.Unknown;
-                var multiPicker = new List<object>();
+                var multiPicker = new List<IPublishedContent>();
 
                 // Oh so ugly if you let Resharper do this.
                 // ReSharper disable once LoopCanBeConvertedToQuery
@@ -126,12 +126,11 @@
 
                     if (item != null)
                     {
-                        multiPicker.Add(item.As(targetType, null, null, culture));
+                        multiPicker.Add(item);
                     }
                 }
 
-                // Don't return the list, instead return an iterator that can't be cast back and mutated.
-                return multiPicker.YieldItems();
+                return multiPicker.As(targetType, targetType.Name, null, null, culture);
             }
 
             return base.ConvertFrom(context, culture, value);
