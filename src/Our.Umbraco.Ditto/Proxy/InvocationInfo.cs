@@ -8,7 +8,7 @@
     /// <summary>
     /// Contains information about the current method invocation.
     /// </summary>
-    public class InvocationInfo
+    internal sealed class InvocationInfo
     {
         /// <summary>
         /// The arguments.
@@ -83,13 +83,14 @@
             get { return this.trace; }
         }
 
+        // Stack trace is disabled for performance reasons.
         /// <summary>
         /// Gets the calling method.
         /// </summary>
-        public MethodInfo CallingMethod
-        {
-            get { return (MethodInfo)this.trace.GetFrame(0).GetMethod(); }
-        }
+        // public MethodInfo CallingMethod
+        // {
+        //    get { return (MethodInfo)this.trace.GetFrame(0).GetMethod(); }
+        // }
 
         /// <summary>
         /// Gets the generic type arguments.
@@ -122,6 +123,32 @@
         }
 
         /// <summary>
+        /// Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>
+        /// A string that represents the current object.
+        /// </returns>
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            // Stacktrace is disabled for performance reasons.
+            // builder.AppendFormat("Calling Method: {0}\n", this.GetMethodName(this.CallingMethod));
+            builder.AppendFormat("Target Method:{0}\n", this.GetMethodName(this.targetMethod));
+            builder.AppendLine("Arguments:");
+
+            foreach (ParameterInfo info in this.targetMethod.GetParameters())
+            {
+                object currentArgument = this.args[info.Position] ?? "(null)";
+                builder.AppendFormat("\t{0}: {1}\n", info.Name, currentArgument);
+            }
+
+            builder.AppendLine();
+
+            return builder.ToString();
+        }
+
+        /// <summary>
         /// Gets the specific method name from the <see cref="MethodInfo"/>.
         /// </summary>
         /// <param name="method">The <see cref="MethodInfo"/>.</param>
@@ -151,30 +178,6 @@
                 }
             }
             builder.Append(")");
-
-            return builder.ToString();
-        }
-
-        /// <summary>
-        /// Returns a string that represents the current object.
-        /// </summary>
-        /// <returns>
-        /// A string that represents the current object.
-        /// </returns>
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendFormat("Calling Method: {0,30:G}\n", this.GetMethodName(this.CallingMethod));
-            builder.AppendFormat("Target Method:{0,30:G}\n", this.GetMethodName(this.targetMethod));
-            builder.AppendLine("Arguments:");
-
-            foreach (ParameterInfo info in this.targetMethod.GetParameters())
-            {
-                object currentArgument = this.args[info.Position] ?? "(null)";
-                builder.AppendFormat("\t{0,10:G}: {1}\n", info.Name, currentArgument);
-            }
-
-            builder.AppendLine();
 
             return builder.ToString();
         }

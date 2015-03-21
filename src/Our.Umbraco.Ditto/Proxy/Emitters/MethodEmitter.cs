@@ -1,11 +1,13 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Reflection;
     using System.Reflection.Emit;
 
+    /// <summary>
+    /// Emits instruction for producing proxy method calls.
+    /// </summary>
     internal class MethodEmitter
     {
         /// <summary>
@@ -54,11 +56,6 @@
         /// </summary>
         private static readonly ConstructorInfo NotImplementedConstructor =
             typeof(NotImplementedException).GetConstructor(new Type[0]);
-
-        /// <summary>
-        /// The map containing output variables.
-        /// </summary>
-        private static readonly Dictionary<string, OpCode> StindMap = new StindMap();
 
         /// <summary>
         /// The argument handler.
@@ -126,11 +123,11 @@
             // Push the 'this' pointer onto the stack
             il.Emit(OpCodes.Ldarg_0);
 
-            // Push the MethodInfo onto the stack            
+            // Push the MethodInfo onto the stack
             Type declaringType = method.DeclaringType;
 
             il.Emit(OpCodes.Ldtoken, method);
-            if (declaringType.IsGenericType)
+            if (declaringType != null && declaringType.IsGenericType)
             {
                 il.Emit(OpCodes.Ldtoken, declaringType);
                 il.Emit(OpCodes.Call, GetGenericMethodFromHandle);
@@ -142,19 +139,18 @@
 
             il.Emit(OpCodes.Castclass, typeof(MethodInfo));
 
-           this.PushStackTrace(il);
-            PushGenericArguments(method, il);
-            argumentHandler.PushArguments(parameters, il, IsStatic);
+            this.PushStackTrace(il);
+            this.PushGenericArguments(method, il);
+            this.argumentHandler.PushArguments(parameters, il, IsStatic);
 
             // InvocationInfo info = new InvocationInfo(...);
-
             il.Emit(OpCodes.Newobj, InfoConstructor);
             il.Emit(OpCodes.Stloc_1);
             il.Emit(OpCodes.Ldloc_1);
             il.Emit(OpCodes.Callvirt, HandlerMethod);
 
             SaveRefArguments(il, parameters);
-            PackageReturnType(method, il);
+            this.PackageReturnType(method, il);
 
             il.Emit(OpCodes.Ret);
         }
@@ -196,7 +192,9 @@
                 var referenceInstruction = OpCodes.Ldelem_Ref;
                 il.Emit(referenceInstruction);
 
-                Type unboxedType = param.ParameterType.IsByRef ? param.ParameterType.GetElementType() : param.ParameterType;
+                Type unboxedType = param.ParameterType.IsByRef 
+                    ? param.ParameterType.GetElementType() 
+                    : param.ParameterType;
 
                 il.Emit(OpCodes.Unbox_Any, unboxedType);
 
@@ -216,19 +214,18 @@
         /// </returns>
         private static OpCode GetStindInstruction(Type parameterType)
         {
-            if (parameterType.IsClass && !parameterType.Name.EndsWith("&"))
-            {
-                return OpCodes.Stind_Ref;
-            }
-
             string typeName = parameterType.Name;
-
-            if (!StindMap.ContainsKey(typeName) && parameterType.IsByRef)
+            if (parameterType.IsClass && !typeName.EndsWith("&"))
             {
                 return OpCodes.Stind_Ref;
             }
 
-            OpCode result = StindMap[typeName];
+            if (!StindOpCodesDictionary.Instance.ContainsKey(parameterType) && parameterType.IsByRef)
+            {
+                return OpCodes.Stind_Ref;
+            }
+
+            OpCode result = StindOpCodesDictionary.Instance[parameterType];
 
             return result;
         }

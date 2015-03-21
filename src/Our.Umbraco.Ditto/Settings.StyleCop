@@ -1,6 +1,8 @@
 <StyleCopSettings Version="105">
   <GlobalSettings>
     <CollectionProperty Name="RecognizedWords">
+      <Value>opcode</Value>
+      <Value>Stind</Value>
       <Value>Umbraco</Value>
     </CollectionProperty>
   </GlobalSettings>

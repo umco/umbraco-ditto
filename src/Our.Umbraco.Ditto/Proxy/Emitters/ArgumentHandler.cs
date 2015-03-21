@@ -1,7 +1,6 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
-    using System.Collections.Generic;
     using System.Reflection;
     using System.Reflection.Emit;
 
@@ -62,29 +61,12 @@
 
                     if (param.ParameterType.IsByRef)
                     {
-                        string typeName = param.ParameterType.Name;
+                        Type type = param.ParameterType;
                         OpCode referenceInstruction = OpCodes.Ldind_Ref;
-                        Dictionary<string, OpCode> map = new Dictionary<string, OpCode>();
 
-                        map["Bool&"] = OpCodes.Ldind_I1;
-                        map["Int8&"] = OpCodes.Ldind_I1;
-                        map["Uint8&"] = OpCodes.Ldind_I1;
-
-                        map["Int16&"] = OpCodes.Ldind_I2;
-                        map["Uint16&"] = OpCodes.Ldind_I2;
-
-                        map["Uint32&"] = OpCodes.Ldind_I4;
-                        map["Int32&"] = OpCodes.Ldind_I4;
-
-                        map["IntPtr"] = OpCodes.Ldind_I4;
-                        map["Uint64&"] = OpCodes.Ldind_I8;
-                        map["Int64&"] = OpCodes.Ldind_I8;
-                        map["Float32&"] = OpCodes.Ldind_R4;
-                        map["Float64&"] = OpCodes.Ldind_R8;
-
-                        if (map.ContainsKey(typeName))
+                        if (LdindOpCodesDictionary.Instance.ContainsKey(type))
                         {
-                            referenceInstruction = map[typeName];
+                            referenceInstruction = LdindOpCodesDictionary.Instance[type];
                         }
 
                         il.Emit(referenceInstruction);

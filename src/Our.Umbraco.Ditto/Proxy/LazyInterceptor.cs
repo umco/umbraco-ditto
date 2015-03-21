@@ -34,7 +34,7 @@
             foreach (KeyValuePair<string, object> kp in values)
             {
                 KeyValuePair<string, object> pair = kp;
-                this.lazyDictionary.Add(kp.Key, new Lazy<object>(() => pair.Value));
+                this.lazyDictionary.Add(pair.Key, new Lazy<object>(() => pair.Value));
             }
         }
 
@@ -56,11 +56,8 @@
             {
                 return this.lazyDictionary[key].Value;
             }
-            Func<object, object[], object> baseResult =
-                (Func<object, object[], object>)
-                Delegate.CreateDelegate(typeof(Func<string, char, int>), info.TargetMethod);
 
-            return baseResult(this.target, info.Arguments);
+            return info.TargetMethod.Invoke(this.target, info.Arguments);
         }
     }
 }
