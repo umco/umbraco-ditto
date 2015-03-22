@@ -1,22 +1,22 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
-    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// A single proxy cache entry.
     /// </summary>
-    public struct ProxyCacheEntry
+    internal struct ProxyCacheEntry
     {
         /// <summary>
         /// The base type.
         /// </summary>
-        public Type BaseType;
+        public readonly Type BaseType;
 
         /// <summary>
         /// The interfaces.
         /// </summary>
-        public Type[] Interfaces;
+        public readonly Type[] Interfaces;
 
         /// <summary>
         /// The hash code.
@@ -45,27 +45,21 @@
             this.BaseType = baseType;
             this.Interfaces = interfaces;
 
-            if (interfaces == null || interfaces.Length == 0)
+            unchecked
             {
-                this.hashCode = baseType.GetHashCode();
-                return;
-            }
+                int h = this.BaseType.GetHashCode();
 
-            // Duplicated type exclusion
-            Dictionary<Type, object> set = new Dictionary<Type, object>(interfaces.Length + 1);
-            set[baseType] = null;
-            foreach (Type type in interfaces)
-            {
-                if (type != null)
+                if (this.Interfaces != null)
                 {
-                    set[type] = null;
+                    // Prevent type duplication.
+                    // ReSharper disable once LoopCanBeConvertedToQuery
+                    foreach (var type in this.Interfaces.Distinct())
+                    {
+                        h = (h * 397) ^ type.GetHashCode();
+                    }
                 }
-            }
 
-            this.hashCode = 0;
-            foreach (Type type in set.Keys)
-            {
-                this.hashCode ^= type.GetHashCode();
+                this.hashCode = h;
             }
         }
 
@@ -85,7 +79,7 @@
             }
 
             ProxyCacheEntry other = (ProxyCacheEntry)obj;
-            return this.hashCode == other.GetHashCode();
+            return this.hashCode == other.hashCode;
         }
 
         /// <summary>

@@ -3,7 +3,7 @@
     /// <summary>
     /// The proxy base class for interfaces.
     /// </summary>
-    public class ProxyBase
+    public class ProxyDummyBase
     {
     }
 }

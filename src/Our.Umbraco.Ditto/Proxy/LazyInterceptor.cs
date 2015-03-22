@@ -6,7 +6,7 @@
     /// <summary>
     /// Intercepts virtual properties in classes.
     /// </summary>
-    public class LazyInterceptor : IInterceptor
+    internal class LazyInterceptor : IInterceptor
     {
         /// <summary>
         /// The lazy dictionary.
@@ -50,14 +50,32 @@
         /// </returns>
         public object Intercept(InvocationInfo info)
         {
-            string key = info.TargetMethod.Name.TrimStart("get_".ToCharArray());
+            const string Getter = "get_";
+            const string Setter = "set_";
 
-            if (this.lazyDictionary.ContainsKey(key))
+            // Attempt to get the value from the lazy members.
+            var name = info.TargetMethod.Name;
+            var key = name.TrimStart(Getter.ToCharArray());
+            if (name.StartsWith(Getter))
             {
-                return this.lazyDictionary[key].Value;
+                if (this.lazyDictionary.ContainsKey(key))
+                {
+                    return this.lazyDictionary[key].Value;
+                }
             }
 
-            return info.TargetMethod.Invoke(this.target, info.Arguments);
+            // Set the value, remove the old lazy value.
+            var value = info.TargetMethod.Invoke(this.target, info.Arguments);
+            if (name.StartsWith(Setter))
+            {
+                key = name.TrimStart(Setter.ToCharArray());
+                if (this.lazyDictionary.ContainsKey(key))
+                {
+                    this.lazyDictionary.Remove(key);
+                }
+            }
+
+            return value;
         }
     }
 }

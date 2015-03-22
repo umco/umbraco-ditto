@@ -3,7 +3,7 @@
     /// <summary>
     /// The Interceptor interface defining methods for intercepting properties on a type.
     /// </summary>
-    public interface IInterceptor
+    internal interface IInterceptor
     {
         /// <summary>
         /// Intercepts the method in the proxy to return a replaced value.

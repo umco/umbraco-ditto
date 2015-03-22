@@ -431,7 +431,7 @@
             Type parentType = baseType;
             if (baseType.IsInterface)
             {
-                parentType = typeof(ProxyBase);
+                parentType = typeof(ProxyDummyBase);
                 interfaceList.Add(baseType);
             }
 

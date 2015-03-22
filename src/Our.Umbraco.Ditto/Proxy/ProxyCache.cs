@@ -6,7 +6,7 @@
     /// <summary>
     /// The proxy object cache.
     /// </summary>
-    public class ProxyCache
+    internal class ProxyCache
     {
         /// <summary>
         /// The proxy type cache.

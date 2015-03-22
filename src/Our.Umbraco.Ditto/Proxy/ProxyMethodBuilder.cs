@@ -6,6 +6,9 @@
     using System.Reflection;
     using System.Reflection.Emit;
 
+    /// <summary>
+    /// The proxy method builder.
+    /// </summary>
     internal class ProxyMethodBuilder
     {
         /// <summary>

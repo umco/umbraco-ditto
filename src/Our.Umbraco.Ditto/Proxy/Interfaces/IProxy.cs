@@ -3,7 +3,7 @@
     /// <summary>
     /// The IProxy interface defines any proxied types.
     /// </summary>
-    public interface IProxy
+    internal interface IProxy
     {
         /// <summary>
         /// Gets or sets the interceptor.
