@@ -78,7 +78,7 @@
             if (type.IsEnumerableOfType(typeof(IPublishedContent)))
             {
                 return ((IEnumerable<IPublishedContent>)value)
-                        .As(targetType, targetType.Name, null, null, culture);
+                        .As(targetType, null, null, null, culture);
             }
 
             int[] nodeIds = { };
@@ -130,7 +130,7 @@
                     }
                 }
 
-                return multiPicker.As(targetType, targetType.Name, null, null, culture);
+                return multiPicker.As(targetType, null, null, null, culture);
             }
 
             return base.ConvertFrom(context, culture, value);

@@ -111,11 +111,11 @@
                     // CheckBoxList, ListBox
                     if (isGenericType)
                     {
-                        return ultimatePicker.As(targetType, targetType.Name, null, null, culture);
+                        return ultimatePicker.As(targetType, null, null, null, culture);
                     }
 
                     // AutoComplete, DropDownList, RadioButton
-                    return ultimatePicker.As(targetType, targetType.Name, null, null, culture).FirstOrDefault();
+                    return ultimatePicker.As(targetType, null, null, null, culture).FirstOrDefault();
                 }
             }
 

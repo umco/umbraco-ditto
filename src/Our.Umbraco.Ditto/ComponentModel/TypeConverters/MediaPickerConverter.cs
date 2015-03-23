@@ -113,7 +113,7 @@
 
             // It's most likely a folder, try its children.
             // This returns an IEnumerable<T>
-            return media.Children().As(targetType, targetType.Name, null, null, culture);
+            return media.Children().As(targetType, null, null, null, culture);
         }
     }
 }
