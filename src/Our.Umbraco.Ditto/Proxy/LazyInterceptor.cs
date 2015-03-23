@@ -9,7 +9,7 @@
     internal class LazyInterceptor : IInterceptor
     {
         /// <summary>
-        /// The lazy dictionary.
+        /// The lazy dictionary containing any lazily invoked values.
         /// </summary>
         private readonly Dictionary<string, Lazy<object>> lazyDictionary = new Dictionary<string, Lazy<object>>();
 
@@ -27,14 +27,14 @@
         /// <param name="values">
         /// The dictionary of values containing the property name to replace and the value to replace it with.
         /// </param>
-        public LazyInterceptor(object target, Dictionary<string, object> values)
+        public LazyInterceptor(object target, Dictionary<string, Lazy<object>> values)
         {
             this.target = target;
 
-            foreach (KeyValuePair<string, object> kp in values)
+            foreach (KeyValuePair<string, Lazy<object>> kp in values)
             {
-                KeyValuePair<string, object> pair = kp;
-                this.lazyDictionary.Add(pair.Key, new Lazy<object>(() => pair.Value));
+                var pair = kp;
+                this.lazyDictionary.Add(pair.Key, pair.Value);
             }
         }
 
@@ -64,7 +64,7 @@
                 }
             }
 
-            // Set the value, remove the old lazy value.
+            // Get/Set the value, remove the old lazy value.
             var value = info.TargetMethod.Invoke(this.target, info.Arguments);
             if (name.StartsWith(Setter))
             {

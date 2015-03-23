@@ -309,6 +309,9 @@
                 PropertyCache.TryAdd(type, properties);
             }
 
+            // A dictionary to store lazily invoked values.
+            var virtualProperties = new Dictionary<string, Lazy<object>>();
+
             foreach (var propertyInfo in properties)
             {
                 using (DisposableTimer.DebugDuration(type, string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
@@ -323,9 +326,32 @@
                     // Get the value from Umbraco.
                     object propertyValue = GetUmbracoValue(content, propertyInfo);
 
-                    // Set the value.
-                    SetTypedValue(content, type, culture, propertyInfo, propertyValue, ref instance);
+                    // Are we looking at a virtual property?
+                    var isVirtual = propertyInfo.GetAccessors()[0].IsVirtual;
+                    if (isVirtual)
+                    {
+                        // Create a Lazy<object> to deferr returning our value. 
+                        var deferredPropertyInfo = propertyInfo;
+                        virtualProperties.Add(
+                            propertyInfo.Name,
+                            new Lazy<object>(
+                                () => GetTypedValue(content, type, culture, deferredPropertyInfo, propertyValue, instance)));
+                    }
+                    else
+                    {
+                        // Set the value normally.
+                        var result = GetTypedValue(content, type, culture, propertyInfo, propertyValue, instance);
+                        propertyInfo.SetValue(instance, result, null);
+                    }
                 }
+            }
+
+            if (virtualProperties.Any())
+            {
+                // Create a proxy instance to replace our object.
+                LazyInterceptor interceptor = new LazyInterceptor(instance, virtualProperties);
+                LazyProxyFactory factory = new LazyProxyFactory();
+                instance = factory.CreateLazyProxy(type, interceptor);
             }
 
             return instance;
@@ -389,12 +415,12 @@
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <param name="propertyValue">The property value.</param>
         /// <param name="instance">The instance to assign the value to.</param>
-        private static void SetTypedValue(IPublishedContent content, Type type, CultureInfo culture, PropertyInfo propertyInfo, object propertyValue, ref object instance)
+        private static object GetTypedValue(IPublishedContent content, Type type, CultureInfo culture, PropertyInfo propertyInfo, object propertyValue, object instance)
         {
             // Process the value.
+            object result = null;
             var propertyType = propertyInfo.PropertyType;
             var typeInfo = propertyType.GetTypeInfo();
-            var isVirtual = propertyInfo.GetAccessors()[0].IsVirtual;
             var isEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
 
             // Try any custom type converters first.
@@ -450,11 +476,11 @@
                                             // Generate a method using 'Cast' to convert the type back to IEnumerable<T>.
                                             var cast = CastMethod.MakeGenericMethod(parameterType);
                                             object enumerablePropertyValue = cast.Invoke(null, new object[] { converted.YieldSingleItem() });
-                                            propertyInfo.SetValue(instance, enumerablePropertyValue, null);
+                                            result = enumerablePropertyValue;
                                         }
                                         else
                                         {
-                                            propertyInfo.SetValue(instance, converted, null);
+                                            result = converted;
                                         }
                                     }
                                     else
@@ -465,11 +491,11 @@
                                             // Generate a method using 'FirstOrDefault' to convert the type back to T.
                                             var first = FirstOrDefault.MakeGenericMethod(propertyType);
                                             object singleValue = first.Invoke(null, new[] { converted });
-                                            propertyInfo.SetValue(instance, singleValue, null);
+                                            result = singleValue;
                                         }
                                         else
                                         {
-                                            propertyInfo.SetValue(instance, converted, null);
+                                            result = converted;
                                         }
                                     }
                                 }
@@ -497,13 +523,13 @@
                 // ReSharper disable once AssignNullToNotNullAttribute
                 if (converter.CanConvertFrom(context, propertyValueType))
                 {
-                    propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
+                    result = converter.ConvertFrom(context, culture, propertyValue);
                 }
             }
             else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
             {
                 // Simple types
-                propertyInfo.SetValue(instance, propertyValue, null);
+                result = propertyValue;
             }
             else
             {
@@ -512,10 +538,12 @@
                     var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
                     if (convert.Success)
                     {
-                        propertyInfo.SetValue(instance, convert.Result, null);
+                        result = convert.Result;
                     }
                 }
             }
+
+            return result;
         }
     }
 }

@@ -11,7 +11,7 @@
     /// The lazy proxy factory for creating proxies representing the given type with any virtual properties
     /// or methods lazily invoked.
     /// </summary>
-    public class LazyProxyFactory
+    internal class LazyProxyFactory
     {
         /// <summary>
         /// The base constructor.
