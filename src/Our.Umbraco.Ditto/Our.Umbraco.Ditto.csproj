@@ -101,20 +101,21 @@
     <Compile Include="Extensions\PublishedContentExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
-    <Compile Include="Proxy\ArgumentHandler.cs" />
+    <Compile Include="Proxy\Emitters\ArgumentHandler.cs" />
+    <Compile Include="Proxy\Emitters\LdindOpCodesDictionary.cs" />
     <Compile Include="Proxy\Interfaces\IInterceptor.cs" />
     <Compile Include="Proxy\Interfaces\IProxy.cs" />
     <Compile Include="Proxy\InvocationInfo.cs" />
     <Compile Include="Proxy\LazyInterceptor.cs" />
     <Compile Include="Proxy\LazyProxyFactory.cs" />
-    <Compile Include="Proxy\MethodEmitter.cs" />
-    <Compile Include="Proxy\ProxyBase.cs" />
+    <Compile Include="Proxy\Emitters\MethodEmitter.cs" />
+    <Compile Include="Proxy\ProxyDummyBase.cs" />
     <Compile Include="Proxy\ProxyCache.cs" />
     <Compile Include="Proxy\ProxyCacheEntry.cs" />
-    <Compile Include="Proxy\ProxyImplementor.cs" />
+    <Compile Include="Proxy\Emitters\ProxyImplementor.cs" />
     <Compile Include="Proxy\ProxyMethodBuilder.cs" />
     <Compile Include="Proxy\ProxyObjectReference.cs" />
-    <Compile Include="Proxy\StindMap.cs" />
+    <Compile Include="Proxy\Emitters\StindOpCodesDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
