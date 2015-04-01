@@ -26,7 +26,7 @@ body {
 h1, h2, h3 {
     font-family: "open_sanssemibold",Arial,Sans-Serif;
     font-weight: 400;
-    text-transform: capitalize;
+    /*text-transform: capitalize;*/
 }
 
 h1 {
