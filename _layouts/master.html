@@ -1,0 +1,79 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% if page.title %} {{ page.title }} :: {% endif %}</title>
+    <meta name="description" content="{% if page.subheading %} {{ page.subheading }} {% else %} {{ site.description }} {% endif %}" />
+
+    <link href="{{ site.baseurl }}/assets/css/responsive.min.css" rel="stylesheet" />
+    <link href="{{ site.baseurl }}/assets/css/vendor/pygments.monokai.css" rel="stylesheet" />
+    <link href="{{ site.baseurl }}/assets/css/vendor/font-awesome-4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="{{ site.baseurl }}/assets/css/docs.css" rel="stylesheet" />
+
+    <link rel="shortcut icon" href="{{ site.baseurl }}/favicon.ico?v=1" />
+</head>
+<body>
+    <nav role="navigation" class="shadow">
+        <div class="container">
+            <div class="row">
+                <a href="{{ site.baseurl }}/" rel="home">{{ site.name }}</a>
+            </div>
+        </div>
+    </nav>
+    <header role="banner">
+        <div class="container row">
+            <div class="col-s-8 col-m-9">
+                <h1>
+                    {{page.heading}}
+                    <span>{{page.subheading}}</span>
+                </h1>
+            </div>
+            <div class="col-s-3 push-s-only col-m-3 hidden-xxs hidden-xs">
+                <div class="row">
+                    <p><img src="{{site.root}}/assets/img/umbraco-ditto.png" alt="logo" /></p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main role="main">
+        {{ content }}
+    </main>
+    <footer role="contentinfo">
+        <hr>
+        <div class="container row">
+            <div class="col-s-8">
+                <p>
+                    <strong>Ditto</strong> The friendly POCO mapper for Umbraco.
+                </p>
+                <p>
+                    Licensed under <a href="http://opensource.org/licenses/MIT" rel="external" target="_blank">The MIT License</a>.
+                </p>
+            </div>
+            <div class="col-s-4">
+                <div class="clearfix">
+                    <button type="button" class="push-right to-top">Back to Top  <i class="fa fa-caret-up"></i></button>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="{{ site.baseurl }}/assets/js/vendor/jquery-2.1.3.min.js"></script>
+    <script src="{{ site.baseurl }}/assets/js/vendor/responsive.min.js"></script>
+    <script src="{{ site.baseurl }}/assets/js/site.js"></script>
+	<script src="//platform.twitter.com/widgets.js" id="twitter-wjs"></script>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i["GoogleAnalyticsObject"] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+        ga("create", "UA-122639-9");
+        ga("send", "pageview");
+
+    </script>
+    <script src="{{ site.baseurl }}/assets/js/vendor/ga-event-tracking.js"></script>
+</body>
+</html>

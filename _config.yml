@@ -1,0 +1,46 @@
+﻿# Allows the running of the site in a subdirectory on Github Pages
+# Note - if you enable this, and attempt to view your site locally you have to 
+# pass the  --baseurl parameter when serving as an empty string e.g jekyll serve --baseurl ''
+# http://jekyllrb.com/docs/github-pages/
+baseurl : ""
+relative_permalinks: false
+
+# General settings
+permalink: pretty
+markdown: kramdown
+kramdown:
+    input: GFM
+    hard_wrap: false
+    parse_block_html: true
+
+highlighter: pygments
+
+# Name of the website
+name: "Ditto"
+
+# Short description (goes below the title)
+description: "The friendly POCO mapper for Umbraco."
+
+# Your name, as you want it to appear underneath each post and in the footer
+author: "Lee Kelleher"
+
+version: "0.6.1"
+modelfactoryversion: "0.0.0"
+
+# Collections
+
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: "home"
+
+gems:
+  - jekyll-redirect-from
+
+exclude:
+  - CNAME
+  - src
+  - node_modules
+  - Gemfile*
