@@ -84,5 +84,16 @@
 
             return ids.ToArray();
         }
+
+
+        /// <summary>
+        /// Gets a value indicating if the object is null or the empty string
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>true if the value is null or string.Empty</returns>
+        public static bool IsNullOrEmptyString(object value)
+        {
+            return value == null || value as string == "";
+        }
     }
 }
