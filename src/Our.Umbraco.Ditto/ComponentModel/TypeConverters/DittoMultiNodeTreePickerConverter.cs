@@ -14,7 +14,7 @@
     /// Provides a unified way of converting multi node tree picker properties to strong typed collections.
     /// Adapted from <see href="https://github.com/Jeavon/Umbraco-Core-Property-Value-Converters/blob/v2/Our.Umbraco.PropertyConverters/MultiNodeTreePickerPropertyConverter.cs"/>
     /// </summary>
-    public class MultiNodeTreePickerConverter : TypeConverter
+    public class DittoMultiNodeTreePickerConverter : DittoBaseConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -101,7 +101,7 @@
                 {
                     int n;
                     nodeIds = XmlHelper.CouldItBeXml(s)
-                    ? ConverterHelper.GetXmlIds(s)
+                    ? GetXmlIds(s)
                     : s
                         .ToDelimitedList()
                         .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
@@ -112,7 +112,7 @@
 
             if (nodeIds.Any())
             {
-                var umbracoHelper = ConverterHelper.UmbracoHelper;
+                var umbracoHelper = UmbracoHelper;
                 var objectType = UmbracoObjectTypes.Unknown;
                 var multiPicker = new List<IPublishedContent>();
 

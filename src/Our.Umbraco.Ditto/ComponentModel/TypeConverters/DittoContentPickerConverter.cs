@@ -2,27 +2,22 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Globalization;
-    using System.Web;
+    using System.Linq;
 
-    using global::Umbraco.Core.Dynamics;
-    using global::Umbraco.Web.Templates;
+    using global::Umbraco.Core.Models;
 
     /// <summary>
-    /// Provides a unified way of converting <see cref="String"/>s to <see cref="HtmlString"/>'s.
+    /// Provides a unified way of converting content picker properties to strong typed model.
     /// </summary>
-    public class HtmlStringConverter : TypeConverter
+    public class DittoContentPickerConverter : DittoBaseConverter
     {
         /// <summary>
-        /// Returns whether this converter can convert an object of the given type to the type of this converter,
-        /// using the specified context.
+        /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
         /// </summary>
-        /// <param name="context">
-        /// An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.
-        /// </param>
-        /// <param name="sourceType">
-        /// A <see cref="T:System.Type" /> that represents the type you want to convert from.
-        /// </param>
+        /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
+        /// <param name="sourceType">A <see cref="T:System.Type" /> that represents the type you want to convert from.</param>
         /// <returns>
         /// true if this converter can perform the conversion; otherwise, false.
         /// </returns>
@@ -32,8 +27,8 @@
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (sourceType == null
                 || sourceType == typeof(string)
-                || sourceType == typeof(HtmlString)
-                || sourceType == typeof(DynamicXml))
+                || sourceType == typeof(int)
+                || typeof(IPublishedContent).IsAssignableFrom(sourceType))
             {
                 return true;
             }
@@ -57,34 +52,30 @@
                 return null;
             }
 
-            if (value is string)
+            Debug.Assert(context.PropertyDescriptor != null, "context.PropertyDescriptor != null");
+            var propertyType = context.PropertyDescriptor.PropertyType;
+            var isGenericType = propertyType.IsGenericType;
+            var targetType = isGenericType
+                                ? propertyType.GenericTypeArguments.First()
+                                : propertyType;
+
+            // DictionaryPublishedContent 
+            IPublishedContent content = value as IPublishedContent;
+            if (content != null)
             {
-                var text = value.ToString();
-
-                if (!string.IsNullOrWhiteSpace(text))
-                {
-                    var umbracoHelper = ConverterHelper.UmbracoHelper;
-                    text = umbracoHelper.ReplaceLineBreaksForHtml(text);
-                }
-
-                return new HtmlString(text);
+                return content.As(targetType, null, null, culture);
             }
 
-            if (value is HtmlString)
+            if (value is int)
             {
-                var html = value.ToString();
-
-                if (!string.IsNullOrWhiteSpace(html))
-                {
-                    html = TemplateUtilities.ParseInternalLinks(html);
-                }
-
-                return new HtmlString(html);
+                return ConvertContentFromInt((int)value, targetType, culture);
             }
 
-            if (value is DynamicXml)
+            int id;
+            var s = value as string;
+            if (s != null && int.TryParse(s, NumberStyles.Any, culture, out id))
             {
-                return ((DynamicXml)value).ToHtml();
+                return ConvertContentFromInt(id, targetType, culture);
             }
 
             return base.ConvertFrom(context, culture, value);

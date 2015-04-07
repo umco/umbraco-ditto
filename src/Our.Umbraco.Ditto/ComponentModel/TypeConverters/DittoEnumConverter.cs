@@ -12,7 +12,7 @@
     /// <summary>
     /// Provides a unified way of converting objects to an <see cref="Enum"/>.
     /// </summary>
-    public class EnumConverter : TypeConverter
+    public class DittoEnumConverter : DittoBaseConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter,

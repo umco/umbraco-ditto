@@ -450,6 +450,7 @@
                                     else
                                     {
                                         // Return single expected items from converters returning an IEnumerable.
+                                        // Check for string.
                                         if (convertedType.IsEnumerableType() && convertedType.GenericTypeArguments.Any())
                                         {
                                             // Use 'FirstOrDefault' to convert the type back to T.
@@ -470,7 +471,7 @@
             else if (propertyInfo.PropertyType == typeof(HtmlString))
             {
                 // Handle Html strings so we don't have to set the attribute.
-                HtmlStringConverter converter = new HtmlStringConverter();
+                DittoHtmlStringConverter converter = new DittoHtmlStringConverter();
 
                 // This contains the IPublishedContent and the currently converting property descriptor.
                 var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];

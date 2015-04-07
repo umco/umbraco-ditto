@@ -1,19 +1,17 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Globalization;
     using System.Linq;
 
-    using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
 
     /// <summary>
-    /// Provides a unified way of converting ultimate picker properties to strong typed collections.
+    /// Provides a unified way of converting member picker properties to strong typed model.
     /// </summary>
-    public class UltimatePickerConverter : TypeConverter
+    public class DittoMemberPickerConverter : DittoBaseConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -29,7 +27,8 @@
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (sourceType == null
                 || sourceType == typeof(string)
-                || sourceType == typeof(int))
+                || sourceType == typeof(int)
+                || typeof(IPublishedContent).IsAssignableFrom(sourceType))
             {
                 return true;
             }
@@ -48,6 +47,11 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
+            if (value == null)
+            {
+                return null;
+            }
+
             Debug.Assert(context.PropertyDescriptor != null, "context.PropertyDescriptor != null");
             var propertyType = context.PropertyDescriptor.PropertyType;
             var isGenericType = propertyType.IsGenericType;
@@ -55,68 +59,22 @@
                                 ? propertyType.GenericTypeArguments.First()
                                 : propertyType;
 
-            if (value == null)
+            var content = value as IPublishedContent;
+            if (content != null)
             {
-                if (isGenericType)
-                {
-                    return EnumerableInvocations.Empty(targetType);
-                }
-
-                return null;
+                return content.As(targetType, null, null, culture);
             }
 
-            // If a single item is selected, this comes back as an int, not a string.
             if (value is int)
             {
-                var id = (int)value;
-                var umbracoHelper = ConverterHelper.UmbracoHelper;
-
-                // CheckBoxList, ListBox
-                if (targetType != null)
-                {
-                    return umbracoHelper.TypedContent(id)
-                                        .As(targetType, null, null, culture).YieldSingleItem();
-                }
-
-                // AutoComplete, DropDownList, RadioButton
-                return umbracoHelper.TypedContent(id).As(propertyType, null, null, culture);
+                return ConvertMemberFromInt((int)value, targetType, culture);
             }
 
-            string s = value as string ?? value.ToString();
-            if (!string.IsNullOrWhiteSpace(s))
+            int id;
+            var s = value as string;
+            if (s != null && int.TryParse(s, NumberStyles.Any, culture, out id))
             {
-                int n;
-                var nodeIds = s
-                    .ToDelimitedList()
-                    .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
-                    .Where(x => x > 0)
-                    .ToArray();
-
-                if (nodeIds.Any())
-                {
-                    var umbracoHelper = ConverterHelper.UmbracoHelper;
-                    var ultimatePicker = new List<IPublishedContent>();
-
-                    // ReSharper disable once LoopCanBeConvertedToQuery
-                    foreach (var nodeId in nodeIds)
-                    {
-                        var item = umbracoHelper.TypedContent(nodeId);
-
-                        if (item != null)
-                        {
-                            ultimatePicker.Add(item);
-                        }
-                    }
-
-                    // CheckBoxList, ListBox
-                    if (isGenericType)
-                    {
-                        return ultimatePicker.As(targetType, null, null, null, culture);
-                    }
-
-                    // AutoComplete, DropDownList, RadioButton
-                    return ultimatePicker.As(targetType, null, null, null, culture).FirstOrDefault();
-                }
+                return ConvertMemberFromInt(id, targetType, culture);
             }
 
             return base.ConvertFrom(context, culture, value);
