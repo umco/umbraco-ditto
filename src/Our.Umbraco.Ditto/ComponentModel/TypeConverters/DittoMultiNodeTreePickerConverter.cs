@@ -13,7 +13,7 @@
     /// Provides a unified way of converting multi node tree picker properties to strong typed collections.
     /// Adapted from <see href="https://github.com/Jeavon/Umbraco-Core-Property-Value-Converters/blob/v2/Our.Umbraco.PropertyConverters/MultiNodeTreePickerPropertyConverter.cs"/>
     /// </summary>
-    public class DittoMultiNodeTreePickerConverter : DittoBaseConverter
+    public class DittoMultiNodeTreePickerConverter : DittoUmbracoBaseConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.

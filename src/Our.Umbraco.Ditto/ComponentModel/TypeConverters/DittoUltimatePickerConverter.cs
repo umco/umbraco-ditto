@@ -12,7 +12,7 @@
     /// <summary>
     /// Provides a unified way of converting ultimate picker properties to strong typed collections.
     /// </summary>
-    public class DittoUltimatePickerConverter : DittoBaseConverter
+    public class DittoUltimatePickerConverter : DittoUmbracoBaseConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.

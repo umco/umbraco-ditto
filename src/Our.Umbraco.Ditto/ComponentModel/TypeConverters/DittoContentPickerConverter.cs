@@ -10,7 +10,7 @@
     /// <summary>
     /// Provides a unified way of converting content picker properties to strong typed model.
     /// </summary>
-    public class DittoContentPickerConverter : DittoBaseConverter
+    public class DittoContentPickerConverter : DittoUmbracoBaseConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.

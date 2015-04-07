@@ -11,7 +11,7 @@
     /// <summary>
     /// Provides a unified way of converting multi media picker properties to strong typed collections.
     /// </summary>
-    public class DittoMultipleMediaPickerConverter : DittoBaseConverter
+    public class DittoMultipleMediaPickerConverter : DittoUmbracoBaseConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.

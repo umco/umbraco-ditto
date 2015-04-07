@@ -12,10 +12,10 @@
     using global::Umbraco.Web;
 
     /// <summary>
-    /// The Ditto base converter containing reusable properties and converting methods for <see cref="IPublishedContent"/> instances.
+    /// The Ditto Umbraco base type converter containing reusable properties and converting methods for <see cref="IPublishedContent"/> instances.
     /// All other Ditto converters should inherit from this class.
     /// </summary>
-    public abstract class DittoBaseConverter : TypeConverter
+    public abstract class DittoUmbracoBaseConverter : TypeConverter
     {
         /// <summary>
         /// Gets the <see cref="UmbracoHelper"/> for querying published content or media.

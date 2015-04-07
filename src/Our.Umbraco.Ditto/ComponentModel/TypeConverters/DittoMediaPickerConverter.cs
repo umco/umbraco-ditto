@@ -10,7 +10,7 @@
     /// <summary>
     /// Provides a unified way of converting media picker properties to strong typed model.
     /// </summary>
-    public class DittoMediaPickerConverter : DittoBaseConverter
+    public class DittoMediaPickerConverter : DittoUmbracoBaseConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
