@@ -83,7 +83,7 @@
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
     <Compile Include="ComponentModel\PublishedContentContext.cs" />
-    <Compile Include="ComponentModel\TypeConverters\DittoUmbracoBaseConverter.cs" />
+    <Compile Include="ComponentModel\TypeConverters\DittoUmbracoConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoEnumConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoMemberPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoUltimatePickerConverter.cs" />
