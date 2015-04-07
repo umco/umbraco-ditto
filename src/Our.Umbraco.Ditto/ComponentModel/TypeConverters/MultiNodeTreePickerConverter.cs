@@ -55,7 +55,7 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (value == null)
+            if (ConverterHelper.IsNullOrEmptyString(value))
             {
                 return Enumerable.Empty<T>();
             }
