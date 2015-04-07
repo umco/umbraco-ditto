@@ -415,6 +415,7 @@
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <param name="propertyValue">The property value.</param>
         /// <param name="instance">The instance to assign the value to.</param>
+        /// <returns>The strong typed converted value for the given property.</returns>
         private static object GetTypedValue(IPublishedContent content, Type type, CultureInfo culture, PropertyInfo propertyInfo, object propertyValue, object instance)
         {
             // Process the value.
