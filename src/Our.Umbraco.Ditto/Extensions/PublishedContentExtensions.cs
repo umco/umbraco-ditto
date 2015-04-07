@@ -378,7 +378,9 @@
             // Process the value.
             var propertyType = propertyInfo.PropertyType;
             var typeInfo = propertyType.GetTypeInfo();
-            var isEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
+
+            // This should return false against typeof(string) also.
+            var propertyIsEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
 
             // Try any custom type converters first.
             // 1: Check the property.
@@ -386,7 +388,7 @@
             // 3: Check the type itself.
             var converterAttribute =
                 propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
-                ?? (isEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
+                ?? (propertyIsEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
                                         : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
 
             if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
@@ -423,12 +425,14 @@
                                 {
                                     // Handle Typeconverters returning single objects when we want an IEnumerable.
                                     // Use case: Someone selects a folder of images rather than a single image with the media picker.
-                                    if (isEnumerableType)
+                                    var convertedType = converted.GetType();
+
+                                    if (propertyIsEnumerableType)
                                     {
                                         var parameterType = typeInfo.GenericTypeArguments.First();
-
+                                     
                                         // Some converters return an IEnumerable so we check again.
-                                        if (!converted.GetType().IsEnumerableType())
+                                        if (!convertedType.IsEnumerableType())
                                         {
                                             // Using 'Cast' to convert the type back to IEnumerable<T>.
                                             object enumerablePropertyValue = EnumerableInvocations.Cast(
@@ -446,7 +450,7 @@
                                     else
                                     {
                                         // Return single expected items from converters returning an IEnumerable.
-                                        if (converted.GetType().IsEnumerableType())
+                                        if (convertedType.IsEnumerableType() && convertedType.GenericTypeArguments.Any())
                                         {
                                             // Use 'FirstOrDefault' to convert the type back to T.
                                             object singleValue = EnumerableInvocations.FirstOrDefault(propertyType, (IEnumerable)converted);

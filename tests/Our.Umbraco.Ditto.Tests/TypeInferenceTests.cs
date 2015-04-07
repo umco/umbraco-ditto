@@ -74,6 +74,7 @@
         [TestCase(typeof(IEnumerable<int>), typeof(int), true)]
         [TestCase(typeof(int[]), typeof(int), true, TestName = "arrayTest Hack 2")]
         [TestCase(typeof(string), typeof(string), false)]
+        [TestCase(typeof(string), typeof(char), true)]
         [TestCase(typeof(Dictionary<string, string>), typeof(KeyValuePair<string, string>), true)]
         public void TestIsEnumerableOfType(Type input, Type argumentType, bool expected)
         {
