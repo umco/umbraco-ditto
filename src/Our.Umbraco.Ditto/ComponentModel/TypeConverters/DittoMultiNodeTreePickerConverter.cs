@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Diagnostics;
     using System.Globalization;
     using System.Linq;
 
@@ -53,7 +52,12 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            Debug.Assert(context.PropertyDescriptor != null, "context.PropertyDescriptor != null");
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (context == null || context.PropertyDescriptor == null)
+            {
+                return Enumerable.Empty<object>();
+            }
+
             var propertyType = context.PropertyDescriptor.PropertyType;
             var isGenericType = propertyType.IsGenericType;
             var targetType = isGenericType

@@ -47,12 +47,12 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (IsNullOrEmptyString(value))
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (IsNullOrEmptyString(value) || context == null || context.PropertyDescriptor == null)
             {
                 return null;
             }
 
-            Debug.Assert(context.PropertyDescriptor != null, "context.PropertyDescriptor != null");
             var propertyType = context.PropertyDescriptor.PropertyType;
             var isGenericType = propertyType.IsGenericType;
             var targetType = isGenericType

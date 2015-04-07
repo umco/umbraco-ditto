@@ -29,21 +29,23 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            Debug.Assert(context.PropertyDescriptor != null, "context.PropertyDescriptor != null");
-            var propertyType = context.PropertyDescriptor.PropertyType;
-
-            if ((propertyType.IsEnum && typeof(IConvertible).IsAssignableFrom(propertyType)) &&
-
-                // We can pass null here.
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                (sourceType == null
-                || sourceType == typeof(string)
-                || sourceType == typeof(int)
-                || sourceType.IsEnum
-                || sourceType.IsEnumerableOfType(typeof(string))
-                || sourceType == typeof(Enum[])))
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (context != null && context.PropertyDescriptor != null)
             {
-                return true;
+                var propertyType = context.PropertyDescriptor.PropertyType;
+
+                if ((propertyType.IsEnum && typeof(IConvertible).IsAssignableFrom(propertyType)) &&
+
+                    // We can pass null here.
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    (sourceType == null
+                     || sourceType == typeof(string)
+                     || sourceType == typeof(int)
+                     || sourceType.IsEnum || sourceType.IsEnumerableOfType(typeof(string))
+                     || sourceType == typeof(Enum[])))
+                {
+                    return true;
+                }
             }
 
             return base.CanConvertFrom(context, sourceType);
@@ -60,7 +62,12 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            Debug.Assert(context.PropertyDescriptor != null, "context.PropertyDescriptor != null");
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (context == null || context.PropertyDescriptor == null)
+            {
+                return null;
+            }
+
             var propertyType = context.PropertyDescriptor.PropertyType;
 
             if (IsNullOrEmptyString(value))
