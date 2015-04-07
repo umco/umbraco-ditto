@@ -52,7 +52,7 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (value == null)
+            if (IsNullOrEmptyString(value))
             {
                 return null;
             }

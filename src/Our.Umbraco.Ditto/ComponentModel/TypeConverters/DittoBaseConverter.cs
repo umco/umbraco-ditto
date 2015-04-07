@@ -33,6 +33,16 @@
         }
 
         /// <summary>
+        /// Gets a value indicating whether the <see cref="Object"/> is null or an empty <see cref="String"/>.
+        /// </summary>
+        /// <param name="value">The object to test against.</param>
+        /// <returns>True; if the value is null or an empty string; otherwise; false.</returns>
+        public static bool IsNullOrEmptyString(object value)
+        {
+            return value == null || value as string == string.Empty;
+        }
+
+        /// <summary>
         /// Takes a content node ID, gets the corresponding <see cref="T:Umbraco.Core.Models.IPublishedContent"/> object,
         /// then converts the object to the desired type.
         /// </summary>

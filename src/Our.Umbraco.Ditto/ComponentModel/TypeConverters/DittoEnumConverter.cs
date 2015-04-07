@@ -63,7 +63,7 @@
             Debug.Assert(context.PropertyDescriptor != null, "context.PropertyDescriptor != null");
             var propertyType = context.PropertyDescriptor.PropertyType;
 
-            if (value == null)
+            if (IsNullOrEmptyString(value))
             {
                 // Value types return default instance.
                 return propertyType.GetInstance();

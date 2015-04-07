@@ -55,7 +55,7 @@
                                 ? propertyType.GenericTypeArguments.First()
                                 : propertyType;
 
-            if (value == null)
+            if (IsNullOrEmptyString(value))
             {
                 return EnumerableInvocations.Empty(targetType);
             }
