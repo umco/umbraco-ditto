@@ -10,7 +10,7 @@
     /// <summary>
     /// Provides a unified way of converting member picker properties to strong typed model.
     /// </summary>
-    public class DittoMemberPickerConverter : DittoUmbracoBaseConverter
+    public class DittoMemberPickerConverter : DittoUmbracoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -47,7 +47,7 @@
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (IsNullOrEmptyString(value) || context == null || context.PropertyDescriptor == null)
+            if (this.IsNullOrEmptyString(value) || context == null || context.PropertyDescriptor == null)
             {
                 return null;
             }
@@ -66,14 +66,14 @@
 
             if (value is int)
             {
-                return ConvertMemberFromInt((int)value, targetType, culture);
+                return this.ConvertMemberFromInt((int)value, targetType, culture);
             }
 
             int id;
             var s = value as string;
             if (s != null && int.TryParse(s, NumberStyles.Any, culture, out id))
             {
-                return ConvertMemberFromInt(id, targetType, culture);
+                return this.ConvertMemberFromInt(id, targetType, culture);
             }
 
             return base.ConvertFrom(context, culture, value);

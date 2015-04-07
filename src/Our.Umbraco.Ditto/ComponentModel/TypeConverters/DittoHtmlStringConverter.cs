@@ -11,7 +11,7 @@
     /// <summary>
     /// Provides a unified way of converting <see cref="String"/>s to <see cref="HtmlString"/>'s.
     /// </summary>
-    public class DittoHtmlStringConverter : DittoUmbracoBaseConverter
+    public class DittoHtmlStringConverter : DittoUmbracoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter,
@@ -52,7 +52,7 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (IsNullOrEmptyString(value))
+            if (this.IsNullOrEmptyString(value))
             {
                 return null;
             }
@@ -63,7 +63,7 @@
 
                 if (!string.IsNullOrWhiteSpace(text))
                 {
-                    text = UmbracoHelper.ReplaceLineBreaksForHtml(text);
+                    text = this.UmbracoHelper.ReplaceLineBreaksForHtml(text);
                 }
 
                 return new HtmlString(text);

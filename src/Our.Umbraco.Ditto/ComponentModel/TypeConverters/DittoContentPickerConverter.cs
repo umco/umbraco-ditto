@@ -10,7 +10,7 @@
     /// <summary>
     /// Provides a unified way of converting content picker properties to strong typed model.
     /// </summary>
-    public class DittoContentPickerConverter : DittoUmbracoBaseConverter
+    public class DittoContentPickerConverter : DittoUmbracoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -47,7 +47,7 @@
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (IsNullOrEmptyString(value) || context == null || context.PropertyDescriptor == null)
+            if (this.IsNullOrEmptyString(value) || context == null || context.PropertyDescriptor == null)
             {
                 return null;
             }
@@ -67,14 +67,14 @@
 
             if (value is int)
             {
-                return ConvertContentFromInt((int)value, targetType, culture);
+                return this.ConvertContentFromInt((int)value, targetType, culture);
             }
 
             int id;
             var s = value as string;
             if (s != null && int.TryParse(s, NumberStyles.Any, culture, out id))
             {
-                return ConvertContentFromInt(id, targetType, culture);
+                return this.ConvertContentFromInt(id, targetType, culture);
             }
 
             return base.ConvertFrom(context, culture, value);

@@ -12,7 +12,7 @@
     /// <summary>
     /// Provides a unified way of converting ultimate picker properties to strong typed collections.
     /// </summary>
-    public class DittoUltimatePickerConverter : DittoUmbracoBaseConverter
+    public class DittoUltimatePickerConverter : DittoUmbracoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -60,7 +60,7 @@
                                 ? propertyType.GenericTypeArguments.First()
                                 : propertyType;
 
-            if (IsNullOrEmptyString(value))
+            if (this.IsNullOrEmptyString(value))
             {
                 if (isGenericType)
                 {
@@ -74,7 +74,7 @@
             if (value is int)
             {
                 var id = (int)value;
-                var umbracoHelper = UmbracoHelper;
+                var umbracoHelper = this.UmbracoHelper;
 
                 // CheckBoxList, ListBox
                 if (targetType != null)
@@ -87,40 +87,43 @@
                 return umbracoHelper.TypedContent(id).As(propertyType, null, null, culture);
             }
 
-            string s = value as string ?? value.ToString();
-            if (!string.IsNullOrWhiteSpace(s))
+            if (value != null)
             {
-                int n;
-                var nodeIds = s
-                    .ToDelimitedList()
-                    .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
-                    .Where(x => x > 0)
-                    .ToArray();
-
-                if (nodeIds.Any())
+                string s = value as string ?? value.ToString();
+                if (!string.IsNullOrWhiteSpace(s))
                 {
-                    var umbracoHelper = UmbracoHelper;
-                    var ultimatePicker = new List<IPublishedContent>();
+                    int n;
+                    var nodeIds = s
+                        .ToDelimitedList()
+                        .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
+                        .Where(x => x > 0)
+                        .ToArray();
 
-                    // ReSharper disable once LoopCanBeConvertedToQuery
-                    foreach (var nodeId in nodeIds)
+                    if (nodeIds.Any())
                     {
-                        var item = umbracoHelper.TypedContent(nodeId);
+                        var umbracoHelper = this.UmbracoHelper;
+                        var ultimatePicker = new List<IPublishedContent>();
 
-                        if (item != null)
+                        // ReSharper disable once LoopCanBeConvertedToQuery
+                        foreach (var nodeId in nodeIds)
                         {
-                            ultimatePicker.Add(item);
+                            var item = umbracoHelper.TypedContent(nodeId);
+
+                            if (item != null)
+                            {
+                                ultimatePicker.Add(item);
+                            }
                         }
-                    }
 
-                    // CheckBoxList, ListBox
-                    if (isGenericType)
-                    {
-                        return ultimatePicker.As(targetType, null, null, null, culture);
-                    }
+                        // CheckBoxList, ListBox
+                        if (isGenericType)
+                        {
+                            return ultimatePicker.As(targetType, null, null, null, culture);
+                        }
 
-                    // AutoComplete, DropDownList, RadioButton
-                    return ultimatePicker.As(targetType, null, null, null, culture).FirstOrDefault();
+                        // AutoComplete, DropDownList, RadioButton
+                        return ultimatePicker.As(targetType, null, null, null, culture).FirstOrDefault();
+                    }
                 }
             }
 

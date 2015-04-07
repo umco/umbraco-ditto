@@ -15,12 +15,12 @@
     /// The Ditto Umbraco base type converter containing reusable properties and converting methods for <see cref="IPublishedContent"/> instances.
     /// All other Ditto converters should inherit from this class.
     /// </summary>
-    public abstract class DittoUmbracoBaseConverter : TypeConverter
+    public abstract class DittoUmbracoConverter : TypeConverter
     {
         /// <summary>
         /// Gets the <see cref="UmbracoHelper"/> for querying published content or media.
         /// </summary>
-        public static UmbracoHelper UmbracoHelper
+        protected virtual UmbracoHelper UmbracoHelper
         {
             get
             {
@@ -37,7 +37,7 @@
         /// </summary>
         /// <param name="value">The object to test against.</param>
         /// <returns>True; if the value is null or an empty string; otherwise; false.</returns>
-        public static bool IsNullOrEmptyString(object value)
+        protected virtual bool IsNullOrEmptyString(object value)
         {
             return value == null || value as string == string.Empty;
         }
@@ -53,14 +53,14 @@
         /// <returns>
         /// An <see cref="T:System.Object"/> that represents the converted value.
         /// </returns>
-        public static object ConvertContentFromInt(int id, Type targetType, CultureInfo culture)
+        protected virtual object ConvertContentFromInt(int id, Type targetType, CultureInfo culture)
         {
             if (id <= 0)
             {
                 return null;
             }
 
-            return UmbracoHelper.TypedContent(id).As(targetType, null, null, culture);
+            return this.UmbracoHelper.TypedContent(id).As(targetType, null, null, culture);
         }
 
         /// <summary>
@@ -74,14 +74,14 @@
         /// <returns>
         /// An <see cref="T:System.Object"/> that represents the converted value.
         /// </returns>
-        public static object ConvertMediaFromInt(int id, Type targetType, CultureInfo culture)
+        protected virtual object ConvertMediaFromInt(int id, Type targetType, CultureInfo culture)
         {
             if (id <= 0)
             {
                 return null;
             }
 
-            var media = UmbracoHelper.TypedMedia(id);
+            var media = this.UmbracoHelper.TypedMedia(id);
 
             // Ensure we are actually returning a media file.
             if (media.HasProperty(Constants.Conventions.Media.File))
@@ -105,14 +105,14 @@
         /// <returns>
         /// An <see cref="T:System.Object"/> that represents the converted value.
         /// </returns>
-        public static object ConvertMemberFromInt(int id, Type targetType, CultureInfo culture)
+        protected virtual object ConvertMemberFromInt(int id, Type targetType, CultureInfo culture)
         {
             if (id <= 0)
             {
                 return null;
             }
 
-            return UmbracoHelper.TypedMember(id).As(targetType, null, null, culture);
+            return this.UmbracoHelper.TypedMember(id).As(targetType, null, null, culture);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@
         /// </summary>
         /// <param name="xml">The Xml</param>
         /// <returns>An array of node ids as integer.</returns>
-        public static int[] GetXmlIds(string xml)
+        protected virtual int[] GetXmlIds(string xml)
         {
             var ids = new List<int>();
 

@@ -11,7 +11,7 @@
     /// <summary>
     /// Provides a unified way of converting objects to an <see cref="Enum"/>.
     /// </summary>
-    public class DittoEnumConverter : DittoUmbracoBaseConverter
+    public class DittoEnumConverter : DittoUmbracoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter,
@@ -69,7 +69,7 @@
 
             var propertyType = context.PropertyDescriptor.PropertyType;
 
-            if (IsNullOrEmptyString(value))
+            if (this.IsNullOrEmptyString(value))
             {
                 // Value types return default instance.
                 return propertyType.GetInstance();
@@ -105,30 +105,33 @@
                 }
             }
 
-            var valueType = value.GetType();
-            if (valueType.IsEnum)
+            if (value != null)
             {
-                // This should work for most cases where enums base type is int.
-                return Enum.ToObject(propertyType, Convert.ToInt64(value, culture));
-            }
-
-            if (valueType.IsEnumerableOfType(typeof(string)))
-            {
-                long convertedValue = 0;
-                var enumerable = ((IEnumerable<string>)value).ToList();
-
-                if (enumerable.Any())
+                var valueType = value.GetType();
+                if (valueType.IsEnum)
                 {
-                    // ReSharper disable once LoopCanBeConvertedToQuery
-                    foreach (string v in enumerable)
-                    {
-                        convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), culture);
-                    }
-
-                    return Enum.ToObject(propertyType, convertedValue);
+                    // This should work for most cases where enums base type is int.
+                    return Enum.ToObject(propertyType, Convert.ToInt64(value, culture));
                 }
 
-                return propertyType.GetInstance();
+                if (valueType.IsEnumerableOfType(typeof(string)))
+                {
+                    long convertedValue = 0;
+                    var enumerable = ((IEnumerable<string>)value).ToList();
+
+                    if (enumerable.Any())
+                    {
+                        // ReSharper disable once LoopCanBeConvertedToQuery
+                        foreach (string v in enumerable)
+                        {
+                            convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), culture);
+                        }
+
+                        return Enum.ToObject(propertyType, convertedValue);
+                    }
+
+                    return propertyType.GetInstance();
+                }
             }
 
             var enums = value as Enum[];

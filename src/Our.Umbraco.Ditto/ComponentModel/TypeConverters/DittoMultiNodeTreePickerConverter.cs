@@ -13,7 +13,7 @@
     /// Provides a unified way of converting multi node tree picker properties to strong typed collections.
     /// Adapted from <see href="https://github.com/Jeavon/Umbraco-Core-Property-Value-Converters/blob/v2/Our.Umbraco.PropertyConverters/MultiNodeTreePickerPropertyConverter.cs"/>
     /// </summary>
-    public class DittoMultiNodeTreePickerConverter : DittoUmbracoBaseConverter
+    public class DittoMultiNodeTreePickerConverter : DittoUmbracoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -64,7 +64,7 @@
                                 ? propertyType.GenericTypeArguments.First()
                                 : propertyType;
 
-            if (IsNullOrEmptyString(value))
+            if (this.IsNullOrEmptyString(value))
             {
                 return EnumerableInvocations.Empty(targetType);
             }
@@ -76,13 +76,16 @@
                 return content.As(targetType, null, null, culture);
             }
 
-            var type = value.GetType();
-
-            // Multiple IPublishedContent 
-            if (type.IsEnumerableOfType(typeof(IPublishedContent)))
+            if (value != null)
             {
-                return ((IEnumerable<IPublishedContent>)value)
+                var type = value.GetType();
+
+                // Multiple IPublishedContent 
+                if (type.IsEnumerableOfType(typeof(IPublishedContent)))
+                {
+                    return ((IEnumerable<IPublishedContent>)value)
                         .As(targetType, null, null, null, culture);
+                }
             }
 
             int[] nodeIds = { };
@@ -92,31 +95,38 @@
             {
                 var enumerable = value as IEnumerable<string>;
                 int n;
-                nodeIds = enumerable != null
-                ? enumerable.Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1).ToArray()
-                : ((IEnumerable<int>)value).ToArray();
+                if (value != null)
+                {
+                    nodeIds = enumerable != null
+                    ? enumerable.Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
+                                .ToArray()
+                    : ((IEnumerable<int>)value).ToArray();
+                }
             }
 
             // Now csv strings.
             if (!nodeIds.Any())
             {
-                var s = value as string ?? value.ToString();
-                if (!string.IsNullOrWhiteSpace(s))
+                if (value != null)
                 {
-                    int n;
-                    nodeIds = XmlHelper.CouldItBeXml(s)
-                    ? GetXmlIds(s)
-                    : s
+                    var s = value as string ?? value.ToString();
+                    if (!string.IsNullOrWhiteSpace(s))
+                    {
+                        int n;
+                        nodeIds = XmlHelper.CouldItBeXml(s)
+                        ? this.GetXmlIds(s)
+                        : s
                         .ToDelimitedList()
                         .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
                         .Where(x => x > 0)
                         .ToArray();
+                    }
                 }
             }
 
             if (nodeIds.Any())
             {
-                var umbracoHelper = UmbracoHelper;
+                var umbracoHelper = this.UmbracoHelper;
                 var objectType = UmbracoObjectTypes.Unknown;
                 var multiPicker = new List<IPublishedContent>();
 

@@ -11,7 +11,7 @@
     /// <summary>
     /// Provides a unified way of converting multi media picker properties to strong typed collections.
     /// </summary>
-    public class DittoMultipleMediaPickerConverter : DittoUmbracoBaseConverter
+    public class DittoMultipleMediaPickerConverter : DittoUmbracoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -59,7 +59,7 @@
                                 ? propertyType.GenericTypeArguments.First()
                                 : propertyType;
 
-            if (IsNullOrEmptyString(value))
+            if (this.IsNullOrEmptyString(value))
             {
                 return EnumerableInvocations.Empty(targetType);
             }
@@ -69,7 +69,7 @@
             if (content != null)
             {
                 // Use the id so we get folder sanitation.
-                return ConvertMediaFromInt(content.Id, targetType, culture);
+                return this.ConvertMediaFromInt(content.Id, targetType, culture);
             }
 
             // If a single item is selected, this is passed as an int, not a string.
@@ -96,7 +96,7 @@
 
                 if (nodeIds.Any())
                 {
-                    multiMediaPicker = nodeIds.ForEach(i => ConvertMediaFromInt(i, targetType, culture));
+                    multiMediaPicker = nodeIds.ForEach(i => this.ConvertMediaFromInt(i, targetType, culture));
                 }
 
                 return multiMediaPicker;
