@@ -102,8 +102,7 @@
                 return null;
             }
 
-            var umbracoHelper = ConverterHelper.UmbracoHelper;
-            return umbracoHelper.TypedMember(id).As(targetType, null, null, culture);
+            return UmbracoHelper.TypedMember(id).As(targetType, null, null, culture);
         }
 
         /// <summary>
