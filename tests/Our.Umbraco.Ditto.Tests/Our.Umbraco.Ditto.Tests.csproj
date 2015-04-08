@@ -216,6 +216,7 @@
     <Compile Include="Mocks\PublishedContentMock.cs" />
     <Compile Include="Mocks\PublishedContentPropertyMock.cs" />
     <Compile Include="SampleTest.cs" />
+    <Compile Include="Models\SimpleModel.cs" />
     <Compile Include="TypeInferenceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnumerableTests.cs" />
