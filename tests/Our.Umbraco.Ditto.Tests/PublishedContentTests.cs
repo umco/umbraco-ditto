@@ -73,5 +73,28 @@
             Assert.That(model.MyProperty, Is.Not.EqualTo(value));
             Assert.That(model.MyProperty, Is.EqualTo(value.ToString()));
         }
+
+        [Test]
+        public void Complex_Property_Convertered()
+        {
+            var value = ContentBuilder.Default().Build();
+
+            var prop = PropertyBuilder.Default("myprop", value).Build();
+
+            var content = ContentBuilder.Default()
+                .WithId(1234)
+                .AddProperty(prop)
+                .Build();
+
+            var model = content.As<ComplexModel>();
+
+            Assert.That(model.Id, Is.EqualTo(1234));
+
+            Assert.That(model.MyProperty, Is.EqualTo(value));
+            
+            Assert.That(model.MyPublishedContent, Is.InstanceOf<IPublishedContent>());
+            Assert.That(model.MyPublishedContent.Id, Is.EqualTo(1234));
+            Assert.That(model.MyPublishedContent.Name, Is.EqualTo("Mock Published Content"));
+        }
     }
 }
