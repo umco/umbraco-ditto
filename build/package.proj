@@ -76,24 +76,12 @@
 		<ArtifactsDir>$(RootDir)\artifacts</ArtifactsDir>
 		<CoreProjectDir>$(RootDir)\src\Our.Umbraco.Ditto</CoreProjectDir>
 	</PropertyGroup>
-	
-	<!-- MODEL FACTORY PROPERTIES -->
-	<PropertyGroup>
-		<ModelFactoryPackageId>Our.Umbraco.Ditto.ModelFactory</ModelFactoryPackageId>
-		<ModelFactoryPackageName>Ditto ModelFactory</ModelFactoryPackageName>
-		<ModelFactoryVersion>0.1.0</ModelFactoryVersion>
-		<ModelFactoryProjectDir>$(RootDir)\src\Our.Umbraco.Ditto.ModelFactory</ModelFactoryProjectDir>
-		<ModelFactoryReadme>An IPublishedContentModelFactory for Ditto - the friendly POCO mapper for Umbraco 7.1.4+</ModelFactoryReadme>
-	</PropertyGroup>
 
 	<!-- TARGETS -->
 	<Target Name="GetProductVersion">
 		<Error Condition="$(AbortBuild) == 'true'" Text="Aborting the build as the UMBRACO_PACKAGE_PRERELEASE_SUFFIX suffix is set 'rtm' but APPVEYOR_REPO_TAG is not 'true'" />
 		<GetProductVersion BuildVersion="$(APPVEYOR_BUILD_VERSION)" BuildSuffix="$(UMBRACO_PACKAGE_PRERELEASE_SUFFIX)" Release="$(Release)">
 			<Output TaskParameter="ProductVersion" PropertyName="ProductVersion"/>
-		</GetProductVersion>
-		<GetProductVersion BuildVersion="$(ModelFactoryVersion).$(APPVEYOR_BUILD_NUMBER)" BuildSuffix="$(UMBRACO_PACKAGE_PRERELEASE_SUFFIX)" Release="$(Release)">
-			<Output TaskParameter="ProductVersion" PropertyName="ModelFactoryProductVersion"/>
 		</GetProductVersion>
 	</Target>
 
@@ -110,65 +98,46 @@
 	<!-- UPDATE PROJECT ASSEMBLEY VERSION -->
 	<Target Name="UpdateAssemblyInfo" DependsOnTargets="Clean">
 		<ItemGroup>
-			<CoreVersionMajor Include="$(ProductVersion.Split('.')[0])" />
-			<CoreVersionMinor Include="$(ProductVersion.Split('.')[1])" />
-			<ModelFactoryVersionMajor Include="$(ModelFactoryProductVersion.Split('.')[0])" />
-			<ModelFactoryVersionMinor Include="$(ModelFactoryProductVersion.Split('.')[1])" />
+			<VersionMajor Include="$(ProductVersion.Split('.')[0])" />
+			<VersionMinor Include="$(ProductVersion.Split('.')[1])" />
 		</ItemGroup>
 		<AssemblyInfo CodeLanguage="CS"
 			OutputFile="$(CoreProjectDir)\Properties\VersionInfo.cs"
-			AssemblyVersion="@(CoreVersionMajor).@(CoreVersionMinor).*"
+			AssemblyVersion="@(VersionMajor).@(VersionMinor).*"
 			AssemblyInformationalVersion="$(ProductVersion)"/>
-		<AssemblyInfo CodeLanguage="CS"
-			OutputFile="$(ModelFactoryProjectDir)\Properties\VersionInfo.cs"
-			AssemblyVersion="@(ModelFactoryVersionMajor).@(ModelFactoryVersionMinor).*"
-			AssemblyInformationalVersion="$(ModelFactoryProductVersion)"/>
 	</Target>
 
 	<!-- COMPILE -->
 	<Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
 		<MSBuild Projects="$(CoreProjectDir)\Our.Umbraco.Ditto.csproj" Properties="Configuration=$(BuildConfig)" />
-		<MSBuild Projects="$(ModelFactoryProjectDir)\Our.Umbraco.Ditto.ModelFactory.csproj" Properties="Configuration=$(BuildConfig)" />
 		<MSBuild Projects="$(RootDir)\tests\Our.Umbraco.Ditto.Tests\Our.Umbraco.Ditto.Tests.csproj" Properties="Configuration=$(BuildConfig)" />
 	</Target>
 
 	<!-- PREPARE FILES -->
 	<Target Name="PrepareFiles" DependsOnTargets="Compile">
 		<ItemGroup>
-			<CoreBinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.Ditto.dll" />
-			<CorePdbFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.Ditto.pdb" />
-			<CoreSrcFiles Include="$(CoreProjectDir)\**\*.cs" Exclude="$(CoreProjectDir)\obj\**"/>
-			<ModelFactoryBinFiles Include="$(ModelFactoryProjectDir)\bin\$(BuildConfig)\Our.Umbraco.Ditto.ModelFactory.dll" />
-			<ModelFactoryPdbFiles Include="$(ModelFactoryProjectDir)\bin\$(BuildConfig)\Our.Umbraco.Ditto.ModelFactory.pdb" />
-			<ModelFactorySrcFiles Include="$(ModelFactoryProjectDir)\**\*.cs" Exclude="$(ModelFactoryProjectDir)\obj\**"/>
+			<BinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.Ditto.dll" />
+			<PdbFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.Ditto.pdb" />
+			<SrcFiles Include="$(CoreProjectDir)\**\*.cs" Exclude="$(CoreProjectDir)\obj\**"/>
 			<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
 			<NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
 		</ItemGroup>
-		
-		<Copy SourceFiles="@(CoreBinFiles)" DestinationFolder="$(BuildUmbDir)\core\bin" />
-		<Copy SourceFiles="@(CoreBinFiles)" DestinationFolder="$(BuildNuGetDir)\core\lib\net45" />
-		<Copy SourceFiles="@(CorePdbFiles)" DestinationFolder="$(BuildNuGetDir)\core\lib\net45" />
-		<Copy SourceFiles="@(CoreSrcFiles)" DestinationFiles="@(CoreSrcFiles->'$(BuildNuGetDir)\core\src\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)\core" />
-		<Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)\core" />
-		
-		<Copy SourceFiles="@(ModelFactoryBinFiles)" DestinationFolder="$(BuildUmbDir)\model-factory\bin" />
-		<Copy SourceFiles="@(ModelFactoryBinFiles)" DestinationFolder="$(BuildNuGetDir)\model-factory\lib\net45" />
-		<Copy SourceFiles="@(ModelFactoryPdbFiles)" DestinationFolder="$(BuildNuGetDir)\model-factory\lib\net45" />
-		<Copy SourceFiles="@(ModelFactorySrcFiles)" DestinationFiles="@(ModelFactorySrcFiles->'$(BuildNuGetDir)\model-factory\src\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)\model-factory" />
-		<Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)\model-factory" />
+		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
+		<Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)" />
+		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
+		<Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
+		<Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
 	</Target>
 
 	<!-- MANIFEST UMBRACO -->
 	<Target Name="ManifestUmbraco" DependsOnTargets="PrepareFiles">
 		<ItemGroup>
-			<CoreManifestFiles Include="$(BuildUmbDir)\core\**\*" Exclude="$(BuildUmbDir)\core\package.xml" />
-			<ModelFactoryManifestFiles Include="$(BuildUmbDir)\model-factory\**\*" Exclude="$(BuildUmbDir)\model-factory\package.xml" />
+			<ManifestFiles Include="$(BuildUmbDir)\**\*" Exclude="$(BuildUmbDir)\package.xml" />
 		</ItemGroup>
 		<ManifestUpdate
-			ManifestFile="$(BuildUmbDir)\core\package.xml"
-			WorkingDirectory="$(BuildUmbDir)\core"
+			ManifestFile="$(BuildUmbDir)\package.xml"
+			WorkingDirectory="$(BuildUmbDir)"
 			MinimumRequiredUmbracoVersion="$(MinUmbracoVersion)"
 			PackageName="$(PackageName)"
 			PackageVersion="$(ProductVersion)"
@@ -178,36 +147,22 @@
 			PackageLicenseName="$(PackageLicenseName)"
 			PackageLicenseUrl="$(PackageLicenseUrl)"
 			PackageUrl="$(ProjectUrl)"
-			Files="@(CoreManifestFiles)" />
-		<ManifestUpdate
-			ManifestFile="$(BuildUmbDir)\model-factory\package.xml"
-			WorkingDirectory="$(BuildUmbDir)\model-factory"
-			MinimumRequiredUmbracoVersion="7.1.4"
-			PackageName="$(ModelFactoryPackageName)"
-			PackageVersion="$(ModelFactoryProductVersion)"
-			AuthorName="$(AuthorName)"
-			AuthorUrl="$(AuthorUrl)"
-			Readme="$(ModelFactoryReadme)"
-			PackageLicenseName="$(PackageLicenseName)"
-			PackageLicenseUrl="$(PackageLicenseUrl)"
-			PackageUrl="$(ProjectUrl)"
-			Files="@(ModelFactoryManifestFiles)" />
+			Files="@(ManifestFiles)" />
 	</Target>
 
 	<!-- MANIFEST FOR NUGET PACKAGE -->
 	<Target Name="ManifestNuGet" DependsOnTargets="PrepareFiles">
 		<ItemGroup>
-			<CoreManifestFiles Include="$(BuildNuGetDir)\core\**\*" Exclude="$(BuildNuGetDir)\core\package.nuspec" />
-			<ModelFactoryManifestFiles Include="$(BuildNuGetDir)\model-factory\**\*" Exclude="$(BuildNuGetDir)\model-factory\package.nuspec" />
+			<ManifestFiles Include="$(BuildNuGetDir)\**\*" Exclude="$(BuildNuGetDir)\package.nuspec" />
 		</ItemGroup>
 		<MSBuild.NuGet.Tasks.ManifestUpdate
-			ManifestFile="$(BuildNuGetDir)\core\package.nuspec"
-			WorkingDirectory="$(BuildNuGetDir)\core"
+			ManifestFile="$(BuildNuGetDir)\package.nuspec"
+			WorkingDirectory="$(BuildNuGetDir)"
 			Title="$(PackageName)"
 			Description="$(Readme)"
 			Summary="$(Readme)"
 			Version="$(ProductVersion)"
-			MinimumRequiredUmbracoVersion="$(MinUmbracoVersion)"
+			MinimumRequiredUmbracoVersion ="$(MinUmbracoVersion)"
 			Authors="$(AuthorName)"
 			Owners="$(Owners)"
 			Copyright="$(Copyright)"
@@ -218,56 +173,24 @@
 			Language="$(Language)"
 			RequireLicenseAcceptance="$(RequireLicenseAcceptance)"
 			Tags="$(Tags)"
-			Files="@(CoreManifestFiles)" />
-		<MSBuild.NuGet.Tasks.ManifestUpdate
-			ManifestFile="$(BuildNuGetDir)\model-factory\package.nuspec"
-			WorkingDirectory="$(BuildNuGetDir)\model-factory"
-			Title="$(ModelFactoryPackageName)"
-			Description="$(ModelFactoryReadme)"
-			Summary="$(ModelFactoryReadme)"
-			Version="$(ModelFactoryProductVersion)"
-			MinimumRequiredUmbracoVersion="7.1.4"
-			Authors="$(AuthorName)"
-			Owners="$(Owners)"
-			Copyright="$(Copyright)"
-			LicenseUrl="$(PackageLicenseUrl)"
-			ProjectUrl="$(ProjectUrl)"
-			Id="$(ModelFactoryPackageId)"
-			IconUrl="$(IconUrl)"
-			Language="$(Language)"
-			RequireLicenseAcceptance="$(RequireLicenseAcceptance)"
-			Tags="$(Tags) model-factory"
-			Files="@(ModelFactoryManifestFiles)" />
+			Files="@(ManifestFiles)" />
 	</Target>
 
 	<!-- PACKAGE -->
 	<Target Name="Package" DependsOnTargets="ManifestUmbraco; ManifestNuGet">
 		<ItemGroup>
-			<CorePackageFiles Include="$(BuildUmbDir)\core\**\*.*" />
-			<ModelFactoryPackageFiles Include="$(BuildUmbDir)\model-factory\**\*.*" />
+			<PackageFiles Include="$(BuildUmbDir)\**\*.*" />
 		</ItemGroup>
 
-		<Package ManifestFile="$(BuildUmbDir)\core\package.xml"
-			WorkingDirectory="$(BuildUmbDir)\core"
+		<Package ManifestFile="$(BuildUmbDir)\Package.xml"
+			WorkingDirectory="$(BuildUmbDir)"
 			OutputDirectory="$(ArtifactsDir)"
-			Files="@(CorePackageFiles)" />
-
-		<Package ManifestFile="$(BuildUmbDir)\model-factory\package.xml"
-			WorkingDirectory="$(BuildUmbDir)\model-factory"
-			OutputDirectory="$(ArtifactsDir)"
-			Files="@(ModelFactoryPackageFiles)" />
+			Files="@(PackageFiles)" />
 
 		<MSBuild.NuGet.Tasks.Pack NuGetExePath="$(RootDir)\src\.nuget\NuGet.exe"
-			ManifestFile="$(BuildNuGetDir)\core\package.nuspec"
-			BasePath="$(BuildNuGetDir)\core"
+			ManifestFile="$(BuildNuGetDir)\package.nuspec"
+			BasePath="$(BuildNuGetDir)"
 			Version="$(ProductVersion)"
-			OutputDirectory="$(ArtifactsDir)"
-			Symbols="true" />
-
-		<MSBuild.NuGet.Tasks.Pack NuGetExePath="$(RootDir)\src\.nuget\NuGet.exe"
-			ManifestFile="$(BuildNuGetDir)\model-factory\package.nuspec"
-			BasePath="$(BuildNuGetDir)\model-factory"
-			Version="$(ModelFactoryProductVersion)"
 			OutputDirectory="$(ArtifactsDir)"
 			Symbols="true" />
 
