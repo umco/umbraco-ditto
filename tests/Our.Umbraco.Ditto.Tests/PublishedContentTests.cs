@@ -8,7 +8,7 @@ using Umbraco.Web;
 namespace Our.Umbraco.Ditto.Tests
 {
 	[TestFixture]
-	public class SampleTest
+	public class PublishedContentTests
 	{
 		[Test]
 		public void Name_IsMapped()
