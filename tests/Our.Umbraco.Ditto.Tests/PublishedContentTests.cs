@@ -1,66 +1,77 @@
-﻿using System.Linq;
-using Lucene.Net.Store;
-using NUnit.Framework;
-using Our.Umbraco.Ditto.Tests.Mocks;
-using Umbraco.Core.Models;
-using Umbraco.Web;
-
-namespace Our.Umbraco.Ditto.Tests
+﻿namespace Our.Umbraco.Ditto.Tests
 {
-	[TestFixture]
-	public class PublishedContentTests
-	{
-		[Test]
-		public void Name_IsMapped()
-		{
-			var name = "MyCustomName";
-			var content = ContentBuilder.Default()
-				.WithName(name)
-				.Build();
+    using System.Linq;
 
-			//Do your Ditto magic here, and assert it maps as it should
-			Assert.That(content.Name, Is.EqualTo(name));
-		}
+    using NUnit.Framework;
+    using Our.Umbraco.Ditto.Tests.Mocks;
+    using Our.Umbraco.Ditto.Tests.Models;
+    using global::Umbraco.Core.Models;
+    using global::Umbraco.Web;
 
-		[Test]
-		public void Children_Counted()
-		{
-			var child = ContentBuilder.Default().Build();
+    [TestFixture]
+    public class PublishedContentTests
+    {
+        [Test]
+        public void Name_IsMapped()
+        {
+            var name = "MyCustomName";
 
-			var content = ContentBuilder.Default()
-				.AddChild(child)
-				.Build();
+            var content = ContentBuilder.Default()
+                .WithName(name)
+                .Build();
 
-			//Do your Ditto magic here, and assert it maps as it should
-			Assert.That(content.Children.Count(), Is.EqualTo(1));
-		}
+            var model = content.As<SimpleModel>();
 
-		[Test]
-		public void Property_Returned()
-		{
-			IPublishedContentProperty prop = PropertyBuilder.Default("myprop", "myval").Build();
-			var content = ContentBuilder.Default()
-				.AddProperty(prop)
-				.Build();
+            Assert.That(model.Name, Is.EqualTo(name));
+        }
 
-			//Do your Ditto magic here, and assert it maps as it should
-			Assert.That(content.GetPropertyValue<string>("myprop"), Is.EqualTo("myval"));
-		}
+        [Test]
+        public void Children_Counted()
+        {
+            var child = ContentBuilder.Default().Build();
 
-		[Test]
-		public void Property_Converted()
-		{
-			// With this kind of mocking, we dont need property value converters, because they would already 
-			// have run at this point, so we just mock the result of the conversion.
+            var content = ContentBuilder.Default()
+                .AddChild(child)
+                .Build();
 
-			var picked = ContentBuilder.Default().Build();
-			IPublishedContentProperty prop = PropertyBuilder.Default("myprop", picked).Build();
-			var content = ContentBuilder.Default()
-				.AddProperty(prop)
-				.Build();
+            //Do your Ditto magic here, and assert it maps as it should
+            Assert.That(content.Children.Count(), Is.EqualTo(1));
+        }
 
-			//Do your Ditto magic here, and assert it maps as it should
-			Assert.That(content.GetPropertyValue<IPublishedContent>("myprop"), Is.EqualTo(picked));
-		}
-	}
+        [Test]
+        public void Property_Returned()
+        {
+            var value = "myval";
+
+            var property = PropertyBuilder.Default("myprop", value).Build();
+
+            var content = ContentBuilder.Default()
+                .AddProperty(property)
+                .Build();
+
+            var model = content.As<SimpleModel>();
+
+            Assert.That(model.MyProperty, Is.EqualTo(value));
+        }
+
+        [Test]
+        public void Property_Converted()
+        {
+            // With this kind of mocking, we dont need property value converters, because they would already
+            // have run at this point, so we just mock the result of the conversion.
+
+            var value = ContentBuilder.Default().Build();
+
+            var prop = PropertyBuilder.Default("myprop", value).Build();
+
+            var content = ContentBuilder.Default()
+                .AddProperty(prop)
+                .Build();
+
+            var model = content.As<SimpleModel>();
+
+            Assert.That(model.MyProperty, Is.Not.EqualTo(value));
+            Assert.That(model.MyProperty, Is.EqualTo(value.ToString()));
+        }
+    }
 }
