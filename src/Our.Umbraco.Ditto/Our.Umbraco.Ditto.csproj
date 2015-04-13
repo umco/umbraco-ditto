@@ -92,11 +92,11 @@
     <Compile Include="ComponentModel\TypeConverters\DittoMediaPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoContentPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoHtmlStringConverter.cs" />
-    <Compile Include="Extensions\ObjectExtensions.cs" />
-    <Compile Include="Extensions\EnumerableExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Extensions\TypeInferenceExtensions.cs" />
-    <Compile Include="Extensions\TypeInitializationExtensions.cs" />
+    <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
+    <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\Internal\StringExtensions.cs" />
+    <Compile Include="Extensions\Internal\TypeInferenceExtensions.cs" />
+    <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />
     <Compile Include="EventArgs\EventHandlers.cs" />
     <Compile Include="EventArgs\ConvertingTypeEventArgs.cs" />
     <Compile Include="EventArgs\ConvertedTypeEventArgs.cs" />
