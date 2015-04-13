@@ -40,15 +40,32 @@
         /// <param name="excludedProperties">
         /// The <see cref="IEnumerable{PropertyInfo}"/> of properties to exclude.
         /// </param>
+        /// <param name="constructorArguments">
+        /// The constructor arguments to pass to any proxy types.
+        /// </param>
         /// <returns>
         /// The proxy <see cref="Type"/> instance.
         /// </returns>
-        public object CreateProxy(Type baseType, IInterceptor interceptor, IEnumerable<PropertyInfo> excludedProperties)
+        public object CreateProxy(Type baseType, IInterceptor interceptor, IEnumerable<PropertyInfo> excludedProperties, object[] constructorArguments)
         {
             Type proxyType = this.CreateProxyType(baseType, excludedProperties);
-            object result = Activator.CreateInstance(proxyType);
+
+            object result = null;
+
+            if (constructorArguments == null)
+            {
+                result = proxyType.GetInstance();
+            }
+            else if (constructorArguments.Length == 1)
+            {
+                result = proxyType.GetInstance(constructorArguments.First());
+            }
+
             IProxy proxy = (IProxy)result;
-            proxy.Interceptor = interceptor;
+            if (proxy != null)
+            {
+                proxy.Interceptor = interceptor;
+            }
 
             return result;
         }

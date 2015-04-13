@@ -266,7 +266,7 @@
             // Try and return from the cache first. TryGetValue is faster than GetOrAdd.
             ParameterInfo[] constructorParams;
             ConstructorCache.TryGetValue(type, out constructorParams);
-
+            bool hasParameter = false;
             if (constructorParams == null)
             {
                 var constructor = type.GetConstructors().OrderBy(x => x.GetParameters().Length).First();
@@ -284,6 +284,7 @@
             {
                 // This extension method is about 7x faster than the native implementation.
                 instance = type.GetInstance(content);
+                hasParameter = true;
             }
             else
             {
@@ -342,7 +343,7 @@
                 // Create a proxy instance to replace our object.
                 LazyInterceptor interceptor = new LazyInterceptor(instance, lazyProperties);
                 ProxyFactory factory = new ProxyFactory();
-                instance = factory.CreateProxy(type, interceptor, null);
+                instance = factory.CreateProxy(type, interceptor, null, hasParameter ? new object[] { content } : null);
             }
 
             // Now loop through and convert non-virtual properties.
