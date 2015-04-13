@@ -12,10 +12,10 @@
     using global::Umbraco.Web;
 
     /// <summary>
-    /// The Ditto Umbraco base type converter containing reusable properties and converting methods for <see cref="IPublishedContent"/> instances.
+    /// The Ditto type converter containing reusable properties and methods for converting <see cref="IPublishedContent"/> instances.
     /// All other Ditto converters should inherit from this class.
     /// </summary>
-    public abstract class DittoUmbracoConverter : TypeConverter
+    public abstract class DittoConverter : TypeConverter
     {
         /// <summary>
         /// Gets the <see cref="UmbracoHelper"/> for querying published content or media.
@@ -30,16 +30,6 @@
                         "Ditto.UmbracoHelper",
                         () => new UmbracoHelper(UmbracoContext.Current));
             }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the <see cref="Object"/> is null or an empty <see cref="String"/>.
-        /// </summary>
-        /// <param name="value">The object to test against.</param>
-        /// <returns>True; if the value is null or an empty string; otherwise; false.</returns>
-        protected virtual bool IsNullOrEmptyString(object value)
-        {
-            return value == null || value as string == string.Empty;
         }
 
         /// <summary>

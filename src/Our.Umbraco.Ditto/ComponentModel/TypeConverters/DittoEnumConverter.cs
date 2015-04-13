@@ -11,7 +11,7 @@
     /// <summary>
     /// Provides a unified way of converting objects to an <see cref="Enum"/>.
     /// </summary>
-    public class DittoEnumConverter : DittoUmbracoConverter
+    public class DittoEnumConverter : DittoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter,
@@ -69,7 +69,7 @@
 
             var propertyType = context.PropertyDescriptor.PropertyType;
 
-            if (this.IsNullOrEmptyString(value))
+            if (value.IsNullOrEmptyString())
             {
                 // Value types return default instance.
                 return propertyType.GetInstance();

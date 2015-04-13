@@ -10,7 +10,7 @@
     /// <summary>
     /// Provides a unified way of converting media picker properties to strong typed model.
     /// </summary>
-    public class DittoMediaPickerConverter : DittoUmbracoConverter
+    public class DittoMediaPickerConverter : DittoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -47,7 +47,7 @@
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (this.IsNullOrEmptyString(value) || context == null || context.PropertyDescriptor == null)
+            if (value.IsNullOrEmptyString() || context == null || context.PropertyDescriptor == null)
             {
                 return null;
             }
