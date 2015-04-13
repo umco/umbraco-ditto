@@ -1,11 +1,14 @@
-﻿namespace Our.Umbraco.Ditto
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DittoConverter.cs" company="Umbrella Inc, Our Umbraco and other contributors">
+//   Copyright Umbrella Inc, Our Umbraco and other contributors
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Our.Umbraco.Ditto
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Globalization;
-    using System.IO;
-    using System.Xml;
 
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
@@ -27,7 +30,7 @@
                 // Pull the item from the cache if possible to reduce the db access overhead caused by 
                 // multiple reflection iterations for the given type taking place in a single request.
                 return (UmbracoHelper)ApplicationContext.Current.ApplicationCache.RequestCache.GetCacheItem(
-                        "Ditto.UmbracoHelper",
+                        "Ditto.UmbracoHelper", 
                         () => new UmbracoHelper(UmbracoContext.Current));
             }
         }
@@ -36,10 +39,15 @@
         /// Takes a content node ID, gets the corresponding <see cref="T:Umbraco.Core.Models.IPublishedContent"/> object,
         /// then converts the object to the desired type.
         /// </summary>
-        /// <param name="id">The content node ID.</param>
+        /// <param name="id">
+        /// The content node ID.
+        /// </param>
         /// <param name="targetType">
-        /// The property <see cref="Type"/> to convert to.</param>
-        /// <param name="culture">The <see cref="CultureInfo" /> to use as the current culture.</param>
+        /// The property <see cref="Type"/> to convert to.
+        /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/> to use as the current culture.
+        /// </param>
         /// <returns>
         /// An <see cref="T:System.Object"/> that represents the converted value.
         /// </returns>
@@ -57,10 +65,15 @@
         /// Takes a media node ID, gets the corresponding <see cref="T:Umbraco.Core.Models.IPublishedContent"/> object,
         /// then converts the object to the desired type.
         /// </summary>
-        /// <param name="id">The media node ID.</param>
+        /// <param name="id">
+        /// The media node ID.
+        /// </param>
         /// <param name="targetType">
-        /// The property <see cref="Type"/> to convert to.</param>
-        /// <param name="culture">The <see cref="CultureInfo" /> to use as the current culture.</param>
+        /// The property <see cref="Type"/> to convert to.
+        /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/> to use as the current culture.
+        /// </param>
         /// <returns>
         /// An <see cref="T:System.Object"/> that represents the converted value.
         /// </returns>
@@ -88,10 +101,15 @@
         /// Takes a member node ID, gets the corresponding <see cref="T:Umbraco.Core.Models.IPublishedContent"/> object,
         /// then converts the object to the desired type.
         /// </summary>
-        /// <param name="id">The member node ID.</param>
+        /// <param name="id">
+        /// The member node ID.
+        /// </param>
         /// <param name="targetType">
-        /// The property <see cref="Type"/> to convert to.</param>
-        /// <param name="culture">The <see cref="CultureInfo" /> to use as the current culture.</param>
+        /// The property <see cref="Type"/> to convert to.
+        /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/> to use as the current culture.
+        /// </param>
         /// <returns>
         /// An <see cref="T:System.Object"/> that represents the converted value.
         /// </returns>
