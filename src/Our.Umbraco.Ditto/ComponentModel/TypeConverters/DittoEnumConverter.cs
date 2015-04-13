@@ -11,10 +11,7 @@
     /// <summary>
     /// Provides a unified way of converting objects to an <see cref="Enum"/>.
     /// </summary>
-    /// <typeparam name="TEnum">
-    /// The <see cref="Type"/> to convert to.
-    /// </typeparam>
-    public class EnumConverter<TEnum> : TypeConverter where TEnum : struct, IConvertible
+    public class DittoEnumConverter : DittoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter,
@@ -31,18 +28,23 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (typeof(TEnum).IsEnum &&
-
-                // We can pass null here.
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                (sourceType == null
-                || sourceType == typeof(string)
-                || sourceType == typeof(int)
-                || sourceType.IsEnum
-                || sourceType.IsEnumerableOfType(typeof(string))
-                || sourceType == typeof(Enum[])))
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (context != null && context.PropertyDescriptor != null)
             {
-                return true;
+                var propertyType = context.PropertyDescriptor.PropertyType;
+
+                if ((propertyType.IsEnum && typeof(IConvertible).IsAssignableFrom(propertyType)) &&
+
+                    // We can pass null here.
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    (sourceType == null
+                     || sourceType == typeof(string)
+                     || sourceType == typeof(int)
+                     || sourceType.IsEnum || sourceType.IsEnumerableOfType(typeof(string))
+                     || sourceType == typeof(Enum[])))
+                {
+                    return true;
+                }
             }
 
             return base.CanConvertFrom(context, sourceType);
@@ -59,12 +61,20 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (value == null)
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (context == null || context.PropertyDescriptor == null)
             {
-                return default(TEnum);
+                return null;
             }
 
-            Type type = typeof(TEnum);
+            var propertyType = context.PropertyDescriptor.PropertyType;
+
+            if (value.IsNullOrEmptyString())
+            {
+                // Value types return default instance.
+                return propertyType.GetInstance();
+            }
+
             if (value is string)
             {
                 string strValue = (string)value;
@@ -72,72 +82,69 @@
                 {
                     long convertedValue = 0;
                     var values = strValue.ToDelimitedList();
+
+                    // ReSharper disable once LoopCanBeConvertedToQuery
                     foreach (string v in values)
                     {
-                        TEnum fallback;
-                        Enum.TryParse(v, true, out fallback);
-
                         // OR assignment. Stolen from ComponentModel EnumConverter.
-                        convertedValue |= Convert.ToInt64(fallback, culture);
+                        convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), culture);
                     }
 
-                    return Enum.ToObject(type, convertedValue);
+                    return Enum.ToObject(propertyType, convertedValue);
                 }
-                // ReSharper disable once RedundantIfElseBlock
-                else
-                {
-                    TEnum fallback;
-                    Enum.TryParse(value.ToString(), true, out fallback);
-                    return fallback;
-                }
+
+                return Enum.Parse(propertyType, strValue, true);
             }
 
             if (value is int)
             {
                 // Should handle most cases.
-                if (Enum.IsDefined(typeof(TEnum), value))
+                if (Enum.IsDefined(propertyType, value))
                 {
-                    return (TEnum)value;
+                    return Enum.ToObject(propertyType, value);
                 }
             }
 
-            var valueType = value.GetType();
-            if (valueType.IsEnum)
+            if (value != null)
             {
-                // This should work for most cases where enums base type is int.
-                return Enum.ToObject(type, Convert.ToInt64(value, culture));
-            }
-
-            if (valueType.IsEnumerableOfType(typeof(string)))
-            {
-                long convertedValue = 0;
-                var enumerable = ((IEnumerable<string>)value).ToList();
-
-                if (enumerable.Any())
+                var valueType = value.GetType();
+                if (valueType.IsEnum)
                 {
-                    foreach (string v in enumerable)
+                    // This should work for most cases where enums base type is int.
+                    return Enum.ToObject(propertyType, Convert.ToInt64(value, culture));
+                }
+
+                if (valueType.IsEnumerableOfType(typeof(string)))
+                {
+                    long convertedValue = 0;
+                    var enumerable = ((IEnumerable<string>)value).ToList();
+
+                    if (enumerable.Any())
                     {
-                        TEnum fallback;
-                        Enum.TryParse(v, true, out fallback);
-                        convertedValue |= Convert.ToInt64(fallback, culture);
+                        // ReSharper disable once LoopCanBeConvertedToQuery
+                        foreach (string v in enumerable)
+                        {
+                            convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), culture);
+                        }
+
+                        return Enum.ToObject(propertyType, convertedValue);
                     }
 
-                    return Enum.ToObject(type, convertedValue);
+                    return propertyType.GetInstance();
                 }
-
-                return default(TEnum);
             }
 
             var enums = value as Enum[];
             if (enums != null)
             {
                 long convertedValue = 0;
+                // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (Enum e in enums)
                 {
                     convertedValue |= Convert.ToInt64(e, culture);
                 }
 
-                return Enum.ToObject(type, convertedValue);
+                return Enum.ToObject(propertyType, convertedValue);
             }
 
             return base.ConvertFrom(context, culture, value);

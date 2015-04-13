@@ -8,15 +8,14 @@
 
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
+    using global::Umbraco.Web;
+    using global::Umbraco.Web.Security;
 
     /// <summary>
     /// Provides a unified way of converting multi node tree picker properties to strong typed collections.
     /// Adapted from <see href="https://github.com/Jeavon/Umbraco-Core-Property-Value-Converters/blob/v2/Our.Umbraco.PropertyConverters/MultiNodeTreePickerPropertyConverter.cs"/>
     /// </summary>
-    /// <typeparam name="T">
-    /// The <see cref="Type"/> of the node to return.
-    /// </typeparam>
-    public class MultiNodeTreePickerConverter<T> : TypeConverter where T : class
+    public class DittoMultiNodeTreePickerConverter : DittoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -55,77 +54,100 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (value == null)
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (context == null || context.PropertyDescriptor == null)
             {
-                return Enumerable.Empty<T>();
+                return Enumerable.Empty<object>();
+            }
+
+            var propertyType = context.PropertyDescriptor.PropertyType;
+            var isGenericType = propertyType.IsGenericType;
+            var targetType = isGenericType
+                                ? propertyType.GenericTypeArguments.First()
+                                : propertyType;
+
+            if (value.IsNullOrEmptyString())
+            {
+                return EnumerableInvocations.Empty(targetType);
             }
 
             // Single IPublishedContent 
             IPublishedContent content = value as IPublishedContent;
             if (content != null)
             {
-                return content.As<T>();
+                return content.As(targetType, null, null, culture);
             }
 
-            var type = value.GetType();
-
-            // Multiple IPublishedContent 
-            if (type.IsEnumerableOfType(typeof(IPublishedContent)))
+            if (value != null)
             {
-                return ((IEnumerable<IPublishedContent>)value).As<T>();
+                var type = value.GetType();
+
+                // Multiple IPublishedContent 
+                if (type.IsEnumerableOfType(typeof(IPublishedContent)))
+                {
+                    return ((IEnumerable<IPublishedContent>)value)
+                        .As(targetType, null, null, null, culture);
+                }
             }
 
             int[] nodeIds = { };
 
             // First try enumerable strings, ints.
-            if (type.IsEnumerableType() && type != typeof(string))
+            if (isGenericType)
             {
                 var enumerable = value as IEnumerable<string>;
                 int n;
-                nodeIds = enumerable != null
-                ? enumerable.Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1).ToArray()
-                : ((IEnumerable<int>)value).ToArray();
+                if (value != null)
+                {
+                    nodeIds = enumerable != null
+                    ? enumerable.Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
+                                .ToArray()
+                    : ((IEnumerable<int>)value).ToArray();
+                }
             }
 
             // Now csv strings.
             if (!nodeIds.Any())
             {
-                var s = value as string ?? value.ToString();
-                if (!string.IsNullOrWhiteSpace(s))
+                if (value != null)
                 {
-                    int n;
-                    nodeIds = XmlHelper.CouldItBeXml(s)
-                    ? ConverterHelper.GetXmlIds(s)
-                    : s
+                    var s = value as string ?? value.ToString();
+                    if (!string.IsNullOrWhiteSpace(s))
+                    {
+                        int n;
+                        nodeIds = XmlHelper.CouldItBeXml(s)
+                        ? s.GetXmlIds()
+                        : s
                         .ToDelimitedList()
                         .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
                         .Where(x => x > 0)
                         .ToArray();
+                    }
                 }
             }
 
             if (nodeIds.Any())
             {
-                var umbracoHelper = ConverterHelper.UmbracoHelper;
+                var umbracoContext = UmbracoContext.Current;
+                var membershipHelper = new MembershipHelper(umbracoContext);
                 var objectType = UmbracoObjectTypes.Unknown;
-                var temp = new List<T>();
+                var multiPicker = new List<IPublishedContent>();
 
                 // Oh so ugly if you let Resharper do this.
                 // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var nodeId in nodeIds)
                 {
-                    var item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, umbracoHelper.TypedContent)
-                         ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, umbracoHelper.TypedMedia)
-                         ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, umbracoHelper.TypedMember);
+                    var item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, umbracoContext.ContentCache.GetById)
+                         ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, umbracoContext.MediaCache.GetById)
+                         ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, membershipHelper.GetById);
 
                     if (item != null)
                     {
-                        temp.Add(item.As<T>());
+                        multiPicker.Add(item);
                     }
                 }
 
-                // Don't return the list, instead return an iterator that can't be cast back and mutated.
-                return temp.YieldItems();
+                return multiPicker.As(targetType, null, null, null, culture);
             }
 
             return base.ConvertFrom(context, culture, value);

@@ -1,6 +1,7 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
+    using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -28,30 +29,14 @@
         /// <summary>
         /// The cache for storing type property information.
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PropertyCache
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> VirtualPropertyCache
             = new ConcurrentDictionary<Type, PropertyInfo[]>();
 
         /// <summary>
-        /// A method using 'Cast' to convert the type back to <see cref="IEnumerable{T}"/>.
+        /// The cache for storing type property information.
         /// </summary>
-        private static readonly MethodInfo CastMethod = typeof(Enumerable).GetMethod("Cast");
-
-        /// <summary>
-        /// A method using <see cref="IEnumerable{T}"/> 'FirstOrDefault' to convert the type back to T.
-        /// </summary>
-        private static readonly MethodInfo FirstOrDefault =
-            typeof(Enumerable).GetMethods(BindingFlags.Public | BindingFlags.Static).First(
-                m =>
-                {
-                    if (m.Name != "FirstOrDefault")
-                    {
-                        return false;
-                    }
-
-                    var parameters = m.GetParameters();
-                    return parameters.Length == 1
-                           && parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
-                });
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PropertyCache
+            = new ConcurrentDictionary<Type, PropertyInfo[]>();
 
         /// <summary>
         /// Returns the given instance of <see cref="IPublishedContent"/> as the specified type.
@@ -115,7 +100,57 @@
             where T : class
         {
             return items.As(typeof(T), documentTypeAlias, convertingType, convertedType, culture)
-                .Select(x => x as T);
+                        .Select(x => x as T);
+        }
+
+        /// <summary>
+        /// Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.
+        /// </summary>
+        /// <param name="items">
+        /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
+        /// </param>
+        /// <param name="type">
+        /// The <see cref="Type"/> of items to return.
+        /// </param>
+        /// <param name="documentTypeAlias">
+        /// The document type alias.
+        /// </param>
+        /// <param name="convertingType">
+        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// </param>
+        /// <param name="convertedType">
+        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/>.
+        /// </param>
+        /// <returns>
+        /// The resolved <see cref="IEnumerable{T}"/>.
+        /// </returns>
+        public static IEnumerable<object> As(
+            this IEnumerable<IPublishedContent> items,
+            Type type,
+            string documentTypeAlias = null,
+            Action<ConvertingTypeEventArgs> convertingType = null,
+            Action<ConvertedTypeEventArgs> convertedType = null,
+            CultureInfo culture = null)
+        {
+            using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
+            {
+                IEnumerable<object> typedItems;
+                if (string.IsNullOrWhiteSpace(documentTypeAlias))
+                {
+                    typedItems = items.Select(x => x.As(type, convertingType, convertedType, culture));
+                }
+                else
+                {
+                    typedItems = items.Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
+                                      .Select(x => x.As(type, convertingType, convertedType, culture));
+                }
+
+                // We need to cast back here as nothing is strong typed anymore.
+                return (IEnumerable<object>)EnumerableInvocations.Cast(type, typedItems);
+            }
         }
 
         /// <summary>
@@ -193,51 +228,6 @@
         }
 
         /// <summary>
-        /// Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.
-        /// </summary>
-        /// <param name="items">
-        /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
-        /// </param>
-        /// <param name="type">
-        /// The <see cref="Type"/> of items to return.
-        /// </param>
-        /// <param name="documentTypeAlias">
-        /// The document type alias.
-        /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
-        /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
-        /// </param>
-        /// <param name="culture">
-        /// The <see cref="CultureInfo"/>.
-        /// </param>
-        /// <returns>
-        /// The resolved <see cref="IEnumerable{T}"/>.
-        /// </returns>
-        public static IEnumerable<object> As(
-            this IEnumerable<IPublishedContent> items,
-            Type type,
-            string documentTypeAlias = null,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null,
-            CultureInfo culture = null)
-        {
-            using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
-            {
-                if (string.IsNullOrWhiteSpace(documentTypeAlias))
-                {
-                    return items.Select(x => x.As(type, convertingType, convertedType, culture));
-                }
-
-                return items
-                    .Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                    .Select(x => x.As(type, convertingType, convertedType, culture));
-            }
-        }
-
-        /// <summary>
         /// Returns an object representing the given <see cref="Type"/>.
         /// </summary>
         /// <param name="content">
@@ -301,57 +291,80 @@
             }
 
             // Collect all the properties of the given type and loop through writable ones.
-            PropertyInfo[] properties;
-            PropertyCache.TryGetValue(type, out properties);
-            if (properties == null)
+            PropertyInfo[] virtualProperties;
+            PropertyInfo[] nonVirtualProperties;
+            VirtualPropertyCache.TryGetValue(type, out virtualProperties);
+            PropertyCache.TryGetValue(type, out nonVirtualProperties);
+            if (virtualProperties == null && nonVirtualProperties == null)
             {
-                properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(x => x.CanWrite).ToArray();
-                PropertyCache.TryAdd(type, properties);
+                var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                     .Where(x => x.CanWrite).ToArray();
+
+                // Split out the properties.
+                virtualProperties = properties.Where(p => p.IsVirtualAndOverridable()).ToArray();
+                nonVirtualProperties = properties.Except(virtualProperties).ToArray();
+                VirtualPropertyCache.TryAdd(type, virtualProperties);
+                PropertyCache.TryAdd(type, nonVirtualProperties);
             }
 
             // A dictionary to store lazily invoked values.
-            var virtualProperties = new Dictionary<string, Lazy<object>>();
+            var lazyProperties = new Dictionary<string, Lazy<object>>();
 
-            foreach (var propertyInfo in properties)
+            // If there are any virtual properties we want to lazily invoke them.
+            if (virtualProperties != null && virtualProperties.Any())
             {
-                using (DisposableTimer.DebugDuration(type, string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
+                foreach (var propertyInfo in virtualProperties)
                 {
-                    // Check for the ignore attribute.
-                    var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
-                    if (ignoreAttr != null)
+                    using (DisposableTimer.DebugDuration(type, string.Format("ForEach Virtual Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
                     {
-                        continue;
-                    }
+                        // Check for the ignore attribute.
+                        var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
+                        if (ignoreAttr != null)
+                        {
+                            continue;
+                        }
 
-                    // Get the value from Umbraco.
-                    object propertyValue = GetUmbracoValue(content, propertyInfo);
-
-                    // Are we looking at a virtual property?
-                    var isVirtual = propertyInfo.GetAccessors()[0].IsVirtual;
-                    if (isVirtual)
-                    {
-                        // Create a Lazy<object> to deferr returning our value. 
+                        // Create a Lazy<object> to deferr returning our value.
                         var deferredPropertyInfo = propertyInfo;
-                        virtualProperties.Add(
+                        var localInstance = instance;
+                        lazyProperties.Add(
                             propertyInfo.Name,
                             new Lazy<object>(
-                                () => GetTypedValue(content, type, culture, deferredPropertyInfo, propertyValue, instance)));
+                                () =>
+                                {
+                                    // Get the value from Umbraco.
+                                    object propertyValue = GetUmbracoValue(content, deferredPropertyInfo);
+                                    return GetTypedValue(content, type, culture, deferredPropertyInfo, propertyValue, localInstance);
+                                }));
                     }
-                    else
+                }
+
+                // Create a proxy instance to replace our object.
+                LazyInterceptor interceptor = new LazyInterceptor(instance, lazyProperties);
+                ProxyFactory factory = new ProxyFactory();
+                instance = factory.CreateProxy(type, interceptor, null);
+            }
+
+            // Now loop through and convert non-virtual properties.
+            if (nonVirtualProperties != null && nonVirtualProperties.Any())
+            {
+                foreach (var propertyInfo in nonVirtualProperties)
+                {
+                    using (DisposableTimer.DebugDuration(type, string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
                     {
+                        // Check for the ignore attribute.
+                        var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
+                        if (ignoreAttr != null)
+                        {
+                            continue;
+                        }
+
                         // Set the value normally.
+                        object propertyValue = GetUmbracoValue(content, propertyInfo);
                         var result = GetTypedValue(content, type, culture, propertyInfo, propertyValue, instance);
                         propertyInfo.SetValue(instance, result, null);
                     }
                 }
-            }
-
-            if (virtualProperties.Any())
-            {
-                // Create a proxy instance to replace our object.
-                LazyInterceptor interceptor = new LazyInterceptor(instance, virtualProperties);
-                LazyProxyFactory factory = new LazyProxyFactory();
-                instance = factory.CreateLazyProxy(type, interceptor);
             }
 
             return instance;
@@ -422,7 +435,9 @@
             object result = null;
             var propertyType = propertyInfo.PropertyType;
             var typeInfo = propertyType.GetTypeInfo();
-            var isEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
+
+            // This should return false against typeof(string) also.
+            var propertyIsEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
 
             // Try any custom type converters first.
             // 1: Check the property.
@@ -430,8 +445,8 @@
             // 3: Check the type itself.
             var converterAttribute =
                 propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
-                ?? (isEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
-                                     : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
+                ?? (propertyIsEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
+                                             : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
 
             if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
             {
@@ -467,32 +482,36 @@
                                 {
                                     // Handle Typeconverters returning single objects when we want an IEnumerable.
                                     // Use case: Someone selects a folder of images rather than a single image with the media picker.
-                                    if (isEnumerableType)
+                                    var convertedType = converted.GetType();
+
+                                    if (propertyIsEnumerableType)
                                     {
                                         var parameterType = typeInfo.GenericTypeArguments.First();
 
                                         // Some converters return an IEnumerable so we check again.
-                                        if (!converted.GetType().IsEnumerableType())
+                                        if (!convertedType.IsEnumerableType())
                                         {
-                                            // Generate a method using 'Cast' to convert the type back to IEnumerable<T>.
-                                            var cast = CastMethod.MakeGenericMethod(parameterType);
-                                            object enumerablePropertyValue = cast.Invoke(null, new object[] { converted.YieldSingleItem() });
+                                            // Using 'Cast' to convert the type back to IEnumerable<T>.
+                                            object enumerablePropertyValue = EnumerableInvocations.Cast(
+                                                                                parameterType,
+                                                                                converted.YieldSingleItem());
+
                                             result = enumerablePropertyValue;
                                         }
                                         else
                                         {
-                                            result = converted;
+                                            // Nothing is strong typed anymore.
+                                            result = EnumerableInvocations.Cast(parameterType, (IEnumerable)converted);
                                         }
                                     }
                                     else
                                     {
                                         // Return single expected items from converters returning an IEnumerable.
-                                        if (converted.GetType().IsEnumerableType())
+                                        // Check for string.
+                                        if (convertedType.IsEnumerableType() && convertedType.GenericTypeArguments.Any())
                                         {
-                                            // Generate a method using 'FirstOrDefault' to convert the type back to T.
-                                            var first = FirstOrDefault.MakeGenericMethod(propertyType);
-                                            object singleValue = first.Invoke(null, new[] { converted });
-                                            result = singleValue;
+                                            // Use 'FirstOrDefault' to convert the type back to T.
+                                            result = EnumerableInvocations.FirstOrDefault(propertyType, (IEnumerable)converted);
                                         }
                                         else
                                         {
@@ -508,7 +527,7 @@
             else if (propertyInfo.PropertyType == typeof(HtmlString))
             {
                 // Handle Html strings so we don't have to set the attribute.
-                HtmlStringConverter converter = new HtmlStringConverter();
+                DittoHtmlStringConverter converter = new DittoHtmlStringConverter();
 
                 // This contains the IPublishedContent and the currently converting property descriptor.
                 var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];

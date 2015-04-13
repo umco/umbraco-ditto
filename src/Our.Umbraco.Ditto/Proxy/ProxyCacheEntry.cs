@@ -1,10 +1,12 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     /// <summary>
-    /// A single proxy cache entry.
+    /// Represents the proxy cache entry to be stored in the cache.
     /// </summary>
     internal struct ProxyCacheEntry
     {
@@ -14,12 +16,12 @@
         public readonly Type BaseType;
 
         /// <summary>
-        /// The interfaces.
+        /// The excluded properties.
         /// </summary>
-        public readonly Type[] Interfaces;
+        public readonly IEnumerable<PropertyInfo> ExcludedProperties;
 
         /// <summary>
-        /// The hash code.
+        /// The hash code for comparing <see cref="ProxyCacheEntry"/> instances.
         /// </summary>
         private readonly int hashCode;
 
@@ -27,15 +29,15 @@
         /// Initializes a new instance of the <see cref="ProxyCacheEntry"/> struct.
         /// </summary>
         /// <param name="baseType">
-        /// The base type.
+        /// The base type to proxy.
         /// </param>
-        /// <param name="interfaces">
-        /// The interfaces.
+        /// <param name="excludedProperties">
+        /// The excluded properties.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if the base type is null.
+        /// Thrown if the given <see cref="Type"/> is null.
         /// </exception>
-        public ProxyCacheEntry(Type baseType, Type[] interfaces)
+        public ProxyCacheEntry(Type baseType, IEnumerable<PropertyInfo> excludedProperties)
         {
             if (baseType == null)
             {
@@ -43,19 +45,19 @@
             }
 
             this.BaseType = baseType;
-            this.Interfaces = interfaces;
+            this.ExcludedProperties = excludedProperties;
 
             unchecked
             {
                 int h = this.BaseType.GetHashCode();
 
-                if (this.Interfaces != null)
+                if (this.ExcludedProperties != null)
                 {
-                    // Prevent type duplication.
+                    // Prevent property duplication.
                     // ReSharper disable once LoopCanBeConvertedToQuery
-                    foreach (var type in this.Interfaces.Distinct())
+                    foreach (var property in this.ExcludedProperties.Distinct())
                     {
-                        h = (h * 397) ^ type.GetHashCode();
+                        h = (h * 397) ^ property.GetHashCode();
                     }
                 }
 

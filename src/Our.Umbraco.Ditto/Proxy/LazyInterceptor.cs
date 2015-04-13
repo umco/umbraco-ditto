@@ -2,14 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
 
     /// <summary>
-    /// Intercepts virtual properties in classes.
+    /// Intercepts virtual properties in classes replacing them with lazily implemented versions.
     /// </summary>
     internal class LazyInterceptor : IInterceptor
     {
         /// <summary>
-        /// The lazy dictionary containing any lazily invoked values.
+        /// The lazy dictionary.
         /// </summary>
         private readonly Dictionary<string, Lazy<object>> lazyDictionary = new Dictionary<string, Lazy<object>>();
 
@@ -33,29 +34,34 @@
 
             foreach (KeyValuePair<string, Lazy<object>> kp in values)
             {
-                var pair = kp;
+                // Handle different behaviour in closure
+                KeyValuePair<string, Lazy<object>> pair = kp;
                 this.lazyDictionary.Add(pair.Key, pair.Value);
             }
         }
 
         /// <summary>
-        /// Intercepts the method in the proxy to return a replaced value.
+        /// Intercepts the <see cref="MethodBase"/> in the proxy to return a replaced value.
         /// </summary>
-        /// <param name="info">
-        /// The <see cref="InvocationInfo"/> containing information about the current
-        /// invoked method or property.
+        /// <param name="methodBase">
+        /// The <see cref="MethodBase"/> containing information about the current
+        /// invoked property.
+        /// </param>
+        /// <param name="value">
+        /// The object to set the <see cref="MethodBase"/> to if it is a setter.
         /// </param>
         /// <returns>
-        /// The <see cref="object"/> replacing the original.
+        /// The <see cref="object"/> replacing the original implementation value.
         /// </returns>
-        public object Intercept(InvocationInfo info)
+        public object Intercept(MethodBase methodBase, object value)
         {
             const string Getter = "get_";
             const string Setter = "set_";
+            var name = methodBase.Name;
+            var key = name.Substring(4);
+            var parameters = value == null ? new object[] { } : new[] { value };
 
             // Attempt to get the value from the lazy members.
-            var name = info.TargetMethod.Name;
-            var key = name.TrimStart(Getter.ToCharArray());
             if (name.StartsWith(Getter))
             {
                 if (this.lazyDictionary.ContainsKey(key))
@@ -64,18 +70,16 @@
                 }
             }
 
-            // Get/Set the value, remove the old lazy value.
-            var value = info.TargetMethod.Invoke(this.target, info.Arguments);
+            // Set the value, remove the old lazy value.
             if (name.StartsWith(Setter))
             {
-                key = name.TrimStart(Setter.ToCharArray());
                 if (this.lazyDictionary.ContainsKey(key))
                 {
                     this.lazyDictionary.Remove(key);
                 }
             }
 
-            return value;
+            return methodBase.Invoke(this.target, parameters);
         }
     }
 }

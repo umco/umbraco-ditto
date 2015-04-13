@@ -115,7 +115,7 @@
                 Cache[key] = f;
             }
 
-            return f(value);
+            return f(Cast(type, value));
         }
 
         /// <summary>

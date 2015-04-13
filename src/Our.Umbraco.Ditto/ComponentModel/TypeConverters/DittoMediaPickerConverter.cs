@@ -5,16 +5,12 @@
     using System.Globalization;
     using System.Linq;
 
-    using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
 
     /// <summary>
-    /// Provides a unified way of converting multi media picker properties to strong typed collections.
+    /// Provides a unified way of converting media picker properties to strong typed model.
     /// </summary>
-    /// <typeparam name="T">
-    /// The <see cref="Type"/> of the node to return.
-    /// </typeparam>
-    public class MultipleMediaPickerConverter<T> : TypeConverter where T : class
+    public class DittoMediaPickerConverter : DittoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -50,48 +46,36 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (value == null)
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (value.IsNullOrEmptyString() || context == null || context.PropertyDescriptor == null)
             {
-                return Enumerable.Empty<T>();
+                return null;
             }
+
+            var propertyType = context.PropertyDescriptor.PropertyType;
+            var isGenericType = propertyType.IsGenericType;
+            var targetType = isGenericType
+                                ? propertyType.GenericTypeArguments.First()
+                                : propertyType;
 
             // DictionaryPublishedContent 
             IPublishedContent content = value as IPublishedContent;
             if (content != null)
             {
-                return content.As<T>();
+                // Use the id so we get folder sanitation.
+                return this.ConvertMediaFromInt(content.Id, targetType, culture);
             }
 
-            // If a single item is selected, this is passed as an int, not a string.
             if (value is int)
             {
-                var id = (int)value;
-                var umbracoHelper = ConverterHelper.UmbracoHelper;
-                return umbracoHelper.TypedMedia(id).As<T>().YieldSingleItem();
+                return this.ConvertMediaFromInt((int)value, targetType, culture);
             }
 
+            int id;
             var s = value as string;
-            if (!string.IsNullOrWhiteSpace(s))
+            if (s != null && int.TryParse(s, NumberStyles.Any, culture, out id))
             {
-                var multiNodeTreePicker = Enumerable.Empty<T>();
-
-                int n;
-                var nodeIds =
-                    XmlHelper.CouldItBeXml(s)
-                    ? ConverterHelper.GetXmlIds(s)
-                    : s
-                        .ToDelimitedList()
-                        .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
-                        .Where(x => x > 0)
-                        .ToArray();
-
-                if (nodeIds.Any())
-                {
-                    var umbracoHelper = ConverterHelper.UmbracoHelper;
-                    multiNodeTreePicker = umbracoHelper.TypedMedia(nodeIds).Where(x => x != null).As<T>();
-                }
-
-                return multiNodeTreePicker;
+                return this.ConvertMediaFromInt(id, targetType, culture);
             }
 
             return base.ConvertFrom(context, culture, value);

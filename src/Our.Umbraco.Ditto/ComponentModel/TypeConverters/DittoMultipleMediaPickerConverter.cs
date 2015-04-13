@@ -3,16 +3,15 @@
     using System;
     using System.ComponentModel;
     using System.Globalization;
+    using System.Linq;
 
+    using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
 
     /// <summary>
-    /// Provides a unified way of converting member picker properties to strong typed model.
+    /// Provides a unified way of converting multi media picker properties to strong typed collections.
     /// </summary>
-    /// <typeparam name="T">
-    /// The <see cref="Type"/> of the object to return.
-    /// </typeparam>
-    public class MemberPickerConverter<T> : TypeConverter where T : class
+    public class DittoMultipleMediaPickerConverter : DittoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
@@ -48,49 +47,62 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (value == null)
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (context == null || context.PropertyDescriptor == null)
             {
-                return null;
+                return Enumerable.Empty<object>();
             }
 
-            var content = value as IPublishedContent;
+            var propertyType = context.PropertyDescriptor.PropertyType;
+            var isGenericType = propertyType.IsGenericType;
+            var targetType = isGenericType
+                                ? propertyType.GenericTypeArguments.First()
+                                : propertyType;
+
+            if (value.IsNullOrEmptyString())
+            {
+                return EnumerableInvocations.Empty(targetType);
+            }
+
+            // DictionaryPublishedContent 
+            IPublishedContent content = value as IPublishedContent;
             if (content != null)
             {
-                return content.As<T>();
+                // Use the id so we get folder sanitation.
+                return this.ConvertMediaFromInt(content.Id, targetType, culture);
             }
 
+            // If a single item is selected, this is passed as an int, not a string.
             if (value is int)
             {
-                return this.ConvertFromInt((int)value);
+                var id = (int)value;
+                return ConvertMediaFromInt(id, targetType, culture).YieldSingleItem();
             }
 
-            int id;
             var s = value as string;
-            if (s != null && int.TryParse(s, NumberStyles.Any, culture, out id))
+            if (!string.IsNullOrWhiteSpace(s))
             {
-                return this.ConvertFromInt(id);
+                var multiMediaPicker = EnumerableInvocations.Empty(targetType);
+
+                int n;
+                var nodeIds =
+                    XmlHelper.CouldItBeXml(s)
+                    ? s.GetXmlIds()
+                    : s
+                        .ToDelimitedList()
+                        .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
+                        .Where(x => x > 0)
+                        .ToArray();
+
+                if (nodeIds.Any())
+                {
+                    multiMediaPicker = nodeIds.ForEach(i => this.ConvertMediaFromInt(i, targetType, culture));
+                }
+
+                return multiMediaPicker;
             }
 
             return base.ConvertFrom(context, culture, value);
-        }
-
-        /// <summary>
-        /// Takes a member node ID, gets the corresponding <see cref="T:Umbraco.Core.Models.IPublishedContent"/> object,
-        /// then converts the object to the desired type.
-        /// </summary>
-        /// <param name="id">The member node ID.</param>
-        /// <returns>
-        /// An <see cref="T:System.Object" /> that represents the converted value.
-        /// </returns>
-        private object ConvertFromInt(int id)
-        {
-            if (id <= 0)
-            {
-                return null;
-            }
-
-            var umbracoHelper = ConverterHelper.UmbracoHelper;
-            return umbracoHelper.TypedMember(id).As<T>();
         }
     }
 }
