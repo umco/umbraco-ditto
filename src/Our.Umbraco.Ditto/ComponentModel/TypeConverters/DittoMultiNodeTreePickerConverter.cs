@@ -8,6 +8,8 @@
 
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
+    using global::Umbraco.Web;
+    using global::Umbraco.Web.Security;
 
     /// <summary>
     /// Provides a unified way of converting multi node tree picker properties to strong typed collections.
@@ -126,7 +128,8 @@
 
             if (nodeIds.Any())
             {
-                var umbracoHelper = this.UmbracoHelper;
+                var umbracoContext = UmbracoContext.Current;
+                var membershipHelper = new MembershipHelper(umbracoContext);
                 var objectType = UmbracoObjectTypes.Unknown;
                 var multiPicker = new List<IPublishedContent>();
 
@@ -134,9 +137,9 @@
                 // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var nodeId in nodeIds)
                 {
-                    var item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, umbracoHelper.TypedContent)
-                         ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, umbracoHelper.TypedMedia)
-                         ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, umbracoHelper.TypedMember);
+                    var item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, umbracoContext.ContentCache.GetById)
+                         ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, umbracoContext.MediaCache.GetById)
+                         ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, membershipHelper.GetById);
 
                     if (item != null)
                     {

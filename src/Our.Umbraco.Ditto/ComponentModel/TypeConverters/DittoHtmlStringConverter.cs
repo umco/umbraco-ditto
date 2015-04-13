@@ -63,7 +63,7 @@
 
                 if (!string.IsNullOrWhiteSpace(text))
                 {
-                    text = this.UmbracoHelper.ReplaceLineBreaksForHtml(text);
+                    text = text.Replace("\n", "<br/>\n");
                 }
 
                 return new HtmlString(text);

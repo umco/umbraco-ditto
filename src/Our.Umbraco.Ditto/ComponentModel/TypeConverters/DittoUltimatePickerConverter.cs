@@ -8,6 +8,7 @@
 
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
+    using global::Umbraco.Web;
 
     /// <summary>
     /// Provides a unified way of converting ultimate picker properties to strong typed collections.
@@ -74,17 +75,15 @@
             if (value is int)
             {
                 var id = (int)value;
-                var umbracoHelper = this.UmbracoHelper;
 
                 // CheckBoxList, ListBox
                 if (targetType != null)
                 {
-                    return umbracoHelper.TypedContent(id)
-                                        .As(targetType, null, null, culture).YieldSingleItem();
+                    return this.ConvertContentFromInt(id, targetType, culture).YieldSingleItem();
                 }
 
                 // AutoComplete, DropDownList, RadioButton
-                return umbracoHelper.TypedContent(id).As(propertyType, null, null, culture);
+                return this.ConvertContentFromInt(id, propertyType, culture);
             }
 
             if (value != null)
@@ -101,13 +100,12 @@
 
                     if (nodeIds.Any())
                     {
-                        var umbracoHelper = this.UmbracoHelper;
                         var ultimatePicker = new List<IPublishedContent>();
 
                         // ReSharper disable once LoopCanBeConvertedToQuery
                         foreach (var nodeId in nodeIds)
                         {
-                            var item = umbracoHelper.TypedContent(nodeId);
+                            var item = UmbracoContext.Current.ContentCache.GetById(nodeId);
 
                             if (item != null)
                             {
