@@ -32,10 +32,8 @@
         {
             this.target = target;
 
-            foreach (KeyValuePair<string, Lazy<object>> kp in values)
+            foreach (KeyValuePair<string, Lazy<object>> pair in values)
             {
-                // Handle different behaviour in closure
-                KeyValuePair<string, Lazy<object>> pair = kp;
                 this.lazyDictionary.Add(pair.Key, pair.Value);
             }
         }
