@@ -94,6 +94,7 @@
     <Compile Include="ComponentModel\TypeConverters\DittoHtmlStringConverter.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TypeInferenceExtensions.cs" />
     <Compile Include="Extensions\TypeInitializationExtensions.cs" />
     <Compile Include="EventArgs\EventHandlers.cs" />

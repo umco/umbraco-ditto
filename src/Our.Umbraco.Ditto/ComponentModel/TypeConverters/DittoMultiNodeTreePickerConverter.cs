@@ -114,7 +114,7 @@
                     {
                         int n;
                         nodeIds = XmlHelper.CouldItBeXml(s)
-                        ? this.GetXmlIds(s)
+                        ? s.GetXmlIds()
                         : s
                         .ToDelimitedList()
                         .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
