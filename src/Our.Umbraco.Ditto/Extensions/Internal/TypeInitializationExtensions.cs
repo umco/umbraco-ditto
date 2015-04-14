@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
-    using System.Web.Mvc;
 
     /// <summary>
     /// Extensions methods for <see cref="T:System.Type"/> for creating instances of types faster than 
@@ -22,7 +21,7 @@
         public static object GetInstance(this Type type)
         {
             // This is about as quick as it gets.
-            return DependencyResolver.Current.GetService(type);
+            return Activator.CreateInstance(type);
         }
 
         /// <summary>
