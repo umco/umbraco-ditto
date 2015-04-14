@@ -84,8 +84,8 @@
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
     <Compile Include="ComponentModel\PublishedContentContext.cs" />
-    <Compile Include="ComponentModel\TypeConverters\TypeConverterWithAttribute.cs" />
-    <Compile Include="ComponentModel\TypeConverters\DictionaryValueConverter.cs" />
+    <Compile Include="ComponentModel\TypeConverters\DittoConverterWithAttribute.cs" />
+    <Compile Include="ComponentModel\TypeConverters\DittoDictionaryValueConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoEnumConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoMemberPickerConverter.cs" />
