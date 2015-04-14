@@ -11,7 +11,7 @@
     /// <summary>
     /// Provides a unified way of converting <see cref="String"/>s to <see cref="HtmlString"/>'s.
     /// </summary>
-    public class HtmlStringConverter : TypeConverter
+    public class DittoHtmlStringConverter : DittoConverter
     {
         /// <summary>
         /// Returns whether this converter can convert an object of the given type to the type of this converter,
@@ -28,7 +28,12 @@
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string) || sourceType == typeof(HtmlString) || sourceType == typeof(DynamicXml))
+            // We can pass null here.
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (sourceType == null
+                || sourceType == typeof(string)
+                || sourceType == typeof(HtmlString)
+                || sourceType == typeof(DynamicXml))
             {
                 return true;
             }
@@ -47,7 +52,7 @@
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (value == null)
+            if (value.IsNullOrEmptyString())
             {
                 return null;
             }
@@ -58,8 +63,7 @@
 
                 if (!string.IsNullOrWhiteSpace(text))
                 {
-                    var umbracoHelper = ConverterHelper.UmbracoHelper;
-                    text = umbracoHelper.ReplaceLineBreaksForHtml(text);
+                    text = text.Replace("\n", "<br/>\n");
                 }
 
                 return new HtmlString(text);

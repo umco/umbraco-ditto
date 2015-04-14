@@ -11,6 +11,24 @@
     internal static class TypeInferenceExtensions
     {
         /// <summary>
+        /// Determines whether the specified type is an enumerable of the given argument type.
+        /// </summary>
+        /// <param name="type">
+        /// The type.
+        /// </param>
+        /// <param name="typeArgument">
+        /// The generic type argument.
+        /// </param>
+        /// <returns>
+        /// True if the type is an enumerable of the given argument type otherwise; false.
+        /// </returns>
+        public static bool IsEnumerableOfType(this Type type, Type typeArgument)
+        {
+            Type t = type.TryGetElementType(typeof(IEnumerable<>));
+            return t != null && t.IsAssignableFrom(typeArgument);
+        }
+
+        /// <summary>
         /// Determines whether the specified type is a collection type.
         /// </summary>
         /// <param name="type">The type.</param>
@@ -35,7 +53,7 @@
         /// and if so return the element type of the collection. If the type implements the generic interface several times
         /// <c>null</c> will be returned.
         /// </summary>
-        /// <param name="type"> The type to examine. </param>
+        /// <param name="type">The type to examine. </param>
         /// <param name="interfaceOrBaseType"> The generic type to be queried for. </param>
         /// <returns> 
         /// <c>null</c> if <paramref name="interfaceOrBaseType"/> isn't implemented or implemented multiple times,
@@ -46,7 +64,6 @@
             if (!type.IsGenericTypeDefinition)
             {
                 Type[] types = GetGenericTypeImplementations(type, interfaceOrBaseType).ToArray();
-
                 return types.Length == 1 ? types[0].GetGenericArguments().FirstOrDefault() : null;
             }
 

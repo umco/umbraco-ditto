@@ -1,9 +1,8 @@
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Our.Umbraco.Ditto")]
-[assembly: AssemblyDescription("Ditto - the friendly POCO mapper for Umbraco 7+")]
+[assembly: AssemblyTitle("Our.Umbraco.Ditto.Tests")]
+[assembly: AssemblyDescription("Unit tests for Ditto")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Umbrella Inc Ltd")]
 [assembly: AssemblyProduct("Ditto")]
@@ -12,6 +11,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
-[assembly: Guid("C3A53472-6FBC-42ED-ABD4-5B1594C32E98")]
+[assembly: Guid("DF294BA3-FFF4-42F2-8F23-CE50BA25ACA9")]
 
-[assembly: InternalsVisibleTo("Our.Umbraco.Ditto.Tests")]
+[assembly: AssemblyVersion("1.0.*")]
