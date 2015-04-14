@@ -389,7 +389,7 @@
             var converterAttribute =
                 propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
                 ?? (propertyIsEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
-                                        : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
+                                             : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
 
             if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
             {
@@ -397,10 +397,10 @@
                 using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
                 {
                     // Get the custom converter from the attribute and attempt to convert.
-                    var toConvert = Type.GetType(converterAttribute.ConverterTypeName);
-                    if (toConvert != null)
+                    var converterType = Type.GetType(converterAttribute.ConverterTypeName);
+                    if (converterType != null)
                     {
-                        var converter = DependencyResolver.Current.GetService(toConvert) as TypeConverter;
+                        var converter = converterType.GetDependencyResolvedInstance() as TypeConverter;
 
                         if (converter != null)
                         {
@@ -430,7 +430,7 @@
                                     if (propertyIsEnumerableType)
                                     {
                                         var parameterType = typeInfo.GenericTypeArguments.First();
-                                     
+
                                         // Some converters return an IEnumerable so we check again.
                                         if (!convertedType.IsEnumerableType())
                                         {
@@ -471,23 +471,27 @@
             else if (propertyInfo.PropertyType == typeof(HtmlString))
             {
                 // Handle Html strings so we don't have to set the attribute.
-                DittoHtmlStringConverter converter = new DittoHtmlStringConverter();
+                var converterType = typeof(DittoHtmlStringConverter);
+                var converter = converterType.GetDependencyResolvedInstance() as TypeConverter;
 
-                // This contains the IPublishedContent and the currently converting property descriptor.
-                var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                var context = new PublishedContentContext(content, descriptor);
-
-                Type propertyValueType = null;
-                if (propertyValue != null)
+                if (converter != null)
                 {
-                    propertyValueType = propertyValue.GetType();
-                }
+                    // This contains the IPublishedContent and the currently converting property descriptor.
+                    var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                    var context = new PublishedContentContext(content, descriptor);
 
-                // We're deliberately passing null.
-                // ReSharper disable once AssignNullToNotNullAttribute
-                if (converter.CanConvertFrom(context, propertyValueType))
-                {
-                    propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
+                    Type propertyValueType = null;
+                    if (propertyValue != null)
+                    {
+                        propertyValueType = propertyValue.GetType();
+                    }
+
+                    // We're deliberately passing null.
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    if (converter.CanConvertFrom(context, propertyValueType))
+                    {
+                        propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
+                    }
                 }
             }
             else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
