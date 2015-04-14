@@ -34,8 +34,10 @@
         /// Gets the attribute.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <returns></returns>
-        public T GetAttribute(ITypeDescriptorContext context)
+        /// <returns>
+        /// The <see cref="Type"/> of attribute to return.
+        /// </returns>
+        protected virtual T GetAttribute(ITypeDescriptorContext context)
         {
             if (context != null && context.PropertyDescriptor != null && context.PropertyDescriptor.Attributes != null)
             {
