@@ -78,51 +78,48 @@
                 return content.As(targetType, null, null, culture);
             }
 
-            if (value != null)
-            {
-                var type = value.GetType();
+            // ReSharper disable once PossibleNullReferenceException
+            var type = value.GetType();
 
-                // Multiple IPublishedContent 
-                if (type.IsEnumerableOfType(typeof(IPublishedContent)))
-                {
-                    return ((IEnumerable<IPublishedContent>)value)
-                        .As(targetType, null, null, null, culture);
-                }
+            // Multiple IPublishedContent 
+            if (type.IsEnumerableOfType(typeof(IPublishedContent)))
+            {
+                return ((IEnumerable<IPublishedContent>)value).As(targetType, null, null, null, culture);
             }
 
             int[] nodeIds = { };
 
             // First try enumerable strings, ints.
-            if (isGenericType)
+            if (type.IsGenericType)
             {
-                var enumerable = value as IEnumerable<string>;
-                int n;
-                if (value != null)
+                if (type.IsEnumerableOfType(typeof(string)))
                 {
-                    nodeIds = enumerable != null
-                    ? enumerable.Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
-                                .ToArray()
-                    : ((IEnumerable<int>)value).ToArray();
+                    int n;
+                    nodeIds = ((IEnumerable<string>)value)
+                                  .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
+                                  .ToArray();
+                }
+
+                if (type.IsEnumerableOfType(typeof(int)))
+                {
+                    nodeIds = ((IEnumerable<int>)value).ToArray();
                 }
             }
 
             // Now csv strings.
             if (!nodeIds.Any())
             {
-                if (value != null)
+                var s = value as string ?? value.ToString();
+                if (!string.IsNullOrWhiteSpace(s))
                 {
-                    var s = value as string ?? value.ToString();
-                    if (!string.IsNullOrWhiteSpace(s))
-                    {
-                        int n;
-                        nodeIds = XmlHelper.CouldItBeXml(s)
-                        ? s.GetXmlIds()
-                        : s
-                        .ToDelimitedList()
-                        .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
-                        .Where(x => x > 0)
-                        .ToArray();
-                    }
+                    int n;
+                    nodeIds = XmlHelper.CouldItBeXml(s)
+                    ? s.GetXmlIds()
+                    : s
+                    .ToDelimitedList()
+                    .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
+                    .Where(x => x > 0)
+                    .ToArray();
                 }
             }
 
