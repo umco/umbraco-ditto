@@ -105,13 +105,14 @@
     <Compile Include="Extensions\PublishedContentExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
+    <Compile Include="Proxy\ConstructorEmitter.cs" />
     <Compile Include="Proxy\IInterceptor.cs" />
     <Compile Include="Proxy\IProxy.cs" />
     <Compile Include="Proxy\LazyInterceptor.cs" />
     <Compile Include="Proxy\PropertyEmitter.cs" />
     <Compile Include="Proxy\ProxyCacheEntry.cs" />
     <Compile Include="Proxy\ProxyFactory.cs" />
-    <Compile Include="Proxy\ProxyImplementer.cs" />
+    <Compile Include="Proxy\InterceptorEmitter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

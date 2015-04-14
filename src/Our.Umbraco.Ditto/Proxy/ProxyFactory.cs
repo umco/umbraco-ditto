@@ -11,17 +11,12 @@
     /// <summary>
     /// The proxy factory for creating instances of proxy classes.
     /// </summary>
-    internal class ProxyFactory
+    public class ProxyFactory
     {
         /// <summary>
         /// Ensures that proxy creation is atomic.
         /// </summary>
         private static readonly ReaderWriterLockSlim Locker = new ReaderWriterLockSlim();
-
-        /// <summary>
-        /// The base constructor.
-        /// </summary>
-        private static readonly ConstructorInfo BaseConstructor = typeof(object).GetConstructor(new Type[0]);
 
         /// <summary>
         /// The proxy cache for storing proxy types.
@@ -46,26 +41,14 @@
         /// <returns>
         /// The proxy <see cref="Type"/> instance.
         /// </returns>
-        public object CreateProxy(Type baseType, IInterceptor interceptor, IEnumerable<PropertyInfo> excludedProperties, object[] constructorArguments)
+        public object CreateProxy(Type baseType, IInterceptor interceptor, IEnumerable<PropertyInfo> excludedProperties, params object[] constructorArguments)
         {
             Type proxyType = this.CreateProxyType(baseType, excludedProperties);
 
-            object result = null;
-
-            if (constructorArguments == null)
-            {
-                result = proxyType.GetInstance();
-            }
-            else if (constructorArguments.Length == 1)
-            {
-                result = proxyType.GetInstance(constructorArguments.First());
-            }
+            object result = Activator.CreateInstance(proxyType, constructorArguments);
 
             IProxy proxy = (IProxy)result;
-            if (proxy != null)
-            {
-                proxy.Interceptor = interceptor;
-            }
+            proxy.Interceptor = interceptor;
 
             return result;
         }
@@ -138,62 +121,36 @@
             ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName);
 #endif
             // Define type attributes
-            const TypeAttributes TypeAttributes =
-                      TypeAttributes.AutoClass | TypeAttributes.Class |
-                      TypeAttributes.Public | TypeAttributes.BeforeFieldInit;
+            const TypeAttributes TypeAttributes = TypeAttributes.AutoClass |
+                                                  TypeAttributes.Class |
+                                                  TypeAttributes.Public |
+                                                  TypeAttributes.BeforeFieldInit;
 
             // Define the type.
             TypeBuilder typeBuilder = moduleBuilder.DefineType(typeName, TypeAttributes, baseType);
 
-            // Define the default constructor so that classes without parameterless constructors.
-            this.DefineDefaultConstructor(typeBuilder);
+            // Emit the default constructors for this proxy so that classes without parameterless constructors
+            // can be proxied.
+            ConstructorInfo[] constructors = baseType.GetConstructors();
+            foreach (ConstructorInfo constructorInfo in constructors)
+            {
+                ConstructorEmitter.Emit(typeBuilder, constructorInfo);
+            }
 
-            // Implement the IProxy IInterceptor property.
-            ProxyImplementer implementor = new ProxyImplementer();
-            implementor.ImplementProxy(typeBuilder);
-            FieldInfo interceptorField = implementor.InterceptorField;
+            // Emit the IProxy IInterceptor property.
+            FieldInfo interceptorField = InterceptorEmitter.Emit(typeBuilder);
 
-            // Implement each property that is to be intercepted.
+            // Emit each property that is to be intercepted.
             MethodInfo[] methods = baseType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
             IEnumerable<MethodInfo> proxyList = this.BuildPropertyList(methods, excludedProperties);
-            PropertyEmitter propertyEmitter = new PropertyEmitter();
 
             foreach (MethodInfo methodInfo in proxyList)
             {
-                propertyEmitter.Emit(interceptorField, methodInfo, typeBuilder);
+                PropertyEmitter.Emit(typeBuilder, methodInfo, interceptorField);
             }
 
-            // Create it.
-            Type proxyType = typeBuilder.CreateType();
-
-            return proxyType;
-        }
-
-        /// <summary>
-        /// Defines the default parameterless constructor so that types without one can be created.
-        /// </summary>
-        /// <param name="typeBuilder">
-        /// The type builder.
-        /// </param>
-        private void DefineDefaultConstructor(TypeBuilder typeBuilder)
-        {
-            const MethodAttributes ConstructorAttributes = MethodAttributes.Public |
-                                                           MethodAttributes.HideBySig | MethodAttributes.SpecialName |
-                                                           MethodAttributes.RTSpecialName;
-
-            ConstructorBuilder constructor =
-                typeBuilder.DefineConstructor(ConstructorAttributes, CallingConventions.Standard, new Type[] { });
-
-            ILGenerator il = constructor.GetILGenerator();
-
-            // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-            constructor.SetImplementationFlags(MethodImplAttributes.IL | MethodImplAttributes.Managed);
-
-            // This is the equivalent to:
-            // public ProxyClass () {}
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Call, BaseConstructor);
-            il.Emit(OpCodes.Ret);
+            // Create and return.
+            return typeBuilder.CreateType();
         }
 
         /// <summary>

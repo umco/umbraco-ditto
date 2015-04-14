@@ -343,7 +343,10 @@
                 // Create a proxy instance to replace our object.
                 LazyInterceptor interceptor = new LazyInterceptor(instance, lazyProperties);
                 ProxyFactory factory = new ProxyFactory();
-                instance = factory.CreateProxy(type, interceptor, null, hasParameter ? new object[] { content } : null);
+
+                instance = hasParameter
+                    ? factory.CreateProxy(type, interceptor, null, content)
+                    : factory.CreateProxy(type, interceptor, null);
             }
 
             // Now loop through and convert non-virtual properties.

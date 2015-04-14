@@ -8,7 +8,7 @@
     /// <summary>
     /// Provides methods for emitting intercepted property bodies in proxy classes.
     /// </summary>
-    internal class PropertyEmitter
+    internal static class PropertyEmitter
     {
         /// <summary>
         /// The get interceptor method.
@@ -36,23 +36,23 @@
         /// <summary>
         /// Uses reflection to emit the given <see cref="MethodInfo"/> body for interception.
         /// </summary>
-        /// <param name="interceptorField">
-        /// The <see cref="IInterceptor"/> field.
+        /// <param name="typeBuilder">
+        /// The <see cref="TypeBuilder"/> for the current type.
         /// </param>
         /// <param name="method">
         /// The <see cref="MethodInfo"/> to intercept.
         /// </param>
-        /// <param name="typeBuilder">
-        /// The <see cref="TypeBuilder"/> for the current type.
+        /// <param name="interceptorField">
+        /// The <see cref="IInterceptor"/> field.
         /// </param>
-        public void Emit(FieldInfo interceptorField, MethodInfo method, TypeBuilder typeBuilder)
+        public static void Emit(TypeBuilder typeBuilder, MethodInfo method, FieldInfo interceptorField)
         {
             // Get the method parameters for any setters.
             ParameterInfo[] parameters = method.GetParameters();
             ParameterInfo parameter = parameters.FirstOrDefault();
 
             // Define attributes.
-            const MethodAttributes MethodAttributes = MethodAttributes.Public | 
+            const MethodAttributes MethodAttributes = MethodAttributes.Public |
                                                       MethodAttributes.HideBySig |
                                                       MethodAttributes.Virtual;
 
@@ -100,6 +100,11 @@
             if (method.ReturnType == typeof(void))
             {
                 il.Emit(OpCodes.Pop);
+            }
+            else
+            {
+                // Unbox the object back to the corrct type.
+                il.Emit(OpCodes.Unbox_Any, method.ReturnType);
             }
 
             il.Emit(OpCodes.Ret);
