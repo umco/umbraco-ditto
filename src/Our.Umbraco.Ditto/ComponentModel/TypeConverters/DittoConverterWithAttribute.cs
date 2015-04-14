@@ -39,7 +39,7 @@
         {
             if (context != null && context.PropertyDescriptor != null && context.PropertyDescriptor.Attributes != null)
             {
-                var attributes = context.PropertyDescriptor.Attributes.OfType<UmbracoDictionaryValueAttribute>();
+                var attributes = context.PropertyDescriptor.Attributes.OfType<T>();
 
                 if (attributes.Any())
                 {
