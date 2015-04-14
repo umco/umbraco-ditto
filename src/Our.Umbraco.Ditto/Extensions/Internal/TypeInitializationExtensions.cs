@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
+    using System.Web.Mvc;
 
     /// <summary>
     /// Extensions methods for <see cref="T:System.Type"/> for creating instances of types faster than 
@@ -13,6 +14,18 @@
     /// </summary>
     internal static class TypeInitializationExtensions
     {
+        /// <summary>
+        /// Returns an instance of the <paramref name="type"/> on which the method is invoked.
+        /// This method will first check if there constructors dictated by dependency injection
+        /// and fall back to the default constructor method if none are found.
+        /// </summary>
+        /// <param name="type">The type on which the method was invoked.</param>
+        /// <returns>An instance of the <paramref name="type"/>.</returns>
+        public static object GetDependencyResolvedInstance(this Type type)
+        {
+            return DependencyResolver.Current.GetService(type) ?? GetInstance(type);
+        }
+
         /// <summary>
         /// Returns an instance of the <paramref name="type"/> on which the method is invoked.
         /// </summary>

@@ -400,7 +400,7 @@
                     var converterType = Type.GetType(converterAttribute.ConverterTypeName);
                     if (converterType != null)
                     {
-                        var converter = (DependencyResolver.Current.GetService(converterType) ?? converterType.GetInstance()) as TypeConverter;
+                        var converter = converterType.GetDependencyResolvedInstance() as TypeConverter;
 
                         if (converter != null)
                         {
@@ -472,7 +472,7 @@
             {
                 // Handle Html strings so we don't have to set the attribute.
                 var converterType = typeof(DittoHtmlStringConverter);
-                var converter = (DependencyResolver.Current.GetService(converterType) ?? converterType.GetInstance()) as TypeConverter;
+                var converter = converterType.GetDependencyResolvedInstance() as TypeConverter;
 
                 if (converter != null)
                 {
