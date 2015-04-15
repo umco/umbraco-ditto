@@ -90,7 +90,7 @@
             int[] nodeIds = { };
 
             // First try enumerable strings, ints.
-            if (type.IsGenericType)
+            if (type.IsGenericType || type.IsArray)
             {
                 if (type.IsEnumerableOfType(typeof(string)))
                 {
