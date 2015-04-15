@@ -215,7 +215,10 @@
     <Compile Include="Mocks\ContentBuilder.cs" />
     <Compile Include="Mocks\PublishedContentMock.cs" />
     <Compile Include="Mocks\PublishedContentPropertyMock.cs" />
-    <Compile Include="SampleTest.cs" />
+    <Compile Include="Models\ComplexModel.cs" />
+    <Compile Include="Models\SimpleModel.cs" />
+    <Compile Include="PublishedContentTests.cs" />
+    <Compile Include="TypeConverters\MockPublishedContentConverter.cs" />
     <Compile Include="TypeInferenceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnumerableTests.cs" />
