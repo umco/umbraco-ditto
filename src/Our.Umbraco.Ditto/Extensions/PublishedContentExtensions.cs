@@ -303,8 +303,8 @@
                         continue;
                     }
 
-                    // Get the value from Umbraco.
-                    object propertyValue = GetUmbracoValue(content, propertyInfo);
+                    // Get the raw value.
+                    object propertyValue = GetRawValue(content, type, culture, propertyInfo);
 
                     // Set the value.
                     SetTypedValue(content, type, culture, propertyInfo, propertyValue, ref instance);
@@ -315,54 +315,38 @@
         }
 
         /// <summary>
-        /// Returns the cached value from Umbraco that matches the given type and property.
+        /// Returns the raw value for the given type and property.
         /// </summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="type">The <see cref="Type"/> of items to return.</param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
-        private static object GetUmbracoValue(
-            IPublishedContent content,
+        private static object GetRawValue(
+           IPublishedContent content,
+            Type type,
+            CultureInfo culture,
             PropertyInfo propertyInfo)
         {
-            var contentType = content.GetType();
-            var umbracoPropertyName = propertyInfo.Name;
-            var altUmbracoPropertyName = string.Empty;
-            var recursive = false;
-            object defaultValue = null;
+            // The default return value.
+            object value = null;
 
-            var umbracoPropertyAttr = propertyInfo.GetCustomAttribute<UmbracoPropertyAttribute>();
-            if (umbracoPropertyAttr != null)
+            // Check if the property has an associated value attribute.
+            var valueAttr = propertyInfo.GetCustomAttribute<DittoValueAttribute>(true);
+            if (valueAttr != null)
             {
-                umbracoPropertyName = umbracoPropertyAttr.PropertyName;
-                altUmbracoPropertyName = umbracoPropertyAttr.AltPropertyName;
-                recursive = umbracoPropertyAttr.Recursive;
-                defaultValue = umbracoPropertyAttr.DefaultValue;
+                // Attempt to get the value from the custom attribute.
+                value = valueAttr.GetValue(content, type, culture, propertyInfo);
+            }
+            else
+            {
+                // If a custom attribute isn't associated, then we fall-back on `UmbracoPropertyAttribute`.
+                // As this is expected (and intended) behaviour.
+                var umbracoPropertyAttr = new UmbracoPropertyAttribute();
+                value = umbracoPropertyAttr.GetValue(content, type, culture, propertyInfo);
             }
 
-            // Try fetching the value.
-            var contentProperty = contentType.GetProperty(umbracoPropertyName);
-            object propertyValue = contentProperty != null
-                                    ? contentProperty.GetValue(content, null)
-                                    : content.GetPropertyValue(umbracoPropertyName, recursive);
-
-            // Try fetching the alt value.
-            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
-                && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
-            {
-                contentProperty = contentType.GetProperty(altUmbracoPropertyName);
-                propertyValue = contentProperty != null
-                                    ? contentProperty.GetValue(content, null)
-                                    : content.GetPropertyValue(altUmbracoPropertyName, recursive);
-            }
-
-            // Try setting the default value.
-            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
-                && defaultValue != null)
-            {
-                propertyValue = defaultValue;
-            }
-
-            return propertyValue;
+            return value;
         }
 
         /// <summary>
