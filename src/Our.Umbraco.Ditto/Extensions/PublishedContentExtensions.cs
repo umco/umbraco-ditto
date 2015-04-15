@@ -320,7 +320,9 @@
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
-        private static object GetUmbracoValue(IPublishedContent content, PropertyInfo propertyInfo)
+        private static object GetUmbracoValue(
+            IPublishedContent content,
+            PropertyInfo propertyInfo)
         {
             var contentType = content.GetType();
             var umbracoPropertyName = propertyInfo.Name;
@@ -372,7 +374,13 @@
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <param name="propertyValue">The property value.</param>
         /// <param name="instance">The instance to assign the value to.</param>
-        private static void SetTypedValue(IPublishedContent content, Type type, CultureInfo culture, PropertyInfo propertyInfo, object propertyValue, ref object instance)
+        private static void SetTypedValue(
+            IPublishedContent content,
+            Type type,
+            CultureInfo culture,
+            PropertyInfo propertyInfo,
+            object propertyValue,
+            ref object instance)
         {
             // Process the value.
             var propertyType = propertyInfo.PropertyType;
