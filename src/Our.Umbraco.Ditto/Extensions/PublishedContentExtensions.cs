@@ -328,11 +328,11 @@
             CultureInfo culture,
             PropertyInfo propertyInfo)
         {
-            // Check if the property has an associated value attribute.
-            // Otherwise fall-back on `UmbracoPropertyAttribute`, this would be expected behaviour.
-            var valueAttr = propertyInfo.GetCustomAttribute<DittoValueAttribute>(true) ?? new UmbracoPropertyAttribute();
+            // Check the property for an associated value attribute, otherwise fall-back on expected behaviour.
+            var valueAttr = propertyInfo.GetCustomAttribute<DittoValueAttribute>(true)
+                ?? new UmbracoPropertyAttribute();
 
-            // Attempt to get the value from the custom attribute.
+            // Get the value from the custom attribute.
             return valueAttr.GetValue(content, type, culture, propertyInfo);
         }
 
