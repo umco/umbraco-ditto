@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
+    <Compile Include="Attributes\DittoValueAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
