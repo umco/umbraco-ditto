@@ -340,7 +340,7 @@
 
             // Get the value from the custom attribute.
             //TODO: Cache these?
-            var resolver = (DittoValueResolver)Activator.CreateInstance(valueAttr.ResolverType);
+            var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
             return resolver.ResolveValue(context, valueAttr, culture);
         }
 
