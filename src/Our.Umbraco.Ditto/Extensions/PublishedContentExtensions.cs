@@ -304,7 +304,7 @@
                     }
 
                     // Get the raw value.
-                    object propertyValue = GetRawValue(content, type, culture, propertyInfo);
+                    object propertyValue = GetRawValue(content, type, culture, propertyInfo, ref instance);
 
                     // Set the value.
                     SetTypedValue(content, type, culture, propertyInfo, propertyValue, ref instance);
@@ -322,18 +322,26 @@
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
+        /// <param name="instance">The instance to assign the value to.</param>
         private static object GetRawValue(
            IPublishedContent content,
             Type type,
             CultureInfo culture,
-            PropertyInfo propertyInfo)
+            PropertyInfo propertyInfo,
+            ref object instance)
         {
             // Check the property for an associated value attribute, otherwise fall-back on expected behaviour.
-            var valueAttr = propertyInfo.GetCustomAttribute<DittoValueAttribute>(true)
+            var valueAttr = propertyInfo.GetCustomAttribute<DittoValueResolverAttribute>(true)
                 ?? new UmbracoPropertyAttribute();
 
+            //TODO: Only create one context and share between GetRawValue and SetTypedValue?
+            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+            var context = new PublishedContentContext(content, descriptor);
+
             // Get the value from the custom attribute.
-            return valueAttr.GetValue(content, type, culture, propertyInfo);
+            //TODO: Cache these?
+            var resolver = (DittoValueResolver)Activator.CreateInstance(valueAttr.ResolverType);
+            return resolver.ResolveValue(context, valueAttr, culture);
         }
 
         /// <summary>
