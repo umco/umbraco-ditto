@@ -75,6 +75,16 @@
         }
 
         [Test]
+        public void Property_Resolved()
+        {
+            var content = ContentBuilder.Default().Build();
+
+            var model = content.As<ComplexModel>();
+
+            Assert.That(model.MyResolvedProperty, Is.EqualTo("Mock Property Value"));
+        }
+
+        [Test]
         public void Complex_Property_Convertered()
         {
             var value = ContentBuilder.Default().Build();
@@ -91,7 +101,7 @@
             Assert.That(model.Id, Is.EqualTo(1234));
 
             Assert.That(model.MyProperty, Is.EqualTo(value));
-            
+
             Assert.That(model.MyPublishedContent, Is.InstanceOf<IPublishedContent>());
             Assert.That(model.MyPublishedContent.Id, Is.EqualTo(1234));
             Assert.That(model.MyPublishedContent.Name, Is.EqualTo("Mock Published Content"));
