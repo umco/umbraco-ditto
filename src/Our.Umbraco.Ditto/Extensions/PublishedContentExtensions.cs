@@ -333,7 +333,7 @@
                                 () =>
                                 {
                                     // Get the value from Umbraco.
-                                    object propertyValue = GetUmbracoValue(content, deferredPropertyInfo);
+                                    object propertyValue = GetRawValue(content, type, culture, deferredPropertyInfo, localInstance);
                                     return GetTypedValue(content, type, culture, deferredPropertyInfo, propertyValue, localInstance);
                                 }));
                     }
@@ -363,7 +363,7 @@
                         }
 
                         // Set the value normally.
-                        object propertyValue = GetUmbracoValue(content, propertyInfo);
+                        object propertyValue = GetRawValue(content, type, culture, propertyInfo, instance);
                         var result = GetTypedValue(content, type, culture, propertyInfo, propertyValue, instance);
                         propertyInfo.SetValue(instance, result, null);
                     }
@@ -374,52 +374,33 @@
         }
 
         /// <summary>
-        /// Returns the cached value from Umbraco that matches the given type and property.
+        /// Returns the raw value for the given type and property.
         /// </summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="type">The <see cref="Type"/> of items to return.</param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
-        private static object GetUmbracoValue(IPublishedContent content, PropertyInfo propertyInfo)
+        /// <param name="instance">The instance to assign the value to.</param>
+        private static object GetRawValue(
+           IPublishedContent content,
+            Type type,
+            CultureInfo culture,
+            PropertyInfo propertyInfo,
+            object instance)
         {
-            var contentType = content.GetType();
-            var umbracoPropertyName = propertyInfo.Name;
-            var altUmbracoPropertyName = string.Empty;
-            var recursive = false;
-            object defaultValue = null;
+            // Check the property for an associated value attribute, otherwise fall-back on expected behaviour.
+            var valueAttr = propertyInfo.GetCustomAttribute<DittoValueResolverAttribute>(true)
+                ?? new UmbracoPropertyAttribute();
 
-            var umbracoPropertyAttr = propertyInfo.GetCustomAttribute<UmbracoPropertyAttribute>();
-            if (umbracoPropertyAttr != null)
-            {
-                umbracoPropertyName = umbracoPropertyAttr.PropertyName;
-                altUmbracoPropertyName = umbracoPropertyAttr.AltPropertyName;
-                recursive = umbracoPropertyAttr.Recursive;
-                defaultValue = umbracoPropertyAttr.DefaultValue;
-            }
+            // TODO: Only create one context and share between GetRawValue and SetTypedValue?
+            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+            var context = new PublishedContentContext(content, descriptor);
 
-            // Try fetching the value.
-            var contentProperty = contentType.GetProperty(umbracoPropertyName);
-            object propertyValue = contentProperty != null
-                                    ? contentProperty.GetValue(content, null)
-                                    : content.GetPropertyValue(umbracoPropertyName, recursive);
-
-            // Try fetching the alt value.
-            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
-                && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
-            {
-                contentProperty = contentType.GetProperty(altUmbracoPropertyName);
-                propertyValue = contentProperty != null
-                                    ? contentProperty.GetValue(content, null)
-                                    : content.GetPropertyValue(altUmbracoPropertyName, recursive);
-            }
-
-            // Try setting the default value.
-            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
-                && defaultValue != null)
-            {
-                propertyValue = defaultValue;
-            }
-
-            return propertyValue;
+            // Get the value from the custom attribute.
+            // TODO: Cache these?
+            var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
+            return resolver.ResolveValue(context, valueAttr, culture);
         }
 
         /// <summary>
