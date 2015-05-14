@@ -14,10 +14,10 @@
     {
         public override object ResolveValue(ITypeDescriptorContext context, DittoValueResolverAttribute attribute, CultureInfo culture)
         {
-            if(!(attribute is TAttributeType))
+            if (!(attribute is TAttributeType))
                 throw new ArgumentException("The resolver attribute must be of type " + typeof(TAttributeType).AssemblyQualifiedName, "attribute");
 
-            return ResolveValue(context, (TAttributeType) attribute, culture);
+            return ResolveValue(context, (TAttributeType)attribute, culture);
         }
 
         public abstract object ResolveValue(ITypeDescriptorContext context, TAttributeType attribute, CultureInfo culture);

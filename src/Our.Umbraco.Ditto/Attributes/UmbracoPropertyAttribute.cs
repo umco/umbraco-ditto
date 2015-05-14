@@ -14,7 +14,8 @@
         /// </summary>
         public UmbracoPropertyAttribute()
             : base(typeof(UmbracoPropertyValueResolver))
-        { }
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.

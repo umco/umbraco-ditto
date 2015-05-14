@@ -14,7 +14,8 @@
         /// </summary>
         public UmbracoDictionaryAttribute()
             : base(typeof(UmbracoDictionaryValueResolver))
-        { }
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoDictionaryAttribute"/> class.
