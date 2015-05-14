@@ -7,15 +7,24 @@
     /// Used for providing Umbraco with additional information about a dictionary item to aid property value conversion.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class UmbracoDictionaryValueAttribute : Attribute
+    public class UmbracoDictionaryAttribute : DittoValueResolverAttribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoDictionaryValueAttributeAttribute"/> class.
+        /// Initializes a new instance of the <see cref="UmbracoDictionaryAttribute"/> class.
+        /// </summary>
+        public UmbracoDictionaryAttribute()
+            : base(typeof(UmbracoDictionaryValueResolver))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoDictionaryAttribute"/> class.
         /// </summary>
         /// <param name="dictionaryKey">
         /// The dictionary key.
         /// </param>
-        public UmbracoDictionaryValueAttribute(string dictionaryKey)
+        public UmbracoDictionaryAttribute(string dictionaryKey)
+            : base(typeof(UmbracoDictionaryValueResolver))
         {
             this.DictionaryKey = dictionaryKey;
         }

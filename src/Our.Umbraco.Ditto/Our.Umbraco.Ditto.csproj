@@ -80,6 +80,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
+    <Compile Include="Attributes\DittoValueResolverAttribute.cs" />
+    <Compile Include="Attributes\UmbracoDictionaryAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
@@ -93,6 +95,9 @@
     <Compile Include="ComponentModel\TypeConverters\DittoMediaPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoContentPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoHtmlStringConverter.cs" />
+    <Compile Include="ComponentModel\ValueResolvers\DittoValueResolver.cs" />
+    <Compile Include="ComponentModel\ValueResolvers\UmbracoDictionaryValueResolver.cs" />
+    <Compile Include="ComponentModel\ValueResolvers\UmbracoPropertyValueResolver.cs" />
     <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
     <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Internal\StringExtensions.cs" />
