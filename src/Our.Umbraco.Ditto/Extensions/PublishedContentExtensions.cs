@@ -334,7 +334,7 @@
                                 {
                                     // Get the value from Umbraco.
                                     object propertyValue = GetRawValue(content, culture, deferredPropertyInfo, localInstance);
-                                    return GetTypedValue(content, type, culture, deferredPropertyInfo, propertyValue, localInstance);
+                                    return GetTypedValue(content, culture, deferredPropertyInfo, propertyValue, localInstance);
                                 }));
                     }
                 }
@@ -364,7 +364,7 @@
 
                         // Set the value normally.
                         object propertyValue = GetRawValue(content, culture, propertyInfo, instance);
-                        var result = GetTypedValue(content, type, culture, propertyInfo, propertyValue, instance);
+                        var result = GetTypedValue(content, culture, propertyInfo, propertyValue, instance);
                         propertyInfo.SetValue(instance, result, null);
                     }
                 }
@@ -414,7 +414,6 @@
         /// <returns>The strong typed converted value for the given property.</returns>
         private static object GetTypedValue(
             IPublishedContent content,
-            Type type,
             CultureInfo culture,
             PropertyInfo propertyInfo,
             object propertyValue,
@@ -440,7 +439,7 @@
             if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
             {
                 // Time custom conversions.
-                using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                using (DisposableTimer.DebugDuration<object>(string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
                 {
                     // Get the custom converter from the attribute and attempt to convert.
                     var converterType = Type.GetType(converterAttribute.ConverterTypeName);
@@ -546,7 +545,7 @@
             }
             else
             {
-                using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                using (DisposableTimer.DebugDuration<object>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
                 {
                     var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
                     if (convert.Success)
