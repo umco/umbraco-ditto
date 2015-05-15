@@ -377,7 +377,6 @@
         /// Returns the raw value for the given type and property.
         /// </summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
-        /// <param name="type">The <see cref="Type"/> of items to return.</param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
@@ -410,7 +409,6 @@
         /// Set the typed value to the given instance.
         /// </summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
-        /// <param name="type">The <see cref="Type"/> of items to return.</param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <param name="propertyValue">The property value.</param>
