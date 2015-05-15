@@ -183,7 +183,7 @@
                 return null;
             }
 
-            using (DisposableTimer.DebugDuration(type, string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
+            using (DisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
             {
                 // Check for and fire any event args
                 var convertingArgs = new ConvertingTypeEventArgs
@@ -315,7 +315,7 @@
             {
                 foreach (var propertyInfo in virtualProperties)
                 {
-                    using (DisposableTimer.DebugDuration(type, string.Format("ForEach Virtual Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
+                    using (DisposableTimer.DebugDuration<object>(string.Format("ForEach Virtual Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
                     {
                         // Check for the ignore attribute.
                         var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
@@ -353,7 +353,7 @@
             {
                 foreach (var propertyInfo in nonVirtualProperties)
                 {
-                    using (DisposableTimer.DebugDuration(type, string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
+                    using (DisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
                     {
                         // Check for the ignore attribute.
                         var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
@@ -396,10 +396,14 @@
             var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
             var context = new PublishedContentContext(content, descriptor);
 
-            // Get the value from the custom attribute.
-            // TODO: Cache these?
-            var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
-            return resolver.ResolveValue(context, valueAttr, culture);
+            // Time custom value-resolver.
+            using (DisposableTimer.DebugDuration<object>(string.Format("Custom ValueResolver ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+            {
+                // Get the value from the custom attribute.
+                // TODO: Cache these?
+                var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
+                return resolver.ResolveValue(context, valueAttr, culture);
+            }
         }
 
         /// <summary>
