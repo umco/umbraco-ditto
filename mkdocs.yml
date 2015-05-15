@@ -1,8 +1,5 @@
 site_name: Ditto documentation
-
 pages:
     - [index.md, Home]
-
 theme: readthedocs
-
 repo_url: https://github.com/leekelleher/umbraco-ditto
