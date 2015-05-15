@@ -333,7 +333,7 @@
                                 () =>
                                 {
                                     // Get the value from Umbraco.
-                                    object propertyValue = GetRawValue(content, type, culture, deferredPropertyInfo, localInstance);
+                                    object propertyValue = GetRawValue(content, culture, deferredPropertyInfo, localInstance);
                                     return GetTypedValue(content, type, culture, deferredPropertyInfo, propertyValue, localInstance);
                                 }));
                     }
@@ -363,7 +363,7 @@
                         }
 
                         // Set the value normally.
-                        object propertyValue = GetRawValue(content, type, culture, propertyInfo, instance);
+                        object propertyValue = GetRawValue(content, culture, propertyInfo, instance);
                         var result = GetTypedValue(content, type, culture, propertyInfo, propertyValue, instance);
                         propertyInfo.SetValue(instance, result, null);
                     }
@@ -383,8 +383,7 @@
         /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
         /// <param name="instance">The instance to assign the value to.</param>
         private static object GetRawValue(
-           IPublishedContent content,
-            Type type,
+            IPublishedContent content,
             CultureInfo culture,
             PropertyInfo propertyInfo,
             object instance)
@@ -413,7 +412,13 @@
         /// <param name="propertyValue">The property value.</param>
         /// <param name="instance">The instance to assign the value to.</param>
         /// <returns>The strong typed converted value for the given property.</returns>
-        private static object GetTypedValue(IPublishedContent content, Type type, CultureInfo culture, PropertyInfo propertyInfo, object propertyValue, object instance)
+        private static object GetTypedValue(
+            IPublishedContent content,
+            Type type,
+            CultureInfo culture,
+            PropertyInfo propertyInfo,
+            object propertyValue,
+            object instance)
         {
             // Process the value.
             object result = null;
