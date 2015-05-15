@@ -1,18 +1,17 @@
 # version format
 version: 0.7.0.{build}
 
-# UMBRACO_PACKAGE_PRERELEASE_SUFFIX will only be used for Release builds
+# UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
-install:
-  - cmd: set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=
-  - cmd: build-appveyor.cmd
+init:
+  - set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=
+
+build_script:
+- build-appveyor.cmd
 
 test:
   assemblies:
     - 'Our.Umbraco.Ditto.Tests.dll'
-
-# to disable automatic builds
-build: off
 
 artifacts:
   - path: artifacts\*.nupkg
