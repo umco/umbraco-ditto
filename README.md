@@ -225,6 +225,8 @@ The factory will look for any POCO models that inherit from the `PublishedConten
 * [Using a custom Umbraco MVC controller with `IPublishedContentModelFactory` and Ditto](https://www.screenr.com/PPRN) (5 mins)
 
 
+---
+
 
 ## Contributing to this project
 
