@@ -8,6 +8,8 @@
     using System.Reflection.Emit;
     using System.Threading;
 
+    using global::Umbraco.Core.Models;
+
     /// <summary>
     /// The proxy factory for creating instances of proxy classes.
     /// </summary>
@@ -21,31 +23,22 @@
         /// <summary>
         /// The proxy cache for storing proxy types.
         /// </summary>
-        private static readonly ConcurrentDictionary<ProxyCacheEntry, Type> ProxyCache = new ConcurrentDictionary<ProxyCacheEntry, Type>();
+        private static readonly ConcurrentDictionary<Type, Type> ProxyCache = new ConcurrentDictionary<Type, Type>();
 
         /// <summary>
         /// Creates an instance of the proxy class for the given <see cref="Type"/>.
         /// </summary>
-        /// <param name="baseType">
-        /// The base <see cref="Type"/> to proxy.
-        /// </param>
-        /// <param name="interceptor">
-        /// The <see cref="IInterceptor"/> to intercept properties with.
-        /// </param>
-        /// <param name="excludedProperties">
-        /// The <see cref="IEnumerable{PropertyInfo}"/> of properties to exclude.
-        /// </param>
-        /// <param name="constructorArguments">
-        /// The constructor arguments to pass to any proxy types.
-        /// </param>
+        /// <param name="baseType">The base <see cref="Type"/> to proxy.</param>
+        /// <param name="interceptor">The <see cref="IInterceptor"/> to intercept properties with.</param>
+        /// <param name="content">The <see cref="IPublishedContent"/> to pass as a parameter.</param>
         /// <returns>
         /// The proxy <see cref="Type"/> instance.
         /// </returns>
-        public object CreateProxy(Type baseType, IInterceptor interceptor, IEnumerable<PropertyInfo> excludedProperties, params object[] constructorArguments)
+        public object CreateProxy(Type baseType, IInterceptor interceptor, IPublishedContent content = null)
         {
-            Type proxyType = this.CreateProxyType(baseType, excludedProperties);
+            Type proxyType = this.CreateProxyType(baseType);
 
-            object result = Activator.CreateInstance(proxyType, constructorArguments);
+            object result = content == null ? proxyType.GetInstance() : proxyType.GetInstance(content);
 
             IProxy proxy = (IProxy)result;
             proxy.Interceptor = interceptor;
@@ -56,33 +49,18 @@
         /// <summary>
         /// Creates the proxy class or returns already created class from the cache.
         /// </summary>
-        /// <param name="baseType">
-        /// The base <see cref="Type"/> to proxy.
-        /// </param>
-        /// <param name="excludedProperties">
-        /// The <see cref="T:PropertyInfo[]"/> of properties to exclude.
-        /// </param>
+        /// <param name="baseType">The base <see cref="Type"/> to proxy.</param>
         /// <returns>
         /// The proxy <see cref="Type"/>.
         /// </returns>
-        private Type CreateProxyType(Type baseType, IEnumerable<PropertyInfo> excludedProperties)
+        private Type CreateProxyType(Type baseType)
         {
             try
             {
                 // ConcurrentDictionary.GetOrAdd() is not atomic so we'll be doubly sure.
                 Locker.EnterWriteLock();
 
-                // Prevent re-enumeration. The input excludedProperties is has an IEnumerable
-                // signature to make it more flexible to use.
-                PropertyInfo[] propertyInfos = null;
-                if (excludedProperties != null)
-                {
-                    propertyInfos = excludedProperties as PropertyInfo[] ?? excludedProperties.ToArray();
-                }
-
-                ProxyCacheEntry cacheEntry = new ProxyCacheEntry(baseType, propertyInfos);
-
-                return ProxyCache.GetOrAdd(cacheEntry, c => this.CreateUncachedProxyType(baseType, propertyInfos));
+                return ProxyCache.GetOrAdd(baseType, c => this.CreateUncachedProxyType(baseType));
             }
             finally
             {
@@ -96,13 +74,10 @@
         /// <param name="baseType">
         /// The base <see cref="Type"/> to proxy.
         /// </param>
-        /// <param name="excludedProperties">
-        /// The <see cref="T:PropertyInfo[]"/> of properties to exclude.
-        /// </param>
         /// <returns>
         /// The proxy <see cref="Type"/>.
         /// </returns>
-        private Type CreateUncachedProxyType(Type baseType, PropertyInfo[] excludedProperties)
+        private Type CreateUncachedProxyType(Type baseType)
         {
             // Create a dynamic assembly and module to store the proxy.
             AppDomain currentDomain = AppDomain.CurrentDomain;
@@ -142,7 +117,7 @@
 
             // Emit each property that is to be intercepted.
             MethodInfo[] methods = baseType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
-            IEnumerable<MethodInfo> proxyList = this.BuildPropertyList(methods, excludedProperties);
+            IEnumerable<MethodInfo> proxyList = this.BuildPropertyList(methods);
 
             foreach (MethodInfo methodInfo in proxyList)
             {
@@ -159,13 +134,10 @@
         /// <param name="methodInfos">
         /// The <see cref="IEnumerable{MethodInfo}"/> representing all methods and properties on the base class to proxy.
         /// </param>
-        /// <param name="excludedProperties">
-        /// The <see cref="T:PropertyInfo[]"/> containing properties to exclude.
-        /// </param>
         /// <returns>
         /// The filtered <see cref="IEnumerable{MethodInfo}"/>.
         /// </returns>
-        private IEnumerable<MethodInfo> BuildPropertyList(MethodInfo[] methodInfos, PropertyInfo[] excludedProperties)
+        private IEnumerable<MethodInfo> BuildPropertyList(MethodInfo[] methodInfos)
         {
             List<MethodInfo> proxyList = new List<MethodInfo>();
 
@@ -192,7 +164,7 @@
 
                 // We only want properties not methods that are not part of the excluded list.
                 PropertyInfo property = this.GetParentProperty(method);
-                if (property != null && (excludedProperties == null || !excludedProperties.Contains(property)))
+                if (property != null)
                 {
                     proxyList.Add(method);
                 }

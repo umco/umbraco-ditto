@@ -256,7 +256,7 @@
                 }
                 else
                 {
-                    // fallback
+                    // Fallback
                     culture = CultureInfo.CurrentCulture;
                 }
             }
@@ -344,8 +344,8 @@
                 ProxyFactory factory = new ProxyFactory();
 
                 instance = hasParameter
-                    ? factory.CreateProxy(type, interceptor, null, content)
-                    : factory.CreateProxy(type, interceptor, null);
+                    ? factory.CreateProxy(type, interceptor, content)
+                    : factory.CreateProxy(type, interceptor);
             }
 
             // Now loop through and convert non-virtual properties.

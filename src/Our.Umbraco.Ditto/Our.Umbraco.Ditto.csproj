@@ -116,7 +116,6 @@
     <Compile Include="Proxy\IProxy.cs" />
     <Compile Include="Proxy\LazyInterceptor.cs" />
     <Compile Include="Proxy\PropertyEmitter.cs" />
-    <Compile Include="Proxy\ProxyCacheEntry.cs" />
     <Compile Include="Proxy\ProxyFactory.cs" />
     <Compile Include="Proxy\InterceptorEmitter.cs" />
   </ItemGroup>
