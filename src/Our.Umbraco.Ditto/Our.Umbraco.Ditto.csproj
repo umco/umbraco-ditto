@@ -90,7 +90,7 @@
     <Compile Include="ComponentModel\TypeConverters\DittoEnumConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoMemberPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoUltimatePickerConverter.cs" />
-    <Compile Include="ComponentModel\TypeConverters\DittoMultiNodeTreePickerConverter.cs" />
+    <Compile Include="ComponentModel\TypeConverters\DittoPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoMultipleMediaPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoMediaPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoContentPickerConverter.cs" />
