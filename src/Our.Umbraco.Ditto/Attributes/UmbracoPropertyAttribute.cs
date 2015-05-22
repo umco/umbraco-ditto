@@ -39,10 +39,10 @@
             object defaultValue = null)
             : base(typeof(UmbracoPropertyValueResolver))
         {
-            PropertyName = propertyName;
-            AltPropertyName = altPropertyName;
-            Recursive = recursive;
-            DefaultValue = defaultValue;
+            this.PropertyName = propertyName;
+            this.AltPropertyName = altPropertyName;
+            this.Recursive = recursive;
+            this.DefaultValue = defaultValue;
         }
 
         /// <summary>

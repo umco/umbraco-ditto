@@ -28,6 +28,12 @@
         /// <summary>
         /// The cache for storing type property information.
         /// </summary>
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> VirtualPropertyCache
+            = new ConcurrentDictionary<Type, PropertyInfo[]>();
+
+        /// <summary>
+        /// The cache for storing type property information.
+        /// </summary>
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PropertyCache
             = new ConcurrentDictionary<Type, PropertyInfo[]>();
 
@@ -177,7 +183,7 @@
                 return null;
             }
 
-            using (DisposableTimer.DebugDuration(type, string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
+            using (DisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
             {
                 // Check for and fire any event args
                 var convertingArgs = new ConvertingTypeEventArgs
@@ -250,7 +256,7 @@
                 }
                 else
                 {
-                    // fallback
+                    // Fallback
                     culture = CultureInfo.CurrentCulture;
                 }
             }
@@ -259,7 +265,7 @@
             // Try and return from the cache first. TryGetValue is faster than GetOrAdd.
             ParameterInfo[] constructorParams;
             ConstructorCache.TryGetValue(type, out constructorParams);
-
+            bool hasParameter = false;
             if (constructorParams == null)
             {
                 var constructor = type.GetConstructors().OrderBy(x => x.GetParameters().Length).First();
@@ -277,6 +283,7 @@
             {
                 // This extension method is about 7x faster than the native implementation.
                 instance = type.GetInstance(content);
+                hasParameter = true;
             }
             else
             {
@@ -284,30 +291,82 @@
             }
 
             // Collect all the properties of the given type and loop through writable ones.
-            PropertyInfo[] properties;
-            PropertyCache.TryGetValue(type, out properties);
-            if (properties == null)
+            PropertyInfo[] virtualProperties;
+            PropertyInfo[] nonVirtualProperties;
+            VirtualPropertyCache.TryGetValue(type, out virtualProperties);
+            PropertyCache.TryGetValue(type, out nonVirtualProperties);
+            if (virtualProperties == null && nonVirtualProperties == null)
             {
-                properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(x => x.CanWrite).ToArray();
-                PropertyCache.TryAdd(type, properties);
+                var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                     .Where(x => x.CanWrite).ToArray();
+
+                // Split out the properties.
+                virtualProperties = properties.Where(p => p.IsVirtualAndOverridable()).ToArray();
+                nonVirtualProperties = properties.Except(virtualProperties).ToArray();
+                VirtualPropertyCache.TryAdd(type, virtualProperties);
+                PropertyCache.TryAdd(type, nonVirtualProperties);
             }
 
-            foreach (var propertyInfo in properties)
+            // A dictionary to store lazily invoked values.
+            var lazyProperties = new Dictionary<string, Lazy<object>>();
+
+            // If there are any virtual properties we want to lazily invoke them.
+            if (virtualProperties != null && virtualProperties.Any())
             {
-                using (DisposableTimer.DebugDuration(type, string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
+                foreach (var propertyInfo in virtualProperties)
                 {
-                    // Check for the ignore attribute.
-                    var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
-                    if (ignoreAttr != null)
+                    using (DisposableTimer.DebugDuration<object>(string.Format("ForEach Virtual Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
                     {
-                        continue;
+                        // Check for the ignore attribute.
+                        var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
+                        if (ignoreAttr != null)
+                        {
+                            continue;
+                        }
+
+                        // Create a Lazy<object> to deferr returning our value.
+                        var deferredPropertyInfo = propertyInfo;
+                        var localInstance = instance;
+                        lazyProperties.Add(
+                            propertyInfo.Name,
+                            new Lazy<object>(
+                                () =>
+                                {
+                                    // Get the value from Umbraco.
+                                    object propertyValue = GetRawValue(content, culture, deferredPropertyInfo, localInstance);
+                                    return GetTypedValue(content, culture, deferredPropertyInfo, propertyValue, localInstance);
+                                }));
                     }
+                }
 
-                    // Get the raw value.
-                    object propertyValue = GetRawValue(content, type, culture, propertyInfo, ref instance);
+                // Create a proxy instance to replace our object.
+                LazyInterceptor interceptor = new LazyInterceptor(instance, lazyProperties);
+                ProxyFactory factory = new ProxyFactory();
 
-                    // Set the value.
-                    SetTypedValue(content, type, culture, propertyInfo, propertyValue, ref instance);
+                instance = hasParameter
+                    ? factory.CreateProxy(type, interceptor, content)
+                    : factory.CreateProxy(type, interceptor);
+            }
+
+            // Now loop through and convert non-virtual properties.
+            if (nonVirtualProperties != null && nonVirtualProperties.Any())
+            {
+                foreach (var propertyInfo in nonVirtualProperties)
+                {
+                    using (DisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
+                    {
+                        // Check for the ignore attribute.
+                        var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
+                        if (ignoreAttr != null)
+                        {
+                            continue;
+                        }
+
+                        // Set the value normally.
+                        object propertyValue = GetRawValue(content, culture, propertyInfo, instance);
+                        var result = GetTypedValue(content, culture, propertyInfo, propertyValue, instance);
+                        propertyInfo.SetValue(instance, result, null);
+                    }
                 }
             }
 
@@ -318,50 +377,52 @@
         /// Returns the raw value for the given type and property.
         /// </summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
-        /// <param name="type">The <see cref="Type"/> of items to return.</param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
         /// <param name="instance">The instance to assign the value to.</param>
         private static object GetRawValue(
-           IPublishedContent content,
-            Type type,
+            IPublishedContent content,
             CultureInfo culture,
             PropertyInfo propertyInfo,
-            ref object instance)
+            object instance)
         {
             // Check the property for an associated value attribute, otherwise fall-back on expected behaviour.
             var valueAttr = propertyInfo.GetCustomAttribute<DittoValueResolverAttribute>(true)
                 ?? new UmbracoPropertyAttribute();
 
-            //TODO: Only create one context and share between GetRawValue and SetTypedValue?
+            // TODO: Only create one context and share between GetRawValue and SetTypedValue?
             var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
             var context = new PublishedContentContext(content, descriptor);
 
-            // Get the value from the custom attribute.
-            //TODO: Cache these?
-            var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
-            return resolver.ResolveValue(context, valueAttr, culture);
+            // Time custom value-resolver.
+            using (DisposableTimer.DebugDuration<object>(string.Format("Custom ValueResolver ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+            {
+                // Get the value from the custom attribute.
+                // TODO: Cache these?
+                var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
+                return resolver.ResolveValue(context, valueAttr, culture);
+            }
         }
 
         /// <summary>
         /// Set the typed value to the given instance.
         /// </summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
-        /// <param name="type">The <see cref="Type"/> of items to return.</param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <param name="propertyValue">The property value.</param>
         /// <param name="instance">The instance to assign the value to.</param>
-        private static void SetTypedValue(
+        /// <returns>The strong typed converted value for the given property.</returns>
+        private static object GetTypedValue(
             IPublishedContent content,
-            Type type,
             CultureInfo culture,
             PropertyInfo propertyInfo,
             object propertyValue,
-            ref object instance)
+            object instance)
         {
             // Process the value.
+            object result = null;
             var propertyType = propertyInfo.PropertyType;
             var typeInfo = propertyType.GetTypeInfo();
 
@@ -380,7 +441,7 @@
             if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
             {
                 // Time custom conversions.
-                using (DisposableTimer.DebugDuration(type, string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                using (DisposableTimer.DebugDuration<object>(string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
                 {
                     // Get the custom converter from the attribute and attempt to convert.
                     var converterType = Type.GetType(converterAttribute.ConverterTypeName);
@@ -422,15 +483,15 @@
                                         {
                                             // Using 'Cast' to convert the type back to IEnumerable<T>.
                                             object enumerablePropertyValue = EnumerableInvocations.Cast(
-                                                        parameterType,
-                                                        converted.YieldSingleItem());
+                                                                                parameterType,
+                                                                                converted.YieldSingleItem());
 
-                                            propertyInfo.SetValue(instance, enumerablePropertyValue, null);
+                                            result = enumerablePropertyValue;
                                         }
                                         else
                                         {
                                             // Nothing is strong typed anymore.
-                                            propertyInfo.SetValue(instance, EnumerableInvocations.Cast(parameterType, (IEnumerable)converted), null);
+                                            result = EnumerableInvocations.Cast(parameterType, (IEnumerable)converted);
                                         }
                                     }
                                     else
@@ -440,12 +501,11 @@
                                         if (convertedType.IsEnumerableType() && convertedType.GenericTypeArguments.Any())
                                         {
                                             // Use 'FirstOrDefault' to convert the type back to T.
-                                            object singleValue = EnumerableInvocations.FirstOrDefault(propertyType, (IEnumerable)converted);
-                                            propertyInfo.SetValue(instance, singleValue, null);
+                                            result = EnumerableInvocations.FirstOrDefault(propertyType, (IEnumerable)converted);
                                         }
                                         else
                                         {
-                                            propertyInfo.SetValue(instance, converted, null);
+                                            result = converted;
                                         }
                                     }
                                 }
@@ -476,26 +536,28 @@
                     // ReSharper disable once AssignNullToNotNullAttribute
                     if (converter.CanConvertFrom(context, propertyValueType))
                     {
-                        propertyInfo.SetValue(instance, converter.ConvertFrom(context, culture, propertyValue), null);
+                        result = converter.ConvertFrom(context, culture, propertyValue);
                     }
                 }
             }
             else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
             {
                 // Simple types
-                propertyInfo.SetValue(instance, propertyValue, null);
+                result = propertyValue;
             }
             else
             {
-                using (DisposableTimer.DebugDuration(type, string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                using (DisposableTimer.DebugDuration<object>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
                 {
                     var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
                     if (convert.Success)
                     {
-                        propertyInfo.SetValue(instance, convert.Result, null);
+                        result = convert.Result;
                     }
                 }
             }
+
+            return result;
         }
     }
 }
