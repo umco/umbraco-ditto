@@ -1,6 +1,7 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System.ComponentModel;
+    using System.Globalization;
 
     using global::Umbraco.Core.Models;
     using global::Umbraco.Web;
@@ -24,7 +25,7 @@
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(ITypeDescriptorContext context, UmbracoDictionaryAttribute attribute, System.Globalization.CultureInfo culture)
+        public override object ResolveValue(ITypeDescriptorContext context, UmbracoDictionaryAttribute attribute, CultureInfo culture)
         {
             if (string.IsNullOrWhiteSpace(attribute.DictionaryKey))
             {
