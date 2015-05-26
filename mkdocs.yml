@@ -3,8 +3,14 @@ site_name: Ditto
 repo_url: https://github.com/leekelleher/umbraco-ditto/tree/develop/docs
 
 pages:
-  - ['index.md', 'Home']
-  - ['install.md', 'Installation']
-  - ['usage.md', 'Usage']
-  - ['configuration.md', 'Configuration']
+  - Introduction: 'index.md'
+  - Installation:
+    - 'Our Umbraco package repository': 'install.md'
+    - 'NuGet package repository': 'install.md'
+    - 'Manual build': 'install.md'
+  - Usage:
+     - 'Basic usage': 'usage.md'
+     - 'Advanced usage': 'usage.md'
+  - Configuration:
+    - PublishedContent ModelFactory: 'configuration.md'
 
