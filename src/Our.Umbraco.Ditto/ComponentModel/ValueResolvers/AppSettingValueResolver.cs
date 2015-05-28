@@ -2,9 +2,6 @@
 {
     using System.ComponentModel;
     using System.Globalization;
-
-    using global::Umbraco.Core.Models;
-    using global::Umbraco.Web;
     using System.Web.Configuration;
 
     /// <summary>
@@ -28,14 +25,7 @@
         /// </returns>
         public override object ResolveValue(ITypeDescriptorContext context, AppSettingAttribute attribute, CultureInfo culture)
         {
-            // default to attribute value
-            string appSettingKey = attribute.AppSettingKey;
-
-            if (string.IsNullOrWhiteSpace(appSettingKey) && context.PropertyDescriptor != null)
-            {            
-                // fall-back to property name
-                appSettingKey = context.PropertyDescriptor.Name;
-            }
+            var appSettingKey = attribute.AppSettingKey ?? (context.PropertyDescriptor != null ? context.PropertyDescriptor.Name : string.Empty);
 
             if (string.IsNullOrWhiteSpace(appSettingKey))
             {

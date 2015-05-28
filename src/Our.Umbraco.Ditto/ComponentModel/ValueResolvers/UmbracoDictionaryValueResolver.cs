@@ -27,14 +27,7 @@
         /// </returns>
         public override object ResolveValue(ITypeDescriptorContext context, UmbracoDictionaryAttribute attribute, CultureInfo culture)
         {
-            // default to attribute value
-            string dictionaryKey = attribute.DictionaryKey;
-
-            if(string.IsNullOrWhiteSpace(dictionaryKey) && context.PropertyDescriptor != null)
-            {
-                // fall-back to property name
-                dictionaryKey = context.PropertyDescriptor.Name;
-            }
+            var dictionaryKey = attribute.DictionaryKey ?? (context.PropertyDescriptor != null ? context.PropertyDescriptor.Name : string.Empty);
 
             if (string.IsNullOrWhiteSpace(dictionaryKey))
             {
