@@ -49,7 +49,7 @@ Here is an example of using the `As<T>` method within your Razor view:
 
 ## Advanced usage - Property attributes
 
-To extend the mapping functionality, Ditto offers two attributes to decorate your POCO models: `UmbracoProperty` and `DittoIgnore`:
+To extend the mapping functionality, Ditto offers several attributes to decorate your POCO models: `UmbracoProperty`, `UmbracoDictionary`, `AppSetting` and `DittoIgnore`:
 
 ### `UmbracoProperty`
 
@@ -61,6 +61,25 @@ Using the example POCO model from above (`MyTextPage` class), let's say that you
 	public string Content { get; set; }
 
 Now Ditto will know to map the POCO's `Content` property to the DocumentTypes 'bodyText' property.
+
+
+### `UmbracoDictionary`
+
+If you have a dictionary item (set in the Settings section), you can use this attribute to populate the value. The advantage of using an Umbraco dictionary item is that the value is based on the culture of the current page being loaded.
+
+```csharp
+[Our.Umbraco.Ditto.UmbracoDictionary("Labels.ReadMore")]
+public string ReadMoreLabel { get; set; }
+```
+
+### `AppSetting`
+
+This attribute can be used for when you would like to populate your POCO model property with a value from the `Web.config` `<appSettings>` section. By supplying the key name for the app-setting, the value will be populated.
+
+```csharp
+[Our.Umbraco.Ditto.AppSetting("umbracoConfigurationStatus")]
+public string UmbracoVersion { get; set; }
+```
 
 
 ### `DittoIgnore`
@@ -77,7 +96,7 @@ Now when you map your content node, the ignored property (in this example, `Imag
 The `DittoIgnore` attribute is useful for when you want to construct more complex POCO models.
 
 
-## Advanced usage - TypeConverters
+## Advanced usage - Type Converters
 
 Sooner or later you'll reach a point where you will want to map a DocumentType property with a complex .NET type (either from within the .NET Framework, or custom).  To map these types with Ditto, you can use a standard .NET `TypeConverter`.
 
@@ -88,19 +107,19 @@ Sooner or later you'll reach a point where you will want to map a DocumentType p
 Now with our example, let's say that you wanted the `Content` (formerly `BodyText`) property to be of type `HtmlString` (rather than a basic `string`).  You can reference a custom `TypeConverter` by adding the following attribute to the POCO property:
 
 ```csharp
-[System.ComponentModel.TypeConverter(typeof(HtmlStringConverter))]
+[System.ComponentModel.TypeConverter(typeof(MyCustomConverter))]
 [Our.Umbraco.Ditto.UmbracoProperty("bodyText")]
 public System.Web.HtmlString Content { get; set; }
 ```
 
 Then when the POCO property is populated the (raw) value (from `IPublishedContent`) will be processed through the custom `TypeConverter` and converted to the desired .NET type. 
 
-Here is the example code for the `HtmlStringConverter`, that converts a `string` to a `HtmlString` object:
+Here is the example code for the `MyCustomConverter`, that converts a `string` to a `HtmlString` object:
 
 ```csharp
-public class HtmlStringConverter : TypeConverter
+public class MyCustomConverter : TypeConverter
 {
-	public override bool CanConvertFrom(ITypeDescriptorContext context, System.Type sourceType)
+	public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 	{
 		if (sourceType == typeof(string))
 			return true;
@@ -108,7 +127,7 @@ public class HtmlStringConverter : TypeConverter
 		return base.CanConvertFrom(context, sourceType);
 	}
 
-	public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
+	public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 	{
 			if (value is string)
 				return new System.Web.HtmlString((string)value);
@@ -134,3 +153,7 @@ Further to the `As<T>` event hooks, also available are two `Func` delegates for 
 
 > // TODO: Add example
 
+
+## Advanced usage - Value Resolvers
+
+> // TODO: Add example
