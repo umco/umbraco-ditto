@@ -27,7 +27,16 @@
         /// </returns>
         public override object ResolveValue(ITypeDescriptorContext context, UmbracoDictionaryAttribute attribute, CultureInfo culture)
         {
-            if (string.IsNullOrWhiteSpace(attribute.DictionaryKey))
+            // default to attribute value
+            string dictionaryKey = attribute.DictionaryKey;
+
+            if(string.IsNullOrWhiteSpace(dictionaryKey) && context.PropertyDescriptor != null)
+            {
+                // fall-back to property name
+                dictionaryKey = context.PropertyDescriptor.Name;
+            }
+
+            if (string.IsNullOrWhiteSpace(dictionaryKey))
             {
                 return null;
             }
@@ -35,7 +44,7 @@
             var content = context.Instance as IPublishedContent;
 
             // HACK: [LK:2015-04-14] Resorting to using `UmbracoHelper`, as `CultureDictionaryFactoryResolver` isn't public in v6.2.x.
-            return new UmbracoHelper(UmbracoContext.Current, content).GetDictionaryValue(attribute.DictionaryKey);
+            return new UmbracoHelper(UmbracoContext.Current, content).GetDictionaryValue(dictionaryKey);
         }
     }
 }
