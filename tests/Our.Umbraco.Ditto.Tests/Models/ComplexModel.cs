@@ -22,5 +22,8 @@
 
         [MockValue("Mock Property Value")]
         public string MyResolvedProperty { get; set; }
+
+        [AppSetting("MyAppSettingKey")]
+        public string MyAppSettingProperty { get; set; }
     }
 }
