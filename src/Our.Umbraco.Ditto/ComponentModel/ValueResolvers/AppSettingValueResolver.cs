@@ -28,12 +28,21 @@
         /// </returns>
         public override object ResolveValue(ITypeDescriptorContext context, AppSettingAttribute attribute, CultureInfo culture)
         {
-            if (string.IsNullOrWhiteSpace(attribute.AppSettingKey))
+            // default to attribute value
+            string appSettingKey = attribute.AppSettingKey;
+
+            if (string.IsNullOrWhiteSpace(appSettingKey) && context.PropertyDescriptor != null)
+            {            
+                // fall-back to property name
+                appSettingKey = context.PropertyDescriptor.Name;
+            }
+
+            if (string.IsNullOrWhiteSpace(appSettingKey))
             {
                 return null;
             }
 
-            return WebConfigurationManager.AppSettings[attribute.AppSettingKey];
+            return WebConfigurationManager.AppSettings[appSettingKey];
         }
     }
 }
