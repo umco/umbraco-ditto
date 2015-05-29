@@ -120,6 +120,25 @@
         }
 
         [Test]
+        public void Nested_Property_Model_Populated()
+        {
+            var metaTitle = PropertyBuilder.Default("metaTitle", "metaTitle").Build();
+            var metaDescription = PropertyBuilder.Default("metaDescription", "metaDescription").Build();
+            var metaKeywords = PropertyBuilder.Default("metaKeywords", "metaKeywords").Build();
+
+            var content = ContentBuilder.Default()
+                .AddProperty(metaTitle)
+                .AddProperty(metaDescription)
+                .AddProperty(metaKeywords)
+                .Build();
+
+            var model = content.As<BasicPageViewModel>();
+
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model.Seo, Is.Not.Null);
+        }
+
+        [Test]
         [ExpectedException(typeof(System.InvalidOperationException))]
         public void Content_To_String()
         {

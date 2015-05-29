@@ -366,6 +366,13 @@
                         object propertyValue = GetRawValue(content, culture, propertyInfo, instance);
                         var result = GetTypedValue(content, culture, propertyInfo, propertyValue, instance);
                         propertyInfo.SetValue(instance, result, null);
+
+                        // TODO: [LK:2015-05-29] Review this proposed fix for  #77
+                        // https://github.com/leekelleher/umbraco-ditto/issues/77
+                        ////if (result != null)
+                        ////{
+                        ////	propertyInfo.SetValue(instance, result, null);
+                        ////}
                     }
                 }
             }
