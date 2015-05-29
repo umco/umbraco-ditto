@@ -6,7 +6,7 @@
 [![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/developer-tools/ditto)
 [![Chat on Gitter](https://img.shields.io/badge/gitter-join_chat-green.svg)](https://gitter.im/leekelleher/umbraco-ditto)
 
-<img align="right" height="250" src="docs/assets/img/logo.png">
+<img align="right" height="225" src="docs/assets/img/logo.png">
 
 Ditto is a lightweight POCO mapper for Umbraco. It offers a generic solution to the problem of using **strongly-typed models in your MVC views**.
 There are no 3<sup>rd</sup> party dependencies, other than Umbraco core itself.
