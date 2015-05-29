@@ -16,13 +16,25 @@
     {
         /// <summary>
         /// Returns an instance of the <paramref name="type"/> on which the method is invoked.
+        /// This method will first check if there constructors dictated by dependency injection
+        /// and fall back to the default constructor method if none are found.
+        /// </summary>
+        /// <param name="type">The type on which the method was invoked.</param>
+        /// <returns>An instance of the <paramref name="type"/>.</returns>
+        public static object GetDependencyResolvedInstance(this Type type)
+        {
+            return DependencyResolver.Current.GetService(type) ?? GetInstance(type);
+        }
+
+        /// <summary>
+        /// Returns an instance of the <paramref name="type"/> on which the method is invoked.
         /// </summary>
         /// <param name="type">The type on which the method was invoked.</param>
         /// <returns>An instance of the <paramref name="type"/>.</returns>
         public static object GetInstance(this Type type)
         {
             // This is about as quick as it gets.
-            return DependencyResolver.Current.GetService(type);
+            return Activator.CreateInstance(type);
         }
 
         /// <summary>

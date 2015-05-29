@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Our.Umbraco.Ditto")]
@@ -12,3 +13,5 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 [assembly: Guid("C3A53472-6FBC-42ED-ABD4-5B1594C32E98")]
+
+[assembly: InternalsVisibleTo("Our.Umbraco.Ditto.Tests")]

@@ -7,8 +7,16 @@
     /// Used for providing Umbraco with additional information about the property to aid conversion.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class UmbracoPropertyAttribute : Attribute
+    public class UmbracoPropertyAttribute : DittoValueResolverAttribute
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.
+        /// </summary>
+        public UmbracoPropertyAttribute()
+            : base(typeof(UmbracoPropertyValueResolver))
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.
         /// </summary>
@@ -24,7 +32,12 @@
         /// <param name="defaultValue">
         /// The default value.
         /// </param>
-        public UmbracoPropertyAttribute(string propertyName, string altPropertyName = "", bool recursive = false, object defaultValue = null)
+        public UmbracoPropertyAttribute(
+            string propertyName,
+            string altPropertyName = "",
+            bool recursive = false,
+            object defaultValue = null)
+            : base(typeof(UmbracoPropertyValueResolver))
         {
             this.PropertyName = propertyName;
             this.AltPropertyName = altPropertyName;

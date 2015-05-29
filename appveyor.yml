@@ -1,14 +1,17 @@
 # version format
-version: 0.6.1.{build}
+version: 0.7.0.{build}
 
-# UMBRACO_PACKAGE_PRERELEASE_SUFFIX will only be used for Release builds
+# UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
-install:
-  - cmd: set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=
-  - cmd: build-appveyor.cmd
+init:
+  - set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=
 
-# to disable automatic builds
-build: off
+build_script:
+- build-appveyor.cmd
+
+test:
+  assemblies:
+    - 'Our.Umbraco.Ditto.Tests.dll'
 
 artifacts:
   - path: artifacts\*.nupkg
@@ -18,6 +21,7 @@ deploy:
      # MyGet Deployment for builds & releases
   - provider: NuGet
     server: https://www.myget.org/F/umbraco-ditto/
+    symbol_server: https://nuget.symbolsource.org/MyGet/umbraco-ditto
     api_key:
       secure: Q1/4K8VSwr7BjwmKDTef8y5lOc7S+jK9ELuWy67y6OVRpjxmnF9M3Gfs1kT+ir8x
     artifact: /.*\.nupkg/

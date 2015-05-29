@@ -4,36 +4,17 @@
     using System.IO;
     using System.Xml;
 
-    using global::Umbraco.Core;
-    using global::Umbraco.Web;
-
     /// <summary>
-    /// Provides helper methods to aid with conversion. Not much in here for now but who knows 
-    /// what the future has in store?
+    /// Extensions methods for <see cref="string"/>.
     /// </summary>
-    public static class ConverterHelper
+    internal static class StringExtensions
     {
-        /// <summary>
-        /// Gets the <see cref="UmbracoHelper"/> for querying published content or media.
-        /// </summary>
-        public static UmbracoHelper UmbracoHelper
-        {
-            get
-            {
-                // Pull the item from the cache if possible to reduce the db access overhead caused by 
-                // multiple reflection iterations for the given type taking place in a single request.
-                return (UmbracoHelper)ApplicationContext.Current.ApplicationCache.RequestCache.GetCacheItem(
-                        "Ditto.UmbracoHelper",
-                        () => new UmbracoHelper(UmbracoContext.Current));
-            }
-        }
-
         /// <summary>
         /// Gets Ids from known XML fragments (as saved by the MNTP / XPath CheckBoxList)
         /// </summary>
         /// <param name="xml">The Xml</param>
         /// <returns>An array of node ids as integer.</returns>
-        public static int[] GetXmlIds(string xml)
+        public static int[] GetXmlIds(this string xml)
         {
             var ids = new List<int>();
 
