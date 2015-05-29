@@ -32,7 +32,7 @@
 		<PackageId>Our.Umbraco.Ditto.ModelFactory</PackageId>
 		<Copyright>Copyright &#169; 2014 Umbrella Inc Ltd, Our Umbraco and other contributors</Copyright>
 		<Owners>Umbrella Inc Ltd</Owners>
-		<IconUrl>https://raw.githubusercontent.com/leekelleher/umbraco-ditto/master/docs/umbraco-ditto.png</IconUrl>
+		<IconUrl>https://raw.githubusercontent.com/leekelleher/umbraco-ditto/master/docs/assets/img/logo.png</IconUrl>
 		<Tags>umbraco poco mapping strongly-typed model-factory</Tags>
 		<Language>en-GB</Language>
 		<RequireLicenseAcceptance>false</RequireLicenseAcceptance>
