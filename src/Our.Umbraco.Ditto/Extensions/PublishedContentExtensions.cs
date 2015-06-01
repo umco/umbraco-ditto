@@ -287,7 +287,7 @@
             }
             else
             {
-                throw new InvalidOperationException("Type {0} has invalid constructor parameters");
+                throw new InvalidOperationException(string.Format("Type {0} has invalid constructor parameters", type));
             }
 
             // Collect all the properties of the given type and loop through writable ones.
