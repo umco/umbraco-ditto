@@ -1,6 +1,7 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System.ComponentModel;
+    using System.Globalization;
 
     using global::Umbraco.Core.Models;
     using global::Umbraco.Web;
@@ -24,9 +25,11 @@
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(ITypeDescriptorContext context, UmbracoDictionaryAttribute attribute, System.Globalization.CultureInfo culture)
+        public override object ResolveValue(ITypeDescriptorContext context, UmbracoDictionaryAttribute attribute, CultureInfo culture)
         {
-            if (string.IsNullOrWhiteSpace(attribute.DictionaryKey))
+            var dictionaryKey = attribute.DictionaryKey ?? (context.PropertyDescriptor != null ? context.PropertyDescriptor.Name : string.Empty);
+
+            if (string.IsNullOrWhiteSpace(dictionaryKey))
             {
                 return null;
             }
@@ -34,7 +37,7 @@
             var content = context.Instance as IPublishedContent;
 
             // HACK: [LK:2015-04-14] Resorting to using `UmbracoHelper`, as `CultureDictionaryFactoryResolver` isn't public in v6.2.x.
-            return new UmbracoHelper(UmbracoContext.Current, content).GetDictionaryValue(attribute.DictionaryKey);
+            return new UmbracoHelper(UmbracoContext.Current, content).GetDictionaryValue(dictionaryKey);
         }
     }
 }

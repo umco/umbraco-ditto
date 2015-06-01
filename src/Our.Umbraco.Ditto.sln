@@ -28,6 +28,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto.ModelFact
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto.Tests", "..\tests\Our.Umbraco.Ditto.Tests\Our.Umbraco.Ditto.Tests.csproj", "{8F71EB63-C2E5-4391-8FFC-6EEF6BD9BD54}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{8A5424A2-03F9-4D89-9B68-CB286D7F8596}"
+	ProjectSection(SolutionItems) = preProject
+		..\docs\configuration.md = ..\docs\configuration.md
+		..\docs\index.md = ..\docs\index.md
+		..\docs\install.md = ..\docs\install.md
+		..\mkdocs.yml = ..\mkdocs.yml
+		..\docs\README.md = ..\docs\README.md
+		..\docs\usage.md = ..\docs\usage.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,5 +62,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{302C02F0-CA95-430F-BD43-82D0CCEC08A3} = {6CF4E7DA-6359-479E-A64D-2023C743BA1C}
+		{8A5424A2-03F9-4D89-9B68-CB286D7F8596} = {6CF4E7DA-6359-479E-A64D-2023C743BA1C}
 	EndGlobalSection
 EndGlobal

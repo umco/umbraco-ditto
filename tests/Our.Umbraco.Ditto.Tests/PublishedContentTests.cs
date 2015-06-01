@@ -106,5 +106,28 @@
             Assert.That(model.MyPublishedContent.Id, Is.EqualTo(1234));
             Assert.That(model.MyPublishedContent.Name, Is.EqualTo("Mock Published Content"));
         }
+
+        [Test]
+        public void Property_AppSetting_Returned()
+        {
+            var value = "MyAppSettingValue";
+
+            var content = ContentBuilder.Default().Build();
+
+            var model = content.As<ComplexModel>();
+
+            Assert.That(model.MyAppSettingProperty, Is.EqualTo(value));
+        }
+
+        [Test]
+        [ExpectedException(typeof(System.InvalidOperationException))]
+        public void Content_To_String()
+        {
+            var content = ContentBuilder.Default().Build();
+
+            var model = content.As<string>();
+
+            Assert.That(string.IsNullOrWhiteSpace(model), Is.False);
+        }
     }
 }
