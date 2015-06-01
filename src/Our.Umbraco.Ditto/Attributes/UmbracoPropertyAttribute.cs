@@ -3,7 +3,7 @@
     using System;
 
     /// <summary>
-    /// The Umbraco property attribute. 
+    /// The Umbraco property attribute.
     /// Used for providing Umbraco with additional information about the property to aid conversion.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
