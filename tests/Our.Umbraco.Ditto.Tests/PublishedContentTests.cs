@@ -122,9 +122,9 @@
         [Test]
         public void Nested_Property_Model_Populated()
         {
-            var metaTitle = PropertyBuilder.Default("metaTitle", "metaTitle").Build();
-            var metaDescription = PropertyBuilder.Default("metaDescription", "metaDescription").Build();
-            var metaKeywords = PropertyBuilder.Default("metaKeywords", "metaKeywords").Build();
+            var metaTitle = PropertyBuilder.Default("metaTitle", "This is the meta title").Build();
+            var metaDescription = PropertyBuilder.Default("metaDescription", "This is the meta description").Build();
+            var metaKeywords = PropertyBuilder.Default("metaKeywords", "these,are,meta,keywords").Build();
 
             var content = ContentBuilder.Default()
                 .AddProperty(metaTitle)
@@ -132,10 +132,11 @@
                 .AddProperty(metaKeywords)
                 .Build();
 
-            var model = content.As<BasicPageViewModel>();
+            var model = content.As<CurrentContentTestModel>();
 
             Assert.That(model, Is.Not.Null);
-            Assert.That(model.Seo, Is.Not.Null);
+            Assert.That(model.MetaData1, Is.Not.Null);
+            Assert.That(model.MetaData2, Is.Null);
         }
 
         [Test]
