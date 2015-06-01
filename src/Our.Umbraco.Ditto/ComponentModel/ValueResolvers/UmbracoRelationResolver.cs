@@ -10,11 +10,11 @@
 
     public enum RelationDirection
     {
-        Any,
+        Bidirectional,
 
-        Child,
+        ChildToParent,
 
-        Parent
+        ParentToChild
     }
 
     public class UmbracoRelationResolver : DittoValueResolver<UmbracoRelationAttribute>
@@ -31,15 +31,15 @@
 
             switch (attribute.RelationDirection)
             {
-                case RelationDirection.Child:
+                case RelationDirection.ChildToParent:
                     relations = ApplicationContext.Current.Services.RelationService.GetByChildId(content.Id);
                     break;
 
-                case RelationDirection.Parent:
+                case RelationDirection.ParentToChild:
                     relations = ApplicationContext.Current.Services.RelationService.GetByParentId(content.Id);
                     break;
 
-                case RelationDirection.Any:
+                case RelationDirection.Bidirectional:
                 default:
                     relations = ApplicationContext.Current.Services.RelationService.GetByParentOrChildId(content.Id);
                     break;

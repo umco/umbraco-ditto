@@ -10,7 +10,7 @@
         {
         }
 
-        public UmbracoRelationAttribute(string relationTypeAlias, RelationDirection relationDirection = RelationDirection.Child)
+        public UmbracoRelationAttribute(string relationTypeAlias, RelationDirection relationDirection = RelationDirection.ChildToParent)
             : base(typeof(UmbracoRelationResolver))
         {
             this.RelationDirection = relationDirection;
