@@ -118,5 +118,16 @@
 
             Assert.That(model.MyAppSettingProperty, Is.EqualTo(value));
         }
+
+        [Test]
+        [ExpectedException(typeof(System.InvalidOperationException))]
+        public void Content_To_String()
+        {
+            var content = ContentBuilder.Default().Build();
+
+            var model = content.As<string>();
+
+            Assert.That(string.IsNullOrWhiteSpace(model), Is.False);
+        }
     }
 }
