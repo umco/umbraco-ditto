@@ -366,13 +366,6 @@
                         object propertyValue = GetRawValue(content, culture, propertyInfo, instance);
                         var result = GetTypedValue(content, culture, propertyInfo, propertyValue, instance);
                         propertyInfo.SetValue(instance, result, null);
-
-                        // TODO: [LK:2015-05-29] Review this proposed fix for  #77
-                        // https://github.com/leekelleher/umbraco-ditto/issues/77
-                        ////if (result != null)
-                        ////{
-                        ////	propertyInfo.SetValue(instance, result, null);
-                        ////}
                     }
                 }
             }
@@ -551,6 +544,13 @@
             {
                 // Simple types
                 result = propertyValue;
+            }
+            else if (propertyValue is IPublishedContent)
+            {
+                // If the property value is an `IPublishedContent`, then we can use Ditto to map to the target type.
+                result = ((IPublishedContent)propertyValue).As(propertyInfo.PropertyType);
+
+                // TODO: [LK] Could this be also used to handle IEnumerable<IPublishedContent>?
             }
             else
             {

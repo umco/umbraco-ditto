@@ -55,6 +55,7 @@
         }
 
         [Test]
+        [ExpectedException(typeof(System.InvalidOperationException))]
         public void Property_Converted()
         {
             // With this kind of mocking, we dont need property value converters, because they would already
