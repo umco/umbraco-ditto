@@ -18,7 +18,7 @@ To [install from NuGet](https://www.nuget.org/packages/Our.Umbraco.Ditto), you c
 PM> Install-Package Our.Umbraco.Ditto
 ```
 
-We also have a [MyGet package repository](https://www.myget.org/F/umbraco-ditto/) - for bleeding-edge / development releases.
+We also have a [MyGet package repository](https://www.myget.org/gallery/umbraco-ditto) - for bleeding-edge / development releases.
 
 ## Manual build
 
