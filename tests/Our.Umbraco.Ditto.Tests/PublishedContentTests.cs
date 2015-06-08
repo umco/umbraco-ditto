@@ -107,5 +107,41 @@
 
             Assert.Throws<InvalidOperationException>(code);
         }
+
+        [Test]
+        public void Prefix_Attribute_Resolves_Prefixed_Properties()
+        {
+            var prop1 = PropertyBuilder.Default("siteName", "Name").Build();
+            var prop2 = PropertyBuilder.Default("siteDescription", "Description").Build();
+            var prop3 = PropertyBuilder.Default("fallback", "Fallback").Build();
+
+            var content = ContentBuilder.Default()
+                .AddProperty(prop1)
+                .AddProperty(prop2)
+                .AddProperty(prop3)
+                .Build();
+
+            var converted = content.As<PrefixedModel>();
+
+            Assert.That(converted.Name, Is.EqualTo("Name"));
+            Assert.That(converted.Description, Is.EqualTo("Description"));
+            Assert.That(converted.Fallback, Is.EqualTo("Fallback"));
+        }
+
+        [Test]
+        public void Umbraco_Property_Attribute_Overrides_Prefix_Attribute()
+        {
+            var prop1 = PropertyBuilder.Default("siteUnprefixedProp", "Site Unprefixed").Build();
+            var prop2 = PropertyBuilder.Default("unprefixedProp", "Unprefixed").Build();
+
+            var content = ContentBuilder.Default()
+                .AddProperty(prop1)
+                .AddProperty(prop2)
+                .Build();
+
+            var converted = content.As<PrefixedModel>();
+
+            Assert.That(converted.UnprefixedProp, Is.EqualTo("Unprefixed"));
+        }
     }
 }
