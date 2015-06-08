@@ -9,12 +9,6 @@
     public class UmbracoPropertyPrefixAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPropertyPrefixAttribute"/> class.
-        /// </summary>
-        public UmbracoPropertyPrefixAttribute()
-        { }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.
         /// </summary>
         /// <param name="prefix">
