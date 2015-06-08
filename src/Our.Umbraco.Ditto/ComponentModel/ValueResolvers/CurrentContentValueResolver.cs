@@ -1,5 +1,6 @@
 ﻿namespace Our.Umbraco.Ditto
 {
+    using System;
     using System.ComponentModel;
     using System.Globalization;
 
@@ -27,6 +28,15 @@
         /// </returns>
         public override object ResolveValue(ITypeDescriptorContext context, CurrentContentAttribute attribute, CultureInfo culture)
         {
+            // NOTE: [LK] In order to prevent an infinite loop / stack-overflow, we check if the
+            // property's type matches the containing model's type, then we throw an exception.
+            if (context.PropertyDescriptor.PropertyType == context.PropertyDescriptor.ComponentType)
+            {
+                throw new InvalidOperationException(
+                    string.Format("Unable to process property type '{0}', it is the same as the containing model type.",
+                    context.PropertyDescriptor.PropertyType.Name));
+            }
+
             return context.Instance as IPublishedContent;
         }
     }
