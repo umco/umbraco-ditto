@@ -7,6 +7,7 @@
     using Our.Umbraco.Ditto.Tests.Models;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Web;
+    using System;
 
     [TestFixture]
     public class PublishedContentTests
@@ -75,16 +76,6 @@
         }
 
         [Test]
-        public void Property_Resolved()
-        {
-            var content = ContentBuilder.Default().Build();
-
-            var model = content.As<ComplexModel>();
-
-            Assert.That(model.MyResolvedProperty, Is.EqualTo("Mock Property Value"));
-        }
-
-        [Test]
         public void Complex_Property_Convertered()
         {
             var value = ContentBuilder.Default().Build();
@@ -108,14 +99,13 @@
         }
 
         [Test]
-        [ExpectedException(typeof(System.InvalidOperationException))]
         public void Content_To_String()
         {
             var content = ContentBuilder.Default().Build();
 
-            var model = content.As<string>();
+            TestDelegate code = () => { content.As<string>(); };
 
-            Assert.That(string.IsNullOrWhiteSpace(model), Is.False);
+            Assert.Throws<InvalidOperationException>(code);
         }
     }
 }
