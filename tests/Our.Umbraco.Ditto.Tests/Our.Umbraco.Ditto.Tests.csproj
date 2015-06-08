@@ -211,11 +211,11 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Attributes\MockValueAttribute.cs" />
     <Compile Include="Mocks\PropertyBuilder.cs" />
     <Compile Include="Mocks\ContentBuilder.cs" />
     <Compile Include="Mocks\PublishedContentMock.cs" />
     <Compile Include="Mocks\PublishedContentPropertyMock.cs" />
+    <Compile Include="MockValueResolverTests.cs" />
     <Compile Include="Models\ComplexModel.cs" />
     <Compile Include="Models\SimpleModel.cs" />
     <Compile Include="PublishedContentTests.cs" />
@@ -223,7 +223,6 @@
     <Compile Include="TypeInferenceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnumerableTests.cs" />
-    <Compile Include="ValueResolvers\MockValueResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Our.Umbraco.Ditto\Our.Umbraco.Ditto.csproj">
