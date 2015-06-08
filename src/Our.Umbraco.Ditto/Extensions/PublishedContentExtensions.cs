@@ -545,7 +545,7 @@
                 // Simple types
                 result = propertyValue;
             }
-            else if (propertyValue is IPublishedContent)
+            else if (propertyValue is IPublishedContent && propertyInfo.PropertyType.IsClass)
             {
                 // If the property value is an `IPublishedContent`, then we can use Ditto to map to the target type.
                 result = ((IPublishedContent)propertyValue).As(propertyInfo.PropertyType);
