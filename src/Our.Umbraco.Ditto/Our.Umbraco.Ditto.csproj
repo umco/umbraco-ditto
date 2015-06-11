@@ -83,7 +83,7 @@
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="Attributes\DittoValueResolverAttribute.cs" />
     <Compile Include="Attributes\UmbracoDictionaryAttribute.cs" />
-    <Compile Include="Attributes\UmbracoPropertyPrefixAttribute.cs" />
+    <Compile Include="Attributes\UmbracoPropertiesAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />

@@ -109,7 +109,7 @@
         }
 
         [Test]
-        public void Prefix_Attribute_Resolves_Prefixed_Properties()
+        public void Can_Resolve_Prefixed_Properties()
         {
             var prop1 = PropertyBuilder.Default("siteName", "Name").Build();
             var prop2 = PropertyBuilder.Default("siteDescription", "Description").Build();
@@ -129,7 +129,7 @@
         }
 
         [Test]
-        public void Umbraco_Property_Attribute_Overrides_Prefix_Attribute()
+        public void Umbraco_Property_Attribute_Overrides_Prefix()
         {
             var prop1 = PropertyBuilder.Default("siteUnprefixedProp", "Site Unprefixed").Build();
             var prop2 = PropertyBuilder.Default("unprefixedProp", "Unprefixed").Build();
@@ -142,6 +142,33 @@
             var converted = content.As<PrefixedModel>();
 
             Assert.That(converted.UnprefixedProp, Is.EqualTo("Unprefixed"));
+        }
+
+        [Test]
+        public void Can_Resolve_Recursive_Properties_Via_Umbraco_Properties_Attribute()
+        {
+            var childContent = new PublishedContentMock();
+            var parentContent = new PublishedContentMock
+            {
+                Properties = new[]
+                {
+                    new PublishedContentPropertyMock
+                    {
+                        Alias = "description",
+                        Value = "Description"
+                    }
+                },
+                Children = new[]
+                {
+                    childContent
+                }
+            };
+
+            childContent.Parent = parentContent;
+
+            var converted = childContent.As<PrefixedModel>();
+
+            Assert.That(converted.Description, Is.EqualTo("Description"));
         }
     }
 }

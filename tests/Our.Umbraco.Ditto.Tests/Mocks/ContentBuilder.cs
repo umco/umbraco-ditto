@@ -11,6 +11,7 @@
     {
         private int _id = 1234;
         private string _name = "Name";
+        private IPublishedContent _parent;
         private List<IPublishedContent> _children = new List<IPublishedContent>();
         private List<IPublishedContentProperty> _properties = new List<IPublishedContentProperty>();
 
@@ -49,9 +50,15 @@
             return this;
         }
 
+        public ContentBuilder AddParent(IPublishedContent parent)
+        {
+            _parent = parent;
+            return this;
+        }
+
         public IPublishedContent Build()
         {
-            return new PublishedContentMock(_id, _name, _children, _properties);
+            return new PublishedContentMock(_id, _name, _parent, _children, _properties);
         }
     }
 }

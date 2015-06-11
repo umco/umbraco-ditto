@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Our.Umbraco.Ditto.Tests.Models
 {
-    [UmbracoPropertyPrefix("Site")]
+    [UmbracoProperties(Prefix = "Site", Recursive = true)]
     public class PrefixedModel
     {
         public string Name { get; set; }

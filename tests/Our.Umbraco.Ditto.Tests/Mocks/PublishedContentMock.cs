@@ -1,4 +1,7 @@
-﻿namespace Our.Umbraco.Ditto.Tests.Mocks
+﻿using System.Collections.ObjectModel;
+using NUnit.Framework;
+
+namespace Our.Umbraco.Ditto.Tests.Mocks
 {
     using System;
     using System.Collections.Generic;
@@ -15,15 +18,23 @@
     /// </summary>
     public class PublishedContentMock : IPublishedContent
     {
+        public PublishedContentMock()
+        {
+            Properties = new Collection<IPublishedContentProperty>();
+            Children = new List<IPublishedContent>();
+        }
+
         public PublishedContentMock(
             int id,
             string name,
+            IPublishedContent _parent,
             IEnumerable<IPublishedContent> children,
             ICollection<IPublishedContentProperty> properties)
         {
             Properties = properties;
             Id = id;
             Name = name;
+            Parent = Parent;
             Children = children;
         }
 
@@ -39,56 +50,61 @@
 
         public IPublishedContentProperty GetProperty(string alias, bool recurse)
         {
-            return Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
+            var prop = Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
+            if (prop == null && recurse && Parent != null)
+            {
+                return Parent.GetProperty(alias, recurse);
+            }
+            return prop;
         }
 
-        public IEnumerable<IPublishedContent> ContentSet { get; private set; }
+        public IEnumerable<IPublishedContent> ContentSet { get; set; }
 
-        public PublishedContentType ContentType { get; private set; }
+        public PublishedContentType ContentType { get; set; }
 
-        public int Id { get; private set; }
+        public int Id { get; set; }
 
-        public int TemplateId { get; private set; }
+        public int TemplateId { get; set; }
 
-        public int SortOrder { get; private set; }
+        public int SortOrder { get; set; }
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
-        public string UrlName { get; private set; }
+        public string UrlName { get; set; }
 
-        public string DocumentTypeAlias { get; private set; }
+        public string DocumentTypeAlias { get; set; }
 
-        public int DocumentTypeId { get; private set; }
+        public int DocumentTypeId { get; set; }
 
-        public string WriterName { get; private set; }
+        public string WriterName { get; set; }
 
-        public string CreatorName { get; private set; }
+        public string CreatorName { get; set; }
 
-        public int WriterId { get; private set; }
+        public int WriterId { get; set; }
 
-        public int CreatorId { get; private set; }
+        public int CreatorId { get; set; }
 
-        public string Path { get; private set; }
+        public string Path { get; set; }
 
-        public DateTime CreateDate { get; private set; }
+        public DateTime CreateDate { get; set; }
 
-        public DateTime UpdateDate { get; private set; }
+        public DateTime UpdateDate { get; set; }
 
-        public Guid Version { get; private set; }
+        public Guid Version { get; set; }
 
-        public int Level { get; private set; }
+        public int Level { get; set; }
 
-        public string Url { get; private set; }
+        public string Url { get; set; }
 
-        public PublishedItemType ItemType { get; private set; }
+        public PublishedItemType ItemType { get; set; }
 
-        public bool IsDraft { get; private set; }
+        public bool IsDraft { get; set; }
 
-        public IPublishedContent Parent { get; private set; }
+        public IPublishedContent Parent { get; set; }
 
-        public IEnumerable<IPublishedContent> Children { get; private set; }
+        public IEnumerable<IPublishedContent> Children { get; set; }
 
-        public ICollection<IPublishedContentProperty> Properties { get; private set; }
+        public ICollection<IPublishedContentProperty> Properties { get; set; }
 
         public object this[string alias]
         {
