@@ -17,7 +17,7 @@
         [Test]
         public void Existing_Object_Mapped()
         {
-            var content = ContentBuilder.Default().Build();
+            var content = new PublishedContentMock();
 
             var value = "Hello world";
             var model = new MyModel()

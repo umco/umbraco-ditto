@@ -17,7 +17,7 @@
         {
             var value = "MyAppSettingValue";
 
-            var content = ContentBuilder.Default().Build();
+            var content = new PublishedContentMock();
 
             var model = content.As<MyAppSettingsModel>();
 
