@@ -80,12 +80,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\AppSettingAttribute.cs" />
+    <Compile Include="Attributes\DittoOnConvertedAttribute.cs" />
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="Attributes\DittoValueResolverAttribute.cs" />
     <Compile Include="Attributes\UmbracoDictionaryAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
+    <Compile Include="ComponentModel\OnConvertedHandlers\DittoOnConvertedHandler.cs" />
     <Compile Include="ComponentModel\PublishedContentContext.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoEnumConverter.cs" />

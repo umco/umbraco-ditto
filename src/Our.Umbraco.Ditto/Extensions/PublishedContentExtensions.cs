@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using Our.Umbraco.Ditto.Attributes;
+
+namespace Our.Umbraco.Ditto
 {
     using System;
     using System.Collections;
@@ -215,11 +217,24 @@
                     ConvertedType = type
                 };
 
+                // Check for DittoOnConvertedAttributes
+                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Where(x => x.GetCustomAttribute<DittoOnConvertedAttribute>() != null))
+                {
+                    var p = method.GetParameters();
+                    if (p.Length == 1 && p[0].ParameterType == typeof (ConvertedTypeEventArgs))
+                    {
+                        method.Invoke(instance, new[] { convertedArgs });
+                    }
+                }
+
+                // Call passed in func
                 if (convertedType != null)
                 {
                     convertedType(convertedArgs);
                 }
 
+                // Call registered event handlers
                 EventHandlers.CallConvertedTypeHandler(convertedArgs);
 
                 return convertedArgs.Converted;
