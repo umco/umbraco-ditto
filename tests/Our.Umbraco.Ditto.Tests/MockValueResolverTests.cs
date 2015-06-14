@@ -39,7 +39,7 @@
         [Test]
         public void MockValue_Property_Resolved()
         {
-            var content = ContentBuilder.Default().Build();
+            var content = new PublishedContentMock();
 
             var model = content.As<MyMockValueModel>();
 

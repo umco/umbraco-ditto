@@ -32,10 +32,11 @@
                 id = (int)value;
             }
 
-            return ContentBuilder.Default()
-                .WithId(id)
-                .WithName("Mock Published Content")
-                .Build();
+            return new PublishedContentMock
+            {
+                Id = id,
+                Name = "Mock Published Content"
+            };
         }
     }
 }

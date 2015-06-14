@@ -212,11 +212,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AppSettingsTests.cs" />
-    <Compile Include="Mocks\PropertyBuilder.cs" />
-    <Compile Include="Mocks\ContentBuilder.cs" />
     <Compile Include="Mocks\PublishedContentMock.cs" />
     <Compile Include="Mocks\PublishedContentPropertyMock.cs" />
     <Compile Include="MockValueResolverTests.cs" />
+    <Compile Include="Models\CalculatedModel.cs" />
     <Compile Include="Models\ComplexModel.cs" />
     <Compile Include="Models\SimpleModel.cs" />
     <Compile Include="PublishedContentTests.cs" />
