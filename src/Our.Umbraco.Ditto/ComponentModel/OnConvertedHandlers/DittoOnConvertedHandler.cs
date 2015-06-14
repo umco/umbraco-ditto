@@ -1,16 +1,19 @@
-﻿using Umbraco.Core.Models;
+﻿using System;
+using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto.ComponentModel.OnConvertedHandlers
 {
     public abstract class DittoOnConvertedHandler
     {
         public IPublishedContent Content { get; private set; }
-        public object Model { get; private set; }
+        public Type ConvertedType { get; private set; }
+        public object Converted { get; private set; }
 
         protected DittoOnConvertedHandler(ConvertedTypeEventArgs e)
         {
             Content = e.Content;
-            Model = e.Converted;
+            ConvertedType = e.ConvertedType;
+            Converted = e.Converted;
         }
 
         public abstract void OnConverted();
@@ -19,12 +22,12 @@ namespace Our.Umbraco.Ditto.ComponentModel.OnConvertedHandlers
     public abstract class DittoOnConvertedHandler<TConvertedType> : DittoOnConvertedHandler
         where TConvertedType : class
     {
-        public new TConvertedType Model { get; private set; }
+        public new TConvertedType Converted { get; private set; }
 
         protected DittoOnConvertedHandler(ConvertedTypeEventArgs e)
             : base(e)
         {
-            Model = e.Converted as TConvertedType;
+            Converted = e.Converted as TConvertedType;
         }
     }
 }

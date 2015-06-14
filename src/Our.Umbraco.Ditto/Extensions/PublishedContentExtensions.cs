@@ -1,4 +1,5 @@
 ﻿using Our.Umbraco.Ditto.Attributes;
+using Our.Umbraco.Ditto.ComponentModel.OnConvertedHandlers;
 
 namespace Our.Umbraco.Ditto
 {
@@ -209,7 +210,7 @@ namespace Our.Umbraco.Ditto
                 // Create an object and fetch it as the type.
                 object instance = GetTypedProperty(content, type, culture);
 
-                // Fire the converted event
+                // Fire the converted event(s)
                 var convertedArgs = new ConvertedTypeEventArgs
                 {
                     Content = content,
@@ -217,7 +218,14 @@ namespace Our.Umbraco.Ditto
                     ConvertedType = type
                 };
 
-                // Check for DittoOnConvertedAttributes
+                // Check for class level DittoOnConvertedAttributes
+                foreach (var attr in type.GetCustomAttributes<DittoOnConvertedAttribute>()
+                    .Where(x => x.HandlerType != null))
+                {
+                    ((DittoOnConvertedHandler)attr.HandlerType.GetInstance(convertedArgs)).OnConverted();
+                }
+
+                // Check for method level DittoOnConvertedAttributes
                 foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                     .Where(x => x.GetCustomAttribute<DittoOnConvertedAttribute>() != null))
                 {
@@ -228,7 +236,7 @@ namespace Our.Umbraco.Ditto
                     }
                 }
 
-                // Call passed in func
+                // Call passed in converted func
                 if (convertedType != null)
                 {
                     convertedType(convertedArgs);
@@ -237,6 +245,7 @@ namespace Our.Umbraco.Ditto
                 // Call registered event handlers
                 EventHandlers.CallConvertedTypeHandler(convertedArgs);
 
+                // Return converted object
                 return convertedArgs.Converted;
             }
         }
