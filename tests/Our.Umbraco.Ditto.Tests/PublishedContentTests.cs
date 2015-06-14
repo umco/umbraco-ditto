@@ -116,6 +116,14 @@
         }
 
         [Test]
+        public void Custom_Value_Resolver_Resolves()
+        {
+            var content = new PublishedContentMock();
+            var model = content.As<ComplexModel>();
+            Assert.That(model.Name, Is.EqualTo("Name Test"));
+        }
+
+        [Test]
         public void Content_To_String()
         {
             var content = new PublishedContentMock();
