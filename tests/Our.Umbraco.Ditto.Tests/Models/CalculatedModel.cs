@@ -13,7 +13,7 @@ namespace Our.Umbraco.Ditto.Tests.Models
         public string AltText2 { get; set; }
 
         [DittoOnConverted]
-        internal void OnConverted2(ConvertedTypeEventArgs e)
+        internal void CalculatedModel_OnConverted(ConvertedTypeEventArgs e)
         {
             Name = "Test";
         }
@@ -25,7 +25,7 @@ namespace Our.Umbraco.Ditto.Tests.Models
         public string AltText { get; set; }
 
         [DittoOnConverted]
-        internal void OnConverted(ConvertedTypeEventArgs e)
+        internal void BaseCalculatedModel_OnConverted(ConvertedTypeEventArgs e)
         {
             AltText = e.Content.GetPropertyValue("prop1") + " " +
                 e.Content.GetPropertyValue("prop2");
