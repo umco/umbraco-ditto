@@ -49,7 +49,10 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
 
         public IPublishedContentProperty GetProperty(string alias, bool recurse)
         {
-            return Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
+            var prop = Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
+            if (prop == null && recurse && Parent != null)
+                return Parent.GetProperty(alias, true);
+            return prop;
         }
 
         public IEnumerable<IPublishedContent> ContentSet { get; set; }

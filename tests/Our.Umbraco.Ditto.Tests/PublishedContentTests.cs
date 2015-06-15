@@ -116,6 +116,14 @@
         }
 
         [Test]
+        public void Custom_Value_Resolver_Resolves()
+        {
+            var content = new PublishedContentMock();
+            var model = content.As<ComplexModel>();
+            Assert.That(model.Name, Is.EqualTo("Name Test"));
+        }
+
+        [Test]
         public void Content_To_String()
         {
             var content = new PublishedContentMock();
@@ -126,30 +134,85 @@
         }
 
         [Test]
-        public void Can_Resolve_Calculated_Properties()
+        public void Can_Resolve_Prefixed_Properties()
         {
+            var prop1 = new PublishedContentPropertyMock
+            {
+                Alias = "siteName",
+                Value = "Name"
+            }; 
+            var prop2 = new PublishedContentPropertyMock
+            {
+                Alias = "siteDescription",
+                Value = "Description"
+            };
+            var prop3 = new PublishedContentPropertyMock
+            {
+                Alias = "fallback",
+                Value = "Fallback"
+            };
+
             var content = new PublishedContentMock
+            {
+                Properties = new[] {prop1, prop2, prop3}
+            };
+
+            var converted = content.As<PrefixedModel>();
+
+            Assert.That(converted.Name, Is.EqualTo("Name"));
+            Assert.That(converted.Description, Is.EqualTo("Description"));
+            Assert.That(converted.Fallback, Is.EqualTo("Fallback"));
+        }
+
+        [Test]
+        public void Umbraco_Property_Attribute_Overrides_Prefix()
+        {
+            var prop1 = new PublishedContentPropertyMock
+            {
+                Alias = "siteUnprefixedProp",
+                Value = "Site Unprefixed"
+            };
+            var prop2 = new PublishedContentPropertyMock
+            {
+                Alias = "unprefixedProp",
+                Value = "Unprefixed"
+            };
+
+            var content = new PublishedContentMock
+            {
+                Properties = new[] { prop1, prop2 }
+            };
+
+            var converted = content.As<PrefixedModel>();
+
+            Assert.That(converted.UnprefixedProp, Is.EqualTo("Unprefixed"));
+        }
+
+        [Test]
+        public void Can_Resolve_Recursive_Properties_Via_Umbraco_Properties_Attribute()
+        {
+            var childContent = new PublishedContentMock();
+            var parentContent = new PublishedContentMock
             {
                 Properties = new[]
                 {
                     new PublishedContentPropertyMock
                     {
-                        Alias = "prop1",
-                        Value = "Test1"
-                    },
-                    new PublishedContentPropertyMock
-                    {
-                        Alias = "prop2",
-                        Value = "Test2"
+                        Alias = "description",
+                        Value = "Description"
                     }
+                },
+                Children = new[]
+                {
+                    childContent
                 }
             };
 
-            var model = content.As<CalculatedModel>();
+            childContent.Parent = parentContent;
 
-            Assert.That(model.AltText, Is.EqualTo("Test1 Test2"));
-            Assert.That(model.Name, Is.EqualTo("Test"));
-            Assert.That(model.AltText2, Is.EqualTo("Test1 Test2"));
+            var converted = childContent.As<PrefixedModel>();
+
+            Assert.That(converted.Description, Is.EqualTo("Description"));
         }
     }
 }

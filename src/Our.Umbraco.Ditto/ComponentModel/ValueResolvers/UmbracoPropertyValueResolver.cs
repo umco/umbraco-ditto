@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System.Reflection;
+
+namespace Our.Umbraco.Ditto
 {
     using System.ComponentModel;
     using System.Globalization;
@@ -30,9 +32,31 @@
         {
             var defaultValue = attribute.DefaultValue;
 
-            var umbracoPropertyName = attribute.PropertyName ?? (context.PropertyDescriptor != null ? context.PropertyDescriptor.Name : string.Empty);
-            var altUmbracoPropertyName = attribute.AltPropertyName ?? string.Empty;
             var recursive = attribute.Recursive;
+            var propName = context.PropertyDescriptor != null ? context.PropertyDescriptor.Name : string.Empty;
+            var altPropName = "";
+
+            // Check for umbraco properties attribute on class
+            if (context.PropertyDescriptor != null)
+            {
+                var classAttr = context.PropertyDescriptor.ComponentType
+                    .GetCustomAttribute<UmbracoPropertiesAttribute>();
+                if (classAttr != null)
+                {
+                    // Apply the prefix
+                    if (!string.IsNullOrWhiteSpace(classAttr.Prefix))
+                    {
+                        altPropName = propName;
+                        propName = classAttr.Prefix + propName;
+                    }
+
+                    // Apply global recursive setting
+                    recursive |= classAttr.Recursive;
+                }
+            }
+
+            var umbracoPropertyName = attribute.PropertyName ?? propName;
+            var altUmbracoPropertyName = attribute.AltPropertyName ?? altPropName;
 
             var content = context.Instance as IPublishedContent;
             if (content == null)
