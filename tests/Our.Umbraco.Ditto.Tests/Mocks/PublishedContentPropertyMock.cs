@@ -6,7 +6,11 @@
     public class PublishedContentPropertyMock : IPublishedContentProperty
     {
         public PublishedContentPropertyMock()
-        { }
+        {
+            HasValue = true;
+            Alias = "alias";
+            Value = null;
+        }
 
         public PublishedContentPropertyMock(string alias, object value, bool hasValue)
         {

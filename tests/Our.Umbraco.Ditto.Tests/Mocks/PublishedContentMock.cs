@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using NUnit.Framework;
 
 namespace Our.Umbraco.Ditto.Tests.Mocks
 {
@@ -20,21 +19,21 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
     {
         public PublishedContentMock()
         {
+            Id = 1234;
+            Name = "Name";
+            Children = Enumerable.Empty<IPublishedContent>();
             Properties = new Collection<IPublishedContentProperty>();
-            Children = new List<IPublishedContent>();
         }
 
         public PublishedContentMock(
             int id,
             string name,
-            IPublishedContent _parent,
             IEnumerable<IPublishedContent> children,
             ICollection<IPublishedContentProperty> properties)
         {
             Properties = properties;
             Id = id;
             Name = name;
-            Parent = Parent;
             Children = children;
         }
 
@@ -50,12 +49,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
 
         public IPublishedContentProperty GetProperty(string alias, bool recurse)
         {
-            var prop = Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
-            if (prop == null && recurse && Parent != null)
-            {
-                return Parent.GetProperty(alias, recurse);
-            }
-            return prop;
+            return Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
         }
 
         public IEnumerable<IPublishedContent> ContentSet { get; set; }

@@ -5,7 +5,7 @@
     /// <summary>
     /// Provides methods to handle firing specific conversion events.
     /// </summary>
-    public static class EventHandlers
+    public static class DittoEventHandlers
     {
         /// <summary>
         /// The converting type method handler.
