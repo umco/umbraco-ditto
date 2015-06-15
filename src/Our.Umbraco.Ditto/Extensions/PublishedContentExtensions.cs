@@ -582,9 +582,11 @@ namespace Our.Umbraco.Ditto
                 }
             }
 
-            // Call the callback
+            // Check for a callback function
             if (callback != null)
+            {
                 callback(conversionCtx);
+            }
         }
 
         /// <summary>
@@ -626,9 +628,11 @@ namespace Our.Umbraco.Ditto
                 }
             }
 
-            // Call the callback
+            // Check for a callback function
             if (callback != null)
+            {
                 callback(conversionCtx);
+            }
         }
     }
 }
