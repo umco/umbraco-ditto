@@ -7,7 +7,7 @@ using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto.Tests.Models
 {
-    [DittoConversionHandler(typeof(CalculatedModelOnConvertedHandler))]
+    [DittoConversionHandler(typeof(CalculatedModelConversionHandler))]
     public class CalculatedModel : BaseCalculatedModel
     {
         public string Name { get; set; }
@@ -35,9 +35,9 @@ namespace Our.Umbraco.Ditto.Tests.Models
         }
     }
 
-    public class CalculatedModelOnConvertedHandler : DittoConversionHandler<CalculatedModel>
+    public class CalculatedModelConversionHandler : DittoConversionHandler<CalculatedModel>
     {
-        public CalculatedModelOnConvertedHandler(ConversionHandlerContext ctx) 
+        public CalculatedModelConversionHandler(ConversionHandlerContext ctx) 
             : base(ctx)
         { }
 
