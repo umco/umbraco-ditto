@@ -136,15 +136,26 @@
         [Test]
         public void Can_Resolve_Prefixed_Properties()
         {
-            var prop1 = PropertyBuilder.Default("siteName", "Name").Build();
-            var prop2 = PropertyBuilder.Default("siteDescription", "Description").Build();
-            var prop3 = PropertyBuilder.Default("fallback", "Fallback").Build();
+            var prop1 = new PublishedContentPropertyMock
+            {
+                Alias = "siteName",
+                Value = "Name"
+            }; 
+            var prop2 = new PublishedContentPropertyMock
+            {
+                Alias = "siteDescription",
+                Value = "Description"
+            };
+            var prop3 = new PublishedContentPropertyMock
+            {
+                Alias = "fallback",
+                Value = "Fallback"
+            };
 
-            var content = ContentBuilder.Default()
-                .AddProperty(prop1)
-                .AddProperty(prop2)
-                .AddProperty(prop3)
-                .Build();
+            var content = new PublishedContentMock
+            {
+                Properties = new[] {prop1, prop2, prop3}
+            };
 
             var converted = content.As<PrefixedModel>();
 
@@ -156,13 +167,21 @@
         [Test]
         public void Umbraco_Property_Attribute_Overrides_Prefix()
         {
-            var prop1 = PropertyBuilder.Default("siteUnprefixedProp", "Site Unprefixed").Build();
-            var prop2 = PropertyBuilder.Default("unprefixedProp", "Unprefixed").Build();
+            var prop1 = new PublishedContentPropertyMock
+            {
+                Alias = "siteUnprefixedProp",
+                Value = "Site Unprefixed"
+            };
+            var prop2 = new PublishedContentPropertyMock
+            {
+                Alias = "unprefixedProp",
+                Value = "Unprefixed"
+            };
 
-            var content = ContentBuilder.Default()
-                .AddProperty(prop1)
-                .AddProperty(prop2)
-                .Build();
+            var content = new PublishedContentMock
+            {
+                Properties = new[] { prop1, prop2 }
+            };
 
             var converted = content.As<PrefixedModel>();
 
