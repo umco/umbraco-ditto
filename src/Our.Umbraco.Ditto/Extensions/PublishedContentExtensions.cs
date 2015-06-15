@@ -47,11 +47,11 @@ namespace Our.Umbraco.Ditto
         /// <param name="content">
         /// The <see cref="IPublishedContent"/> to convert.
         /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         /// <param name="culture">
         /// The <see cref="CultureInfo"/>
@@ -64,12 +64,12 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public static T As<T>(
             this IPublishedContent content,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null,
+            Action<ConversionHandlerContext> onConverting = null,
+            Action<ConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
             where T : class
         {
-            return content.As(typeof(T), convertingType, convertedType, culture) as T;
+            return content.As(typeof(T), onConverting, onConverted, culture) as T;
         }
 
         /// <summary>
@@ -81,11 +81,11 @@ namespace Our.Umbraco.Ditto
         /// <param name="documentTypeAlias">
         /// The document type alias.
         /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <typeparam name="T">
@@ -97,12 +97,12 @@ namespace Our.Umbraco.Ditto
         public static IEnumerable<T> As<T>(
             this IEnumerable<IPublishedContent> items,
             string documentTypeAlias = null,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null,
+            Action<ConversionHandlerContext> onConverting = null,
+            Action<ConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
             where T : class
         {
-            return items.As(typeof(T), documentTypeAlias, convertingType, convertedType, culture)
+            return items.As(typeof(T), documentTypeAlias, onConverting, onConverted, culture)
                         .Select(x => x as T);
         }
 
@@ -118,11 +118,11 @@ namespace Our.Umbraco.Ditto
         /// <param name="documentTypeAlias">
         /// The document type alias.
         /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         /// <param name="culture">
         /// The <see cref="CultureInfo"/>.
@@ -134,8 +134,8 @@ namespace Our.Umbraco.Ditto
             this IEnumerable<IPublishedContent> items,
             Type type,
             string documentTypeAlias = null,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null,
+            Action<ConversionHandlerContext> onConverting = null,
+            Action<ConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
         {
             using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
@@ -143,12 +143,12 @@ namespace Our.Umbraco.Ditto
                 IEnumerable<object> typedItems;
                 if (string.IsNullOrWhiteSpace(documentTypeAlias))
                 {
-                    typedItems = items.Select(x => x.As(type, convertingType, convertedType, culture));
+                    typedItems = items.Select(x => x.As(type, onConverting, onConverted, culture));
                 }
                 else
                 {
                     typedItems = items.Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                                      .Select(x => x.As(type, convertingType, convertedType, culture));
+                                      .Select(x => x.As(type, onConverting, onConverted, culture));
                 }
 
                 // We need to cast back here as nothing is strong typed anymore.
@@ -165,11 +165,11 @@ namespace Our.Umbraco.Ditto
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <returns>
@@ -178,8 +178,8 @@ namespace Our.Umbraco.Ditto
         public static object As(
             this IPublishedContent content,
             Type type,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null,
+            Action<ConversionHandlerContext> onConverting = null,
+            Action<ConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
         {
             if (content == null)
@@ -189,47 +189,7 @@ namespace Our.Umbraco.Ditto
 
             using (DisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
             {
-                // Check for and fire any event args
-                var convertingArgs = new ConvertingTypeEventArgs
-                {
-                    Content = content
-                };
-
-                EventHandlers.CallConvertingTypeHandler(convertingArgs);
-
-                if (!convertingArgs.Cancel && convertingType != null)
-                {
-                    convertingType(convertingArgs);
-                }
-
-                // Cancel if applicable. 
-                if (convertingArgs.Cancel)
-                {
-                    return null;
-                }
-
-                // Create an object and fetch it as the type.
-                object instance = GetTypedProperty(content, type, culture);
-
-                // Fire the converted event(s)
-                var convertedArgs = new ConvertedTypeEventArgs
-                {
-                    Content = content,
-                    Converted = instance,
-                    ConvertedType = type
-                };
-
-                // Call passed in converted func
-                if (convertedType != null)
-                {
-                    convertedType(convertedArgs);
-                }
-
-                // Call registered event handlers
-                EventHandlers.CallConvertedTypeHandler(convertedArgs);
-
-                // Return converted object
-                return convertedArgs.Converted;
+                return ConvertContent(content, type, onConverting, onConverted, culture);
             }
         }
 
@@ -242,6 +202,12 @@ namespace Our.Umbraco.Ditto
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// </param>
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
+        /// </param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <returns>
         /// The converted <see cref="Object"/> as the given type.
@@ -249,9 +215,11 @@ namespace Our.Umbraco.Ditto
         /// <exception cref="InvalidOperationException">
         /// Thrown if the given type has invalid constructors.
         /// </exception>
-        private static object GetTypedProperty(
+        private static object ConvertContent(
             IPublishedContent content,
             Type type,
+            Action<ConversionHandlerContext> onConverting = null,
+            Action<ConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
         {
             // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
@@ -357,7 +325,7 @@ namespace Our.Umbraco.Ditto
 
             // We have the instance object but haven't yet populated properties
             // so fire the on converting event handlers
-            OnConverting(content, type, instance);
+            OnConverting(content, type, instance, onConverting);
 
             // Now loop through and convert non-virtual properties.
             if (nonVirtualProperties != null && nonVirtualProperties.Any())
@@ -383,7 +351,7 @@ namespace Our.Umbraco.Ditto
 
             // We have now finished populating the instance object so go ahead
             // and fire the on converted event handlers
-            OnConverted(content, type, instance);
+            OnConverted(content, type, instance, onConverted);
 
             return instance;
         }
@@ -581,9 +549,13 @@ namespace Our.Umbraco.Ditto
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
         /// <param name="type">The instance type.</param>
         /// <param name="instance">The instance to assign the value to.</param>
+        /// <param name="callback">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// </param>
         private static void OnConverting(IPublishedContent content,
             Type type,
-            object instance)
+            object instance,
+            Action<ConversionHandlerContext> callback = null)
         {
             // Trigger conversion handlers
             var conversionCtx = new ConversionHandlerContext
@@ -609,6 +581,10 @@ namespace Our.Umbraco.Ditto
                     method.Invoke(instance, new[] { conversionCtx });
                 }
             }
+
+            // Call the callback
+            if (callback != null)
+                callback(conversionCtx);
         }
 
         /// <summary>
@@ -617,9 +593,13 @@ namespace Our.Umbraco.Ditto
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
         /// <param name="type">The instance type.</param>
         /// <param name="instance">The instance to assign the value to.</param>
+        /// <param name="callback">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
+        /// </param>
         private static void OnConverted(IPublishedContent content,
             Type type,
-            object instance)
+            object instance,
+            Action<ConversionHandlerContext> callback = null)
         {
             // Trigger conversion handlers
             var conversionCtx = new ConversionHandlerContext
@@ -645,6 +625,10 @@ namespace Our.Umbraco.Ditto
                     method.Invoke(instance, new[] { conversionCtx });
                 }
             }
+
+            // Call the callback
+            if (callback != null)
+                callback(conversionCtx);
         }
     }
 }
