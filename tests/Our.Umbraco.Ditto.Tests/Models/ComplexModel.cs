@@ -11,7 +11,7 @@ namespace Our.Umbraco.Ditto.Tests.Models
     {
         public int Id { get; set; }
 
-        [DittoValueResolver(typeof(NameVauleResovler))]
+        [DittoValueResolver(typeof(NameValueResovler))]
         public string Name { get; set; }
 
         [UmbracoProperty("myprop")]
@@ -22,7 +22,7 @@ namespace Our.Umbraco.Ditto.Tests.Models
         public IPublishedContent MyPublishedContent { get; set; }
     }
 
-    public class NameVauleResovler : DittoValueResolver
+    public class NameValueResovler : DittoValueResolver
     {
         public override object ResolveValue(ITypeDescriptorContext context, 
             DittoValueResolverAttribute attribute, CultureInfo culture)
