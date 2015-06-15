@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using Umbraco.Core.Models;
+
+namespace Our.Umbraco.Ditto
 {
     using System;
 
@@ -14,7 +16,6 @@
         /// </summary>
         public CurrentContentAttribute()
             : base(typeof(CurrentContentValueResolver))
-        {
-        }
+        { }
     }
 }

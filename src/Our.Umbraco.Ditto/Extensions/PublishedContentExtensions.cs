@@ -547,10 +547,16 @@
             }
             else if (propertyValue is IPublishedContent && propertyInfo.PropertyType.IsClass)
             {
-                // If the property value is an `IPublishedContent`, then we can use Ditto to map to the target type.
+                // If the property value is an IPublishedContent, then we can use Ditto to map to the target type.
                 result = ((IPublishedContent)propertyValue).As(propertyInfo.PropertyType);
-
-                // TODO: [LK] Could this be also used to handle IEnumerable<IPublishedContent>?
+            }
+            else if (propertyValue.GetType().IsEnumerableOfType(typeof(IPublishedContent)) 
+                && propertyInfo.PropertyType.IsEnumerable()
+                && propertyInfo.PropertyType.GetEnumerableType() != null
+                && propertyInfo.PropertyType.GetEnumerableType().IsClass)
+            {
+                // If the property value is IEnumerable<IPublishedContent>, then we can use Ditto to map to the target type.
+                result = ((IEnumerable<IPublishedContent>)propertyValue).As(propertyInfo.PropertyType.GetEnumerableType());
             }
             else
             {
