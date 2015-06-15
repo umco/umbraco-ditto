@@ -550,7 +550,8 @@
                 // If the property value is an IPublishedContent, then we can use Ditto to map to the target type.
                 result = ((IPublishedContent)propertyValue).As(propertyInfo.PropertyType);
             }
-            else if (propertyValue.GetType().IsEnumerableOfType(typeof(IPublishedContent)) 
+            else if (propertyValue != null
+                && propertyValue.GetType().IsEnumerableOfType(typeof(IPublishedContent)) 
                 && propertyInfo.PropertyType.IsEnumerable()
                 && propertyInfo.PropertyType.GetEnumerableType() != null
                 && propertyInfo.PropertyType.GetEnumerableType().IsClass)
