@@ -9,13 +9,13 @@ namespace Our.Umbraco.Ditto
     /// Used for providing Ditto with the current <see cref="IPublishedContent"/> object from Umbraco.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class CurrentContentAttribute : DittoValueResolverAttribute
+    public class CurrentContentAsAttribute : DittoValueResolverAttribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CurrentContentAttribute"/> class.
+        /// Initializes a new instance of the <see cref="CurrentContentAsAttribute"/> class.
         /// </summary>
-        public CurrentContentAttribute()
-            : base(typeof(CurrentContentValueResolver))
+        public CurrentContentAsAttribute()
+            : base(typeof(CurrentContentAsValueResolver))
         { }
     }
 }

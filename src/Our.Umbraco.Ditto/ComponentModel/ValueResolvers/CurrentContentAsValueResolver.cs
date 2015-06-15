@@ -9,7 +9,7 @@
     /// <summary>
     /// The current content value resolver.
     /// </summary>
-    public class CurrentContentValueResolver : DittoValueResolver<CurrentContentAttribute>
+    public class CurrentContentAsValueResolver : DittoValueResolver<CurrentContentAsAttribute>
     {
         /// <summary>
         /// Resolves the value.
@@ -19,14 +19,14 @@
         /// An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.
         /// </param>
         /// <param name="attribute">
-        /// The <see cref="CurrentContentAttribute"/> containing additional information 
+        /// The <see cref="CurrentContentAsAttribute"/> containing additional information 
         /// indicating how to resolve the property.
         /// </param>
         /// <param name="culture">The <see cref="T:System.Globalization.CultureInfo" /> to use as the current culture.</param>
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(ITypeDescriptorContext context, CurrentContentAttribute attribute, CultureInfo culture)
+        public override object ResolveValue(ITypeDescriptorContext context, CurrentContentAsAttribute attribute, CultureInfo culture)
         {
             // NOTE: [LK] In order to prevent an infinite loop / stack-overflow, we check if the
             // property's type matches the containing model's type, then we throw an exception.
@@ -37,7 +37,7 @@
                     context.PropertyDescriptor.PropertyType.Name));
             }
 
-            return context.Instance as IPublishedContent;
+            return ((IPublishedContent)context.Instance).As(context.PropertyDescriptor.PropertyType);
         }
     }
 }
