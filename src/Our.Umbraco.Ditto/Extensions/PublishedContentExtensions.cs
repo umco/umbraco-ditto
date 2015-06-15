@@ -1,5 +1,6 @@
 ﻿using Our.Umbraco.Ditto.Attributes;
-using Our.Umbraco.Ditto.ComponentModel.OnConvertedHandlers;
+using Our.Umbraco.Ditto.ComponentModel;
+using Our.Umbraco.Ditto.ComponentModel.ConversionHandlers;
 
 namespace Our.Umbraco.Ditto
 {
@@ -218,24 +219,6 @@ namespace Our.Umbraco.Ditto
                     ConvertedType = type
                 };
 
-                // Check for class level DittoOnConvertedAttributes
-                foreach (var attr in type.GetCustomAttributes<DittoOnConvertedAttribute>()
-                    .Where(x => x.HandlerType != null))
-                {
-                    ((DittoOnConvertedHandler)attr.HandlerType.GetInstance(convertedArgs)).OnConverted();
-                }
-
-                // Check for method level DittoOnConvertedAttributes
-                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                    .Where(x => x.GetCustomAttribute<DittoOnConvertedAttribute>() != null))
-                {
-                    var p = method.GetParameters();
-                    if (p.Length == 1 && p[0].ParameterType == typeof (ConvertedTypeEventArgs))
-                    {
-                        method.Invoke(instance, new[] { convertedArgs });
-                    }
-                }
-
                 // Call passed in converted func
                 if (convertedType != null)
                 {
@@ -372,6 +355,10 @@ namespace Our.Umbraco.Ditto
                     : factory.CreateProxy(type, interceptor);
             }
 
+            // We have the instance object but haven't yet populated properties
+            // so fire the on converting event handlers
+            OnConverting(content, type, instance);
+
             // Now loop through and convert non-virtual properties.
             if (nonVirtualProperties != null && nonVirtualProperties.Any())
             {
@@ -393,6 +380,10 @@ namespace Our.Umbraco.Ditto
                     }
                 }
             }
+
+            // We have now finished populating the instance object so go ahead
+            // and fire the on converted event handlers
+            OnConverted(content, type, instance);
 
             return instance;
         }
@@ -582,6 +573,78 @@ namespace Our.Umbraco.Ditto
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Fires off the various on converting events.
+        /// </summary>
+        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="type">The instance type.</param>
+        /// <param name="instance">The instance to assign the value to.</param>
+        private static void OnConverting(IPublishedContent content,
+            Type type,
+            object instance)
+        {
+            // Trigger conversion handlers
+            var conversionCtx = new ConversionHandlerContext
+            {
+                Content = content,
+                ModelType = type,
+                Model = instance
+            };
+
+            // Check for class level DittoOnConvertedAttributes
+            foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
+            {
+                ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverting();
+            }
+
+            // Check for method level DittoOnConvertedAttributes
+            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(x => x.GetCustomAttribute<DittoOnConvertingAttribute>() != null))
+            {
+                var p = method.GetParameters();
+                if (p.Length == 1 && p[0].ParameterType == typeof(ConversionHandlerContext))
+                {
+                    method.Invoke(instance, new[] { conversionCtx });
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fires off the various on converted events.
+        /// </summary>
+        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="type">The instance type.</param>
+        /// <param name="instance">The instance to assign the value to.</param>
+        private static void OnConverted(IPublishedContent content,
+            Type type,
+            object instance)
+        {
+            // Trigger conversion handlers
+            var conversionCtx = new ConversionHandlerContext
+            {
+                Content = content,
+                ModelType = type,
+                Model = instance
+            };
+
+            // Check for class level DittoOnConvertedAttributes
+            foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
+            {
+                ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverted();
+            }
+
+            // Check for method level DittoOnConvertedAttributes
+            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(x => x.GetCustomAttribute<DittoOnConvertedAttribute>() != null))
+            {
+                var p = method.GetParameters();
+                if (p.Length == 1 && p[0].ParameterType == typeof(ConversionHandlerContext))
+                {
+                    method.Invoke(instance, new[] { conversionCtx });
+                }
+            }
         }
     }
 }

@@ -1,10 +1,13 @@
-﻿using Our.Umbraco.Ditto.Attributes;
-using Our.Umbraco.Ditto.ComponentModel.OnConvertedHandlers;
+﻿using System;
+using Our.Umbraco.Ditto.Attributes;
+using Our.Umbraco.Ditto.ComponentModel;
+using Our.Umbraco.Ditto.ComponentModel.ConversionHandlers;
+using Umbraco.Core.Models;
 using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto.Tests.Models
 {
-    [DittoOnConverted(typeof(CalculatedModelOnConvertedHandler))]
+    [DittoConversionHandler(typeof(CalculatedModelOnConvertedHandler))]
     public class CalculatedModel : BaseCalculatedModel
     {
         public string Name { get; set; }
@@ -13,7 +16,7 @@ namespace Our.Umbraco.Ditto.Tests.Models
         public string AltText2 { get; set; }
 
         [DittoOnConverted]
-        internal void CalculatedModel_OnConverted(ConvertedTypeEventArgs e)
+        internal void CalculatedModel_OnConverted(ConversionHandlerContext ctx)
         {
             Name = "Test";
         }
@@ -24,23 +27,23 @@ namespace Our.Umbraco.Ditto.Tests.Models
         [DittoIgnore]
         public string AltText { get; set; }
 
-        [DittoOnConverted]
-        internal void BaseCalculatedModel_OnConverted(ConvertedTypeEventArgs e)
+        [DittoOnConverting]
+        internal void BaseCalculatedModel_OnConverting(ConversionHandlerContext ctx)
         {
-            AltText = e.Content.GetPropertyValue("prop1") + " " +
-                e.Content.GetPropertyValue("prop2");
+            AltText = ctx.Content.GetPropertyValue("prop1") + " " +
+                ctx.Content.GetPropertyValue("prop2");
         }
     }
 
-    public class CalculatedModelOnConvertedHandler : DittoOnConvertedHandler<CalculatedModel>
+    public class CalculatedModelOnConvertedHandler : DittoConversionHandler<CalculatedModel>
     {
-        public CalculatedModelOnConvertedHandler(ConvertedTypeEventArgs e) 
-            : base(e)
+        public CalculatedModelOnConvertedHandler(ConversionHandlerContext ctx) 
+            : base(ctx)
         { }
 
         public override void OnConverted()
         {
-            Converted.AltText2 = Content.GetPropertyValue("prop1") + " " +
+            Model.AltText2 = Content.GetPropertyValue("prop1") + " " +
                 Content.GetPropertyValue("prop2");
         }
     }
