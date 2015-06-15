@@ -121,26 +121,6 @@
         }
 
         [Test]
-        public void Nested_Property_Model_Populated()
-        {
-            var metaTitle = PropertyBuilder.Default("metaTitle", "This is the meta title").Build();
-            var metaDescription = PropertyBuilder.Default("metaDescription", "This is the meta description").Build();
-            var metaKeywords = PropertyBuilder.Default("metaKeywords", "these,are,meta,keywords").Build();
-
-            var content = ContentBuilder.Default()
-                .AddProperty(metaTitle)
-                .AddProperty(metaDescription)
-                .AddProperty(metaKeywords)
-                .Build();
-
-            var model = content.As<CurrentContentTestModel>();
-
-            Assert.That(model, Is.Not.Null);
-            Assert.That(model.MetaData1, Is.Not.Null);
-            Assert.That(model.MetaData2, Is.Null);
-        }
-
-        [Test]
         public void Content_To_String()
         {
             var content = ContentBuilder.Default().Build();
