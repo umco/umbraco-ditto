@@ -132,5 +132,87 @@
 
             Assert.Throws<InvalidOperationException>(code);
         }
+
+        [Test]
+        public void Can_Resolve_Prefixed_Properties()
+        {
+            var prop1 = new PublishedContentPropertyMock
+            {
+                Alias = "siteName",
+                Value = "Name"
+            }; 
+            var prop2 = new PublishedContentPropertyMock
+            {
+                Alias = "siteDescription",
+                Value = "Description"
+            };
+            var prop3 = new PublishedContentPropertyMock
+            {
+                Alias = "fallback",
+                Value = "Fallback"
+            };
+
+            var content = new PublishedContentMock
+            {
+                Properties = new[] {prop1, prop2, prop3}
+            };
+
+            var converted = content.As<PrefixedModel>();
+
+            Assert.That(converted.Name, Is.EqualTo("Name"));
+            Assert.That(converted.Description, Is.EqualTo("Description"));
+            Assert.That(converted.Fallback, Is.EqualTo("Fallback"));
+        }
+
+        [Test]
+        public void Umbraco_Property_Attribute_Overrides_Prefix()
+        {
+            var prop1 = new PublishedContentPropertyMock
+            {
+                Alias = "siteUnprefixedProp",
+                Value = "Site Unprefixed"
+            };
+            var prop2 = new PublishedContentPropertyMock
+            {
+                Alias = "unprefixedProp",
+                Value = "Unprefixed"
+            };
+
+            var content = new PublishedContentMock
+            {
+                Properties = new[] { prop1, prop2 }
+            };
+
+            var converted = content.As<PrefixedModel>();
+
+            Assert.That(converted.UnprefixedProp, Is.EqualTo("Unprefixed"));
+        }
+
+        [Test]
+        public void Can_Resolve_Recursive_Properties_Via_Umbraco_Properties_Attribute()
+        {
+            var childContent = new PublishedContentMock();
+            var parentContent = new PublishedContentMock
+            {
+                Properties = new[]
+                {
+                    new PublishedContentPropertyMock
+                    {
+                        Alias = "description",
+                        Value = "Description"
+                    }
+                },
+                Children = new[]
+                {
+                    childContent
+                }
+            };
+
+            childContent.Parent = parentContent;
+
+            var converted = childContent.As<PrefixedModel>();
+
+            Assert.That(converted.Description, Is.EqualTo("Description"));
+        }
     }
 }
