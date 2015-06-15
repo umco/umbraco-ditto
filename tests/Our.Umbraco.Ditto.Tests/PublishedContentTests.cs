@@ -214,5 +214,32 @@
 
             Assert.That(converted.Description, Is.EqualTo("Description"));
         }
+
+        [Test]
+        public void Can_Resolve_Calculated_Properties()
+        {
+            var content = new PublishedContentMock
+            {
+                Properties = new[]
+                {
+                    new PublishedContentPropertyMock
+                    {
+                        Alias = "prop1",
+                        Value = "Test1"
+                    },
+                    new PublishedContentPropertyMock
+                    {
+                        Alias = "prop2",
+                        Value = "Test2"
+                    }
+                }
+            };
+
+            var model = content.As<CalculatedModel>();
+
+            Assert.That(model.AltText, Is.EqualTo("Test1 Test2"));
+            Assert.That(model.Name, Is.EqualTo("Test"));
+            Assert.That(model.AltText2, Is.EqualTo("Test1 Test2"));
+        }
     }
 }
