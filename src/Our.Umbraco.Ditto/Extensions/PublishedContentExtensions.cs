@@ -551,7 +551,7 @@
                 result = ((IPublishedContent)propertyValue).As(propertyInfo.PropertyType);
             }
             else if (propertyValue != null
-                && propertyValue.GetType().IsEnumerableOfType(typeof(IPublishedContent)) 
+                && propertyValue.GetType().IsEnumerableOfType(typeof(IPublishedContent))
                 && propertyInfo.PropertyType.IsEnumerable()
                 && propertyInfo.PropertyType.GetEnumerableType() != null
                 && propertyInfo.PropertyType.GetEnumerableType().IsClass)

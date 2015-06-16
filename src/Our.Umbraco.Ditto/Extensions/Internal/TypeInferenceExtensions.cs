@@ -121,7 +121,12 @@ namespace Our.Umbraco.Ditto
             if (!type.IsEnumerable())
                 return null;
 
-            var interfaces = type.GetInterfaces();
+            var interfaces = type.GetInterfaces().ToList();
+            if (type.IsInterface && interfaces.All(i => i != type))
+            {
+                interfaces.Add(type);
+            }
+
             return interfaces.Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 .Select(i => i.GetGenericArguments()[0]).FirstOrDefault();
         }
