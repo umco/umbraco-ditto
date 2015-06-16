@@ -32,8 +32,8 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public static T As<T>(
             this RenderModel model,
-            Action<ConversionHandlerContext> onConverting = null,
-            Action<ConversionHandlerContext> onConverted = null)
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
         {
             if (model == null)

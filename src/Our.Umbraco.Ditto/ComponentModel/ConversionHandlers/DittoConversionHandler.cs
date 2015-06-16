@@ -9,7 +9,7 @@ namespace Our.Umbraco.Ditto.ComponentModel.ConversionHandlers
         public Type ModelType { get; private set; }
         public object Model { get; private set; }
 
-        protected DittoConversionHandler(ConversionHandlerContext ctx)
+        protected DittoConversionHandler(DittoConversionHandlerContext ctx)
         {
             Content = ctx.Content;
             ModelType = ctx.ModelType;
@@ -28,7 +28,7 @@ namespace Our.Umbraco.Ditto.ComponentModel.ConversionHandlers
     {
         public new TConvertedType Model { get; private set; }
 
-        protected DittoConversionHandler(ConversionHandlerContext ctx)
+        protected DittoConversionHandler(DittoConversionHandlerContext ctx)
             : base(ctx)
         {
             Model = ctx.Model as TConvertedType;

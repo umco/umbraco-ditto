@@ -64,8 +64,8 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public static T As<T>(
             this IPublishedContent content,
-            Action<ConversionHandlerContext> onConverting = null,
-            Action<ConversionHandlerContext> onConverted = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
             where T : class
         {
@@ -97,8 +97,8 @@ namespace Our.Umbraco.Ditto
         public static IEnumerable<T> As<T>(
             this IEnumerable<IPublishedContent> items,
             string documentTypeAlias = null,
-            Action<ConversionHandlerContext> onConverting = null,
-            Action<ConversionHandlerContext> onConverted = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
             where T : class
         {
@@ -134,8 +134,8 @@ namespace Our.Umbraco.Ditto
             this IEnumerable<IPublishedContent> items,
             Type type,
             string documentTypeAlias = null,
-            Action<ConversionHandlerContext> onConverting = null,
-            Action<ConversionHandlerContext> onConverted = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
         {
             using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
@@ -178,8 +178,8 @@ namespace Our.Umbraco.Ditto
         public static object As(
             this IPublishedContent content,
             Type type,
-            Action<ConversionHandlerContext> onConverting = null,
-            Action<ConversionHandlerContext> onConverted = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
         {
             if (content == null)
@@ -218,8 +218,8 @@ namespace Our.Umbraco.Ditto
         private static object ConvertContent(
             IPublishedContent content,
             Type type,
-            Action<ConversionHandlerContext> onConverting = null,
-            Action<ConversionHandlerContext> onConverted = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
         {
             // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
@@ -555,10 +555,10 @@ namespace Our.Umbraco.Ditto
         private static void OnConverting(IPublishedContent content,
             Type type,
             object instance,
-            Action<ConversionHandlerContext> callback = null)
+            Action<DittoConversionHandlerContext> callback = null)
         {
             // Trigger conversion handlers
-            var conversionCtx = new ConversionHandlerContext
+            var conversionCtx = new DittoConversionHandlerContext
             {
                 Content = content,
                 ModelType = type,
@@ -576,7 +576,7 @@ namespace Our.Umbraco.Ditto
                 .Where(x => x.GetCustomAttribute<DittoOnConvertingAttribute>() != null))
             {
                 var p = method.GetParameters();
-                if (p.Length == 1 && p[0].ParameterType == typeof(ConversionHandlerContext))
+                if (p.Length == 1 && p[0].ParameterType == typeof(DittoConversionHandlerContext))
                 {
                     method.Invoke(instance, new[] { conversionCtx });
                 }
@@ -601,10 +601,10 @@ namespace Our.Umbraco.Ditto
         private static void OnConverted(IPublishedContent content,
             Type type,
             object instance,
-            Action<ConversionHandlerContext> callback = null)
+            Action<DittoConversionHandlerContext> callback = null)
         {
             // Trigger conversion handlers
-            var conversionCtx = new ConversionHandlerContext
+            var conversionCtx = new DittoConversionHandlerContext
             {
                 Content = content,
                 ModelType = type,
@@ -622,7 +622,7 @@ namespace Our.Umbraco.Ditto
                 .Where(x => x.GetCustomAttribute<DittoOnConvertedAttribute>() != null))
             {
                 var p = method.GetParameters();
-                if (p.Length == 1 && p[0].ParameterType == typeof(ConversionHandlerContext))
+                if (p.Length == 1 && p[0].ParameterType == typeof(DittoConversionHandlerContext))
                 {
                     method.Invoke(instance, new[] { conversionCtx });
                 }

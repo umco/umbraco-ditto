@@ -90,7 +90,7 @@
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
-    <Compile Include="ComponentModel\ConversionHandlerContext.cs" />
+    <Compile Include="ComponentModel\DittoConversionHandlerContext.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandler.cs" />
     <Compile Include="ComponentModel\PublishedContentContext.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoConverter.cs" />

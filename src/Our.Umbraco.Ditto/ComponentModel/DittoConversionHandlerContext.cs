@@ -6,7 +6,7 @@ namespace Our.Umbraco.Ditto.ComponentModel
     /// <summary>
     /// Provides context for conversion events.
     /// </summary>
-    public class ConversionHandlerContext
+    public class DittoConversionHandlerContext
     {
         /// <summary>
         /// Gets or sets the content.

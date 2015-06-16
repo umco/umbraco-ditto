@@ -16,7 +16,7 @@ namespace Our.Umbraco.Ditto.Tests.Models
         public string AltText2 { get; set; }
 
         [DittoOnConverted]
-        internal void CalculatedModel_OnConverted(ConversionHandlerContext ctx)
+        internal void CalculatedModel_OnConverted(DittoConversionHandlerContext ctx)
         {
             Name = "Test";
         }
@@ -28,7 +28,7 @@ namespace Our.Umbraco.Ditto.Tests.Models
         public string AltText { get; set; }
 
         [DittoOnConverting]
-        internal void BaseCalculatedModel_OnConverting(ConversionHandlerContext ctx)
+        internal void BaseCalculatedModel_OnConverting(DittoConversionHandlerContext ctx)
         {
             AltText = ctx.Content.GetPropertyValue("prop1") + " " +
                 ctx.Content.GetPropertyValue("prop2");
@@ -37,7 +37,7 @@ namespace Our.Umbraco.Ditto.Tests.Models
 
     public class CalculatedModelConversionHandler : DittoConversionHandler<CalculatedModel>
     {
-        public CalculatedModelConversionHandler(ConversionHandlerContext ctx) 
+        public CalculatedModelConversionHandler(DittoConversionHandlerContext ctx) 
             : base(ctx)
         { }
 
