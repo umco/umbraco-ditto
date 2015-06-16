@@ -211,7 +211,6 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Attributes\MockValueAttribute.cs" />
     <Compile Include="CurrentContentTests.cs" />
     <Compile Include="AppSettingsTests.cs" />
     <Compile Include="Mocks\PublishedContentMock.cs" />

@@ -63,6 +63,7 @@
         }
 
         [Test]
+        [ExpectedException(typeof(System.InvalidOperationException))]
         public void Property_Converted()
         {
             // With this kind of mocking, we dont need property value converters, because they would already
@@ -82,9 +83,6 @@
             };
 
             var model = content.As<SimpleModel>();
-
-            Assert.That(model.MyProperty, Is.Not.EqualTo(value));
-            Assert.That(model.MyProperty, Is.EqualTo(value.ToString()));
         }
 
         [Test]
@@ -124,13 +122,12 @@
         }
 
         [Test]
+        [ExpectedException(typeof(System.InvalidOperationException))]
         public void Content_To_String()
         {
             var content = new PublishedContentMock();
 
-            TestDelegate code = () => { content.As<string>(); };
-
-            Assert.Throws<InvalidOperationException>(code);
+            content.As<string>();
         }
 
         [Test]
@@ -213,6 +210,18 @@
             var converted = childContent.As<PrefixedModel>();
 
             Assert.That(converted.Description, Is.EqualTo("Description"));
+        }
+
+        [Test]
+        public void Property_AppSetting_Returned()
+        {
+            var value = "MyAppSettingValue";
+
+            var content = new PublishedContentMock();
+
+            var model = content.As<ComplexModel>();
+
+            Assert.That(model.MyAppSettingProperty, Is.EqualTo(value));
         }
     }
 }

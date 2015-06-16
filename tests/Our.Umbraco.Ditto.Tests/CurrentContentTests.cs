@@ -33,15 +33,26 @@
         [Test]
         public void CurrentContent_Property_Mapped()
         {
-            var metaTitle = PropertyBuilder.Default("metaTitle", "This is the meta title").Build();
-            var metaDescription = PropertyBuilder.Default("metaDescription", "This is the meta description").Build();
-            var metaKeywords = PropertyBuilder.Default("metaKeywords", "these,are,meta,keywords").Build();
+            var metaTitle = new PublishedContentPropertyMock
+            {
+                Alias = "metaTitle",
+                Value = "This is the meta title"
+            };
+            var metaDescription = new PublishedContentPropertyMock
+            {
+                Alias = "metaDescription",
+                Value = "This is the meta description"
+            };
+            var metaKeywords = new PublishedContentPropertyMock
+            {
+                Alias = "metaKeywords",
+                Value = "these,are,meta,keywords"
+            };
 
-            var content = ContentBuilder.Default()
-                .AddProperty(metaTitle)
-                .AddProperty(metaDescription)
-                .AddProperty(metaKeywords)
-                .Build();
+            var content = new PublishedContentMock
+            {
+                Properties = new[] { metaTitle, metaDescription, metaKeywords }
+            };
 
             var model = content.As<MyModel>();
 
@@ -54,7 +65,7 @@
         [Test]
         public void CurrentContent_InfineLoop_Check()
         {
-            var content = ContentBuilder.Default().Build();
+            var content = new PublishedContentMock();
 
             TestDelegate code = () => { content.As<MyCircularReferenceModel>(); };
 
