@@ -7,7 +7,7 @@
     /// All other Ditto value attributes should inherit from this class.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public abstract class DittoValueResolverAttribute : Attribute
+    public class DittoValueResolverAttribute : Attribute
     {
         private readonly Type _resolverType;
 
@@ -19,7 +19,7 @@
             }
         }
 
-        protected DittoValueResolverAttribute(Type resolverType)
+        public DittoValueResolverAttribute(Type resolverType)
         {
             if (!typeof(DittoValueResolver).IsAssignableFrom(resolverType))
                 throw new ArgumentException("Resolver type must inherit from DittoValueResolver", "resolverType");

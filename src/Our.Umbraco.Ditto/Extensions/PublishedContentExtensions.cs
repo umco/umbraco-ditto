@@ -191,7 +191,7 @@
                     Content = content
                 };
 
-                EventHandlers.CallConvertingTypeHandler(convertingArgs);
+                DittoEventHandlers.CallConvertingTypeHandler(convertingArgs);
 
                 if (!convertingArgs.Cancel && convertingType != null)
                 {
@@ -220,7 +220,7 @@
                     convertedType(convertedArgs);
                 }
 
-                EventHandlers.CallConvertedTypeHandler(convertedArgs);
+                DittoEventHandlers.CallConvertedTypeHandler(convertedArgs);
 
                 return convertedArgs.Converted;
             }

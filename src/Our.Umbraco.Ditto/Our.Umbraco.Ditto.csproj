@@ -84,6 +84,7 @@
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="Attributes\DittoValueResolverAttribute.cs" />
     <Compile Include="Attributes\UmbracoDictionaryAttribute.cs" />
+    <Compile Include="Attributes\UmbracoPropertiesAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
@@ -108,7 +109,7 @@
     <Compile Include="Extensions\Internal\StringExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInferenceExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />
-    <Compile Include="EventArgs\EventHandlers.cs" />
+    <Compile Include="EventArgs\DittoEventHandlers.cs" />
     <Compile Include="EventArgs\ConvertingTypeEventArgs.cs" />
     <Compile Include="EventArgs\ConvertedTypeEventArgs.cs" />
     <Compile Include="Extensions\RenderModelExtensions.cs" />
