@@ -272,7 +272,7 @@ namespace Our.Umbraco.Ditto
                 }
                 else
                 {
-                    throw new InvalidOperationException(string.Format("Type {0} has invalid constructor parameters", type));
+                    throw new InvalidOperationException(string.Format("Can't convert IPublishedContent to {0} as it has no valid constructor. A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.", type));
                 }
             }
 
