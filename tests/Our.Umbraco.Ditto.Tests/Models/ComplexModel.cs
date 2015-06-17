@@ -20,6 +20,9 @@ namespace Our.Umbraco.Ditto.Tests.Models
         [UmbracoProperty("Id")]
         [TypeConverter(typeof(MockPublishedContentConverter))]
         public IPublishedContent MyPublishedContent { get; set; }
+
+        [AppSetting("MyAppSettingKey")]
+        public string MyAppSettingProperty { get; set; }
     }
 
     public class NameValueResovler : DittoValueResolver
