@@ -213,6 +213,7 @@
   <ItemGroup>
     <Compile Include="CurrentContentTests.cs" />
     <Compile Include="AppSettingsTests.cs" />
+    <Compile Include="ExistingObjectInstanceTests.cs" />
     <Compile Include="Mocks\PublishedContentMock.cs" />
     <Compile Include="Mocks\PublishedContentPropertyMock.cs" />
     <Compile Include="MockValueResolverTests.cs" />
