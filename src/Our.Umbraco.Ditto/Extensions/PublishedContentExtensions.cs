@@ -198,7 +198,7 @@
                     Content = content
                 };
 
-                EventHandlers.CallConvertingTypeHandler(convertingArgs);
+                DittoEventHandlers.CallConvertingTypeHandler(convertingArgs);
 
                 if (!convertingArgs.Cancel && convertingType != null)
                 {
@@ -227,7 +227,7 @@
                     convertedType(convertedArgs);
                 }
 
-                EventHandlers.CallConvertedTypeHandler(convertedArgs);
+                DittoEventHandlers.CallConvertedTypeHandler(convertedArgs);
 
                 return convertedArgs.Converted;
             }
@@ -555,6 +555,20 @@
             {
                 // Simple types
                 result = propertyValue;
+            }
+            else if (propertyValue is IPublishedContent && propertyInfo.PropertyType.IsClass)
+            {
+                // If the property value is an IPublishedContent, then we can use Ditto to map to the target type.
+                result = ((IPublishedContent)propertyValue).As(propertyInfo.PropertyType);
+            }
+            else if (propertyValue != null
+                && propertyValue.GetType().IsEnumerableOfType(typeof(IPublishedContent))
+                && propertyInfo.PropertyType.IsEnumerable()
+                && propertyInfo.PropertyType.GetEnumerableType() != null
+                && propertyInfo.PropertyType.GetEnumerableType().IsClass)
+            {
+                // If the property value is IEnumerable<IPublishedContent>, then we can use Ditto to map to the target type.
+                result = ((IEnumerable<IPublishedContent>)propertyValue).As(propertyInfo.PropertyType.GetEnumerableType());
             }
             else
             {

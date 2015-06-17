@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto.Tests.Models
+﻿using System.Globalization;
+
+namespace Our.Umbraco.Ditto.Tests.Models
 {
     using System.ComponentModel;
 
@@ -9,6 +11,7 @@
     {
         public int Id { get; set; }
 
+        [DittoValueResolver(typeof(NameValueResovler))]
         public string Name { get; set; }
 
         [UmbracoProperty("myprop")]
@@ -17,5 +20,20 @@
         [UmbracoProperty("Id")]
         [TypeConverter(typeof(MockPublishedContentConverter))]
         public IPublishedContent MyPublishedContent { get; set; }
+
+        [AppSetting("MyAppSettingKey")]
+        public string MyAppSettingProperty { get; set; }
+    }
+
+    public class NameValueResovler : DittoValueResolver
+    {
+        public override object ResolveValue(ITypeDescriptorContext context, 
+            DittoValueResolverAttribute attribute, CultureInfo culture)
+        {
+            var content = context.Instance as IPublishedContent;
+            if (content == null) return null;
+
+            return content.Name + " Test";
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using Umbraco.Core;
+
+namespace Our.Umbraco.Ditto
 {
     using System;
     using System.Collections.Generic;
@@ -106,6 +108,27 @@
 
                 type = type.BaseType;
             }
+        }
+
+        /// <summary>
+        /// Gets the type of the enumerable object
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to check.</param>
+        /// <returns>The type of the enumerable.</returns>
+        public static Type GetEnumerableType(this Type type)
+        {
+            // if it's not an enumerable why do you call this method all ?
+            if (!type.IsEnumerable())
+                return null;
+
+            var interfaces = type.GetInterfaces().ToList();
+            if (type.IsInterface && interfaces.All(i => i != type))
+            {
+                interfaces.Add(type);
+            }
+
+            return interfaces.Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                .Select(i => i.GetGenericArguments()[0]).FirstOrDefault();
         }
     }
 }

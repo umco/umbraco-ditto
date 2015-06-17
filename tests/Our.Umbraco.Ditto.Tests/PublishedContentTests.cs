@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto.Tests
+﻿using System.Collections.Generic;
+
+namespace Our.Umbraco.Ditto.Tests
 {
     using System.Linq;
 
@@ -63,6 +65,7 @@
         }
 
         [Test]
+        [ExpectedException(typeof(System.InvalidOperationException))]
         public void Property_Converted()
         {
             // With this kind of mocking, we dont need property value converters, because they would already
@@ -82,9 +85,6 @@
             };
 
             var model = content.As<SimpleModel>();
-
-            Assert.That(model.MyProperty, Is.Not.EqualTo(value));
-            Assert.That(model.MyProperty, Is.EqualTo(value.ToString()));
         }
 
         [Test]
@@ -116,13 +116,186 @@
         }
 
         [Test]
+        public void Custom_Value_Resolver_Resolves()
+        {
+            var content = new PublishedContentMock();
+            var model = content.As<ComplexModel>();
+            Assert.That(model.Name, Is.EqualTo("Name Test"));
+        }
+
+        [Test]
+        [ExpectedException(typeof(System.InvalidOperationException))]
         public void Content_To_String()
         {
             var content = new PublishedContentMock();
 
-            TestDelegate code = () => { content.As<string>(); };
+            content.As<string>();
+        }
 
-            Assert.Throws<InvalidOperationException>(code);
+        [Test]
+        public void Can_Resolve_Prefixed_Properties()
+        {
+            var prop1 = new PublishedContentPropertyMock
+            {
+                Alias = "siteName",
+                Value = "Name"
+            }; 
+            var prop2 = new PublishedContentPropertyMock
+            {
+                Alias = "siteDescription",
+                Value = "Description"
+            };
+            var prop3 = new PublishedContentPropertyMock
+            {
+                Alias = "fallback",
+                Value = "Fallback"
+            };
+
+            var content = new PublishedContentMock
+            {
+                Properties = new[] {prop1, prop2, prop3}
+            };
+
+            var converted = content.As<PrefixedModel>();
+
+            Assert.That(converted.Name, Is.EqualTo("Name"));
+            Assert.That(converted.Description, Is.EqualTo("Description"));
+            Assert.That(converted.Fallback, Is.EqualTo("Fallback"));
+        }
+
+        [Test]
+        public void Umbraco_Property_Attribute_Overrides_Prefix()
+        {
+            var prop1 = new PublishedContentPropertyMock
+            {
+                Alias = "siteUnprefixedProp",
+                Value = "Site Unprefixed"
+            };
+            var prop2 = new PublishedContentPropertyMock
+            {
+                Alias = "unprefixedProp",
+                Value = "Unprefixed"
+            };
+
+            var content = new PublishedContentMock
+            {
+                Properties = new[] { prop1, prop2 }
+            };
+
+            var converted = content.As<PrefixedModel>();
+
+            Assert.That(converted.UnprefixedProp, Is.EqualTo("Unprefixed"));
+        }
+
+        [Test]
+        public void Can_Resolve_Recursive_Properties_Via_Umbraco_Properties_Attribute()
+        {
+            var childContent = new PublishedContentMock();
+            var parentContent = new PublishedContentMock
+            {
+                Properties = new[]
+                {
+                    new PublishedContentPropertyMock
+                    {
+                        Alias = "description",
+                        Value = "Description"
+                    }
+                },
+                Children = new[]
+                {
+                    childContent
+                }
+            };
+
+            childContent.Parent = parentContent;
+
+            var converted = childContent.As<PrefixedModel>();
+
+            Assert.That(converted.Description, Is.EqualTo("Description"));
+        }
+
+        [Test]
+        public void Property_AppSetting_Returned()
+        {
+            var value = "MyAppSettingValue";
+
+            var content = new PublishedContentMock();
+
+            var model = content.As<ComplexModel>();
+
+            Assert.That(model.MyAppSettingProperty, Is.EqualTo(value));
+        }
+
+        [Test]
+        public void IPublishedContent_Property_Value_Triggers_Recursive_As()
+        {
+            var content1 = new PublishedContentMock
+            {
+                Properties = new[]
+                {
+                    new PublishedContentPropertyMock
+                    {
+                        Alias = "innerProp",
+                        Value = "Inner Prop"
+                    }
+                }
+            };
+
+            var content2 = new PublishedContentMock
+            {
+                Properties = new[]
+                {
+                    new PublishedContentPropertyMock
+                    {
+                        Alias = "contentProp",
+                        Value = content1
+                    }
+                }
+            };
+
+            var model = content2.As<InnerContentModel>();
+
+            Assert.That(model.ContentProp.InnerProp, Is.EqualTo("Inner Prop"));
+        }
+
+        [Test]
+        public void IEnumerable_IPublishedContent_Property_Value_Triggers_Recursive_As()
+        {
+            var contentList = new List<IPublishedContent>();
+
+            for (var i = 0; i < 5; i++)
+            {
+                contentList.Add(new PublishedContentMock
+                {
+                    Id = i,
+                    Name = "Node "+ i,
+                    Properties = new[]
+                    {
+                        new PublishedContentPropertyMock
+                        {
+                            Alias = "innerProp",
+                            Value = "Inner Prop"
+                        }
+                    }
+                });
+            }
+
+            var content2 = new PublishedContentMock
+            {
+                Properties = new[]
+                {
+                    new PublishedContentPropertyMock
+                    {
+                        Alias = "contentListProp",
+                        Value = contentList
+                    }
+                }
+            };
+
+            var model = content2.As<InnerContentModel>();
+
+            Assert.That(model.ContentListProp.Count(), Is.EqualTo(5));
+            Assert.That(model.ContentListProp.All(x => x.InnerProp == "Inner Prop"), Is.EqualTo(true));
         }
     }
 }
