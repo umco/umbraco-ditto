@@ -80,6 +80,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\AppSettingAttribute.cs" />
+    <Compile Include="Attributes\DittoConversionHandlerAttribute.cs" />
+    <Compile Include="Attributes\DittoOnConvertingAttribute.cs" />
+    <Compile Include="Attributes\DittoOnConvertedAttribute.cs" />
     <Compile Include="Attributes\CurrentContentAsAttribute.cs" />
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="Attributes\DittoValueResolverAttribute.cs" />
@@ -88,6 +91,8 @@
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
+    <Compile Include="ComponentModel\DittoConversionHandlerContext.cs" />
+    <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandler.cs" />
     <Compile Include="ComponentModel\PublishedContentContext.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoEnumConverter.cs" />
@@ -109,9 +114,6 @@
     <Compile Include="Extensions\Internal\StringExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInferenceExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />
-    <Compile Include="EventArgs\DittoEventHandlers.cs" />
-    <Compile Include="EventArgs\ConvertingTypeEventArgs.cs" />
-    <Compile Include="EventArgs\ConvertedTypeEventArgs.cs" />
     <Compile Include="Extensions\RenderModelExtensions.cs" />
     <Compile Include="Extensions\PublishedContentExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

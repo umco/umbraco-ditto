@@ -1,4 +1,8 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using Our.Umbraco.Ditto.Attributes;
+using Our.Umbraco.Ditto.ComponentModel;
+using Our.Umbraco.Ditto.ComponentModel.ConversionHandlers;
+
+namespace Our.Umbraco.Ditto
 {
     using System;
     using System.Collections;
@@ -43,11 +47,11 @@
         /// <param name="content">
         /// The <see cref="IPublishedContent"/> to convert.
         /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         /// <param name="culture">
         /// The <see cref="CultureInfo"/>
@@ -60,13 +64,13 @@
         /// </returns>
         public static T As<T>(
             this IPublishedContent content,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null,
             T instance = null)
             where T : class
         {
-            return content.As(typeof(T), convertingType, convertedType, culture, instance) as T;
+            return content.As(typeof(T), onConverting, onConverted, culture, instance) as T;
         }
 
         /// <summary>
@@ -78,11 +82,11 @@
         /// <param name="documentTypeAlias">
         /// The document type alias.
         /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <typeparam name="T">
@@ -94,12 +98,12 @@
         public static IEnumerable<T> As<T>(
             this IEnumerable<IPublishedContent> items,
             string documentTypeAlias = null,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
             where T : class
         {
-            return items.As(typeof(T), documentTypeAlias, convertingType, convertedType, culture)
+            return items.As(typeof(T), documentTypeAlias, onConverting, onConverted, culture)
                         .Select(x => x as T);
         }
 
@@ -115,11 +119,11 @@
         /// <param name="documentTypeAlias">
         /// The document type alias.
         /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         /// <param name="culture">
         /// The <see cref="CultureInfo"/>.
@@ -131,8 +135,8 @@
             this IEnumerable<IPublishedContent> items,
             Type type,
             string documentTypeAlias = null,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null)
         {
             using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
@@ -140,12 +144,12 @@
                 IEnumerable<object> typedItems;
                 if (string.IsNullOrWhiteSpace(documentTypeAlias))
                 {
-                    typedItems = items.Select(x => x.As(type, convertingType, convertedType, culture));
+                    typedItems = items.Select(x => x.As(type, onConverting, onConverted, culture));
                 }
                 else
                 {
                     typedItems = items.Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                                      .Select(x => x.As(type, convertingType, convertedType, culture));
+                                      .Select(x => x.As(type, onConverting, onConverted, culture));
                 }
 
                 // We need to cast back here as nothing is strong typed anymore.
@@ -162,11 +166,11 @@
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <returns>
@@ -175,8 +179,8 @@
         public static object As(
             this IPublishedContent content,
             Type type,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null,
             object instance = null)
         {
@@ -192,44 +196,7 @@
 
             using (DisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
             {
-                // Check for and fire any event args
-                var convertingArgs = new ConvertingTypeEventArgs
-                {
-                    Content = content
-                };
-
-                DittoEventHandlers.CallConvertingTypeHandler(convertingArgs);
-
-                if (!convertingArgs.Cancel && convertingType != null)
-                {
-                    convertingType(convertingArgs);
-                }
-
-                // Cancel if applicable. 
-                if (convertingArgs.Cancel)
-                {
-                    return null;
-                }
-
-                // Get the object as the type.
-                instance = GetTypedProperty(content, type, culture, instance);
-
-                // Fire the converted event
-                var convertedArgs = new ConvertedTypeEventArgs
-                {
-                    Content = content,
-                    Converted = instance,
-                    ConvertedType = type
-                };
-
-                if (convertedType != null)
-                {
-                    convertedType(convertedArgs);
-                }
-
-                DittoEventHandlers.CallConvertedTypeHandler(convertedArgs);
-
-                return convertedArgs.Converted;
+                return ConvertContent(content, type, onConverting, onConverted, culture, instance);
             }
         }
 
@@ -242,6 +209,12 @@
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// </param>
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
+        /// </param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <returns>
         /// The converted <see cref="Object"/> as the given type.
@@ -249,9 +222,11 @@
         /// <exception cref="InvalidOperationException">
         /// Thrown if the given type has invalid constructors.
         /// </exception>
-        private static object GetTypedProperty(
+        private static object ConvertContent(
             IPublishedContent content,
             Type type,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null,
             object instance = null)
         {
@@ -359,6 +334,10 @@
                     : factory.CreateProxy(type, interceptor);
             }
 
+            // We have the instance object but haven't yet populated properties
+            // so fire the on converting event handlers
+            OnConverting(content, type, instance, onConverting);
+
             // Now loop through and convert non-virtual properties.
             if (nonVirtualProperties != null && nonVirtualProperties.Any())
             {
@@ -380,6 +359,10 @@
                     }
                 }
             }
+
+            // We have now finished populating the instance object so go ahead
+            // and fire the on converted event handlers
+            OnConverted(content, type, instance, onConverted);
 
             return instance;
         }
@@ -583,6 +566,98 @@
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Fires off the various on converting events.
+        /// </summary>
+        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="type">The instance type.</param>
+        /// <param name="instance">The instance to assign the value to.</param>
+        /// <param name="callback">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// </param>
+        private static void OnConverting(IPublishedContent content,
+            Type type,
+            object instance,
+            Action<DittoConversionHandlerContext> callback = null)
+        {
+            // Trigger conversion handlers
+            var conversionCtx = new DittoConversionHandlerContext
+            {
+                Content = content,
+                ModelType = type,
+                Model = instance
+            };
+
+            // Check for class level DittoOnConvertedAttributes
+            foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
+            {
+                ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverting();
+            }
+
+            // Check for method level DittoOnConvertedAttributes
+            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(x => x.GetCustomAttribute<DittoOnConvertingAttribute>() != null))
+            {
+                var p = method.GetParameters();
+                if (p.Length == 1 && p[0].ParameterType == typeof(DittoConversionHandlerContext))
+                {
+                    method.Invoke(instance, new[] { conversionCtx });
+                }
+            }
+
+            // Check for a callback function
+            if (callback != null)
+            {
+                callback(conversionCtx);
+            }
+        }
+
+        /// <summary>
+        /// Fires off the various on converted events.
+        /// </summary>
+        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="type">The instance type.</param>
+        /// <param name="instance">The instance to assign the value to.</param>
+        /// <param name="callback">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
+        /// </param>
+        private static void OnConverted(IPublishedContent content,
+            Type type,
+            object instance,
+            Action<DittoConversionHandlerContext> callback = null)
+        {
+            // Trigger conversion handlers
+            var conversionCtx = new DittoConversionHandlerContext
+            {
+                Content = content,
+                ModelType = type,
+                Model = instance
+            };
+
+            // Check for class level DittoOnConvertedAttributes
+            foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
+            {
+                ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverted();
+            }
+
+            // Check for method level DittoOnConvertedAttributes
+            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(x => x.GetCustomAttribute<DittoOnConvertedAttribute>() != null))
+            {
+                var p = method.GetParameters();
+                if (p.Length == 1 && p[0].ParameterType == typeof(DittoConversionHandlerContext))
+                {
+                    method.Invoke(instance, new[] { conversionCtx });
+                }
+            }
+
+            // Check for a callback function
+            if (callback != null)
+            {
+                callback(conversionCtx);
+            }
         }
     }
 }

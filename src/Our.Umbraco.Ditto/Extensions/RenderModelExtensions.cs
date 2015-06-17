@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using Our.Umbraco.Ditto.ComponentModel;
+
+namespace Our.Umbraco.Ditto
 {
     using System;
 
@@ -16,11 +18,11 @@
         /// <param name="model">
         /// The <see cref="RenderModel"/> to convert.
         /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         /// <typeparam name="T">
         /// The <see cref="Type"/> of items to return.
@@ -30,8 +32,8 @@
         /// </returns>
         public static T As<T>(
             this RenderModel model,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
         {
             if (model == null)
@@ -41,7 +43,7 @@
 
             using (DisposableTimer.DebugDuration<T>(string.Format("RenderModel As ({0})", model.Content.DocumentTypeAlias)))
             {
-                return model.Content.As<T>(convertingType, convertedType, model.CurrentCulture);
+                return model.Content.As<T>(onConverting, onConverted, model.CurrentCulture);
             }
         }
     }

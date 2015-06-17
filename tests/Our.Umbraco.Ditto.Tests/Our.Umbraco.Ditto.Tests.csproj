@@ -217,6 +217,7 @@
     <Compile Include="Mocks\PublishedContentMock.cs" />
     <Compile Include="Mocks\PublishedContentPropertyMock.cs" />
     <Compile Include="MockValueResolverTests.cs" />
+    <Compile Include="Models\CalculatedModel.cs" />
     <Compile Include="Models\InnerContentModel.cs" />
     <Compile Include="Models\ComplexModel.cs" />
     <Compile Include="Models\PrefixedModel.cs" />
