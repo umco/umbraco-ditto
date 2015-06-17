@@ -62,10 +62,11 @@
             this IPublishedContent content,
             Action<ConvertingTypeEventArgs> convertingType = null,
             Action<ConvertedTypeEventArgs> convertedType = null,
-            CultureInfo culture = null)
+            CultureInfo culture = null,
+            T instance = null)
             where T : class
         {
-            return content.As(typeof(T), convertingType, convertedType, culture) as T;
+            return content.As(typeof(T), convertingType, convertedType, culture, instance) as T;
         }
 
         /// <summary>
@@ -176,11 +177,17 @@
             Type type,
             Action<ConvertingTypeEventArgs> convertingType = null,
             Action<ConvertedTypeEventArgs> convertedType = null,
-            CultureInfo culture = null)
+            CultureInfo culture = null,
+            object instance = null)
         {
             if (content == null)
             {
                 return null;
+            }
+
+            if (instance != null && !type.IsAssignableFrom(instance.GetType()))
+            {
+                throw new ArgumentException(string.Format("The instance parameter does not implement Type '{0}'" , type.Name), "instance");
             }
 
             using (DisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
@@ -204,8 +211,8 @@
                     return null;
                 }
 
-                // Create an object and fetch it as the type.
-                object instance = GetTypedProperty(content, type, culture);
+                // Get the object as the type.
+                instance = GetTypedProperty(content, type, culture, instance);
 
                 // Fire the converted event
                 var convertedArgs = new ConvertedTypeEventArgs
@@ -245,7 +252,8 @@
         private static object GetTypedProperty(
             IPublishedContent content,
             Type type,
-            CultureInfo culture = null)
+            CultureInfo culture = null,
+            object instance = null)
         {
             // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
             if (culture == null)
@@ -273,21 +281,24 @@
                 ConstructorCache.TryAdd(type, constructorParams);
             }
 
-            object instance;
-            if (constructorParams.Length == 0)
+            // If not already an instance, create an instance of the object
+            if (instance == null)
             {
-                // Internally this uses Activator.CreateInstance which is heavily optimized.
-                instance = type.GetInstance();
-            }
-            else if (constructorParams.Length == 1 & constructorParams[0].ParameterType == typeof(IPublishedContent))
-            {
-                // This extension method is about 7x faster than the native implementation.
-                instance = type.GetInstance(content);
-                hasParameter = true;
-            }
-            else
-            {
-                throw new InvalidOperationException(string.Format("Type {0} has invalid constructor parameters", type));
+                if (constructorParams.Length == 0)
+                {
+                    // Internally this uses Activator.CreateInstance which is heavily optimized.
+                    instance = type.GetInstance();
+                }
+                else if (constructorParams.Length == 1 & constructorParams[0].ParameterType == typeof(IPublishedContent))
+                {
+                    // This extension method is about 7x faster than the native implementation.
+                    instance = type.GetInstance(content);
+                    hasParameter = true;
+                }
+                else
+                {
+                    throw new InvalidOperationException(string.Format("Type {0} has invalid constructor parameters", type));
+                }
             }
 
             // Collect all the properties of the given type and loop through writable ones.
