@@ -2,9 +2,6 @@
 
 namespace Our.Umbraco.Ditto
 {
-    using System.ComponentModel;
-    using System.Globalization;
-
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Web;
@@ -17,29 +14,21 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Gets the raw value for the current property from Umbraco.
         /// </summary>
-        /// <param name="context">
-        /// An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.
-        /// </param>
-        /// <param name="attribute">
-        /// The <see cref="UmbracoPropertyAttribute"/> containing additional information 
-        /// indicating how to resolve the property.
-        /// </param>
-        /// <param name="culture">The <see cref="T:System.Globalization.CultureInfo" /> to use as the current culture.</param>
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(ITypeDescriptorContext context, UmbracoPropertyAttribute attribute, CultureInfo culture)
+        public override object ResolveValue()
         {
-            var defaultValue = attribute.DefaultValue;
+            var defaultValue = Attribute.DefaultValue;
 
-            var recursive = attribute.Recursive;
-            var propName = context.PropertyDescriptor != null ? context.PropertyDescriptor.Name : string.Empty;
+            var recursive = Attribute.Recursive;
+            var propName = Context.PropertyDescriptor != null ? Context.PropertyDescriptor.Name : string.Empty;
             var altPropName = "";
 
             // Check for umbraco properties attribute on class
-            if (context.PropertyDescriptor != null)
+            if (Context.PropertyDescriptor != null)
             {
-                var classAttr = context.PropertyDescriptor.ComponentType
+                var classAttr = Context.PropertyDescriptor.ComponentType
                     .GetCustomAttribute<UmbracoPropertiesAttribute>();
                 if (classAttr != null)
                 {
@@ -55,10 +44,10 @@ namespace Our.Umbraco.Ditto
                 }
             }
 
-            var umbracoPropertyName = attribute.PropertyName ?? propName;
-            var altUmbracoPropertyName = attribute.AltPropertyName ?? altPropName;
+            var umbracoPropertyName = Attribute.PropertyName ?? propName;
+            var altUmbracoPropertyName = Attribute.AltPropertyName ?? altPropName;
 
-            var content = context.Instance as IPublishedContent;
+            var content = Context.Instance as IPublishedContent;
             if (content == null)
             {
                 return defaultValue;
