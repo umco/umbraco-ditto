@@ -89,6 +89,7 @@
     <Compile Include="Attributes\UmbracoDictionaryAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertiesAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
+    <Compile Include="Attributes\UmbracoRelationAttribute.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
     <Compile Include="ComponentModel\DittoConversionHandlerContext.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="ComponentModel\ValueResolvers\DittoValueResolver.cs" />
     <Compile Include="ComponentModel\ValueResolvers\UmbracoDictionaryValueResolver.cs" />
     <Compile Include="ComponentModel\ValueResolvers\UmbracoPropertyValueResolver.cs" />
+    <Compile Include="ComponentModel\ValueResolvers\UmbracoRelationResolver.cs" />
     <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
     <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Internal\PropertyInfoExtensions.cs" />
