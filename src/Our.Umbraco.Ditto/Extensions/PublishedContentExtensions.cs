@@ -407,6 +407,10 @@ namespace Our.Umbraco.Ditto
                         {
                             context = resolverCtx;
                         }
+                        else
+                        {
+                            context = (DittoValueResolverContext)contextType.GetInstance();
+                        }
                     }
                 }
 

@@ -26,6 +26,11 @@ namespace Our.Umbraco.Ditto.Tests
 
         public class MyValueResolverContext : DittoValueResolverContext
         {
+            public MyValueResolverContext()
+            {
+                MyContextProperty = "Default value";
+            }
+
             public string MyContextProperty { get; set; }
         }
 
@@ -42,6 +47,16 @@ namespace Our.Umbraco.Ditto.Tests
             var model = content.As<MyValueResolverModel>();
 
             Assert.That(model.MyProperty, Is.EqualTo("Test"));
+        }
+
+        [Test]
+        public void Value_Converter_Context_Resolves_Without_Registered_Context()
+        {
+            var content = new PublishedContentMock();
+
+            var model = content.As<MyValueResolverModel>();
+
+            Assert.That(model.MyProperty, Is.EqualTo("Default value"));
         }
     }
 }
