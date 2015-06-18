@@ -12,7 +12,7 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// The Umbraco property value resolver.
     /// </summary>
-    public class UmbracoPropertyValueResolver : DittoValueResolver<UmbracoPropertyAttribute>
+    public class UmbracoPropertyValueResolver : DittoValueResolver<DittoValueResolverContext, UmbracoPropertyAttribute>
     {
         /// <summary>
         /// Gets the raw value for the current property from Umbraco.
@@ -28,7 +28,7 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(ITypeDescriptorContext context, UmbracoPropertyAttribute attribute, CultureInfo culture)
+        public override object ResolveValue(DittoValueResolverContext context, UmbracoPropertyAttribute attribute, CultureInfo culture)
         {
             var defaultValue = attribute.DefaultValue;
 

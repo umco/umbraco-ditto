@@ -9,7 +9,7 @@
     /// <summary>
     /// The current content value resolver.
     /// </summary>
-    public class CurrentContentAsValueResolver : DittoValueResolver<CurrentContentAsAttribute>
+    public class CurrentContentAsValueResolver : DittoValueResolver<DittoValueResolverContext, CurrentContentAsAttribute>
     {
         /// <summary>
         /// Resolves the value.
@@ -26,7 +26,7 @@
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(ITypeDescriptorContext context, CurrentContentAsAttribute attribute, CultureInfo culture)
+        public override object ResolveValue(DittoValueResolverContext context, CurrentContentAsAttribute attribute, CultureInfo culture)
         {
             // NOTE: [LK] In order to prevent an infinite loop / stack-overflow, we check if the
             // property's type matches the containing model's type, then we throw an exception.

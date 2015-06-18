@@ -22,9 +22,9 @@
             public object RawValue { get; set; }
         }
 
-        public class MockValueResolver : DittoValueResolver<MockValueAttribute>
+        public class MockValueResolver : DittoValueResolver<DittoValueResolverContext, MockValueAttribute>
         {
-            public override object ResolveValue(ITypeDescriptorContext context, MockValueAttribute attribute, CultureInfo culture)
+            public override object ResolveValue(DittoValueResolverContext context, MockValueAttribute attribute, CultureInfo culture)
             {
                 return attribute.RawValue;
             }

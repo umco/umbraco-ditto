@@ -1,4 +1,5 @@
-﻿using Umbraco.Core;
+﻿using System.Globalization;
+using Umbraco.Core;
 
 namespace Our.Umbraco.Ditto.Tests
 {
@@ -14,23 +15,12 @@ namespace Our.Umbraco.Ditto.Tests
             public string MyProperty { get; set; }
         }
 
-        public class MyValueResolver : DittoValueResolver
+        public class MyValueResolver : DittoValueResolver<MyValueResolverContext>
         {
-            private MyValueResolverContext _ctx;
-
-            public MyValueResolver()
-                : this(new MyValueResolverContext())
-            { }
-
-            public MyValueResolver(MyValueResolverContext ctx)
+            public override object ResolveValue(MyValueResolverContext context, 
+                DittoValueResolverAttribute attribute, CultureInfo culture)
             {
-                _ctx = ctx;
-            }
-
-            public override object ResolveValue(System.ComponentModel.ITypeDescriptorContext context, 
-                DittoValueResolverAttribute attribute, System.Globalization.CultureInfo culture)
-            {
-                return _ctx.MyContextProperty;
+                return context.MyContextProperty;
             }
         }
 

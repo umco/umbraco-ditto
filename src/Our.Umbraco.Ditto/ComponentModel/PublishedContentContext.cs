@@ -9,7 +9,7 @@
     /// The published content context for supplying contextual information about the 
     /// <see cref="IPublishedContent"/> that is undergoing conversion.
     /// </summary>
-    internal class PublishedContentContext : ITypeDescriptorContext
+    public abstract class PublishedContentContext : ITypeDescriptorContext
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PublishedContentContext"/> class.
@@ -21,14 +21,14 @@
         /// The <see cref="PropertyDescriptor"/> for the property on the target type that contains
         /// the currently converting property.
         /// </param>
-        public PublishedContentContext(object instance, PropertyDescriptor descriptor)
-        {
-            this.Instance = instance;
+        //public PublishedContentContext(object instance, PropertyDescriptor descriptor)
+        //{
+        //    this.Instance = instance;
 
-            // This is the property descriptor for the property on the POCO that is 
-            // getting converted.
-            this.PropertyDescriptor = descriptor;
-        }
+        //    // This is the property descriptor for the property on the POCO that is 
+        //    // getting converted.
+        //    this.PropertyDescriptor = descriptor;
+        //}
 
         /// <summary>
         /// Gets the object that is connected with this type descriptor request.
@@ -36,7 +36,7 @@
         /// <returns>
         /// The object that invokes the method on the <see cref="T:System.ComponentModel.TypeDescriptor"/>; otherwise, null if there is no object responsible for the call.
         /// </returns>
-        public object Instance { get; private set; }
+        public object Instance { get; internal set; }
 
         /// <summary>
         /// Gets the <see cref="T:System.ComponentModel.PropertyDescriptor"/> that is associated with the given context item.
@@ -44,7 +44,7 @@
         /// <returns>
         /// The <see cref="T:System.ComponentModel.PropertyDescriptor"/> that describes the given context item; otherwise, null if there is no <see cref="T:System.ComponentModel.PropertyDescriptor"/> responsible for the call.
         /// </returns>
-        public PropertyDescriptor PropertyDescriptor { get; private set; }
+        public PropertyDescriptor PropertyDescriptor { get; internal set; }
 
         /// <summary>
         /// Gets the container representing this <see cref="T:System.ComponentModel.TypeDescriptor"/> request.

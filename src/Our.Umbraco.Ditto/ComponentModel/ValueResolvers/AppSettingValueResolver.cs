@@ -7,7 +7,7 @@
     /// <summary>
     /// The web.config app setting value resolver.
     /// </summary>
-    public class AppSettingValueResolver : DittoValueResolver<AppSettingAttribute>
+    public class AppSettingValueResolver : DittoValueResolver<DittoValueResolverContext, AppSettingAttribute>
     {
         /// <summary>
         /// Gets the value from the web.config app setting
@@ -23,7 +23,7 @@
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(ITypeDescriptorContext context, AppSettingAttribute attribute, CultureInfo culture)
+        public override object ResolveValue(DittoValueResolverContext context, AppSettingAttribute attribute, CultureInfo culture)
         {
             var appSettingKey = attribute.AppSettingKey ?? (context.PropertyDescriptor != null ? context.PropertyDescriptor.Name : string.Empty);
 

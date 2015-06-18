@@ -1,6 +1,7 @@
 ﻿using Our.Umbraco.Ditto.Attributes;
 using Our.Umbraco.Ditto.ComponentModel;
 using Our.Umbraco.Ditto.ComponentModel.ConversionHandlers;
+using Our.Umbraco.Ditto.ComponentModel.TypeConverters;
 
 namespace Our.Umbraco.Ditto
 {
@@ -385,43 +386,41 @@ namespace Our.Umbraco.Ditto
             var valueAttr = propertyInfo.GetCustomAttribute<DittoValueResolverAttribute>(true)
                 ?? new UmbracoPropertyAttribute();
 
-            // TODO: Only create one context and share between GetRawValue and SetTypedValue?
-            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-            var context = new PublishedContentContext(content, descriptor);
-
             // Time custom value-resolver.
             using (DisposableTimer.DebugDuration<object>(string.Format("Custom ValueResolver ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
             {
+                var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
+
+                DittoValueResolverContext context = null;
+
                 // Get the value from the custom attribute.
                 // TODO: Cache these?
 
-                DittoValueResolver resolver = null;
-
-                // Look for constructor with context param
-                var constructor = valueAttr.ResolverType
-                    .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
-                    .FirstOrDefault(x => x.GetParameters().Length == 1 &&
-                        typeof(DittoValueResolverContext).IsAssignableFrom(x.GetParameters()[0].ParameterType));
-
-                if (constructor != null)
+                var resolverTypeInstances = valueAttr.ResolverType.GetGenericTypeImplementations(typeof (DittoValueResolver<,>)).ToArray();
+                if (resolverTypeInstances.Length == 1)
                 {
-                    var contextType = constructor.GetParameters()[0].ParameterType;
-                    var resolverCtx = DittoValueResolver.GetRegistedContext(contextType);
-                    if (resolverCtx != null)
+                    var contextType = resolverTypeInstances[0].GetGenericArguments().FirstOrDefault(x => typeof(DittoValueResolverContext).IsAssignableFrom(x));
+                    if (contextType != null)
                     {
-                        // Need to run this past James as I'm invoking the constructor myself
-                        // rather than going via GetInstance so this isn't getting cached.
-                        // Couldn't go via GetInstance though as the parameter type is only known
-                        // at runtime so can't use it as a generic arg as required by GetInstance
-                        resolver = (DittoValueResolver)constructor.Invoke(new object[] { resolverCtx });
+                        var resolverCtx = DittoValueResolver.GetRegistedContext(contextType);
+                        if (resolverCtx != null)
+                        {
+                            context = resolverCtx;
+                        }
                     }
                 }
 
-                if (resolver == null)
+                // No context found so create a default one
+                if (context == null)
                 {
-                    resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
+                    context = new DittoValueResolverContext();
                 }
+
+                // Populate internal context properties
+                context.Instance = content;
+                context.PropertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
                 
+                // Resolve value
                 return resolver.ResolveValue(context, valueAttr, culture);
             }
         }
@@ -475,7 +474,11 @@ namespace Our.Umbraco.Ditto
                             // Create context to pass to converter implementations.
                             // This contains the IPublishedContent and the currently converting property descriptor.
                             var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                            var context = new PublishedContentContext(content, descriptor);
+                            var context = new DittoTypeConverterContext
+                            {
+                                Instance = content,
+                                PropertyDescriptor = descriptor
+                            };
 
                             Type propertyValueType = null;
                             if (propertyValue != null)
@@ -545,7 +548,11 @@ namespace Our.Umbraco.Ditto
                 {
                     // This contains the IPublishedContent and the currently converting property descriptor.
                     var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                    var context = new PublishedContentContext(content, descriptor);
+                    var context = new DittoTypeConverterContext
+                    {
+                        Instance = content,
+                        PropertyDescriptor = descriptor
+                    };
 
                     Type propertyValueType = null;
                     if (propertyValue != null)

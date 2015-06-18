@@ -27,7 +27,7 @@ namespace Our.Umbraco.Ditto.Tests.Models
 
     public class NameValueResovler : DittoValueResolver
     {
-        public override object ResolveValue(ITypeDescriptorContext context, 
+        public override object ResolveValue(DittoValueResolverContext context, 
             DittoValueResolverAttribute attribute, CultureInfo culture)
         {
             var content = context.Instance as IPublishedContent;

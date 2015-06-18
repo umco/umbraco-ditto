@@ -9,7 +9,7 @@
     /// <summary>
     /// The Umbraco dictionary value resolver.
     /// </summary>
-    public class UmbracoDictionaryValueResolver : DittoValueResolver<UmbracoDictionaryAttribute>
+    public class UmbracoDictionaryValueResolver : DittoValueResolver<DittoValueResolverContext, UmbracoDictionaryAttribute>
     {
         /// <summary>
         /// Gets the raw value for the current property from Umbraco.
@@ -25,7 +25,7 @@
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(ITypeDescriptorContext context, UmbracoDictionaryAttribute attribute, CultureInfo culture)
+        public override object ResolveValue(DittoValueResolverContext context, UmbracoDictionaryAttribute attribute, CultureInfo culture)
         {
             var dictionaryKey = attribute.DictionaryKey ?? (context.PropertyDescriptor != null ? context.PropertyDescriptor.Name : string.Empty);
 

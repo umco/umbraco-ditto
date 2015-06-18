@@ -42,7 +42,9 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public abstract object ResolveValue(ITypeDescriptorContext context, DittoValueResolverAttribute attribute, CultureInfo culture);
+        public abstract object ResolveValue(DittoValueResolverContext context, 
+            DittoValueResolverAttribute attribute, 
+            CultureInfo culture);
 
         /// <summary>
         /// Registers a value resolver context for the current request.
@@ -92,7 +94,8 @@ namespace Our.Umbraco.Ditto
     /// The <see cref="T:System.Type"/> of attribute that will resolve the raw value. 
     /// </typeparam>
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
-    public abstract class DittoValueResolver<TAttributeType> : DittoValueResolver
+    public abstract class DittoValueResolver<TContextType, TAttributeType> : DittoValueResolver
+        where TContextType : DittoValueResolverContext
         where TAttributeType : DittoValueResolverAttribute
     {
         /// <summary>
@@ -109,8 +112,16 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(ITypeDescriptorContext context, DittoValueResolverAttribute attribute, CultureInfo culture)
+        public override object ResolveValue(DittoValueResolverContext context, 
+            DittoValueResolverAttribute attribute, CultureInfo culture)
         {
+            if (!(context is TContextType))
+            {
+                throw new ArgumentException(
+                    "The resolver context must be of type " + typeof(TContextType).AssemblyQualifiedName,
+                    "context");
+            }
+
             if (!(attribute is TAttributeType))
             {
                 throw new ArgumentException(
@@ -118,7 +129,7 @@ namespace Our.Umbraco.Ditto
                     "attribute");
             }
 
-            return this.ResolveValue(context, (TAttributeType)attribute, culture);
+            return ResolveValue((TContextType)context, (TAttributeType)attribute, culture);
         }
 
         /// <summary>
@@ -135,6 +146,11 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public abstract object ResolveValue(ITypeDescriptorContext context, TAttributeType attribute, CultureInfo culture);
+        public abstract object ResolveValue(TContextType context, TAttributeType attribute, CultureInfo culture);
     }
+
+    public abstract class DittoValueResolver<TContextType> :
+        DittoValueResolver<TContextType, DittoValueResolverAttribute>
+        where TContextType : DittoValueResolverContext
+    { }
 }
