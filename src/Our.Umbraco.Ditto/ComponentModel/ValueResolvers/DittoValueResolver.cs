@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web;
 using Umbraco.Core;
+using Umbraco.Web.Media.EmbedProviders.Settings;
 
 namespace Our.Umbraco.Ditto
 {
@@ -17,14 +18,17 @@ namespace Our.Umbraco.Ditto
     {
         private const string CONTEXT_KEY_FORMAT = "Ditto_ValueResolverContext_{0}";
 
-        private static IDictionary _cache;
-        private static IDictionary Cache
+        private static IDictionary _contextCache;
+        private static IDictionary ContextCache
         {
             get
             {
-                return _cache ?? (_cache = HttpContext.Current != null
+                if (_contextCache != null)
+                    return _contextCache;
+
+                return HttpContext.Current != null
                     ? HttpContext.Current.Items
-                    : new Dictionary<string, object>());
+                    : new Dictionary<string, object>();
             }
         }
 
@@ -57,13 +61,13 @@ namespace Our.Umbraco.Ditto
         {
             var key = string.Format(CONTEXT_KEY_FORMAT, typeof(TContextType).FullName);
 
-            if (Cache.Contains(key))
+            if (ContextCache.Contains(key))
             {
-                Cache[key] = ctx;
+                ContextCache[key] = ctx;
             }
             else
             {
-                Cache.Add(key, ctx);
+                ContextCache.Add(key, ctx);
             }
         }
 
@@ -80,9 +84,17 @@ namespace Our.Umbraco.Ditto
         {
             var key = string.Format(CONTEXT_KEY_FORMAT, contextType.FullName);
 
-            return Cache.Contains(key)
-                ? (DittoValueResolverContext)Cache[key]
+            return ContextCache.Contains(key)
+                ? (DittoValueResolverContext)ContextCache[key]
                 : null;
+        }
+
+        /// <summary>
+        /// Helper function to allow setting the context cache container manually, used for testing.
+        /// </summary>
+        internal static void SetContextCache(IDictionary cache)
+        {
+            _contextCache = cache;
         }
     }
 

@@ -1,5 +1,7 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using Umbraco.Core;
+using Umbraco.Web.Media.EmbedProviders.Settings;
 
 namespace Our.Umbraco.Ditto.Tests
 {
@@ -37,6 +39,8 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Value_Converter_Context_Resolves()
         {
+            DittoValueResolver.SetContextCache(new Dictionary<string, object>());
+
             var content = new PublishedContentMock();
 
             Ditto.RegisterValueResolverContext(new MyValueResolverContext
@@ -52,6 +56,8 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Value_Converter_Context_Resolves_Without_Registered_Context()
         {
+            DittoValueResolver.SetContextCache(new Dictionary<string, object>());
+
             var content = new PublishedContentMock();
 
             var model = content.As<MyValueResolverModel>();
