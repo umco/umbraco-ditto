@@ -1,4 +1,9 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Web;
+using Umbraco.Core;
+
+namespace Our.Umbraco.Ditto
 {
     using System;
     using System.ComponentModel;
@@ -10,6 +15,19 @@
     /// </summary>
     public abstract class DittoValueResolver
     {
+        private const string CONTEXT_KEY_FORMAT = "Ditto_ValueResolverContext_{0}";
+
+        private static IDictionary _cache;
+        private static IDictionary Cache
+        {
+            get
+            {
+                return _cache ?? (_cache = HttpContext.Current != null
+                    ? HttpContext.Current.Items
+                    : new Dictionary<string, object>());
+            }
+        }
+
         /// <summary>
         /// Gets the raw value for the current property from Umbraco.
         /// </summary>
@@ -25,6 +43,45 @@
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
         public abstract object ResolveValue(ITypeDescriptorContext context, DittoValueResolverAttribute attribute, CultureInfo culture);
+
+        /// <summary>
+        /// Registers a value resolver context for the current request.
+        /// </summary>
+        /// <param name="ctx">
+        /// The <see cref="DittoValueResolverContext" /> to register.
+        /// </param>
+        internal static void RegisterContext<TContextType>(TContextType ctx)
+            where TContextType : DittoValueResolverContext
+        {
+            var key = string.Format(CONTEXT_KEY_FORMAT, typeof(TContextType).FullName);
+
+            if (Cache.Contains(key))
+            {
+                Cache[key] = ctx;
+            }
+            else
+            {
+                Cache.Add(key, ctx);
+            }
+        }
+
+        /// <summary>
+        /// Retreieves a value resolver context of the given type if one exists.
+        /// </summary>
+        /// <param name="contextType">
+        /// The <see cref="DittoValueResolverContext" /> type to lookup.
+        /// </param>
+        /// <returns>
+        /// The registered <see cref="DittoValueResolverContext"/> instance.
+        /// </returns>
+        internal static DittoValueResolverContext GetRegistedContext(Type contextType)
+        {
+            var key = string.Format(CONTEXT_KEY_FORMAT, contextType.FullName);
+
+            return Cache.Contains(key)
+                ? (DittoValueResolverContext)Cache[key]
+                : null;
+        }
     }
 
     /// <summary>

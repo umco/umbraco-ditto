@@ -394,7 +394,34 @@ namespace Our.Umbraco.Ditto
             {
                 // Get the value from the custom attribute.
                 // TODO: Cache these?
-                var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
+
+                DittoValueResolver resolver = null;
+
+                // Look for constructor with context param
+                var constructor = valueAttr.ResolverType
+                    .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
+                    .FirstOrDefault(x => x.GetParameters().Length == 1 &&
+                        typeof(DittoValueResolverContext).IsAssignableFrom(x.GetParameters()[0].ParameterType));
+
+                if (constructor != null)
+                {
+                    var contextType = constructor.GetParameters()[0].ParameterType;
+                    var resolverCtx = DittoValueResolver.GetRegistedContext(contextType);
+                    if (resolverCtx != null)
+                    {
+                        // Need to run this past James as I'm invoking the constructor myself
+                        // rather than going via GetInstance so this isn't getting cached.
+                        // Couldn't go via GetInstance though as the parameter type is only known
+                        // at runtime so can't use it as a generic arg as required by GetInstance
+                        resolver = (DittoValueResolver)constructor.Invoke(new object[] { resolverCtx });
+                    }
+                }
+
+                if (resolver == null)
+                {
+                    resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
+                }
+                
                 return resolver.ResolveValue(context, valueAttr, culture);
             }
         }
