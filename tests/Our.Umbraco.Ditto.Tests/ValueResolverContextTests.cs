@@ -19,10 +19,9 @@ namespace Our.Umbraco.Ditto.Tests
 
         public class MyValueResolver : DittoValueResolver<MyValueResolverContext>
         {
-            public override object ResolveValue(MyValueResolverContext context, 
-                DittoValueResolverAttribute attribute, CultureInfo culture)
+            public override object ResolveValue()
             {
-                return context.MyContextProperty;
+                return Context.MyContextProperty;
             }
         }
 

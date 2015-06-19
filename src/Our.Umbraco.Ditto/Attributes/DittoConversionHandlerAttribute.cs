@@ -1,7 +1,6 @@
 ﻿using System;
-using Our.Umbraco.Ditto.ComponentModel.ConversionHandlers;
 
-namespace Our.Umbraco.Ditto.Attributes
+namespace Our.Umbraco.Ditto
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class DittoConversionHandlerAttribute : Attribute

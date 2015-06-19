@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Our.Umbraco.Ditto.ComponentModel.TypeConverters
+namespace Our.Umbraco.Ditto
 {
     public class DittoTypeConverterContext : PublishedContentContext
     { }
