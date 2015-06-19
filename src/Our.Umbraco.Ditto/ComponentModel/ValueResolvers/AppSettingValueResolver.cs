@@ -7,7 +7,7 @@
     /// <summary>
     /// The web.config app setting value resolver.
     /// </summary>
-    public class AppSettingValueResolver : DittoValueResolver<AppSettingAttribute>
+    public class AppSettingValueResolver : DittoValueResolver<DittoValueResolverContext, AppSettingAttribute>
     {
         /// <summary>
         /// Gets the value from the web.config app setting

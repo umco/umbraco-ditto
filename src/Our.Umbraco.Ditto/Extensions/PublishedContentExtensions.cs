@@ -381,16 +381,45 @@
             var valueAttr = propertyInfo.GetCustomAttribute<DittoValueResolverAttribute>(true)
                 ?? new UmbracoPropertyAttribute();
 
-            // TODO: Only create one context and share between GetRawValue and SetTypedValue?
-            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-            var context = new PublishedContentContext(content, descriptor);
-
             // Time custom value-resolver.
             using (DisposableTimer.DebugDuration<object>(string.Format("Custom ValueResolver ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
             {
+                var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
+
+                DittoValueResolverContext context = null;
+
                 // Get the value from the custom attribute.
                 // TODO: Cache these?
-                var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
+
+                var resolverTypeInstances = valueAttr.ResolverType.GetGenericTypeImplementations(typeof (DittoValueResolver<,>)).ToArray();
+                if (resolverTypeInstances.Length == 1)
+                {
+                    var contextType = resolverTypeInstances[0].GetGenericArguments().FirstOrDefault(x => typeof(DittoValueResolverContext).IsAssignableFrom(x));
+                    if (contextType != null)
+                    {
+                        var resolverCtx = DittoValueResolver.GetRegistedContext(contextType);
+                        if (resolverCtx != null)
+                        {
+                            context = resolverCtx;
+                        }
+                        else
+                        {
+                            context = (DittoValueResolverContext)contextType.GetInstance();
+                        }
+                    }
+                }
+
+                // No context found so create a default one
+                if (context == null)
+                {
+                    context = new DittoValueResolverContext();
+                }
+
+                // Populate internal context properties
+                context.Instance = content;
+                context.PropertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                
+                // Resolve value
                 return resolver.ResolveValue(context, valueAttr, culture);
             }
         }
@@ -444,7 +473,11 @@
                             // Create context to pass to converter implementations.
                             // This contains the IPublishedContent and the currently converting property descriptor.
                             var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                            var context = new PublishedContentContext(content, descriptor);
+                            var context = new DittoTypeConverterContext
+                            {
+                                Instance = content,
+                                PropertyDescriptor = descriptor
+                            };
 
                             Type propertyValueType = null;
                             if (propertyValue != null)
@@ -514,7 +547,11 @@
                 {
                     // This contains the IPublishedContent and the currently converting property descriptor.
                     var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                    var context = new PublishedContentContext(content, descriptor);
+                    var context = new DittoTypeConverterContext
+                    {
+                        Instance = content,
+                        PropertyDescriptor = descriptor
+                    };
 
                     Type propertyValueType = null;
                     if (propertyValue != null)

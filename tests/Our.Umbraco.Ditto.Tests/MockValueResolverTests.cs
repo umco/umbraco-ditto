@@ -22,7 +22,7 @@
             public object RawValue { get; set; }
         }
 
-        public class MockValueResolver : DittoValueResolver<MockValueAttribute>
+        public class MockValueResolver : DittoValueResolver<DittoValueResolverContext, MockValueAttribute>
         {
             public override object ResolveValue()
             {

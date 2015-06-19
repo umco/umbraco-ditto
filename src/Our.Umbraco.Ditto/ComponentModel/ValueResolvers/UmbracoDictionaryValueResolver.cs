@@ -5,7 +5,7 @@
     /// <summary>
     /// The Umbraco dictionary value resolver.
     /// </summary>
-    public class UmbracoDictionaryValueResolver : DittoValueResolver<UmbracoDictionaryAttribute>
+    public class UmbracoDictionaryValueResolver : DittoValueResolver<DittoValueResolverContext, UmbracoDictionaryAttribute>
     {
         /// <summary>
         /// Gets the raw value for the current property from Umbraco.

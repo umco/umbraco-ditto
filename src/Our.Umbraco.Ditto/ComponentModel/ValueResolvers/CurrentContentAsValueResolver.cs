@@ -7,7 +7,7 @@
     /// <summary>
     /// The current content value resolver.
     /// </summary>
-    public class CurrentContentAsValueResolver : DittoValueResolver<CurrentContentAsAttribute>
+    public class CurrentContentAsValueResolver : DittoValueResolver<DittoValueResolverContext, CurrentContentAsAttribute>
     {
         /// <summary>
         /// Resolves the value.

@@ -9,7 +9,7 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// The Umbraco property value resolver.
     /// </summary>
-    public class UmbracoPropertyValueResolver : DittoValueResolver<UmbracoPropertyAttribute>
+    public class UmbracoPropertyValueResolver : DittoValueResolver<DittoValueResolverContext, UmbracoPropertyAttribute>
     {
         /// <summary>
         /// Gets the raw value for the current property from Umbraco.

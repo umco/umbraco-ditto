@@ -97,6 +97,7 @@
     <Compile Include="ComponentModel\TypeConverters\DittoConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoEnumConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoMemberPickerConverter.cs" />
+    <Compile Include="ComponentModel\TypeConverters\DittoTypeConverterContext.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoUltimatePickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoMultipleMediaPickerConverter.cs" />
@@ -106,8 +107,10 @@
     <Compile Include="ComponentModel\ValueResolvers\AppSettingValueResolver.cs" />
     <Compile Include="ComponentModel\ValueResolvers\CurrentContentAsValueResolver.cs" />
     <Compile Include="ComponentModel\ValueResolvers\DittoValueResolver.cs" />
+    <Compile Include="ComponentModel\ValueResolvers\DittoValueResolverContext.cs" />
     <Compile Include="ComponentModel\ValueResolvers\UmbracoDictionaryValueResolver.cs" />
     <Compile Include="ComponentModel\ValueResolvers\UmbracoPropertyValueResolver.cs" />
+    <Compile Include="Ditto.cs" />
     <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
     <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Internal\PropertyInfoExtensions.cs" />
