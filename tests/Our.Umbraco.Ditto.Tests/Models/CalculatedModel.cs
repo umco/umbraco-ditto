@@ -1,12 +1,7 @@
-﻿using System;
-using Our.Umbraco.Ditto.Attributes;
-using Our.Umbraco.Ditto.ComponentModel;
-using Our.Umbraco.Ditto.ComponentModel.ConversionHandlers;
-using Umbraco.Core.Models;
-using Umbraco.Web;
-
-namespace Our.Umbraco.Ditto.Tests.Models
+﻿namespace Our.Umbraco.Ditto.Tests.Models
 {
+    using global::Umbraco.Web;
+
     [DittoConversionHandler(typeof(CalculatedModelConversionHandler))]
     public class CalculatedModel : BaseCalculatedModel
     {

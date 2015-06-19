@@ -1,6 +1,4 @@
-﻿using Our.Umbraco.Ditto.ComponentModel;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
 

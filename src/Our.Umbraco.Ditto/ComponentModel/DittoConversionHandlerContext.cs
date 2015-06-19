@@ -1,7 +1,7 @@
 ﻿using System;
 using Umbraco.Core.Models;
 
-namespace Our.Umbraco.Ditto.ComponentModel
+namespace Our.Umbraco.Ditto
 {
     /// <summary>
     /// Provides context for conversion events.

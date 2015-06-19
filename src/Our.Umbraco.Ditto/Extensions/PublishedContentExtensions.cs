@@ -1,8 +1,4 @@
-﻿using Our.Umbraco.Ditto.Attributes;
-using Our.Umbraco.Ditto.ComponentModel;
-using Our.Umbraco.Ditto.ComponentModel.ConversionHandlers;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
     using System.Collections;

@@ -1,7 +1,7 @@
 ﻿using System;
 using Umbraco.Core.Models;
 
-namespace Our.Umbraco.Ditto.ComponentModel.ConversionHandlers
+namespace Our.Umbraco.Ditto
 {
     public abstract class DittoConversionHandler
     {
