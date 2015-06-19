@@ -1,13 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using System.Web;
-using Umbraco.Core;
-using Umbraco.Web.Media.EmbedProviders.Settings;
 
 namespace Our.Umbraco.Ditto
 {
     using System;
-    using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
 
@@ -28,7 +24,7 @@ namespace Our.Umbraco.Ditto
 
                 return HttpContext.Current != null
                     ? HttpContext.Current.Items
-                    : new Dictionary<string, object>();
+                    : null;
             }
         }
 
@@ -61,13 +57,16 @@ namespace Our.Umbraco.Ditto
         {
             var key = string.Format(CONTEXT_KEY_FORMAT, typeof(TContextType).FullName);
 
-            if (ContextCache.Contains(key))
+            if (ContextCache != null)
             {
-                ContextCache[key] = ctx;
-            }
-            else
-            {
-                ContextCache.Add(key, ctx);
+                if (ContextCache.Contains(key))
+                {
+                    ContextCache[key] = ctx;
+                }
+                else
+                {
+                    ContextCache.Add(key, ctx);
+                }
             }
         }
 
@@ -84,7 +83,7 @@ namespace Our.Umbraco.Ditto
         {
             var key = string.Format(CONTEXT_KEY_FORMAT, contextType.FullName);
 
-            return ContextCache.Contains(key)
+            return ContextCache != null && ContextCache.Contains(key)
                 ? (DittoValueResolverContext)ContextCache[key]
                 : null;
         }
