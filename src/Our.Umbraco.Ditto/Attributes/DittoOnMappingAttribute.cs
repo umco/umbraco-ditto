@@ -3,6 +3,6 @@
 namespace Our.Umbraco.Ditto
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class DittoOnConvertedAttribute : Attribute
+    public class DittoOnMappingAttribute : Attribute 
     { }
 }

@@ -41,13 +41,13 @@
         /// Returns the given instance of <see cref="IPublishedContent"/> as the specified type.
         /// </summary>
         /// <param name="content">
-        /// The <see cref="IPublishedContent"/> to convert.
+        /// The <see cref="IPublishedContent"/> to map.
         /// </param>
-        /// <param name="onConverting">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// <param name="onMapping">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapping.
         /// </param>
-        /// <param name="onConverted">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
+        /// <param name="onMapped">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapped.
         /// </param>
         /// <param name="culture">
         /// The <see cref="CultureInfo"/>
@@ -60,29 +60,29 @@
         /// </returns>
         public static T As<T>(
             this IPublishedContent content,
-            Action<DittoConversionHandlerContext> onConverting = null,
-            Action<DittoConversionHandlerContext> onConverted = null,
+            Action<DittoMapHandlerContext> onMapping = null,
+            Action<DittoMapHandlerContext> onMapped = null,
             CultureInfo culture = null,
             T instance = null)
             where T : class
         {
-            return content.As(typeof(T), onConverting, onConverted, culture, instance) as T;
+            return content.As(typeof(T), onMapping, onMapped, culture, instance) as T;
         }
 
         /// <summary>
         /// Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.
         /// </summary>
         /// <param name="items">
-        /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
+        /// The <see cref="IEnumerable{IPublishedContent}"/> to map.
         /// </param>
         /// <param name="documentTypeAlias">
         /// The document type alias.
         /// </param>
-        /// <param name="onConverting">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// <param name="onMapping">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapping.
         /// </param>
-        /// <param name="onConverted">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
+        /// <param name="onMapped">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapped.
         /// </param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <typeparam name="T">
@@ -94,12 +94,12 @@
         public static IEnumerable<T> As<T>(
             this IEnumerable<IPublishedContent> items,
             string documentTypeAlias = null,
-            Action<DittoConversionHandlerContext> onConverting = null,
-            Action<DittoConversionHandlerContext> onConverted = null,
+            Action<DittoMapHandlerContext> onMapping = null,
+            Action<DittoMapHandlerContext> onMapped = null,
             CultureInfo culture = null)
             where T : class
         {
-            return items.As(typeof(T), documentTypeAlias, onConverting, onConverted, culture)
+            return items.As(typeof(T), documentTypeAlias, onMapping, onMapped, culture)
                         .Select(x => x as T);
         }
 
@@ -107,7 +107,7 @@
         /// Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.
         /// </summary>
         /// <param name="items">
-        /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
+        /// The <see cref="IEnumerable{IPublishedContent}"/> to map.
         /// </param>
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
@@ -115,11 +115,11 @@
         /// <param name="documentTypeAlias">
         /// The document type alias.
         /// </param>
-        /// <param name="onConverting">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// <param name="onMapping">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapping.
         /// </param>
-        /// <param name="onConverted">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
+        /// <param name="onMapped">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapped.
         /// </param>
         /// <param name="culture">
         /// The <see cref="CultureInfo"/>.
@@ -131,8 +131,8 @@
             this IEnumerable<IPublishedContent> items,
             Type type,
             string documentTypeAlias = null,
-            Action<DittoConversionHandlerContext> onConverting = null,
-            Action<DittoConversionHandlerContext> onConverted = null,
+            Action<DittoMapHandlerContext> onMapping = null,
+            Action<DittoMapHandlerContext> onMapped = null,
             CultureInfo culture = null)
         {
             using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
@@ -140,12 +140,12 @@
                 IEnumerable<object> typedItems;
                 if (string.IsNullOrWhiteSpace(documentTypeAlias))
                 {
-                    typedItems = items.Select(x => x.As(type, onConverting, onConverted, culture));
+                    typedItems = items.Select(x => x.As(type, onMapping, onMapped, culture));
                 }
                 else
                 {
                     typedItems = items.Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                                      .Select(x => x.As(type, onConverting, onConverted, culture));
+                                      .Select(x => x.As(type, onMapping, onMapped, culture));
                 }
 
                 // We need to cast back here as nothing is strong typed anymore.
@@ -157,26 +157,26 @@
         /// Returns an object representing the given <see cref="Type"/>.
         /// </summary>
         /// <param name="content">
-        /// The <see cref="IPublishedContent"/> to convert.
+        /// The <see cref="IPublishedContent"/> to map.
         /// </param>
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
-        /// <param name="onConverting">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// <param name="onMapping">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapping.
         /// </param>
-        /// <param name="onConverted">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
+        /// <param name="onMapped">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapped.
         /// </param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <returns>
-        /// The converted <see cref="Object"/> as the given type.
+        /// The mapped <see cref="Object"/> as the given type.
         /// </returns>
         public static object As(
             this IPublishedContent content,
             Type type,
-            Action<DittoConversionHandlerContext> onConverting = null,
-            Action<DittoConversionHandlerContext> onConverted = null,
+            Action<DittoMapHandlerContext> onMapping = null,
+            Action<DittoMapHandlerContext> onMapped = null,
             CultureInfo culture = null,
             object instance = null)
         {
@@ -192,7 +192,7 @@
 
             using (DisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
             {
-                return ConvertContent(content, type, onConverting, onConverted, culture, instance);
+                return MapContent(content, type, onMapping, onMapped, culture, instance);
             }
         }
 
@@ -200,29 +200,29 @@
         /// Returns an object representing the given <see cref="Type"/>.
         /// </summary>
         /// <param name="content">
-        /// The <see cref="IPublishedContent"/> to convert.
+        /// The <see cref="IPublishedContent"/> to map.
         /// </param>
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
-        /// <param name="onConverting">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// <param name="onMapping">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapping.
         /// </param>
-        /// <param name="onConverted">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
+        /// <param name="onMapped">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapped.
         /// </param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <returns>
-        /// The converted <see cref="Object"/> as the given type.
+        /// The mapped <see cref="Object"/> as the given type.
         /// </returns>
         /// <exception cref="InvalidOperationException">
         /// Thrown if the given type has invalid constructors.
         /// </exception>
-        private static object ConvertContent(
+        private static object MapContent(
             IPublishedContent content,
             Type type,
-            Action<DittoConversionHandlerContext> onConverting = null,
-            Action<DittoConversionHandlerContext> onConverted = null,
+            Action<DittoMapHandlerContext> onMapping = null,
+            Action<DittoMapHandlerContext> onMapped = null,
             CultureInfo culture = null,
             object instance = null)
         {
@@ -268,7 +268,7 @@
                 }
                 else
                 {
-                    throw new InvalidOperationException(string.Format("Can't convert IPublishedContent to {0} as it has no valid constructor. A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.", type));
+                    throw new InvalidOperationException(string.Format("Can't map IPublishedContent to {0} as it has no valid constructor. A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.", type));
                 }
             }
 
@@ -331,10 +331,10 @@
             }
 
             // We have the instance object but haven't yet populated properties
-            // so fire the on converting event handlers
-            OnConverting(content, type, instance, onConverting);
+            // so fire the on mapping event handlers
+            OnMapping(content, type, instance, onMapping);
 
-            // Now loop through and convert non-virtual properties.
+            // Now loop through and map non-virtual properties.
             if (nonVirtualProperties != null && nonVirtualProperties.Any())
             {
                 foreach (var propertyInfo in nonVirtualProperties)
@@ -357,8 +357,8 @@
             }
 
             // We have now finished populating the instance object so go ahead
-            // and fire the on converted event handlers
-            OnConverted(content, type, instance, onConverted);
+            // and fire the on mapped event handlers
+            OnMapped(content, type, instance, onMapped);
 
             return instance;
         }
@@ -366,7 +366,7 @@
         /// <summary>
         /// Returns the raw value for the given type and property.
         /// </summary>
-        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="content">The <see cref="IPublishedContent"/> to map.</param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
@@ -427,12 +427,12 @@
         /// <summary>
         /// Set the typed value to the given instance.
         /// </summary>
-        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="content">The <see cref="IPublishedContent"/> to map.</param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <param name="propertyValue">The property value.</param>
         /// <param name="instance">The instance to assign the value to.</param>
-        /// <returns>The strong typed converted value for the given property.</returns>
+        /// <returns>The strong typed mapped value for the given property.</returns>
         private static object GetTypedValue(
             IPublishedContent content,
             CultureInfo culture,
@@ -602,21 +602,21 @@
         }
 
         /// <summary>
-        /// Fires off the various on converting events.
+        /// Fires off the various on mapping events.
         /// </summary>
-        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="content">The <see cref="IPublishedContent"/> to map.</param>
         /// <param name="type">The instance type.</param>
         /// <param name="instance">The instance to assign the value to.</param>
         /// <param name="callback">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when mapping.
         /// </param>
-        private static void OnConverting(IPublishedContent content,
+        private static void OnMapping(IPublishedContent content,
             Type type,
             object instance,
-            Action<DittoConversionHandlerContext> callback = null)
+            Action<DittoMapHandlerContext> callback = null)
         {
             // Trigger conversion handlers
-            var conversionCtx = new DittoConversionHandlerContext
+            var conversionCtx = new DittoMapHandlerContext
             {
                 Content = content,
                 ModelType = type,
@@ -624,17 +624,17 @@
             };
 
             // Check for class level DittoOnConvertedAttributes
-            foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
+            foreach (var attr in type.GetCustomAttributes<DittoMapHandlerAttribute>())
             {
-                ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverting();
+                ((DittoMapHandler)attr.HandlerType.GetInstance(conversionCtx)).OnMapping();
             }
 
             // Check for method level DittoOnConvertedAttributes
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(x => x.GetCustomAttribute<DittoOnConvertingAttribute>() != null))
+                .Where(x => x.GetCustomAttribute<DittoOnMappingAttribute>() != null))
             {
                 var p = method.GetParameters();
-                if (p.Length == 1 && p[0].ParameterType == typeof(DittoConversionHandlerContext))
+                if (p.Length == 1 && p[0].ParameterType == typeof(DittoMapHandlerContext))
                 {
                     method.Invoke(instance, new[] { conversionCtx });
                 }
@@ -648,21 +648,21 @@
         }
 
         /// <summary>
-        /// Fires off the various on converted events.
+        /// Fires off the various on mapped events.
         /// </summary>
-        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="content">The <see cref="IPublishedContent"/> to map.</param>
         /// <param name="type">The instance type.</param>
         /// <param name="instance">The instance to assign the value to.</param>
         /// <param name="callback">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when mapped.
         /// </param>
-        private static void OnConverted(IPublishedContent content,
+        private static void OnMapped(IPublishedContent content,
             Type type,
             object instance,
-            Action<DittoConversionHandlerContext> callback = null)
+            Action<DittoMapHandlerContext> callback = null)
         {
             // Trigger conversion handlers
-            var conversionCtx = new DittoConversionHandlerContext
+            var conversionCtx = new DittoMapHandlerContext
             {
                 Content = content,
                 ModelType = type,
@@ -670,17 +670,17 @@
             };
 
             // Check for class level DittoOnConvertedAttributes
-            foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
+            foreach (var attr in type.GetCustomAttributes<DittoMapHandlerAttribute>())
             {
-                ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverted();
+                ((DittoMapHandler)attr.HandlerType.GetInstance(conversionCtx)).OnMapped();
             }
 
             // Check for method level DittoOnConvertedAttributes
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(x => x.GetCustomAttribute<DittoOnConvertedAttribute>() != null))
+                .Where(x => x.GetCustomAttribute<DittoOnMappedAttribute>() != null))
             {
                 var p = method.GetParameters();
-                if (p.Length == 1 && p[0].ParameterType == typeof(DittoConversionHandlerContext))
+                if (p.Length == 1 && p[0].ParameterType == typeof(DittoMapHandlerContext))
                 {
                     method.Invoke(instance, new[] { conversionCtx });
                 }
