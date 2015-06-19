@@ -14,13 +14,13 @@
         /// Returns the given instance of <see cref="RenderModel"/> as the specified type.
         /// </summary>
         /// <param name="model">
-        /// The <see cref="RenderModel"/> to convert.
+        /// The <see cref="RenderModel"/> to map.
         /// </param>
-        /// <param name="onConverting">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// <param name="onMapping">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapping.
         /// </param>
-        /// <param name="onConverted">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
+        /// <param name="onMapped">
+        /// The <see cref="Action{DittoMapHandlerContext}"/> to fire when mapped.
         /// </param>
         /// <typeparam name="T">
         /// The <see cref="Type"/> of items to return.
@@ -30,8 +30,8 @@
         /// </returns>
         public static T As<T>(
             this RenderModel model,
-            Action<DittoConversionHandlerContext> onConverting = null,
-            Action<DittoConversionHandlerContext> onConverted = null)
+            Action<DittoMapHandlerContext> onMapping = null,
+            Action<DittoMapHandlerContext> onMapped = null)
             where T : class
         {
             if (model == null)
@@ -41,7 +41,7 @@
 
             using (DisposableTimer.DebugDuration<T>(string.Format("RenderModel As ({0})", model.Content.DocumentTypeAlias)))
             {
-                return model.Content.As<T>(onConverting, onConverted, model.CurrentCulture);
+                return model.Content.As<T>(onMapping, onMapped, model.CurrentCulture);
             }
         }
     }

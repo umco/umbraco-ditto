@@ -80,9 +80,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\AppSettingAttribute.cs" />
-    <Compile Include="Attributes\DittoConversionHandlerAttribute.cs" />
-    <Compile Include="Attributes\DittoOnConvertingAttribute.cs" />
-    <Compile Include="Attributes\DittoOnConvertedAttribute.cs" />
+    <Compile Include="Attributes\DittoMapHandlerAttribute.cs" />
+    <Compile Include="Attributes\DittoOnMappingAttribute.cs" />
+    <Compile Include="Attributes\DittoOnMappedAttribute.cs" />
     <Compile Include="Attributes\CurrentContentAsAttribute.cs" />
     <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="Attributes\DittoValueResolverAttribute.cs" />
@@ -91,8 +91,8 @@
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
-    <Compile Include="ComponentModel\DittoConversionHandlerContext.cs" />
-    <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandler.cs" />
+    <Compile Include="ComponentModel\DittoMapHandlerContext.cs" />
+    <Compile Include="ComponentModel\MapHandlers\DittoMapHandler.cs" />
     <Compile Include="ComponentModel\PublishedContentContext.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoEnumConverter.cs" />
