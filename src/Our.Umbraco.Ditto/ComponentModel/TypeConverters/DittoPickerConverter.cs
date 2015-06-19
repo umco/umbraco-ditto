@@ -76,7 +76,7 @@
             IPublishedContent content = value as IPublishedContent;
             if (content != null)
             {
-                return content.As(targetType, null, null, culture);
+                return content.As(targetType, culture);
             }
 
             // ReSharper disable once PossibleNullReferenceException
@@ -85,7 +85,7 @@
             // Multiple IPublishedContent 
             if (type.IsEnumerableOfType(typeof(IPublishedContent)))
             {
-                return ((IEnumerable<IPublishedContent>)value).As(targetType, null, null, null, culture);
+                return ((IEnumerable<IPublishedContent>)value).As(targetType, null, culture);
             }
 
             int[] nodeIds = { };
@@ -145,7 +145,7 @@
                     }
                 }
 
-                return multiPicker.As(targetType, null, null, null, culture);
+                return multiPicker.As(targetType, null, culture);
             }
 
             return base.ConvertFrom(context, culture, value);

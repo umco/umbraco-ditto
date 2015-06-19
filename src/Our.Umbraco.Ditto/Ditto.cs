@@ -5,10 +5,10 @@
     /// </summary>
     public class Ditto
     {
-        public static void RegisterValueResolverContext<TContextType>(TContextType ctx)
-            where TContextType : DittoValueResolverContext
-        {
-            DittoValueResolver.RegisterContext(ctx);
-        }
+        //public static void RegisterValueResolverContext<TContextType>(TContextType ctx)
+        //    where TContextType : DittoValueResolverContext
+        //{
+        //    DittoValueResolver.RegisterContext(ctx);
+        //}
     }
 }

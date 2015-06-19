@@ -43,14 +43,20 @@
         /// <param name="content">
         /// The <see cref="IPublishedContent"/> to convert.
         /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/>
+        /// </param>
+        /// <param name="instance">
+        /// An existing instance of T to populate
+        /// </param>
+        /// <param name="valueResolverContexts">
+        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
         /// <param name="onConverted">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
-        /// </param>
-        /// <param name="culture">
-        /// The <see cref="CultureInfo"/>
         /// </param>
         /// <typeparam name="T">
         /// The <see cref="Type"/> of items to return.
@@ -60,13 +66,14 @@
         /// </returns>
         public static T As<T>(
             this IPublishedContent content,
-            Action<DittoConversionHandlerContext> onConverting = null,
-            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null,
-            T instance = null)
+            T instance = null,
+            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
         {
-            return content.As(typeof(T), onConverting, onConverted, culture, instance) as T;
+            return content.As(typeof(T), culture, instance, valueResolverContexts, onConverting, onConverted) as T;
         }
 
         /// <summary>
@@ -78,13 +85,16 @@
         /// <param name="documentTypeAlias">
         /// The document type alias.
         /// </param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
+        /// <param name="valueResolverContexts">
+        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
         /// <param name="onConverted">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
-        /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <typeparam name="T">
         /// The <see cref="Type"/> of items to return.
         /// </typeparam>
@@ -94,12 +104,13 @@
         public static IEnumerable<T> As<T>(
             this IEnumerable<IPublishedContent> items,
             string documentTypeAlias = null,
+            CultureInfo culture = null,
+            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
             Action<DittoConversionHandlerContext> onConverting = null,
-            Action<DittoConversionHandlerContext> onConverted = null,
-            CultureInfo culture = null)
+            Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
         {
-            return items.As(typeof(T), documentTypeAlias, onConverting, onConverted, culture)
+            return items.As(typeof(T), documentTypeAlias, culture, valueResolverContexts, onConverting, onConverted)
                         .Select(x => x as T);
         }
 
@@ -115,14 +126,17 @@
         /// <param name="documentTypeAlias">
         /// The document type alias.
         /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/>.
+        /// </param>
+        /// <param name="valueResolverContexts">
+        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
         /// <param name="onConverted">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
-        /// </param>
-        /// <param name="culture">
-        /// The <see cref="CultureInfo"/>.
         /// </param>
         /// <returns>
         /// The resolved <see cref="IEnumerable{T}"/>.
@@ -131,21 +145,22 @@
             this IEnumerable<IPublishedContent> items,
             Type type,
             string documentTypeAlias = null,
+            CultureInfo culture = null,
+            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
             Action<DittoConversionHandlerContext> onConverting = null,
-            Action<DittoConversionHandlerContext> onConverted = null,
-            CultureInfo culture = null)
+            Action<DittoConversionHandlerContext> onConverted = null)
         {
             using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
             {
                 IEnumerable<object> typedItems;
                 if (string.IsNullOrWhiteSpace(documentTypeAlias))
                 {
-                    typedItems = items.Select(x => x.As(type, onConverting, onConverted, culture));
+                    typedItems = items.Select(x => x.As(type, culture, null, valueResolverContexts, onConverting, onConverted));
                 }
                 else
                 {
                     typedItems = items.Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                                      .Select(x => x.As(type, onConverting, onConverted, culture));
+                                      .Select(x => x.As(type, culture, null, valueResolverContexts, onConverting, onConverted));
                 }
 
                 // We need to cast back here as nothing is strong typed anymore.
@@ -162,37 +177,44 @@
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
+        /// <param name="instance">
+        /// An existing instance of T to populate
+        /// </param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
+        /// <param name="valueResolverContexts">
+        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
         /// <param name="onConverted">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
-        /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <returns>
         /// The converted <see cref="Object"/> as the given type.
         /// </returns>
         public static object As(
             this IPublishedContent content,
             Type type,
-            Action<DittoConversionHandlerContext> onConverting = null,
-            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null,
-            object instance = null)
+            object instance = null,
+            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null)
         {
             if (content == null)
             {
                 return null;
             }
 
-            if (instance != null && !type.IsAssignableFrom(instance.GetType()))
+            if (instance != null && !type.IsInstanceOfType(instance))
             {
                 throw new ArgumentException(string.Format("The instance parameter does not implement Type '{0}'" , type.Name), "instance");
             }
 
             using (DisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
             {
-                return ConvertContent(content, type, onConverting, onConverted, culture, instance);
+                return ConvertContent(content, type, culture, instance, valueResolverContexts, onConverting, onConverted);
             }
         }
 
@@ -205,13 +227,19 @@
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
+        /// <param name="instance">
+        /// An existing instance of T to populate
+        /// </param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
+        /// <param name="valueResolverContexts">
+        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
         /// <param name="onConverted">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
-        /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <returns>
         /// The converted <see cref="Object"/> as the given type.
         /// </returns>
@@ -221,10 +249,11 @@
         private static object ConvertContent(
             IPublishedContent content,
             Type type,
-            Action<DittoConversionHandlerContext> onConverting = null,
-            Action<DittoConversionHandlerContext> onConverted = null,
             CultureInfo culture = null,
-            object instance = null)
+            object instance = null,
+            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null)
         {
             // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
             if (culture == null)
@@ -315,15 +344,15 @@
                                 () =>
                                 {
                                     // Get the value from Umbraco.
-                                    object propertyValue = GetRawValue(content, culture, deferredPropertyInfo, localInstance);
+                                    object propertyValue = GetRawValue(content, culture, deferredPropertyInfo, localInstance, valueResolverContexts);
                                     return GetTypedValue(content, culture, deferredPropertyInfo, propertyValue, localInstance);
                                 }));
                     }
                 }
 
                 // Create a proxy instance to replace our object.
-                LazyInterceptor interceptor = new LazyInterceptor(instance, lazyProperties);
-                ProxyFactory factory = new ProxyFactory();
+                var interceptor = new LazyInterceptor(instance, lazyProperties);
+                var factory = new ProxyFactory();
 
                 instance = hasParameter
                     ? factory.CreateProxy(type, interceptor, content)
@@ -349,7 +378,7 @@
                         }
 
                         // Set the value normally.
-                        object propertyValue = GetRawValue(content, culture, propertyInfo, instance);
+                        object propertyValue = GetRawValue(content, culture, propertyInfo, instance, valueResolverContexts);
                         var result = GetTypedValue(content, culture, propertyInfo, propertyValue, instance);
                         propertyInfo.SetValue(instance, result, null);
                     }
@@ -369,13 +398,17 @@
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
-        /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
         /// <param name="instance">The instance to assign the value to.</param>
+        /// <param name="valueResolverContexts">
+        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// </param>
+        /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
         private static object GetRawValue(
             IPublishedContent content,
             CultureInfo culture,
             PropertyInfo propertyInfo,
-            object instance)
+            object instance,
+            IEnumerable<DittoValueResolverContext> valueResolverContexts = null)
         {
             // Check the property for an associated value attribute, otherwise fall-back on expected behaviour.
             var valueAttr = propertyInfo.GetCustomAttribute<DittoValueResolverAttribute>(true)
@@ -391,13 +424,13 @@
                 // Get the value from the custom attribute.
                 // TODO: Cache these?
 
-                var resolverTypeInstances = valueAttr.ResolverType.GetGenericTypeImplementations(typeof (DittoValueResolver<,>)).ToArray();
+                var resolverTypeInstances = valueAttr.ResolverType.GetGenericTypeImplementations(typeof(DittoValueResolver<,>)).ToArray();
                 if (resolverTypeInstances.Length == 1)
                 {
                     var contextType = resolverTypeInstances[0].GetGenericArguments().FirstOrDefault(x => typeof(DittoValueResolverContext).IsAssignableFrom(x));
                     if (contextType != null)
                     {
-                        var resolverCtx = DittoValueResolver.GetRegistedContext(contextType);
+                        var resolverCtx = valueResolverContexts != null ? valueResolverContexts.FirstOrDefault(x => x.GetType() == contextType) : null;
                         if (resolverCtx != null)
                         {
                             context = resolverCtx;

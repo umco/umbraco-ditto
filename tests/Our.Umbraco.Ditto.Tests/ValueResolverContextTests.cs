@@ -38,16 +38,14 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Value_Converter_Context_Resolves()
         {
-            DittoValueResolver.SetContextCache(new Dictionary<string, object>());
 
             var content = new PublishedContentMock();
-
-            Ditto.RegisterValueResolverContext(new MyValueResolverContext
+            var context = new MyValueResolverContext
             {
                 MyContextProperty = "Test"
-            });
+            };
 
-            var model = content.As<MyValueResolverModel>();
+            var model = content.As<MyValueResolverModel>(valueResolverContexts: new[] { context });
 
             Assert.That(model.MyProperty, Is.EqualTo("Test"));
         }
@@ -55,8 +53,6 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Value_Converter_Context_Resolves_Without_Registered_Context()
         {
-            DittoValueResolver.SetContextCache(new Dictionary<string, object>());
-
             var content = new PublishedContentMock();
 
             var model = content.As<MyValueResolverModel>();

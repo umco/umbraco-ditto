@@ -13,24 +13,24 @@
     /// </summary>
     public abstract class DittoValueResolver
     {
-        private const string CONTEXT_KEY_FORMAT = "Ditto_ValueResolverContext_{0}";
+        //private const string CONTEXT_KEY_FORMAT = "Ditto_ValueResolverContext_{0}";
 
-        /// <summary>
-        /// Gets the value resolver context cache container.
-        /// </summary>
-        private static IDictionary _contextCache;
-        private static IDictionary ContextCache
-        {
-            get
-            {
-                if (_contextCache != null)
-                    return _contextCache;
+        ///// <summary>
+        ///// Gets the value resolver context cache container.
+        ///// </summary>
+        //private static IDictionary _contextCache;
+        //private static IDictionary ContextCache
+        //{
+        //    get
+        //    {
+        //        if (_contextCache != null)
+        //            return _contextCache;
 
-                return HttpContext.Current != null
-                    ? HttpContext.Current.Items
-                    : null;
-            }
-        }
+        //        return HttpContext.Current != null
+        //            ? HttpContext.Current.Items
+        //            : null;
+        //    }
+        //}
 
         /// <summary>
         /// Gets or sets the IPublishedContent object.
@@ -91,23 +91,23 @@
         /// <param name="ctx">
         /// The <see cref="DittoValueResolverContext" /> to register.
         /// </param>
-        internal static void RegisterContext<TContextType>(TContextType ctx)
-            where TContextType : DittoValueResolverContext
-        {
-            var key = string.Format(CONTEXT_KEY_FORMAT, typeof(TContextType).FullName);
+        //internal static void RegisterContext<TContextType>(TContextType ctx)
+        //    where TContextType : DittoValueResolverContext
+        //{
+        //    var key = string.Format(CONTEXT_KEY_FORMAT, typeof(TContextType).FullName);
 
-            if (ContextCache != null)
-            {
-                if (ContextCache.Contains(key))
-                {
-                    ContextCache[key] = ctx;
-                }
-                else
-                {
-                    ContextCache.Add(key, ctx);
-                }
-            }
-        }
+        //    if (ContextCache != null)
+        //    {
+        //        if (ContextCache.Contains(key))
+        //        {
+        //            ContextCache[key] = ctx;
+        //        }
+        //        else
+        //        {
+        //            ContextCache.Add(key, ctx);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Retreieves a value resolver context of the given type if one exists.
@@ -118,22 +118,22 @@
         /// <returns>
         /// The registered <see cref="DittoValueResolverContext"/> instance.
         /// </returns>
-        internal static DittoValueResolverContext GetRegistedContext(Type contextType)
-        {
-            var key = string.Format(CONTEXT_KEY_FORMAT, contextType.FullName);
+        //internal static DittoValueResolverContext GetRegistedContext(Type contextType)
+        //{
+        //    var key = string.Format(CONTEXT_KEY_FORMAT, contextType.FullName);
 
-            return ContextCache != null && ContextCache.Contains(key)
-                ? (DittoValueResolverContext)ContextCache[key]
-                : null;
-        }
+        //    return ContextCache != null && ContextCache.Contains(key)
+        //        ? (DittoValueResolverContext)ContextCache[key]
+        //        : null;
+        //}
 
         /// <summary>
         /// Helper function to allow setting the context cache container manually, should only be used for testing.
         /// </summary>
-        internal static void SetContextCache(IDictionary cache)
-        {
-            _contextCache = cache;
-        }
+        //internal static void SetContextCache(IDictionary cache)
+        //{
+        //    _contextCache = cache;
+        //}
     }
 
     /// <summary>

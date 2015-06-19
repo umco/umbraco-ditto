@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System.Collections.Generic;
+
+namespace Our.Umbraco.Ditto
 {
     using System;
 
@@ -16,6 +18,9 @@
         /// <param name="model">
         /// The <see cref="RenderModel"/> to convert.
         /// </param>
+        /// <param name="valueResolverContexts">
+        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
@@ -30,6 +35,7 @@
         /// </returns>
         public static T As<T>(
             this RenderModel model,
+            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
@@ -41,7 +47,7 @@
 
             using (DisposableTimer.DebugDuration<T>(string.Format("RenderModel As ({0})", model.Content.DocumentTypeAlias)))
             {
-                return model.Content.As<T>(onConverting, onConverted, model.CurrentCulture);
+                return model.Content.As<T>(model.CurrentCulture, null, valueResolverContexts, onConverting, onConverted);
             }
         }
     }
