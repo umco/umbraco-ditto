@@ -24,9 +24,9 @@
 
         public class MockValueResolver : DittoValueResolver<MockValueAttribute>
         {
-            public override object ResolveValue(ITypeDescriptorContext context, MockValueAttribute attribute, CultureInfo culture)
+            public override object ResolveValue()
             {
-                return attribute.RawValue;
+                return Attribute.RawValue;
             }
         }
 

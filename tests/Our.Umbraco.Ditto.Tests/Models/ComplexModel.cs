@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace Our.Umbraco.Ditto.Tests.Models
+﻿namespace Our.Umbraco.Ditto.Tests.Models
 {
     using System.ComponentModel;
 
@@ -27,13 +25,9 @@ namespace Our.Umbraco.Ditto.Tests.Models
 
     public class NameValueResovler : DittoValueResolver
     {
-        public override object ResolveValue(ITypeDescriptorContext context, 
-            DittoValueResolverAttribute attribute, CultureInfo culture)
+        public override object ResolveValue()
         {
-            var content = context.Instance as IPublishedContent;
-            if (content == null) return null;
-
-            return content.Name + " Test";
+            return (Content != null) ? Content.Name + " Test" : null;
         }
     }
 }
