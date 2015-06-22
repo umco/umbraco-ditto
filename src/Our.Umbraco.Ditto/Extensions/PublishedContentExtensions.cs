@@ -427,7 +427,6 @@
 
                 // Get the value from the custom attribute.
                 // TODO: Cache these?
-
                 var resolverTypeInstances = valueAttr.ResolverType.GetGenericTypeImplementations(typeof(DittoValueResolver<,>)).ToArray();
                 if (resolverTypeInstances.Length == 1)
                 {
@@ -647,7 +646,8 @@
         /// <param name="callback">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
-        private static void OnConverting(IPublishedContent content,
+        private static void OnConverting(
+            IPublishedContent content,
             Type type,
             object instance,
             Action<DittoConversionHandlerContext> callback = null)
@@ -673,7 +673,7 @@
                 var p = method.GetParameters();
                 if (p.Length == 1 && p[0].ParameterType == typeof(DittoConversionHandlerContext))
                 {
-                    method.Invoke(instance, new[] { conversionCtx });
+                    method.Invoke(instance, new object[] { conversionCtx });
                 }
             }
 
@@ -693,7 +693,8 @@
         /// <param name="callback">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
-        private static void OnConverted(IPublishedContent content,
+        private static void OnConverted(
+            IPublishedContent content,
             Type type,
             object instance,
             Action<DittoConversionHandlerContext> callback = null)
