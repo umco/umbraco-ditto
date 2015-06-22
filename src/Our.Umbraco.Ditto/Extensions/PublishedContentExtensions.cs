@@ -209,7 +209,7 @@
 
             if (instance != null && !type.IsInstanceOfType(instance))
             {
-                throw new ArgumentException(string.Format("The instance parameter does not implement Type '{0}'" , type.Name), "instance");
+                throw new ArgumentException(string.Format("The instance parameter does not implement Type '{0}'", type.Name), "instance");
             }
 
             using (DisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
@@ -451,7 +451,7 @@
                 // Populate internal context properties
                 context.Instance = content;
                 context.PropertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                
+
                 // Resolve value
                 return resolver.ResolveValue(context, valueAttr, culture);
             }
