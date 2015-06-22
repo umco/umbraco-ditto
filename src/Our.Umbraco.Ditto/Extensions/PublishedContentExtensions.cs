@@ -382,6 +382,7 @@
                         }
 
                         // Set the value normally.
+                        // ReSharper disable once PossibleMultipleEnumeration
                         object propertyValue = GetRawValue(content, culture, propertyInfo, instance, valueResolverContexts);
                         var result = GetTypedValue(content, culture, propertyInfo, propertyValue, instance);
                         propertyInfo.SetValue(instance, result, null);
