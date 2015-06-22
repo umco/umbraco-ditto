@@ -177,10 +177,12 @@
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/>
+        /// </param>
         /// <param name="instance">
         /// An existing instance of T to populate
         /// </param>
-        /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="valueResolverContexts">
         /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
         /// </param>
@@ -227,10 +229,12 @@
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
+        /// <param name="culture">
+        /// The <see cref="CultureInfo"/>
+        /// </param>
         /// <param name="instance">
         /// An existing instance of T to populate
         /// </param>
-        /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="valueResolverContexts">
         /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
         /// </param>
