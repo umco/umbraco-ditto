@@ -715,7 +715,7 @@
                 var p = method.GetParameters();
                 if (p.Length == 1 && p[0].ParameterType == typeof(DittoConversionHandlerContext))
                 {
-                    method.Invoke(instance, new[] { conversionCtx });
+                    method.Invoke(instance, new object[] { conversionCtx });
                 }
             }
 
