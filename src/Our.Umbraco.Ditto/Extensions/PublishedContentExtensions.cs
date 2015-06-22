@@ -433,10 +433,10 @@
                     var contextType = resolverTypeInstances[0].GetGenericArguments().FirstOrDefault(x => typeof(DittoValueResolverContext).IsAssignableFrom(x));
                     if (contextType != null)
                     {
-                        var resolverCtx = valueResolverContexts != null ? valueResolverContexts.FirstOrDefault(x => x.GetType() == contextType) : null;
-                        if (resolverCtx != null)
+                        var resolverContext = valueResolverContexts != null ? valueResolverContexts.FirstOrDefault(x => x.GetType() == contextType) : null;
+                        if (resolverContext != null)
                         {
-                            context = resolverCtx;
+                            context = resolverContext;
                         }
                         else
                         {
