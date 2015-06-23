@@ -543,8 +543,8 @@
                                         {
                                             // Using 'Cast' to convert the type back to IEnumerable<T>.
                                             object enumerablePropertyValue = EnumerableInvocations.Cast(
-                                                                                parameterType,
-                                                                                converted.YieldSingleItem());
+                                                parameterType,
+                                                converted.YieldSingleItem());
 
                                             result = enumerablePropertyValue;
                                         }
@@ -561,7 +561,9 @@
                                         if (convertedType.IsEnumerableType() && convertedType.GenericTypeArguments.Any())
                                         {
                                             // Use 'FirstOrDefault' to convert the type back to T.
-                                            result = EnumerableInvocations.FirstOrDefault(propertyType, (IEnumerable)converted);
+                                            result = EnumerableInvocations.FirstOrDefault(
+                                                propertyType,
+                                                (IEnumerable)converted);
                                         }
                                         else
                                         {
@@ -569,6 +571,16 @@
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    // Ensure we pass back an empty enumerable if the expected output is an enumerable.
+                                    // and null has been returned by the type converter.
+                                    if (propertyIsEnumerableType)
+                                    {
+                                        result = EnumerableInvocations.Empty(typeInfo.GenericTypeArguments.First());
+                                    }
+                                }
+                            
                             }
                         }
                     }
