@@ -580,7 +580,6 @@
                                         result = EnumerableInvocations.Empty(typeInfo.GenericTypeArguments.First());
                                     }
                                 }
-                            
                             }
                         }
                     }
