@@ -12,25 +12,6 @@
     public abstract class PublishedContentContext : ITypeDescriptorContext
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PublishedContentContext"/> class.
-        /// </summary>
-        /// <param name="instance">
-        /// The <see cref="IPublishedContent"/> that is being converted from.
-        /// </param>
-        /// <param name="descriptor">
-        /// The <see cref="PropertyDescriptor"/> for the property on the target type that contains
-        /// the currently converting property.
-        /// </param>
-        //public PublishedContentContext(object instance, PropertyDescriptor descriptor)
-        //{
-        //    this.Instance = instance;
-
-        //    // This is the property descriptor for the property on the POCO that is 
-        //    // getting converted.
-        //    this.PropertyDescriptor = descriptor;
-        //}
-
-        /// <summary>
         /// Gets the object that is connected with this type descriptor request.
         /// </summary>
         /// <returns>
