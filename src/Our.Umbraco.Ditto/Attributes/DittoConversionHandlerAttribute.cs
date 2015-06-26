@@ -2,7 +2,7 @@
 
 namespace Our.Umbraco.Ditto
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
     public class DittoConversionHandlerAttribute : Attribute
     {
         public Type HandlerType { get; private set; }
