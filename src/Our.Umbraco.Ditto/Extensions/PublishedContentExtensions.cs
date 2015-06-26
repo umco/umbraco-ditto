@@ -82,9 +82,6 @@
         /// <param name="items">
         /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
         /// </param>
-        /// <param name="documentTypeAlias">
-        /// The document type alias.
-        /// </param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="valueResolverContexts">
         /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
@@ -103,14 +100,13 @@
         /// </returns>
         public static IEnumerable<T> As<T>(
             this IEnumerable<IPublishedContent> items,
-            string documentTypeAlias = null,
             CultureInfo culture = null,
             IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
         {
-            return items.As(typeof(T), documentTypeAlias, culture, valueResolverContexts, onConverting, onConverted)
+            return items.As(typeof(T), culture, valueResolverContexts, onConverting, onConverted)
                         .Select(x => x as T);
         }
 
@@ -122,9 +118,6 @@
         /// </param>
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
-        /// </param>
-        /// <param name="documentTypeAlias">
-        /// The document type alias.
         /// </param>
         /// <param name="culture">
         /// The <see cref="CultureInfo"/>.
@@ -144,24 +137,14 @@
         public static IEnumerable<object> As(
             this IEnumerable<IPublishedContent> items,
             Type type,
-            string documentTypeAlias = null,
             CultureInfo culture = null,
             IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
         {
-            using (DisposableTimer.DebugDuration<IEnumerable<object>>(string.Format("IEnumerable As ({0})", documentTypeAlias)))
+            using (DisposableTimer.DebugDuration<IEnumerable<object>>("IEnumerable As"))
             {
-                IEnumerable<object> typedItems;
-                if (string.IsNullOrWhiteSpace(documentTypeAlias))
-                {
-                    typedItems = items.Select(x => x.As(type, culture, null, valueResolverContexts, onConverting, onConverted));
-                }
-                else
-                {
-                    typedItems = items.Where(x => documentTypeAlias.InvariantEquals(x.DocumentTypeAlias))
-                                      .Select(x => x.As(type, culture, null, valueResolverContexts, onConverting, onConverted));
-                }
+                var typedItems = items.Select(x => x.As(type, culture, null, valueResolverContexts, onConverting, onConverted));
 
                 // We need to cast back here as nothing is strong typed anymore.
                 return (IEnumerable<object>)EnumerableInvocations.Cast(type, typedItems);

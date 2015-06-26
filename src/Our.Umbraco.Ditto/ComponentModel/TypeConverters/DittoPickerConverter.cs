@@ -85,7 +85,7 @@
             // Multiple IPublishedContent 
             if (type.IsEnumerableOfType(typeof(IPublishedContent)))
             {
-                return ((IEnumerable<IPublishedContent>)value).As(targetType, null, culture);
+                return ((IEnumerable<IPublishedContent>)value).As(targetType, culture);
             }
 
             int[] nodeIds = { };
@@ -145,7 +145,7 @@
                     }
                 }
 
-                return multiPicker.As(targetType, null, culture);
+                return multiPicker.As(targetType, culture);
             }
 
             return base.ConvertFrom(context, culture, value);
