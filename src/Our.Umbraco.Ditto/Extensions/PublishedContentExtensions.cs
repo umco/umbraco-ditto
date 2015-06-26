@@ -348,8 +348,8 @@
                                 () =>
                                 {
                                     // Get the value from Umbraco.
-                                    object propertyValue = GetRawValue(content, culture, deferredPropertyInfo, localInstance, valueResolverContexts);
-                                    return GetTypedValue(content, culture, deferredPropertyInfo, propertyValue, localInstance);
+                                    object propertyValue = GetResovledValue(content, culture, deferredPropertyInfo, localInstance, valueResolverContexts);
+                                    return GetConvertedValue(content, culture, deferredPropertyInfo, propertyValue, localInstance);
                                 }));
                     }
                 }
@@ -383,8 +383,9 @@
 
                         // Set the value normally.
                         // ReSharper disable once PossibleMultipleEnumeration
-                        object propertyValue = GetRawValue(content, culture, propertyInfo, instance, valueResolverContexts);
-                        var result = GetTypedValue(content, culture, propertyInfo, propertyValue, instance);
+                        object propertyValue = GetResovledValue(content, culture, propertyInfo, instance, valueResolverContexts);
+                        object result = GetConvertedValue(content, culture, propertyInfo, propertyValue, instance);
+
                         propertyInfo.SetValue(instance, result, null);
                     }
                 }
@@ -398,7 +399,7 @@
         }
 
         /// <summary>
-        /// Returns the raw value for the given type and property.
+        /// Returns the resolved value for the given type and property.
         /// </summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
@@ -408,7 +409,7 @@
         /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
         /// </param>
         /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
-        private static object GetRawValue(
+        private static object GetResovledValue(
             IPublishedContent content,
             CultureInfo culture,
             PropertyInfo propertyInfo,
@@ -470,7 +471,7 @@
         /// <param name="propertyValue">The property value.</param>
         /// <param name="instance">The instance to assign the value to.</param>
         /// <returns>The strong typed converted value for the given property.</returns>
-        private static object GetTypedValue(
+        private static object GetConvertedValue(
             IPublishedContent content,
             CultureInfo culture,
             PropertyInfo propertyInfo,
