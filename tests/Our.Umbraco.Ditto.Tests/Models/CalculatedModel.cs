@@ -17,6 +17,12 @@
         }
     }
 
+    public class CalculatedModel2 : BaseCalculatedModel
+    {
+        [DittoIgnore]
+        public string AltText2 { get; set; }
+    }
+
     public class BaseCalculatedModel
     {
         [DittoIgnore]
@@ -33,6 +39,19 @@
     public class CalculatedModelConversionHandler : DittoConversionHandler<CalculatedModel>
     {
         public CalculatedModelConversionHandler(DittoConversionHandlerContext ctx) 
+            : base(ctx)
+        { }
+
+        public override void OnConverted()
+        {
+            Model.AltText2 = Content.GetPropertyValue("prop1") + " " +
+                Content.GetPropertyValue("prop2");
+        }
+    }
+
+    public class CalculatedModel2ConversionHandler : DittoConversionHandler<CalculatedModel2>
+    {
+        public CalculatedModel2ConversionHandler(DittoConversionHandlerContext ctx)
             : base(ctx)
         { }
 

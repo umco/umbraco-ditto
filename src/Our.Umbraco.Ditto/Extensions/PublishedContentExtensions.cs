@@ -662,6 +662,12 @@
                 ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverting();
             }
 
+            // Check for globaly registered handlers
+            foreach (var handlerType in DittoConversionHandlerRegistry.Instance.GetRegisteredHandlerTypesFor(type))
+            {
+                ((DittoConversionHandler)handlerType.GetInstance(conversionCtx)).OnConverting();
+            }
+
             // Check for method level DittoOnConvertedAttributes
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(x => x.GetCustomAttribute<DittoOnConvertingAttribute>() != null))
@@ -707,6 +713,12 @@
             foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
             {
                 ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverted();
+            }
+
+            // Check for globaly registered handlers
+            foreach (var handlerType in DittoConversionHandlerRegistry.Instance.GetRegisteredHandlerTypesFor(type))
+            {
+                ((DittoConversionHandler)handlerType.GetInstance(conversionCtx)).OnConverted();
             }
 
             // Check for method level DittoOnConvertedAttributes
