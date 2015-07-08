@@ -542,7 +542,7 @@
                                     {
                                         // Return single expected items from converters returning an IEnumerable.
                                         // Check for string.
-                                        if (convertedType.IsEnumerableType() && convertedType.GenericTypeArguments.Any())
+                                        if (convertedType.IsEnumerableType() && !(convertedType == typeof(string) && propertyType == typeof(string)))
                                         {
                                             // Use 'FirstOrDefault' to convert the type back to T.
                                             result = EnumerableInvocations.FirstOrDefault(
