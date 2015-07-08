@@ -9,7 +9,7 @@ namespace Our.Umbraco.Ditto
     using System;
     using System.ComponentModel;
     using System.Globalization;
-
+    using System.Collections.Generic;
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Web;
@@ -38,7 +38,13 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            return UmbracoContext.Current.ContentCache.GetById(id).As(targetType, culture);
+            IPublishedContent content = UmbracoContext.Current.ContentCache.GetById(id);
+
+            // If we're expecting IPublishedContent then just return
+            if (targetType == typeof(IPublishedContent))
+                return content;
+
+            return content.As(targetType, culture);
         }
 
         /// <summary>
@@ -63,8 +69,17 @@ namespace Our.Umbraco.Ditto
             // Ensure we are actually returning a media file.
             if (media.HasProperty(Constants.Conventions.Media.File))
             {
+                // If we're expecting IPublishedContent then just return
+                if (targetType == typeof(IPublishedContent))
+                    return media;
+
                 return media.As(targetType, culture);
             }
+
+
+            // If we're expecting IPublishedContent then just return
+            if (targetType == typeof(IEnumerable<IPublishedContent>))
+                return media.Children();
 
             // It's most likely a folder, try its children.
             // This returns an IEnumerable<T>
