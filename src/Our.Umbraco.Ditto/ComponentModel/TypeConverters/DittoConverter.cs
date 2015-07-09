@@ -78,7 +78,7 @@ namespace Our.Umbraco.Ditto
 
 
             // If we're expecting IPublishedContent then just return
-            if (targetType == typeof(IEnumerable<IPublishedContent>))
+            if (targetType.IsEnumerableOfType(typeof(IPublishedContent)))
                 return media.Children();
 
             // It's most likely a folder, try its children.
