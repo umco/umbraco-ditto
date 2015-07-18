@@ -2,4 +2,7 @@
 
 The friendly POCO mapper for Umbraco.
 
-[See the `develop` branch for the latest README](https://github.com/leekelleher/umbraco-ditto/tree/develop).
+http://leekelleher.github.io/umbraco-ditto/
+
+* [Download Umbraco package from Our Umbraco](https://our.umbraco.org/projects/developer-tools/ditto)
+* [Read the Ditto documentation](http://umbraco-ditto.readthedocs.org/)
