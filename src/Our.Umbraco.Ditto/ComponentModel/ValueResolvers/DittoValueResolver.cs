@@ -47,7 +47,7 @@
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public virtual object ResolveValue(DittoValueResolverContext context, DittoValueResolverAttribute attribute,
+        internal virtual object ResolveValue(DittoValueResolverContext context, DittoValueResolverAttribute attribute,
             CultureInfo culture)
         {
             Content = context.Instance as IPublishedContent;
@@ -105,7 +105,7 @@
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(DittoValueResolverContext context, 
+        internal override object ResolveValue(DittoValueResolverContext context, 
             DittoValueResolverAttribute attribute, CultureInfo culture)
         {
             if (!(context is TContextType))
