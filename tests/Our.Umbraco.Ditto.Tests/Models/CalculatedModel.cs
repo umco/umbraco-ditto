@@ -38,10 +38,6 @@
 
     public class CalculatedModelConversionHandler : DittoConversionHandler<CalculatedModel>
     {
-        public CalculatedModelConversionHandler(DittoConversionHandlerContext ctx) 
-            : base(ctx)
-        { }
-
         public override void OnConverted()
         {
             Model.AltText2 = Content.GetPropertyValue("prop1") + " " +
@@ -51,10 +47,6 @@
 
     public class CalculatedModel2ConversionHandler : DittoConversionHandler<CalculatedModel2>
     {
-        public CalculatedModel2ConversionHandler(DittoConversionHandlerContext ctx)
-            : base(ctx)
-        { }
-
         public override void OnConverted()
         {
             Model.AltText2 = Content.GetPropertyValue("prop1") + " " +

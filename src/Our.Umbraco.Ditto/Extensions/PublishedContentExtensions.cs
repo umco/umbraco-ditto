@@ -681,13 +681,15 @@
             // Check for class level DittoOnConvertedAttributes
             foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
             {
-                ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverting();
+                ((DittoConversionHandler)attr.HandlerType.GetInstance())
+                    .Run(conversionCtx, DittoConversionHandlerType.OnConverting);
             }
 
             // Check for globaly registered handlers
             foreach (var handlerType in DittoConversionHandlerRegistry.Instance.GetRegisteredHandlerTypesFor(type))
             {
-                ((DittoConversionHandler)handlerType.GetInstance(conversionCtx)).OnConverting();
+                ((DittoConversionHandler)handlerType.GetInstance())
+                    .Run(conversionCtx, DittoConversionHandlerType.OnConverting);
             }
 
             // Check for method level DittoOnConvertedAttributes
@@ -734,13 +736,15 @@
             // Check for class level DittoOnConvertedAttributes
             foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
             {
-                ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverted();
+                ((DittoConversionHandler)attr.HandlerType.GetInstance())
+                    .Run(conversionCtx, DittoConversionHandlerType.OnConverted);
             }
 
             // Check for globaly registered handlers
             foreach (var handlerType in DittoConversionHandlerRegistry.Instance.GetRegisteredHandlerTypesFor(type))
             {
-                ((DittoConversionHandler)handlerType.GetInstance(conversionCtx)).OnConverted();
+                ((DittoConversionHandler)handlerType.GetInstance())
+                    .Run(conversionCtx, DittoConversionHandlerType.OnConverted);
             }
 
             // Check for method level DittoOnConvertedAttributes
