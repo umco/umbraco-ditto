@@ -14,9 +14,19 @@ namespace Our.Umbraco.Ditto.Tests
     {
         public class MyValueResolverModel
         {
-            public string MyStrProperty { get; set; }
+            public MyStringModel MyStrProperty { get; set; }
 
-            public int MyIntProperty { get; set; }
+            public MyIntModel MyIntProperty { get; set; }
+        }
+
+        public class MyStringModel
+        {
+            public string Value { get; set; }
+        }
+
+        public class MyIntModel
+        {
+            public int Value { get; set; }
         }
 
         public class MyIntValueResolverAttr : DittoValueResolverAttribute
@@ -32,7 +42,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             public override object ResolveValue()
             {
-                return Attribute.AttrProp;
+                return new MyIntModel { Value = Attribute.AttrProp }; ;
             }
         }
 
@@ -40,22 +50,22 @@ namespace Our.Umbraco.Ditto.Tests
         {
             public override object ResolveValue()
             {
-                return "Test";
+                return new MyStringModel { Value = "Test" };
             }
         }
 
         [Test]
         public void Global_Value_Converter_Resolves()
         {
-            Ditto.RegisterValueResolver<string, MyStrValueResolver>();
-            Ditto.RegisterValueResolverAttribute<int, MyIntValueResolverAttr>(new MyIntValueResolverAttr { AttrProp = 5 });
+            Ditto.RegisterValueResolver<MyStringModel, MyStrValueResolver>();
+            Ditto.RegisterValueResolverAttribute<MyIntModel, MyIntValueResolverAttr>(new MyIntValueResolverAttr { AttrProp = 5 });
 
             var content = new PublishedContentMock();
 
             var model = content.As<MyValueResolverModel>();
 
-            Assert.That(model.MyStrProperty, Is.EqualTo("Test"));
-            Assert.That(model.MyIntProperty, Is.EqualTo(5));
+            Assert.That(model.MyStrProperty.Value, Is.EqualTo("Test"));
+            Assert.That(model.MyIntProperty.Value, Is.EqualTo(5));
         }
     }
 }
