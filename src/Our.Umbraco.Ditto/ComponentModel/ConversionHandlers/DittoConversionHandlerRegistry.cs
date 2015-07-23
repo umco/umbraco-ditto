@@ -12,19 +12,17 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// The cache for storing handler information.
         /// </summary>
-        private static readonly Dictionary<Type, IList<Type>> HandlerCache
-            = new  Dictionary<Type, IList<Type>>();
+        private static readonly Dictionary<Type, IList<Type>> Cache = new  Dictionary<Type, IList<Type>>();
 
         /// <summary>
-        /// The lock object to make HandlerCache access thread safe
+        /// The lock object to make Cache access thread safe
         /// </summary>
         private static object _cacheLock = new object();
 
         /// <summary>
         /// Static holder for singleton instance.
         /// </summary>
-        private static readonly Lazy<DittoConversionHandlerRegistry> _instance
-            = new Lazy<DittoConversionHandlerRegistry>(() => new DittoConversionHandlerRegistry());
+        private static readonly Lazy<DittoConversionHandlerRegistry> _instance = new Lazy<DittoConversionHandlerRegistry>(() => new DittoConversionHandlerRegistry());
 
         /// <summary>
         /// Private constructor to prevent direct instantiation..
@@ -59,16 +57,16 @@ namespace Our.Umbraco.Ditto
 
             lock (_cacheLock)
             {
-                if (HandlerCache.ContainsKey(objType))
+                if (Cache.ContainsKey(objType))
                 {
-                    if (!HandlerCache[objType].Contains(handlerType))
+                    if (!Cache[objType].Contains(handlerType))
                     {
-                        HandlerCache[objType].Add(handlerType);
+                        Cache[objType].Add(handlerType);
                     }
                 }
                 else
                 {
-                    HandlerCache.Add(objType, new [] { handlerType });
+                    Cache.Add(objType, new [] { handlerType });
                 }
             }
         }
@@ -82,8 +80,8 @@ namespace Our.Umbraco.Ditto
         {
             lock (_cacheLock)
             {
-                return HandlerCache.ContainsKey(objectType)
-                    ? HandlerCache[objectType].ToList()
+                return Cache.ContainsKey(objectType)
+                    ? Cache[objectType].ToList()
                     : Enumerable.Empty<Type>();
             }
         }

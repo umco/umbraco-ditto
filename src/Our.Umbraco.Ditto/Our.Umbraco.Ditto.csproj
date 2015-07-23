@@ -107,6 +107,7 @@
     <Compile Include="ComponentModel\TypeConverters\DittoHtmlStringConverter.cs" />
     <Compile Include="ComponentModel\ValueResolvers\AppSettingValueResolver.cs" />
     <Compile Include="ComponentModel\ValueResolvers\CurrentContentAsValueResolver.cs" />
+    <Compile Include="ComponentModel\ValueResolvers\DittoValueResolverRegistry.cs" />
     <Compile Include="ComponentModel\ValueResolvers\DittoValueResolver.cs" />
     <Compile Include="ComponentModel\ValueResolvers\DittoValueResolverContext.cs" />
     <Compile Include="ComponentModel\ValueResolvers\UmbracoDictionaryValueResolver.cs" />

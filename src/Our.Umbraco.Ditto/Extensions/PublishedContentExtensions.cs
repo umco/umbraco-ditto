@@ -400,8 +400,19 @@
             IEnumerable<DittoValueResolverContext> valueResolverContexts = null)
         {
             // Check the property for an associated value attribute, otherwise fall-back on expected behaviour.
-            var valueAttr = propertyInfo.GetCustomAttribute<DittoValueResolverAttribute>(true)
-                ?? new UmbracoPropertyAttribute();
+            var valueAttr = propertyInfo.GetCustomAttribute<DittoValueResolverAttribute>(true);
+
+            if (valueAttr == null)
+            {
+                // Check for globally registerd resolver
+                valueAttr = DittoValueResolverRegistry.Instance.GetRegisteredResolverAttributeFor(propertyInfo.PropertyType);
+            }
+
+            if (valueAttr == null)
+            {
+                // Default to umbraco property attribute
+                valueAttr = new UmbracoPropertyAttribute();
+            }
 
             // Time custom value-resolver.
             using (DisposableTimer.DebugDuration<object>(string.Format("Custom ValueResolver ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
