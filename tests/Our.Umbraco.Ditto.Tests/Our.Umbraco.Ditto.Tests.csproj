@@ -211,6 +211,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ConversionHandlerTests.cs" />
+    <Compile Include="GlobalValueResolverTests.cs" />
     <Compile Include="ValueResolverContextTests.cs" />
     <Compile Include="CurrentContentTests.cs" />
     <Compile Include="AppSettingsTests.cs" />

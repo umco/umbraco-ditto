@@ -91,6 +91,7 @@
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
+    <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandlerRegistry.cs" />
     <Compile Include="ComponentModel\DittoConversionHandlerContext.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandler.cs" />
     <Compile Include="ComponentModel\PublishedContentContext.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="ComponentModel\TypeConverters\DittoHtmlStringConverter.cs" />
     <Compile Include="ComponentModel\ValueResolvers\AppSettingValueResolver.cs" />
     <Compile Include="ComponentModel\ValueResolvers\CurrentContentAsValueResolver.cs" />
+    <Compile Include="ComponentModel\ValueResolvers\DittoValueResolverRegistry.cs" />
     <Compile Include="ComponentModel\ValueResolvers\DittoValueResolver.cs" />
     <Compile Include="ComponentModel\ValueResolvers\DittoValueResolverContext.cs" />
     <Compile Include="ComponentModel\ValueResolvers\UmbracoDictionaryValueResolver.cs" />

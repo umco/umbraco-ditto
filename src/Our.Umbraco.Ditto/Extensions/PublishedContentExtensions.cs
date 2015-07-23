@@ -400,8 +400,19 @@
             IEnumerable<DittoValueResolverContext> valueResolverContexts = null)
         {
             // Check the property for an associated value attribute, otherwise fall-back on expected behaviour.
-            var valueAttr = propertyInfo.GetCustomAttribute<DittoValueResolverAttribute>(true)
-                ?? new UmbracoPropertyAttribute();
+            var valueAttr = propertyInfo.GetCustomAttribute<DittoValueResolverAttribute>(true);
+
+            if (valueAttr == null)
+            {
+                // Check for globally registerd resolver
+                valueAttr = DittoValueResolverRegistry.Instance.GetRegisteredResolverAttributeFor(propertyInfo.PropertyType);
+            }
+
+            if (valueAttr == null)
+            {
+                // Default to umbraco property attribute
+                valueAttr = new UmbracoPropertyAttribute();
+            }
 
             // Time custom value-resolver.
             using (DisposableTimer.DebugDuration<object>(string.Format("Custom ValueResolver ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
@@ -662,6 +673,12 @@
                 ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverting();
             }
 
+            // Check for globaly registered handlers
+            foreach (var handlerType in DittoConversionHandlerRegistry.Instance.GetRegisteredHandlerTypesFor(type))
+            {
+                ((DittoConversionHandler)handlerType.GetInstance(conversionCtx)).OnConverting();
+            }
+
             // Check for method level DittoOnConvertedAttributes
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(x => x.GetCustomAttribute<DittoOnConvertingAttribute>() != null))
@@ -707,6 +724,12 @@
             foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
             {
                 ((DittoConversionHandler)attr.HandlerType.GetInstance(conversionCtx)).OnConverted();
+            }
+
+            // Check for globaly registered handlers
+            foreach (var handlerType in DittoConversionHandlerRegistry.Instance.GetRegisteredHandlerTypesFor(type))
+            {
+                ((DittoConversionHandler)handlerType.GetInstance(conversionCtx)).OnConverted();
             }
 
             // Check for method level DittoOnConvertedAttributes
