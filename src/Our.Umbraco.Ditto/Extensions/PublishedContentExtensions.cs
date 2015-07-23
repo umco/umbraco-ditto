@@ -342,7 +342,7 @@
                                 () =>
                                 {
                                     // Get the value from Umbraco.
-                                    object propertyValue = GetResovledValue(content, culture, deferredPropertyInfo, localInstance, valueResolverContexts);
+                                    object propertyValue = GetResolvedValue(content, culture, deferredPropertyInfo, localInstance, valueResolverContexts);
                                     return GetConvertedValue(content, culture, deferredPropertyInfo, propertyValue, localInstance);
                                 }));
                     }
@@ -377,7 +377,7 @@
 
                         // Set the value normally.
                         // ReSharper disable once PossibleMultipleEnumeration
-                        object propertyValue = GetResovledValue(content, culture, propertyInfo, instance, valueResolverContexts);
+                        object propertyValue = GetResolvedValue(content, culture, propertyInfo, instance, valueResolverContexts);
                         object result = GetConvertedValue(content, culture, propertyInfo, propertyValue, instance);
 
                         propertyInfo.SetValue(instance, result, null);
@@ -403,7 +403,7 @@
         /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
         /// </param>
         /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
-        private static object GetResovledValue(
+        private static object GetResolvedValue(
             IPublishedContent content,
             CultureInfo culture,
             PropertyInfo propertyInfo,
