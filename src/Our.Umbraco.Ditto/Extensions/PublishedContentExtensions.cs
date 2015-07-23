@@ -263,20 +263,23 @@
             bool hasParameter = false;
             if (constructorParams == null)
             {
-                var constructor = type.GetConstructors().OrderBy(x => x.GetParameters().Length).First();
-                constructorParams = constructor.GetParameters();
-                ConstructorCache.TryAdd(type, constructorParams);
+                var constructor = type.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault();
+                if (constructor != null)
+                {
+                    constructorParams = constructor.GetParameters();
+                    ConstructorCache.TryAdd(type, constructorParams);
+                }
             }
 
             // If not already an instance, create an instance of the object
             if (instance == null)
             {
-                if (constructorParams.Length == 0)
+                if (constructorParams != null && constructorParams.Length == 0)
                 {
                     // Internally this uses Activator.CreateInstance which is heavily optimized.
                     instance = type.GetInstance();
                 }
-                else if (constructorParams.Length == 1 & constructorParams[0].ParameterType == typeof(IPublishedContent))
+                else if (constructorParams != null && constructorParams.Length == 1 & constructorParams[0].ParameterType == typeof(IPublishedContent))
                 {
                     // This extension method is about 7x faster than the native implementation.
                     instance = type.GetInstance(content);
@@ -284,7 +287,15 @@
                 }
                 else
                 {
-                    throw new InvalidOperationException(string.Format("Can't convert IPublishedContent to {0} as it has no valid constructor. A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.", type));
+                    // No valid constructor, but see if the value can be cast to the type
+                    if (type.IsInstanceOfType(content))
+                    {
+                        instance = content;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(string.Format("Can't convert IPublishedContent to {0} as it has no valid constructor. A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.", type));
+                    }
                 }
             }
 
