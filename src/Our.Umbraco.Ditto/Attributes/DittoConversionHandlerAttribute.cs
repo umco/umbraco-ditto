@@ -3,7 +3,7 @@
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// The Ditt conversion handler attribute.
+    /// The Ditto conversion handler attribute.
     /// Provides the ability to associate a handler class with a model to handle pre/post conversion custom logic.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
