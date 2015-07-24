@@ -1,7 +1,7 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using global::Umbraco.Web;
+﻿using global::Umbraco.Web;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// The Umbraco dictionary value resolver.
     /// </summary>

@@ -1,15 +1,14 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+
+using global::Umbraco.Core.Models;
+
+namespace Our.Umbraco.Ditto
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Globalization;
-    using System.Collections;
-    using System.Web;
-
-    using global::Umbraco.Core.Models;
-
     /// <summary>
-    /// The Ditto value resolver provides reusable methods for returning property values from Umbraco.
+    /// The Ditto value resolver.
+    /// Provides reusable methods for returning property values from Umbraco.
     /// </summary>
     public abstract class DittoValueResolver
     {

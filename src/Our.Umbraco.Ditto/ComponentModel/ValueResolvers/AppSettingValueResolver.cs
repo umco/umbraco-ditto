@@ -1,9 +1,7 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System.ComponentModel;
-    using System.Globalization;
-    using System.Web.Configuration;
+﻿using System.Web.Configuration;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// The web.config app setting value resolver.
     /// </summary>

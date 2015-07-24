@@ -1,9 +1,8 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System;
+using global::Umbraco.Core.Models;
+
+namespace Our.Umbraco.Ditto
 {
-    using System;
-
-    using global::Umbraco.Core.Models;
-
     /// <summary>
     /// The current content value resolver.
     /// </summary>

@@ -1,11 +1,10 @@
 ﻿using System.Reflection;
+using global::Umbraco.Core;
+using global::Umbraco.Core.Models;
+using global::Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
 {
-    using global::Umbraco.Core;
-    using global::Umbraco.Core.Models;
-    using global::Umbraco.Web;
-
     /// <summary>
     /// The Umbraco property value resolver.
     /// </summary>

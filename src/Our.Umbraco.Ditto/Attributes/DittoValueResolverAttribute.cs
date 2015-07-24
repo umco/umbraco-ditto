@@ -11,6 +11,12 @@
     {
         private readonly Type _resolverType;
 
+        /// <summary>
+        /// Gets the type of the resolver.
+        /// </summary>
+        /// <value>
+        /// The type of the resolver.
+        /// </value>
         public Type ResolverType
         {
             get
@@ -19,6 +25,11 @@
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoValueResolverAttribute"/> class.
+        /// </summary>
+        /// <param name="resolverType">Type of the resolver.</param>
+        /// <exception cref="System.ArgumentException">Resolver type must inherit from DittoValueResolver;resolverType</exception>
         public DittoValueResolverAttribute(Type resolverType)
         {
             if (!typeof(DittoValueResolver).IsAssignableFrom(resolverType))
@@ -27,6 +38,13 @@
             _resolverType = resolverType;
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object obj)
         {
             var other = obj as DittoValueResolverAttribute;
@@ -34,6 +52,12 @@
                 && other.ResolverType.AssemblyQualifiedName == _resolverType.AssemblyQualifiedName;
         }
 
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
         public override int GetHashCode()
         {
             return _resolverType.AssemblyQualifiedName.GetHashCode();
