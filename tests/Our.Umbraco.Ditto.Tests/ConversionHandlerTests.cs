@@ -65,7 +65,7 @@
         #endregion
 
         [Test]
-        public void Can_Run_Conversion_Handlers()
+        public void Conversion_Handlers_Can_Run()
         {
             var content = new PublishedContentMock
             {
@@ -92,7 +92,7 @@
         }
 
         [Test]
-        public void Can_Run_Global_Conversion_Handlers()
+        public void Conversion_Handlers_Can_Run_Global()
         {
             var content = new PublishedContentMock
             {

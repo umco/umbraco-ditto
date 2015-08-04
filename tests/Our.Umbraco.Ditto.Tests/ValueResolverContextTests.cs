@@ -36,7 +36,7 @@ namespace Our.Umbraco.Ditto.Tests
         }
 
         [Test]
-        public void Value_Converter_Context_Resolves()
+        public void ValueResolverContext_Resolves()
         {
 
             var content = new PublishedContentMock();
@@ -51,7 +51,7 @@ namespace Our.Umbraco.Ditto.Tests
         }
 
         [Test]
-        public void Value_Converter_Context_Resolves_Without_Registered_Context()
+        public void ValueResolverContext_Resolves_Without_Registered_Context()
         {
             var content = new PublishedContentMock();
 
