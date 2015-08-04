@@ -39,13 +39,7 @@
             Assert.That(model.MyPublishedContent.Name, Is.EqualTo("Mock Published Content"));
         }
 
-        [Test]
-        public void Custom_Value_Resolver_Resolves()
-        {
-            var content = new PublishedContentMock();
-            var model = content.As<ComplexModel>();
-            Assert.That(model.Name, Is.EqualTo("Name Test"));
-        }
+        
 
         [Test]
         public void Can_Resolve_Prefixed_Properties()
