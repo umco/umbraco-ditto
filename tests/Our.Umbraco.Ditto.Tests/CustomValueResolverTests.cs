@@ -8,11 +8,11 @@
     {
         public class MyModel
         {
-            [DittoValueResolver(typeof(NameValueResolver))]
+            [DittoValueResolver(typeof(MyCustomValueResolver))]
             public string Name { get; set; }
         }
 
-        public class NameValueResolver : DittoValueResolver
+        public class MyCustomValueResolver : DittoValueResolver
         {
             public override object ResolveValue()
             {
@@ -21,7 +21,7 @@
         }
 
         [Test]
-        public void Custom_Value_Resolver_Resolves()
+        public void Custom_ValueResolver_Resolves()
         {
             var content = new PublishedContentMock()
             {

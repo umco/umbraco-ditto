@@ -3,6 +3,7 @@
     using System;
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;
+    using global::Umbraco.Core.Models;
 
     [TestFixture]
     public class BasicMappingTests
@@ -12,12 +13,22 @@
             public string Name { get; set; }
         }
 
-        public class BasicModelWithProperty
+        public class BasicModelWithId
         {
-            public string Name { get; set; }
+            public int Id { get; set; }
 
-            [UmbracoProperty("myprop")]
+            [UmbracoProperty("Id")]
+            public int MyProperty { get; set; }
+        }
+
+        public class BasicModelWithStringProperty
+        {
             public string MyProperty { get; set; }
+        }
+
+        public class BasicModelWithPublishedContentProperty
+        {
+            public IPublishedContent MyProperty { get; set; }
         }
 
         [Test]
@@ -36,13 +47,29 @@
         }
 
         [Test]
-        public void Basic_Property_Returned()
+        public void Basic_Id_And_Property_IsMapped()
         {
-            var value = "myval";
+            var id = 1234;
+
+            var content = new PublishedContentMock
+            {
+                Id = id
+            };
+
+            var model = content.As<BasicModelWithId>();
+
+            Assert.That(model.Id, Is.EqualTo(id));
+            Assert.That(model.MyProperty, Is.EqualTo(id));
+        }
+
+        [Test]
+        public void Basic_String_Property_IsMapped()
+        {
+            var value = "myValue";
 
             var property = new PublishedContentPropertyMock
             {
-                Alias = "myprop",
+                Alias = "myProperty",
                 Value = value
             };
 
@@ -51,7 +78,28 @@
                 Properties = new[] { property }
             };
 
-            var model = content.As<BasicModelWithProperty>();
+            var model = content.As<BasicModelWithStringProperty>();
+
+            Assert.That(model.MyProperty, Is.EqualTo(value));
+        }
+
+        [Test]
+        public void Basic_PublishedContent_Property_IsMapped()
+        {
+            var value = new PublishedContentMock();
+
+            var property = new PublishedContentPropertyMock
+            {
+                Alias = "myProperty",
+                Value = value
+            };
+
+            var content = new PublishedContentMock
+            {
+                Properties = new[] { property }
+            };
+
+            var model = content.As<BasicModelWithPublishedContentProperty>();
 
             Assert.That(model.MyProperty, Is.EqualTo(value));
         }
@@ -64,7 +112,7 @@
 
             var property = new PublishedContentPropertyMock
             {
-                Alias = "myprop",
+                Alias = "myProperty",
                 Value = value
             };
 
@@ -78,7 +126,7 @@
                 // We are passing an `IPublishedContent` object to a property (of type `string`),
                 // so we know that internally Ditto will try calling `content.As<string>()`,
                 // which will throw an `InvalidOperationException` exception.
-                var model = content.As<BasicModelWithProperty>();
+                var model = content.As<BasicModelWithStringProperty>();
             };
 
             Assert.Throws<InvalidOperationException>(code);

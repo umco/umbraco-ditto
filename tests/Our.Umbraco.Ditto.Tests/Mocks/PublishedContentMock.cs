@@ -1,9 +1,8 @@
-﻿using System.Collections.ObjectModel;
-
-namespace Our.Umbraco.Ditto.Tests.Mocks
+﻿namespace Our.Umbraco.Ditto.Tests.Mocks
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
@@ -48,8 +47,12 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
         public IPublishedContentProperty GetProperty(string alias, bool recurse)
         {
             var prop = Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
+
             if (prop == null && recurse && Parent != null)
+            {
                 return Parent.GetProperty(alias, true);
+            }
+
             return prop;
         }
 
