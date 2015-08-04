@@ -211,6 +211,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="BasicMappingTests.cs" />
     <Compile Include="ConversionHandlerTests.cs" />
     <Compile Include="GlobalValueResolverTests.cs" />
     <Compile Include="ValueResolverContextTests.cs" />
@@ -224,7 +225,6 @@
     <Compile Include="Models\InnerContentModel.cs" />
     <Compile Include="Models\ComplexModel.cs" />
     <Compile Include="Models\PrefixedModel.cs" />
-    <Compile Include="Models\SimpleModel.cs" />
     <Compile Include="PublishedContentTests.cs" />
     <Compile Include="TypeConverters\MockPublishedContentConverter.cs" />
     <Compile Include="TypeInferenceTests.cs" />

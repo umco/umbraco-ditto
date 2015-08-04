@@ -1,15 +1,14 @@
 ﻿namespace Our.Umbraco.Ditto.Tests.Models
 {
-    using System.ComponentModel;
-
-    using Our.Umbraco.Ditto.Tests.TypeConverters;
-    using global::Umbraco.Core.Models;
+	using System.ComponentModel;
+	using global::Umbraco.Core.Models;
+	using Our.Umbraco.Ditto.Tests.TypeConverters;
 
     public class ComplexModel
     {
         public int Id { get; set; }
 
-        [DittoValueResolver(typeof(NameValueResovler))]
+        [DittoValueResolver(typeof(NameValueResolver))]
         public string Name { get; set; }
 
         [UmbracoProperty("myprop")]
@@ -18,12 +17,9 @@
         [UmbracoProperty("Id")]
         [TypeConverter(typeof(MockPublishedContentConverter))]
         public IPublishedContent MyPublishedContent { get; set; }
-
-        [AppSetting("MyAppSettingKey")]
-        public string MyAppSettingProperty { get; set; }
     }
 
-    public class NameValueResovler : DittoValueResolver
+    public class NameValueResolver : DittoValueResolver
     {
         public override object ResolveValue()
         {

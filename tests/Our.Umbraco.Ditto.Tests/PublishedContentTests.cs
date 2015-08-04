@@ -1,92 +1,16 @@
-﻿using System.Collections.Generic;
-
-namespace Our.Umbraco.Ditto.Tests
+﻿namespace Our.Umbraco.Ditto.Tests
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
-
+    using global::Umbraco.Core.Models;
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;
     using Our.Umbraco.Ditto.Tests.Models;
-    using global::Umbraco.Core.Models;
-    using global::Umbraco.Web;
-    using System;
 
     [TestFixture]
     public class PublishedContentTests
     {
-        [Test]
-        public void Name_IsMapped()
-        {
-            var name = "MyCustomName";
-
-            var content = new PublishedContentMock
-            {
-                Name = name
-            };
-
-            var model = content.As<SimpleModel>();
-
-            Assert.That(model.Name, Is.EqualTo(name));
-        }
-
-        [Test]
-        public void Children_Counted()
-        {
-            var child = new PublishedContentMock();
-
-            var content = new PublishedContentMock
-            {
-                Children = new[] {child}
-            };
-
-            //Do your Ditto magic here, and assert it maps as it should
-            Assert.That(content.Children.Count(), Is.EqualTo(1));
-        }
-
-        [Test]
-        public void Property_Returned()
-        {
-            var value = "myval";
-
-            var property = new PublishedContentPropertyMock
-            {
-                Alias = "myprop",
-                Value = value
-            };
-
-            var content = new PublishedContentMock
-            {
-                Properties = new[] { property }
-            };
-
-            var model = content.As<SimpleModel>();
-
-            Assert.That(model.MyProperty, Is.EqualTo(value));
-        }
-
-        [Test]
-        [ExpectedException(typeof(System.InvalidOperationException))]
-        public void Property_Converted()
-        {
-            // With this kind of mocking, we dont need property value converters, because they would already
-            // have run at this point, so we just mock the result of the conversion.
-
-            var value = new PublishedContentMock();
-
-            var property = new PublishedContentPropertyMock
-            {
-                Alias = "myprop",
-                Value = value
-            };
-
-            var content = new PublishedContentMock
-            {
-                Properties = new[] { property }
-            };
-
-            var model = content.As<SimpleModel>();
-        }
-
         [Test]
         public void Complex_Property_Convertered()
         {
@@ -124,22 +48,13 @@ namespace Our.Umbraco.Ditto.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(System.InvalidOperationException))]
-        public void Content_To_String()
-        {
-            var content = new PublishedContentMock();
-
-            content.As<string>();
-        }
-
-        [Test]
         public void Can_Resolve_Prefixed_Properties()
         {
             var prop1 = new PublishedContentPropertyMock
             {
                 Alias = "siteName",
                 Value = "Name"
-            }; 
+            };
             var prop2 = new PublishedContentPropertyMock
             {
                 Alias = "siteDescription",
@@ -153,7 +68,7 @@ namespace Our.Umbraco.Ditto.Tests
 
             var content = new PublishedContentMock
             {
-                Properties = new[] {prop1, prop2, prop3}
+                Properties = new[] { prop1, prop2, prop3 }
             };
 
             var converted = content.As<PrefixedModel>();
@@ -215,18 +130,6 @@ namespace Our.Umbraco.Ditto.Tests
         }
 
         [Test]
-        public void Property_AppSetting_Returned()
-        {
-            var value = "MyAppSettingValue";
-
-            var content = new PublishedContentMock();
-
-            var model = content.As<ComplexModel>();
-
-            Assert.That(model.MyAppSettingProperty, Is.EqualTo(value));
-        }
-
-        [Test]
         public void IPublishedContent_Property_Value_Triggers_Recursive_As()
         {
             var content1 = new PublishedContentMock
@@ -268,7 +171,7 @@ namespace Our.Umbraco.Ditto.Tests
                 contentList.Add(new PublishedContentMock
                 {
                     Id = i,
-                    Name = "Node "+ i,
+                    Name = "Node " + i,
                     Properties = new[]
                     {
                         new PublishedContentPropertyMock

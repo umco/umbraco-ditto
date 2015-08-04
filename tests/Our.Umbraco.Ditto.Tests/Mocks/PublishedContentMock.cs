@@ -5,8 +5,6 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Core.Models.PublishedContent;
