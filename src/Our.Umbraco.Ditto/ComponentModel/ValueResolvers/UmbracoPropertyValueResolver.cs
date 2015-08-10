@@ -58,7 +58,7 @@ namespace Our.Umbraco.Ditto
             // Try fetching the value.
             if (!umbracoPropertyName.IsNullOrWhiteSpace())
             {
-                var contentProperty = contentType.GetProperty(umbracoPropertyName);
+                var contentProperty = contentType.GetProperty(umbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
                 propertyValue = contentProperty != null
                     ? contentProperty.GetValue(content, null)
                     : content.GetPropertyValue(umbracoPropertyName, recursive);
@@ -68,7 +68,7 @@ namespace Our.Umbraco.Ditto
             if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
                 && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
             {
-                var contentProperty = contentType.GetProperty(altUmbracoPropertyName);
+                var contentProperty = contentType.GetProperty(altUmbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
                 propertyValue = contentProperty != null
                     ? contentProperty.GetValue(content, null)
                     : content.GetPropertyValue(altUmbracoPropertyName, recursive);

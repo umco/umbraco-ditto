@@ -211,6 +211,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="CaseSensitivityTests.cs" />
     <Compile Include="BasicMappingTests.cs" />
     <Compile Include="CastableInterfaceTests.cs" />
     <Compile Include="CustomTypeConverterTests.cs" />
