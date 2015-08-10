@@ -1,10 +1,10 @@
-﻿using System.Reflection;
-using global::Umbraco.Core;
-using global::Umbraco.Core.Models;
-using global::Umbraco.Web;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
+    using System.Reflection;
+    using global::Umbraco.Core;
+    using global::Umbraco.Core.Models;
+    using global::Umbraco.Web;
+
     /// <summary>
     /// The Umbraco property value resolver.
     /// </summary>
@@ -22,7 +22,7 @@ namespace Our.Umbraco.Ditto
 
             var recursive = Attribute.Recursive;
             var propName = Context.PropertyDescriptor != null ? Context.PropertyDescriptor.Name : string.Empty;
-            var altPropName = "";
+            var altPropName = string.Empty;
 
             // Check for umbraco properties attribute on class
             if (Context.PropertyDescriptor != null)

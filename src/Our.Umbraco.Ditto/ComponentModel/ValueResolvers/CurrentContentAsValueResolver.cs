@@ -1,8 +1,8 @@
-﻿using System;
-using global::Umbraco.Core.Models;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
+    using System;
+    using global::Umbraco.Core.Models;
+
     /// <summary>
     /// The current content value resolver.
     /// </summary>
@@ -22,8 +22,9 @@ namespace Our.Umbraco.Ditto
             if (Context.PropertyDescriptor.PropertyType == Context.PropertyDescriptor.ComponentType)
             {
                 throw new InvalidOperationException(
-                    string.Format("Unable to process property type '{0}', it is the same as the containing model type.",
-                    Context.PropertyDescriptor.PropertyType.Name));
+                    string.Format(
+                        "Unable to process property type '{0}', it is the same as the containing model type.",
+                        Context.PropertyDescriptor.PropertyType.Name));
             }
 
             return Content.As(Context.PropertyDescriptor.PropertyType);

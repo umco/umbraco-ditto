@@ -5,5 +5,6 @@
     /// Provides a way of providing contextual information to value resolvers.
     /// </summary>
     public class DittoValueResolverContext : PublishedContentContext
-    { }
+    {
+    }
 }

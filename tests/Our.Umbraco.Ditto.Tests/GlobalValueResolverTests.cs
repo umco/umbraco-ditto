@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using Umbraco.Core;
-using Umbraco.Web.Media.EmbedProviders.Settings;
-
-namespace Our.Umbraco.Ditto.Tests
+﻿namespace Our.Umbraco.Ditto.Tests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;
+    using global::Umbraco.Core;
+    using global::Umbraco.Web.Media.EmbedProviders.Settings;
 
     [TestFixture]
     public class GlobalValueResolverTests
@@ -33,7 +32,8 @@ namespace Our.Umbraco.Ditto.Tests
         {
             public MyIntValueResolverAttr()
                 : base(typeof(MyIntValueResolver))
-            { }
+            {
+            }
 
             public int AttrProp { get; set; }
         }
@@ -42,7 +42,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             public override object ResolveValue()
             {
-                return new MyIntModel { Value = Attribute.AttrProp }; ;
+                return new MyIntModel { Value = Attribute.AttrProp };
             }
         }
 

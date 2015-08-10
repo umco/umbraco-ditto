@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
-
+    using System.Collections.Generic;
     using global::Umbraco.Core;
     using global::Umbraco.Web.Models;
 
@@ -31,7 +29,7 @@ namespace Our.Umbraco.Ditto
         /// The <see cref="Type"/> of items to return.
         /// </typeparam>
         /// <returns>
-        /// The resolved <see cref="T"/>.
+        /// The resolved generic <see cref="Type"/>.
         /// </returns>
         public static T As<T>(
             this RenderModel model,

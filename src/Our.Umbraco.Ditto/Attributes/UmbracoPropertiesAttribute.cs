@@ -12,7 +12,8 @@
         /// Initializes a new instance of the <see cref="UmbracoPropertiesAttribute"/> class.
         /// </summary>
         public UmbracoPropertiesAttribute()
-        { }
+        {
+        }
 
         /// <summary>
         /// Gets or sets the prefix.
@@ -20,8 +21,11 @@
         public string Prefix { get; set; }
 
         /// <summary>
-        /// Gets or sets whether the properties should be retrieved recursively up the tree.
+        /// Gets or sets a value indicating whether the properties should be retrieved recursively up the tree.
         /// </summary>
+        /// <value>
+        ///   <c>true</c> if [recursive]; otherwise, <c>false</c>.
+        /// </value>
         public bool Recursive { get; set; }
     }
 }

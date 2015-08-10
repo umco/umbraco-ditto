@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
-    /// Registory for globaly registered value resovlers.
+    /// Registry for globally registered value resolvers.
     /// </summary>
     internal class DittoValueResolverRegistry
     {
@@ -14,20 +14,21 @@ namespace Our.Umbraco.Ditto
         private static readonly Dictionary<Type, DittoValueResolverAttribute> Cache = new Dictionary<Type, DittoValueResolverAttribute>();
 
         /// <summary>
-        /// The lock object to make Cache access thread safe
-        /// </summary>
-        private static object _cacheLock = new object();
-
-        /// <summary>
         /// Static holder for singleton instance.
         /// </summary>
-        private static readonly Lazy<DittoValueResolverRegistry> _instance = new Lazy<DittoValueResolverRegistry>(() => new DittoValueResolverRegistry());
+        private static readonly Lazy<DittoValueResolverRegistry> InternalInstance = new Lazy<DittoValueResolverRegistry>(() => new DittoValueResolverRegistry());
 
         /// <summary>
-        /// Private constructor to prevent direct instantiation..
+        /// The lock object to make Cache access thread safe
+        /// </summary>
+        private static object cacheLock = new object();
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="DittoValueResolverRegistry"/> class from being created.
         /// </summary>
         private DittoValueResolverRegistry()
-        { }
+        {
+        }
 
         /// <summary>
         /// Gets the singleton instance.
@@ -39,7 +40,7 @@ namespace Our.Umbraco.Ditto
         {
             get
             {
-                return _instance.Value;
+                return InternalInstance.Value;
             }
         }
 
@@ -62,7 +63,7 @@ namespace Our.Umbraco.Ditto
         public void RegisterResolverAttribute<TObjectType, TResolverAttributeType>()
             where TResolverAttributeType : DittoValueResolverAttribute, new()
         {
-            RegisterResolverAttribute<TObjectType, TResolverAttributeType>((TResolverAttributeType)typeof(TResolverAttributeType).GetInstance());
+            this.RegisterResolverAttribute<TObjectType, TResolverAttributeType>((TResolverAttributeType)typeof(TResolverAttributeType).GetInstance());
         }
 
         /// <summary>
@@ -70,13 +71,13 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object type.</typeparam>
         /// <typeparam name="TResolverAttributeType">The type of the resolver attribute type.</typeparam>
-        /// <param name="instance">An instance of the value resolver attibute type to use.</param>
+        /// <param name="instance">An instance of the value resolver attribute type to use.</param>
         public void RegisterResolverAttribute<TObjectType, TResolverAttributeType>(TResolverAttributeType instance)
             where TResolverAttributeType : DittoValueResolverAttribute
         {
             var objType = typeof(TObjectType);
 
-            lock (_cacheLock)
+            lock (cacheLock)
             {
                 if (Cache.ContainsKey(objType))
                 {
@@ -93,10 +94,12 @@ namespace Our.Umbraco.Ditto
         /// Gets the registered value resolver attribute for the given object type.
         /// </summary>
         /// <param name="objectType">Type of the object.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Returns the registered value resolver attribute for the given object type.
+        /// </returns>
         public DittoValueResolverAttribute GetRegisteredResolverAttributeFor(Type objectType)
         {
-            lock (_cacheLock)
+            lock (cacheLock)
             {
                 return Cache.ContainsKey(objectType)
                     ? Cache[objectType]

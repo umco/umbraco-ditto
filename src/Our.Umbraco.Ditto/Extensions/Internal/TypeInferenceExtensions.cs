@@ -1,10 +1,9 @@
-﻿using Umbraco.Core;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using global::Umbraco.Core;
 
     /// <summary>
     /// Extensions methods for <see cref="T:System.Type"/> for inferring type properties.
@@ -119,7 +118,9 @@ namespace Our.Umbraco.Ditto
         {
             // if it's not an enumerable why do you call this method all ?
             if (!type.IsEnumerable())
+            {
                 return null;
+            }
 
             var interfaces = type.GetInterfaces().ToList();
             if (type.IsInterface && interfaces.All(i => i != type))
@@ -127,7 +128,8 @@ namespace Our.Umbraco.Ditto
                 interfaces.Add(type);
             }
 
-            return interfaces.Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            return interfaces
+                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 .Select(i => i.GetGenericArguments()[0]).FirstOrDefault();
         }
     }

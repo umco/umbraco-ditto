@@ -1,10 +1,9 @@
-﻿using System;
-using System.ComponentModel;
-
-using global::Umbraco.Core.Models;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
+    using System;
+    using System.ComponentModel;
+    using global::Umbraco.Core.Models;
+
     /// <summary>
     /// The published content context for supplying contextual information about the 
     /// <see cref="IPublishedContent"/> that is undergoing conversion.

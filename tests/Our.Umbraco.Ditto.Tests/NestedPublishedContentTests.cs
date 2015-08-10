@@ -2,9 +2,9 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using global::Umbraco.Core.Models;
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;
+    using global::Umbraco.Core.Models;
 
     [TestFixture]
     public class NestedPublishedContentTests

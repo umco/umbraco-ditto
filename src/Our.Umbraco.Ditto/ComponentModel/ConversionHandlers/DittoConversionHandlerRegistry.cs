@@ -1,34 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     /// <summary>
-    /// Registory for globaly registered conversion handlers.
+    /// Registry for globally registered conversion handlers.
     /// </summary>
     internal class DittoConversionHandlerRegistry
     {
         /// <summary>
         /// The cache for storing handler information.
         /// </summary>
-        private static readonly Dictionary<Type, IList<Type>> Cache = new  Dictionary<Type, IList<Type>>();
-
-        /// <summary>
-        /// The lock object to make Cache access thread safe
-        /// </summary>
-        private static object _cacheLock = new object();
+        private static readonly Dictionary<Type, IList<Type>> Cache = new Dictionary<Type, IList<Type>>();
 
         /// <summary>
         /// Static holder for singleton instance.
         /// </summary>
-        private static readonly Lazy<DittoConversionHandlerRegistry> _instance = new Lazy<DittoConversionHandlerRegistry>(() => new DittoConversionHandlerRegistry());
+        private static readonly Lazy<DittoConversionHandlerRegistry> InternalInstance = new Lazy<DittoConversionHandlerRegistry>(() => new DittoConversionHandlerRegistry());
 
         /// <summary>
-        /// Private constructor to prevent direct instantiation..
+        /// The lock object to make Cache access thread safe
+        /// </summary>
+        private static object cacheLock = new object();
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="DittoConversionHandlerRegistry"/> class from being created.
         /// </summary>
         private DittoConversionHandlerRegistry()
-        { }
+        {
+        }
 
         /// <summary>
         /// Gets the singleton instance.
@@ -40,7 +41,7 @@ namespace Our.Umbraco.Ditto
         {
             get
             {
-                return _instance.Value;
+                return InternalInstance.Value;
             }
         }
 
@@ -55,7 +56,7 @@ namespace Our.Umbraco.Ditto
             var objType = typeof(TObjectType);
             var handlerType = typeof(THandlerType);
 
-            lock (_cacheLock)
+            lock (cacheLock)
             {
                 if (Cache.ContainsKey(objType))
                 {
@@ -66,7 +67,7 @@ namespace Our.Umbraco.Ditto
                 }
                 else
                 {
-                    Cache.Add(objType, new [] { handlerType });
+                    Cache.Add(objType, new[] { handlerType });
                 }
             }
         }
@@ -75,10 +76,12 @@ namespace Our.Umbraco.Ditto
         /// Gets the registered handler types for the given object type.
         /// </summary>
         /// <param name="objectType">Type of the object.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Returns a list of registered handlers for the given object type.
+        /// </returns>
         public IEnumerable<Type> GetRegisteredHandlerTypesFor(Type objectType)
         {
-            lock (_cacheLock)
+            lock (cacheLock)
             {
                 return Cache.ContainsKey(objectType)
                     ? Cache[objectType].ToList()

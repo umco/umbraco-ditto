@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using Umbraco.Core;
-using Umbraco.Web.Media.EmbedProviders.Settings;
-
-namespace Our.Umbraco.Ditto.Tests
+﻿namespace Our.Umbraco.Ditto.Tests
 {
+    using System.Collections.Generic;
+    using System.Globalization;
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;
+    using global::Umbraco.Core;
+    using global::Umbraco.Web.Media.EmbedProviders.Settings;
 
     [TestFixture]
     public class ValueResolverContextTests
@@ -38,7 +37,6 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void ValueResolverContext_Resolves()
         {
-
             var content = new PublishedContentMock();
             var context = new MyValueResolverContext
             {

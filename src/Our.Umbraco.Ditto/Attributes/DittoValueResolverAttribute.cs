@@ -1,6 +1,7 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// The Ditto value attribute, defines how a property can get its value.
@@ -9,7 +10,25 @@
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class DittoValueResolverAttribute : Attribute
     {
-        private readonly Type _resolverType;
+        /// <summary>
+        /// The _resolver type
+        /// </summary>
+        private readonly Type resolverType;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoValueResolverAttribute"/> class.
+        /// </summary>
+        /// <param name="resolverType">Type of the resolver.</param>
+        /// <exception cref="System.ArgumentException">Resolver type must inherit from DittoValueResolver;resolverType</exception>
+        public DittoValueResolverAttribute(Type resolverType)
+        {
+            if (!typeof(DittoValueResolver).IsAssignableFrom(resolverType))
+            {
+                throw new ArgumentException("Resolver type must inherit from DittoValueResolver", "resolverType");
+            }
+
+            this.resolverType = resolverType;
+        }
 
         /// <summary>
         /// Gets the type of the resolver.
@@ -21,21 +40,8 @@
         {
             get
             {
-                return _resolverType;
+                return this.resolverType;
             }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DittoValueResolverAttribute"/> class.
-        /// </summary>
-        /// <param name="resolverType">Type of the resolver.</param>
-        /// <exception cref="System.ArgumentException">Resolver type must inherit from DittoValueResolver;resolverType</exception>
-        public DittoValueResolverAttribute(Type resolverType)
-        {
-            if (!typeof(DittoValueResolver).IsAssignableFrom(resolverType))
-                throw new ArgumentException("Resolver type must inherit from DittoValueResolver", "resolverType");
-
-            _resolverType = resolverType;
         }
 
         /// <summary>
@@ -49,7 +55,7 @@
         {
             var other = obj as DittoValueResolverAttribute;
             return (other != null)
-                && other.ResolverType.AssemblyQualifiedName == _resolverType.AssemblyQualifiedName;
+                && other.ResolverType.AssemblyQualifiedName == this.resolverType.AssemblyQualifiedName;
         }
 
         /// <summary>
@@ -60,7 +66,7 @@
         /// </returns>
         public override int GetHashCode()
         {
-            return _resolverType.AssemblyQualifiedName.GetHashCode();
+            return this.resolverType.AssemblyQualifiedName.GetHashCode();
         }
     }
 }

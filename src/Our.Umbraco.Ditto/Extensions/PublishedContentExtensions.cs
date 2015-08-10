@@ -62,7 +62,7 @@
         /// The <see cref="Type"/> of items to return.
         /// </typeparam>
         /// <returns>
-        /// The resolved <see cref="T"/>.
+        /// The resolved generic <see cref="Type"/>.
         /// </returns>
         public static T As<T>(
             this IPublishedContent content,
