@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
     using System;
-
-    using global::Umbraco.Core;
+    using System.Collections.Generic;
     using global::Umbraco.Web.Models;
 
     /// <summary>
@@ -45,7 +42,7 @@ namespace Our.Umbraco.Ditto
                 return default(T);
             }
 
-            using (DisposableTimer.DebugDuration<T>(string.Format("RenderModel As ({0})", model.Content.DocumentTypeAlias)))
+            using (DittoDisposableTimer.DebugDuration<T>(string.Format("RenderModel As ({0})", model.Content.DocumentTypeAlias)))
             {
                 return model.Content.As<T>(model.CurrentCulture, null, valueResolverContexts, onConverting, onConverted);
             }
