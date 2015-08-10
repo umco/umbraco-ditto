@@ -23,5 +23,14 @@
 
             Assert.That(model.MyProperty, Is.EqualTo(value));
         }
+
+        [Test(Description = "This unit-test is used as a benchmark against the Ditto value-resolver.")]
+        public void AppSetting_Native_Returned()
+        {
+            var value = "MyAppSettingValue";
+            var result = System.Web.Configuration.WebConfigurationManager.AppSettings["MyAppSettingKey"];
+
+            Assert.That(result, Is.EqualTo(value));
+        }
     }
 }
