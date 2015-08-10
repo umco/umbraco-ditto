@@ -211,8 +211,13 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="BasicMappingTests.cs" />
+    <Compile Include="CastableInterfaceTests.cs" />
+    <Compile Include="CustomTypeConverterTests.cs" />
     <Compile Include="ConversionHandlerTests.cs" />
+    <Compile Include="CustomValueResolverTests.cs" />
     <Compile Include="GlobalValueResolverTests.cs" />
+    <Compile Include="PrefixedPropertyTests.cs" />
     <Compile Include="ValueResolverContextTests.cs" />
     <Compile Include="CurrentContentTests.cs" />
     <Compile Include="AppSettingsTests.cs" />
@@ -220,13 +225,7 @@
     <Compile Include="Mocks\PublishedContentMock.cs" />
     <Compile Include="Mocks\PublishedContentPropertyMock.cs" />
     <Compile Include="MockValueResolverTests.cs" />
-    <Compile Include="Models\CalculatedModel.cs" />
-    <Compile Include="Models\InnerContentModel.cs" />
-    <Compile Include="Models\ComplexModel.cs" />
-    <Compile Include="Models\PrefixedModel.cs" />
-    <Compile Include="Models\SimpleModel.cs" />
-    <Compile Include="PublishedContentTests.cs" />
-    <Compile Include="TypeConverters\MockPublishedContentConverter.cs" />
+    <Compile Include="NestedPublishedContentTests.cs" />
     <Compile Include="TypeInferenceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnumerableTests.cs" />
