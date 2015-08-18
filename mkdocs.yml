@@ -3,7 +3,7 @@ site_name: Ditto
 repo_url: https://github.com/leekelleher/umbraco-ditto/tree/develop/docs
 
 pages:
-  - 'Introduction': 'index.md'
+  - 'Ditto': 'index.md'
   - 'Installation': 'install.md'
   - 'Getting started': 'getting-started.md'
   - 'Usage':

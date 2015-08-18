@@ -1,8 +1,15 @@
-# Usage
+# Advanced usage
 
-## Advanced usage - Property attributes
+## Property attributes
 
-To extend the mapping functionality, Ditto offers several attributes to decorate your POCO models: `UmbracoProperty`, `UmbracoDictionary`, `AppSetting` and `DittoIgnore`:
+To extend the mapping functionality, Ditto offers several attributes to decorate your POCO models:
+
+* `UmbracoProperty`
+* `UmbracoDictionary`
+* `AppSetting`
+* `DittoIgnore`
+* `CurrentContentAs`
+
 
 ### `UmbracoProperty`
 

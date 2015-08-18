@@ -19,7 +19,7 @@ public class MyTextModel
 }
 ```
 
-> Note, that **the property names should corresponding with the DocumentType's property alias.** (If you wish to name your properties differently, please [see the documentation about the `UmbracoProperty` attribute.](usage-advanced/#umbracoproperty))
+> Note, that **the property names should corresponding with the DocumentType's property alias.** (If you wish to name your properties differently, please [see the documentation about the `UmbracoProperty` attribute.](usage-advanced-attributes/#umbracoproperty))
 > 
 > The C# class name (`MyTextModel` in this example), does not need to match with the DocumentType alias.
 
@@ -35,6 +35,7 @@ Here is an example of using the `As<T>` method within your MVC view:
 }
 <h1>@poco.Title</h1>
 @poco.BodyText
+<p><img src="@poco.Image" alt="[image]" /></p>
 ```
 
 ### Video demonstrations
