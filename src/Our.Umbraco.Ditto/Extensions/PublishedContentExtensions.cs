@@ -415,7 +415,7 @@
 
             if (valueAttr == null)
             {
-                // Check for globally registerd resolver
+                // Check for globally registered resolver
                 valueAttr = DittoValueResolverRegistry.Instance.GetRegisteredResolverAttributeFor(propertyInfo.PropertyType);
             }
 

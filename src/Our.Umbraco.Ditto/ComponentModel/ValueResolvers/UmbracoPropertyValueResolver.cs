@@ -18,16 +18,16 @@
         /// </returns>
         public override object ResolveValue()
         {
-            var defaultValue = Attribute.DefaultValue;
+            var defaultValue = this.Attribute.DefaultValue;
 
-            var recursive = Attribute.Recursive;
-            var propName = Context.PropertyDescriptor != null ? Context.PropertyDescriptor.Name : string.Empty;
+            var recursive = this.Attribute.Recursive;
+            var propName = this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty;
             var altPropName = string.Empty;
 
             // Check for umbraco properties attribute on class
-            if (Context.PropertyDescriptor != null)
+            if (this.Context.PropertyDescriptor != null)
             {
-                var classAttr = Context.PropertyDescriptor.ComponentType
+                var classAttr = this.Context.PropertyDescriptor.ComponentType
                     .GetCustomAttribute<UmbracoPropertiesAttribute>();
                 if (classAttr != null)
                 {
@@ -43,10 +43,10 @@
                 }
             }
 
-            var umbracoPropertyName = Attribute.PropertyName ?? propName;
-            var altUmbracoPropertyName = Attribute.AltPropertyName ?? altPropName;
+            var umbracoPropertyName = this.Attribute.PropertyName ?? propName;
+            var altUmbracoPropertyName = this.Attribute.AltPropertyName ?? altPropName;
 
-            var content = Context.Instance as IPublishedContent;
+            var content = this.Context.Instance as IPublishedContent;
             if (content == null)
             {
                 return defaultValue;

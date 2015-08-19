@@ -22,7 +22,7 @@
         /// <summary>
         /// The lock object to make Cache access thread safe
         /// </summary>
-        private static object cacheLock = new object();
+        private static readonly object CacheLock = new object();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="DittoConversionHandlerRegistry"/> class from being created.
@@ -56,7 +56,7 @@
             var objType = typeof(TObjectType);
             var handlerType = typeof(THandlerType);
 
-            lock (cacheLock)
+            lock (CacheLock)
             {
                 if (Cache.ContainsKey(objType))
                 {
@@ -81,7 +81,7 @@
         /// </returns>
         public IEnumerable<Type> GetRegisteredHandlerTypesFor(Type objectType)
         {
-            lock (cacheLock)
+            lock (CacheLock)
             {
                 return Cache.ContainsKey(objectType)
                     ? Cache[objectType].ToList()

@@ -19,15 +19,15 @@
         {
             // NOTE: [LK] In order to prevent an infinite loop / stack-overflow, we check if the
             // property's type matches the containing model's type, then we throw an exception.
-            if (Context.PropertyDescriptor.PropertyType == Context.PropertyDescriptor.ComponentType)
+            if (this.Context.PropertyDescriptor.PropertyType == this.Context.PropertyDescriptor.ComponentType)
             {
                 throw new InvalidOperationException(
                     string.Format(
                         "Unable to process property type '{0}', it is the same as the containing model type.",
-                        Context.PropertyDescriptor.PropertyType.Name));
+                        this.Context.PropertyDescriptor.PropertyType.Name));
             }
 
-            return Content.As(Context.PropertyDescriptor.PropertyType);
+            return this.Content.As(this.Context.PropertyDescriptor.PropertyType);
         }
     }
 }

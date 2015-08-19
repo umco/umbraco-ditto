@@ -21,7 +21,7 @@
         /// <summary>
         /// The lock object to make Cache access thread safe
         /// </summary>
-        private static object cacheLock = new object();
+        private static readonly object CacheLock = new object();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="DittoValueResolverRegistry"/> class from being created.
@@ -52,7 +52,7 @@
         public void RegisterResolver<TObjectType, TResolverType>()
             where TResolverType : DittoValueResolver
         {
-            RegisterResolverAttribute<TObjectType, DittoValueResolverAttribute>(new DittoValueResolverAttribute(typeof(TResolverType)));
+            this.RegisterResolverAttribute<TObjectType, DittoValueResolverAttribute>(new DittoValueResolverAttribute(typeof(TResolverType)));
         }
 
         /// <summary>
@@ -77,7 +77,7 @@
         {
             var objType = typeof(TObjectType);
 
-            lock (cacheLock)
+            lock (CacheLock)
             {
                 if (Cache.ContainsKey(objType))
                 {
@@ -99,7 +99,7 @@
         /// </returns>
         public DittoValueResolverAttribute GetRegisteredResolverAttributeFor(Type objectType)
         {
-            lock (cacheLock)
+            lock (CacheLock)
             {
                 return Cache.ContainsKey(objectType)
                     ? Cache[objectType]
