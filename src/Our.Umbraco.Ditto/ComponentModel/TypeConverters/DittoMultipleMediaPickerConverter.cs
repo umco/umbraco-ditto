@@ -76,7 +76,7 @@
             if (value is int)
             {
                 var id = (int)value;
-                return ConvertMediaFromInt(id, targetType, culture).YieldSingleItem();
+                return this.ConvertMediaFromInt(id, targetType, culture).YieldSingleItem();
             }
 
             var s = value as string;

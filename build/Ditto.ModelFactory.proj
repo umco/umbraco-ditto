@@ -20,7 +20,7 @@
 		<PackageVersion>0.1.0</PackageVersion>
 		<MinUmbracoVersion>7.1.4</MinUmbracoVersion>
 		<Readme>An IPublishedContentModelFactory for Ditto - the friendly POCO mapper for Umbraco 7.1.4+</Readme>
-		<AuthorName>Lee Kelleher, Matt Brailsford, James South</AuthorName>
+		<AuthorName>Lee Kelleher, Matt Brailsford, James Jackson-South</AuthorName>
 		<AuthorUrl>https://github.com/leekelleher/umbraco-ditto/graphs/contributors</AuthorUrl>
 		<PackageLicenseName>MIT license</PackageLicenseName>
 		<PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
@@ -89,12 +89,10 @@
 
 	<!-- CLEAN -->
 	<Target Name="Clean" DependsOnTargets="GetProductVersion">
-		<RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
-		<RemoveDir Directories="$(ArtifactsDir)" Condition="Exists('$(ArtifactsDir)')" />
-		<MakeDir Directories="$(BuildDir)" />
-		<MakeDir Directories="$(BuildUmbDir)" />
-		<MakeDir Directories="$(BuildNuGetDir)" />
-		<MakeDir Directories="$(ArtifactsDir)" />
+		<MakeDir Directories="$(BuildDir)" Condition="!Exists('$(BuildDir)')" />
+		<MakeDir Directories="$(BuildUmbDir)" Condition="!Exists('$(BuildUmbDir)')" />
+		<MakeDir Directories="$(BuildNuGetDir)" Condition="!Exists('$(BuildNuGetDir)')" />
+		<MakeDir Directories="$(ArtifactsDir)" Condition="!Exists('$(ArtifactsDir)')" />
 	</Target>
 
 	<!-- UPDATE PROJECT ASSEMBLEY VERSION -->

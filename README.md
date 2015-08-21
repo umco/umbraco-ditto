@@ -1,4 +1,4 @@
-# Ditto
+<img height="100" src="docs/assets/img/ditto.png" style="margin-bottom: 20px">
 
 [![Build status](https://img.shields.io/appveyor/ci/leekelleher/umbraco-ditto.svg)](https://ci.appveyor.com/project/leekelleher/umbraco-ditto)
 [![Documentation Status](https://readthedocs.org/projects/umbraco-ditto/badge/?version=latest)](https://readthedocs.org/projects/umbraco-ditto/?badge=latest)
@@ -6,16 +6,14 @@
 [![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/developer-tools/ditto)
 [![Chat on Gitter](https://img.shields.io/badge/gitter-join_chat-green.svg)](https://gitter.im/leekelleher/umbraco-ditto)
 
-<img align="right" height="225" src="docs/assets/img/logo.png">
-
-Ditto is a lightweight POCO mapper for Umbraco. It offers a generic solution to the problem of using **strongly-typed models in your MVC views**.
+Ditto is a lightweight model mapper for Umbraco. It offers a generic solution to the problem of using **strongly-typed models in your MVC views**.
 There are no 3<sup>rd</sup> party dependencies, other than Umbraco core itself.
 
 #### Is Ditto a "Yet Another Code-First" approach?
 
-Nope! The goal of Ditto is to provide a simple way to convert your content/media nodes (e.g. `IPublishedContent`) to your desired POCO/model/object.
+Nope! The goal of Ditto is to provide a simple way to convert your content/media nodes (e.g. `IPublishedContent`) to your desired view-model object.
 
-There is absolutely zero intention of generating Document-Types from your POCO/models.
+There is absolutely zero intention of generating Document-Types from your view-models.
 
 ## Documentation and notes
 
@@ -23,7 +21,7 @@ There is absolutely zero intention of generating Document-Types from your POCO/m
 
 Ditto can be installed from either Our Umbraco or NuGet package repositories, or build manually from the source-code.
 
-For detailed documentation, please visit: http://umbraco-ditto.readthedocs.org/
+For detailed documentation, please visit: [http://umbraco-ditto.readthedocs.org/](http://umbraco-ditto.readthedocs.org/)
 
 
 ## Contributing to this project
@@ -47,7 +45,7 @@ Have a question?
 
 * [Lee Kelleher](https://github.com/leekelleher)
 * [Matt Brailsford](https://github.com/mattbrailsford)
-* [James South](https://github.com/JimBobSquarePants)
+* [James Jackson-South](https://github.com/JimBobSquarePants)
 
 ### Special thanks
 

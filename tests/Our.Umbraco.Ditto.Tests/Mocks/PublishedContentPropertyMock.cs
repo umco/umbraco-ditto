@@ -1,23 +1,36 @@
-﻿using System;
-using Umbraco.Core.Models;
-
-namespace Our.Umbraco.Ditto.Tests.Mocks
+﻿namespace Our.Umbraco.Ditto.Tests.Mocks
 {
-	public class PublishedContentPropertyMock : IPublishedContentProperty
-	{
-		public PublishedContentPropertyMock(string @alias, object value, bool hasValue)
-		{
-			HasValue = hasValue;
-			Alias = alias;
-			Value = value;
-		}
+    using System;
+    using global::Umbraco.Core.Models;
 
-		public string PropertyTypeAlias { get; private set; }
-		public bool HasValue { get; private set; }
-		public object DataValue { get; private set; }
-		public object Value { get; private set; }
-		public object XPathValue { get; private set; }
-		public string Alias { get; private set; }
-		public Guid Version { get; private set; }
-	}
+    public class PublishedContentPropertyMock : IPublishedContentProperty
+    {
+        public PublishedContentPropertyMock()
+        {
+            HasValue = true;
+            Alias = "alias";
+            Value = null;
+        }
+
+        public PublishedContentPropertyMock(string alias, object value, bool hasValue)
+        {
+            HasValue = hasValue;
+            Alias = alias;
+            Value = value;
+        }
+
+        public string PropertyTypeAlias { get; set; }
+
+        public bool HasValue { get; set; }
+
+        public object DataValue { get; set; }
+
+        public object Value { get; set; }
+
+        public object XPathValue { get; set; }
+
+        public string Alias { get; set; }
+
+        public Guid Version { get; set; }
+    }
 }

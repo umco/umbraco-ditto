@@ -1,7 +1,7 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
-
+    using System.Collections.Generic;
     using global::Umbraco.Core;
     using global::Umbraco.Web.Models;
 
@@ -16,22 +16,26 @@
         /// <param name="model">
         /// The <see cref="RenderModel"/> to convert.
         /// </param>
-        /// <param name="convertingType">
-        /// The <see cref="Action{ConvertingTypeEventArgs}"/> to fire when converting.
+        /// <param name="valueResolverContexts">
+        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
         /// </param>
-        /// <param name="convertedType">
-        /// The <see cref="Action{ConvertedTypeEventArgs}"/> to fire when converted.
+        /// <param name="onConverting">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
+        /// </param>
+        /// <param name="onConverted">
+        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         /// <typeparam name="T">
         /// The <see cref="Type"/> of items to return.
         /// </typeparam>
         /// <returns>
-        /// The resolved <see cref="T"/>.
+        /// The resolved generic <see cref="Type"/>.
         /// </returns>
         public static T As<T>(
             this RenderModel model,
-            Action<ConvertingTypeEventArgs> convertingType = null,
-            Action<ConvertedTypeEventArgs> convertedType = null)
+            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
         {
             if (model == null)
@@ -41,7 +45,7 @@
 
             using (DisposableTimer.DebugDuration<T>(string.Format("RenderModel As ({0})", model.Content.DocumentTypeAlias)))
             {
-                return model.Content.As<T>(convertingType, convertedType, model.CurrentCulture);
+                return model.Content.As<T>(model.CurrentCulture, null, valueResolverContexts, onConverting, onConverted);
             }
         }
     }

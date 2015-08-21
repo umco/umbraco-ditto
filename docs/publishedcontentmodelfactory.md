@@ -1,16 +1,22 @@
-# Configuration
+# `IPublishedContent` Model Factory
 
-
-## `IPublishedContent` Model Factory
-
-> **Warning:** You will receive limited support if you choose to use the Model Factory with Ditto.
+> **Warning:** The Model Factory implementation for Ditto should be considered as a prototype / proof-of-concept. You will receive limited support (from the Ditto team) if you choose to use it.
 
 As of v7.1.4, Umbraco ships with using a default model factory for `IPublishedContent`.
 For more information about the [IPublishedContentModelFactory](https://github.com/zpqrtbnk/Zbu.ModelsBuilder/wiki/IPublishedContentModelFactory) please the "Zbu.ModelsBuilder" wiki:
 
 > [https://github.com/zpqrtbnk/Zbu.ModelsBuilder/wiki/IPublishedContentModelFactory](https://github.com/zpqrtbnk/Zbu.ModelsBuilder/wiki/IPublishedContentModelFactory)
 
-Ditto comes with a custom model factory, to enable this, use the following code:
+
+## Configuration
+
+Ditto offers a custom model factory, to enable this, first you need to install the NuGet package:
+
+```bash
+PM> Install-Package Our.Umbraco.Ditto.ModelFactory
+```
+
+Then, use the following code:
 
 ```csharp
 using Our.Umbraco.Ditto;
@@ -28,7 +34,7 @@ public class ConfigurePublishedContentModelFactory : ApplicationEventHandler
 
 The factory will look for any POCO models that inherit from the `PublishedContentModel` class and automatically map those to the requested `IPublishedContent` objects.
 
-> **Warning:** If you have a POCO model that contains a reference to a child node, then this may create a circular-reference and cause the model-factory to enter an endless loop!
+> **Warning:** If you have a POCO model that contains a reference to a child node, then this may create a circular-reference and cause the model-factory to enter an endless loop!  This is fixable by marking your property with the `virtual` keyword, as this enables the [lazy-loading feature](usage-advanced-lazyloading).
 
 
 ## Video demonstrations

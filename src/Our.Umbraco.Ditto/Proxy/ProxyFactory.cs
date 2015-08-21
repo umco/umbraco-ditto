@@ -235,25 +235,39 @@
         /// </returns>
         private bool AreMethodsEqualForDeclaringType(MethodInfo first, MethodInfo second)
         {
-            // TODO: This is expensive. Perhaps we could use MethodInfo.GetMethodBody().GetILAsByteArray()
-            if (first.DeclaringType != null)
+            byte[] firstBytes = { };
+            byte[] secondBytes = { };
+
+            if (first != null && first.ReflectedType != null && first.DeclaringType != null)
             {
                 first = first.ReflectedType == first.DeclaringType ? first
                             : first.DeclaringType.GetMethod(
                                 first.Name,
                                 first.GetParameters().Select(p => p.ParameterType).ToArray());
+
+                MethodBody body = first.GetMethodBody();
+                if (body != null)
+                {
+                    firstBytes = body.GetILAsByteArray();
+                }
             }
 
-            if (second.DeclaringType != null)
+            if (second != null && second.ReflectedType != null && second.DeclaringType != null)
             {
                 second = second.ReflectedType == second.DeclaringType
                              ? second
                              : second.DeclaringType.GetMethod(
                                  second.Name,
                                  second.GetParameters().Select(p => p.ParameterType).ToArray());
+
+                MethodBody body = second.GetMethodBody();
+                if (body != null)
+                {
+                    secondBytes = body.GetILAsByteArray();
+                }
             }
 
-            return first == second;
+            return firstBytes.SequenceEqual(secondBytes);
         }
     }
 }

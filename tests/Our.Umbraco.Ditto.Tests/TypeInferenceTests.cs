@@ -70,9 +70,9 @@
         /// <param name="expected">The expected result.</param>
         [Test]
         [TestCase(typeof(IEnumerable<string>), typeof(string), true)]
-        [TestCase(typeof(string[]), typeof(string), true, TestName = "arrayTest Hack")]
+        [TestCase(typeof(string[]), typeof(string), true, TestName = "TestIsEnumerableOfType: arrayTest Hack")]
         [TestCase(typeof(IEnumerable<int>), typeof(int), true)]
-        [TestCase(typeof(int[]), typeof(int), true, TestName = "arrayTest Hack 2")]
+        [TestCase(typeof(int[]), typeof(int), true, TestName = "TestIsEnumerableOfType: arrayTest Hack 2")]
         [TestCase(typeof(string), typeof(string), false)]
         [TestCase(typeof(string), typeof(char), true)]
         [TestCase(typeof(Dictionary<string, string>), typeof(KeyValuePair<string, string>), true)]

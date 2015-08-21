@@ -1,20 +1,49 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
-    using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
+    using global::Umbraco.Core.Models;
 
     /// <summary>
-    /// The Ditto value resolver provides reusable methods for returning property values from Umbraco.
+    /// The Ditto value resolver.
+    /// Provides reusable methods for returning property values from Umbraco.
     /// </summary>
     public abstract class DittoValueResolver
     {
         /// <summary>
+        /// Gets or sets the IPublishedContent object.
+        /// </summary>
+        public IPublishedContent Content { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the resolver context.
+        /// </summary>
+        public DittoValueResolverContext Context { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the associated attribute.
+        /// </summary>
+        public DittoValueResolverAttribute Attribute { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the culture object.
+        /// </summary>
+        public CultureInfo Culture { get; protected set; }
+
+        /// <summary>
+        /// Performs the value resolution.
+        /// </summary>
+        /// /// <returns>
+        /// The <see cref="object"/> representing the raw value.
+        /// </returns>
+        public abstract object ResolveValue();
+
+        /// <summary>
         /// Gets the raw value for the current property from Umbraco.
         /// </summary>
         /// <param name="context">
-        /// An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.
+        /// An <see cref="DittoValueResolverContext" /> that provides a context.
         /// </param>
         /// <param name="attribute">
         /// The <see cref="DittoValueResolverAttribute"/> containing additional information 
@@ -24,20 +53,44 @@
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public abstract object ResolveValue(ITypeDescriptorContext context, DittoValueResolverAttribute attribute, CultureInfo culture);
+        internal virtual object ResolveValue(
+            DittoValueResolverContext context,
+            DittoValueResolverAttribute attribute,
+            CultureInfo culture)
+        {
+            this.Content = context.Instance as IPublishedContent;
+            this.Context = context;
+            this.Attribute = attribute;
+            this.Culture = culture;
+
+            return this.ResolveValue();
+        }
     }
 
     /// <summary>
-    /// A generic value resolver that accepts an implementation of <see cref="DittoValueResolverAttribute"/>
-    /// in order to resolve the raw value from Umbraco.
+    /// A generic value resolver to resolve a raw value.
     /// </summary>
+    /// <typeparam name="TContextType">
+    /// The <see cref="T:System.Type"/> of context object that provides dynamic context to this resolver. 
+    /// </typeparam>
     /// <typeparam name="TAttributeType">
-    /// The <see cref="T:System.Type"/> of attribute that will resolve the raw value. 
+    /// The <see cref="T:System.Type"/> of attribute that provides static config for this resolver. 
     /// </typeparam>
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
-    public abstract class DittoValueResolver<TAttributeType> : DittoValueResolver
+    public abstract class DittoValueResolver<TContextType, TAttributeType> : DittoValueResolver
+        where TContextType : DittoValueResolverContext
         where TAttributeType : DittoValueResolverAttribute
     {
+        /// <summary>
+        /// Gets or sets the resolver context.
+        /// </summary>
+        public new TContextType Context { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the associated attribute.
+        /// </summary>
+        public new TAttributeType Attribute { get; protected set; }
+
         /// <summary>
         /// Gets the raw value for the current property from Umbraco.
         /// </summary>
@@ -52,8 +105,18 @@
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(ITypeDescriptorContext context, DittoValueResolverAttribute attribute, CultureInfo culture)
+        internal override object ResolveValue(
+            DittoValueResolverContext context,
+            DittoValueResolverAttribute attribute,
+            CultureInfo culture)
         {
+            if (!(context is TContextType))
+            {
+                throw new ArgumentException(
+                    "The resolver context must be of type " + typeof(TContextType).AssemblyQualifiedName,
+                    "context");
+            }
+
             if (!(attribute is TAttributeType))
             {
                 throw new ArgumentException(
@@ -61,23 +124,24 @@
                     "attribute");
             }
 
-            return this.ResolveValue(context, (TAttributeType)attribute, culture);
-        }
+            this.Content = context.Instance as IPublishedContent;
+            this.Context = context as TContextType;
+            this.Attribute = attribute as TAttributeType;
+            this.Culture = culture;
 
-        /// <summary>
-        /// Gets the raw value for the current property from Umbraco.
-        /// </summary>
-        /// <param name="context">
-        /// An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.
-        /// </param>
-        /// <param name="attribute">
-        /// The <see cref="TAttributeType"/> containing additional information 
-        /// indicating how to resolve the property.
-        /// </param>
-        /// <param name="culture">The <see cref="T:System.Globalization.CultureInfo" /> to use as the current culture.</param>
-        /// <returns>
-        /// The <see cref="object"/> representing the raw value.
-        /// </returns>
-        public abstract object ResolveValue(ITypeDescriptorContext context, TAttributeType attribute, CultureInfo culture);
+            return this.ResolveValue();
+        }
+    }
+
+    /// <summary>
+    /// A generic value resolver to resolve a raw value.
+    /// </summary>
+    /// <typeparam name="TContextType">
+    /// The <see cref="T:System.Type"/> of context object that provides dynamic context to this resolver. 
+    /// </typeparam>
+    public abstract class DittoValueResolver<TContextType> :
+        DittoValueResolver<TContextType, DittoValueResolverAttribute>
+        where TContextType : DittoValueResolverContext
+    {
     }
 }

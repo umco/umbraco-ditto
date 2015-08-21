@@ -1,8 +1,6 @@
 ﻿namespace Our.Umbraco.Ditto
 {
-    using System.ComponentModel;
-    using System.Globalization;
-
+    using System.Reflection;
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Web;
@@ -10,31 +8,45 @@
     /// <summary>
     /// The Umbraco property value resolver.
     /// </summary>
-    public class UmbracoPropertyValueResolver : DittoValueResolver<UmbracoPropertyAttribute>
+    public class UmbracoPropertyValueResolver : DittoValueResolver<DittoValueResolverContext, UmbracoPropertyAttribute>
     {
         /// <summary>
         /// Gets the raw value for the current property from Umbraco.
         /// </summary>
-        /// <param name="context">
-        /// An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.
-        /// </param>
-        /// <param name="attribute">
-        /// The <see cref="UmbracoPropertyAttribute"/> containing additional information 
-        /// indicating how to resolve the property.
-        /// </param>
-        /// <param name="culture">The <see cref="T:System.Globalization.CultureInfo" /> to use as the current culture.</param>
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        public override object ResolveValue(ITypeDescriptorContext context, UmbracoPropertyAttribute attribute, CultureInfo culture)
+        public override object ResolveValue()
         {
-            var defaultValue = attribute.DefaultValue;
+            var defaultValue = this.Attribute.DefaultValue;
 
-            var umbracoPropertyName = attribute.PropertyName ?? (context.PropertyDescriptor != null ? context.PropertyDescriptor.Name : string.Empty);
-            var altUmbracoPropertyName = attribute.AltPropertyName ?? string.Empty;
-            var recursive = attribute.Recursive;
+            var recursive = this.Attribute.Recursive;
+            var propName = this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty;
+            var altPropName = string.Empty;
 
-            var content = context.Instance as IPublishedContent;
+            // Check for umbraco properties attribute on class
+            if (this.Context.PropertyDescriptor != null)
+            {
+                var classAttr = this.Context.PropertyDescriptor.ComponentType
+                    .GetCustomAttribute<UmbracoPropertiesAttribute>();
+                if (classAttr != null)
+                {
+                    // Apply the prefix
+                    if (!string.IsNullOrWhiteSpace(classAttr.Prefix))
+                    {
+                        altPropName = propName;
+                        propName = classAttr.Prefix + propName;
+                    }
+
+                    // Apply global recursive setting
+                    recursive |= classAttr.Recursive;
+                }
+            }
+
+            var umbracoPropertyName = this.Attribute.PropertyName ?? propName;
+            var altUmbracoPropertyName = this.Attribute.AltPropertyName ?? altPropName;
+
+            var content = this.Context.Instance as IPublishedContent;
             if (content == null)
             {
                 return defaultValue;
@@ -46,7 +58,7 @@
             // Try fetching the value.
             if (!umbracoPropertyName.IsNullOrWhiteSpace())
             {
-                var contentProperty = contentType.GetProperty(umbracoPropertyName);
+                var contentProperty = contentType.GetProperty(umbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
                 propertyValue = contentProperty != null
                     ? contentProperty.GetValue(content, null)
                     : content.GetPropertyValue(umbracoPropertyName, recursive);
@@ -56,7 +68,7 @@
             if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
                 && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
             {
-                var contentProperty = contentType.GetProperty(altUmbracoPropertyName);
+                var contentProperty = contentType.GetProperty(altUmbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
                 propertyValue = contentProperty != null
                     ? contentProperty.GetValue(content, null)
                     : content.GetPropertyValue(altUmbracoPropertyName, recursive);

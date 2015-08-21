@@ -116,11 +116,11 @@
                         // CheckBoxList, ListBox
                         if (isGenericType)
                         {
-                            return ultimatePicker.As(targetType, null, null, null, culture);
+                            return ultimatePicker.As(targetType, culture);
                         }
 
                         // AutoComplete, DropDownList, RadioButton
-                        return ultimatePicker.As(targetType, null, null, null, culture).FirstOrDefault();
+                        return ultimatePicker.As(targetType, culture).FirstOrDefault();
                     }
                 }
             }

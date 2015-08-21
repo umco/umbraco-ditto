@@ -61,7 +61,7 @@
             var content = value as IPublishedContent;
             if (content != null)
             {
-                return content.As(targetType, null, null, culture);
+                return content.As(targetType, culture);
             }
 
             if (value is int)

@@ -38,7 +38,7 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            return UmbracoContext.Current.ContentCache.GetById(id).As(targetType, null, null, culture);
+            return UmbracoContext.Current.ContentCache.GetById(id).As(targetType, culture);
         }
 
         /// <summary>
@@ -63,12 +63,12 @@ namespace Our.Umbraco.Ditto
             // Ensure we are actually returning a media file.
             if (media.HasProperty(Constants.Conventions.Media.File))
             {
-                return media.As(targetType, null, null, culture);
+                return media.As(targetType, culture);
             }
 
             // It's most likely a folder, try its children.
             // This returns an IEnumerable<T>
-            return media.Children().As(targetType, null, null, null, culture);
+            return media.Children().As(targetType, culture);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            return new MembershipHelper(UmbracoContext.Current).GetById(id).As(targetType, null, null, culture);
+            return new MembershipHelper(UmbracoContext.Current).GetById(id).As(targetType, culture);
         }
     }
 }

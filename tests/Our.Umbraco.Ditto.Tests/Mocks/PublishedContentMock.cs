@@ -1,70 +1,115 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Umbraco.Core.Models;
-using Umbraco.Core.Models.PublishedContent;
-
-namespace Our.Umbraco.Ditto.Tests.Mocks
+﻿namespace Our.Umbraco.Ditto.Tests.Mocks
 {
-	/// <summary>
-	/// This class will implement all the methods needed to moch the behaviour of an IPublishedContent node.
-	/// Add to the constructor as more data is needed.
-	/// </summary>
-	public class PublishedContentMock : IPublishedContent
-	{
-		public PublishedContentMock(int id, string name, IEnumerable<IPublishedContent> children, ICollection<IPublishedContentProperty> properties)
-		{
-			Properties = properties;
-			Id = id;
-			Name = name;
-			Children = children;
-		}
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using global::Umbraco.Core;
+    using global::Umbraco.Core.Models;
+    using global::Umbraco.Core.Models.PublishedContent;
 
-		public int GetIndex()
-		{
-			throw new NotImplementedException();
-		}
+    /// <summary>
+    /// This class will implement all the methods needed to mock the behavior of an IPublishedContent node.
+    /// Add to the constructor as more data is needed.
+    /// </summary>
+    public class PublishedContentMock : IPublishedContent
+    {
+        public PublishedContentMock()
+        {
+            Id = 1234;
+            Name = "Name";
+            Children = Enumerable.Empty<IPublishedContent>();
+            Properties = new Collection<IPublishedContentProperty>();
+        }
 
-		public IPublishedContentProperty GetProperty(string alias)
-		{
-			throw new NotImplementedException();
-		}
+        public PublishedContentMock(
+            int id,
+            string name,
+            IEnumerable<IPublishedContent> children,
+            ICollection<IPublishedContentProperty> properties)
+        {
+            Properties = properties;
+            Id = id;
+            Name = name;
+            Children = children;
+        }
 
-		public IPublishedContentProperty GetProperty(string alias, bool recurse)
-		{
-			return Properties.SingleOrDefault(p => p.Alias == alias);
-		}
+        public int GetIndex()
+        {
+            throw new NotImplementedException();
+        }
 
-		public IEnumerable<IPublishedContent> ContentSet { get; private set; }
-		public PublishedContentType ContentType { get; private set; }
-		public int Id { get; private set; }
-		public int TemplateId { get; private set; }
-		public int SortOrder { get; private set; }
-		public string Name { get; private set; }
-		public string UrlName { get; private set; }
-		public string DocumentTypeAlias { get; private set; }
-		public int DocumentTypeId { get; private set; }
-		public string WriterName { get; private set; }
-		public string CreatorName { get; private set; }
-		public int WriterId { get; private set; }
-		public int CreatorId { get; private set; }
-		public string Path { get; private set; }
-		public DateTime CreateDate { get; private set; }
-		public DateTime UpdateDate { get; private set; }
-		public Guid Version { get; private set; }
-		public int Level { get; private set; }
-		public string Url { get; private set; }
-		public PublishedItemType ItemType { get; private set; }
-		public bool IsDraft { get; private set; }
-		public IPublishedContent Parent { get; private set; }
-		public IEnumerable<IPublishedContent> Children { get; private set; }
-		public ICollection<IPublishedContentProperty> Properties { get; private set; }
+        public IPublishedContentProperty GetProperty(string alias)
+        {
+            return GetProperty(alias, false);
+        }
 
-		public object this[string alias]
-		{
-			get { throw new NotImplementedException(); }
-		}
-	}
+        public IPublishedContentProperty GetProperty(string alias, bool recurse)
+        {
+            var prop = Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
+
+            if (prop == null && recurse && Parent != null)
+            {
+                return Parent.GetProperty(alias, true);
+            }
+
+            return prop;
+        }
+
+        public IEnumerable<IPublishedContent> ContentSet { get; set; }
+
+        public PublishedContentType ContentType { get; set; }
+
+        public int Id { get; set; }
+
+        public int TemplateId { get; set; }
+
+        public int SortOrder { get; set; }
+
+        public string Name { get; set; }
+
+        public string UrlName { get; set; }
+
+        public string DocumentTypeAlias { get; set; }
+
+        public int DocumentTypeId { get; set; }
+
+        public string WriterName { get; set; }
+
+        public string CreatorName { get; set; }
+
+        public int WriterId { get; set; }
+
+        public int CreatorId { get; set; }
+
+        public string Path { get; set; }
+
+        public DateTime CreateDate { get; set; }
+
+        public DateTime UpdateDate { get; set; }
+
+        public Guid Version { get; set; }
+
+        public int Level { get; set; }
+
+        public string Url { get; set; }
+
+        public PublishedItemType ItemType { get; set; }
+
+        public bool IsDraft { get; set; }
+
+        public IPublishedContent Parent { get; set; }
+
+        public IEnumerable<IPublishedContent> Children { get; set; }
+
+        public ICollection<IPublishedContentProperty> Properties { get; set; }
+
+        public object this[string alias]
+        {
+            get
+            {
+                return GetProperty(alias);
+            }
+        }
+    }
 }

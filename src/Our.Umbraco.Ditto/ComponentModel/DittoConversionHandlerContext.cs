@@ -1,13 +1,12 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     using System;
-
     using global::Umbraco.Core.Models;
 
     /// <summary>
-    /// Provides data for a converted event.
+    /// Provides context for conversion events.
     /// </summary>
-    public class ConvertedTypeEventArgs : EventArgs
+    public class DittoConversionHandlerContext
     {
         /// <summary>
         /// Gets or sets the content.
@@ -15,13 +14,13 @@
         public IPublishedContent Content { get; set; }
 
         /// <summary>
-        /// Gets or sets the converted object.
+        /// Gets or sets the model object.
         /// </summary>
-        public object Converted { get; set; }
+        public object Model { get; set; }
 
         /// <summary>
-        /// Gets or sets the converted type.
+        /// Gets or sets the model type.
         /// </summary>
-        public Type ConvertedType { get; set; }
+        public Type ModelType { get; set; }
     }
 }

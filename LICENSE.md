@@ -1,3 +1,5 @@
+The MIT License (MIT)
+
 Copyright &copy; 2014 Umbrella Inc, Our Umbraco and other contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
