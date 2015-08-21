@@ -591,7 +591,7 @@
                     }
                 }
             }
-            else if (propertyInfo.PropertyType == typeof(HtmlString))
+            else if (propertyType == typeof(HtmlString))
             {
                 // Handle Html strings so we don't have to set the attribute.
                 var converterType = typeof(DittoHtmlStringConverter);
@@ -621,30 +621,30 @@
                     }
                 }
             }
-            else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
+            else if (propertyType.IsInstanceOfType(propertyValue))
             {
                 // Simple types
                 result = propertyValue;
             }
-            else if (propertyValue is IPublishedContent && propertyInfo.PropertyType.IsClass)
+            else if (propertyValue is IPublishedContent && propertyType.IsClass)
             {
                 // If the property value is an IPublishedContent, then we can use Ditto to map to the target type.
-                result = ((IPublishedContent)propertyValue).As(propertyInfo.PropertyType);
+                result = ((IPublishedContent)propertyValue).As(propertyType);
             }
             else if (propertyValue != null
                 && propertyValue.GetType().IsEnumerableOfType(typeof(IPublishedContent))
-                && propertyInfo.PropertyType.IsEnumerable()
-                && propertyInfo.PropertyType.GetEnumerableType() != null
-                && propertyInfo.PropertyType.GetEnumerableType().IsClass)
+                && propertyType.IsEnumerable()
+                && propertyType.GetEnumerableType() != null
+                && propertyType.GetEnumerableType().IsClass)
             {
                 // If the property value is IEnumerable<IPublishedContent>, then we can use Ditto to map to the target type.
-                result = ((IEnumerable<IPublishedContent>)propertyValue).As(propertyInfo.PropertyType.GetEnumerableType());
+                result = ((IEnumerable<IPublishedContent>)propertyValue).As(propertyType.GetEnumerableType());
             }
             else
             {
                 using (DisposableTimer.DebugDuration<object>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
                 {
-                    var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
+                    var convert = propertyValue.TryConvertTo(propertyType);
                     if (convert.Success)
                     {
                         result = convert.Result;
