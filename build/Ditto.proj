@@ -19,7 +19,7 @@
 		<PackageName>Ditto</PackageName>
 		<MinUmbracoVersion>6.2.5</MinUmbracoVersion>
 		<Readme>Ditto - the friendly POCO mapper for Umbraco</Readme>
-		<AuthorName>Lee Kelleher, Matt Brailsford, James South</AuthorName>
+		<AuthorName>Lee Kelleher, Matt Brailsford, James Jackson-South</AuthorName>
 		<AuthorUrl>https://github.com/leekelleher/umbraco-ditto/graphs/contributors</AuthorUrl>
 		<PackageLicenseName>MIT license</PackageLicenseName>
 		<PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>

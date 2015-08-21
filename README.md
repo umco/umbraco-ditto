@@ -45,7 +45,7 @@ Have a question?
 
 * [Lee Kelleher](https://github.com/leekelleher)
 * [Matt Brailsford](https://github.com/mattbrailsford)
-* [James South](https://github.com/JimBobSquarePants)
+* [James Jackson-South](https://github.com/JimBobSquarePants)
 
 ### Special thanks
 
