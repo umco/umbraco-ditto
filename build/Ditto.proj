@@ -112,7 +112,6 @@
 	<Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
 		<MSBuild Projects="$(ProjectDir)\Our.Umbraco.Ditto.csproj" Properties="Configuration=$(BuildConfig)" />
 		<MSBuild Projects="$(RootDir)\tests\Our.Umbraco.Ditto.Tests\Our.Umbraco.Ditto.Tests.csproj" Properties="Configuration=$(BuildConfig)" />
-		<MSBuild Projects="$(MSBuildProjectDirectory)\Ditto.ModelFactory.proj" />
 	</Target>
 
 	<!-- PREPARE FILES -->
