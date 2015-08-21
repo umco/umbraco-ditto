@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto", "Our.Umbraco.Ditto\Our.Umbraco.Ditto.csproj", "{3A2482A4-AD19-4C26-A449-4287DA07AB16}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CF4E7DA-6359-479E-A64D-2023C743BA1C}"
@@ -30,12 +28,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto.Tests", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{8A5424A2-03F9-4D89-9B68-CB286D7F8596}"
 	ProjectSection(SolutionItems) = preProject
-		..\docs\configuration.md = ..\docs\configuration.md
+		..\docs\getting-started.md = ..\docs\getting-started.md
 		..\docs\index.md = ..\docs\index.md
 		..\docs\install.md = ..\docs\install.md
 		..\mkdocs.yml = ..\mkdocs.yml
+		..\docs\publishedcontentmodelfactory.md = ..\docs\publishedcontentmodelfactory.md
 		..\docs\README.md = ..\docs\README.md
-		..\docs\usage.md = ..\docs\usage.md
+		..\docs\usage-advanced-attributes.md = ..\docs\usage-advanced-attributes.md
+		..\docs\usage-advanced-conversionhandlers.md = ..\docs\usage-advanced-conversionhandlers.md
+		..\docs\usage-advanced-lazyloading.md = ..\docs\usage-advanced-lazyloading.md
+		..\docs\usage-advanced-lists.md = ..\docs\usage-advanced-lists.md
+		..\docs\usage-advanced-typeconverters.md = ..\docs\usage-advanced-typeconverters.md
+		..\docs\usage-advanced-valueresolvers.md = ..\docs\usage-advanced-valueresolvers.md
+		..\docs\usage-basic.md = ..\docs\usage-basic.md
 	EndProjectSection
 EndProject
 Global
