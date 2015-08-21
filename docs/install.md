@@ -1,5 +1,3 @@
-# Installation
-
 > **_Note:_** Ditto has been developed against **Umbraco v6.2.5** and will support that version and above.
 
 Ditto can be installed from either Our Umbraco or NuGet package repositories, or build manually from the source-code:

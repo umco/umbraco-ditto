@@ -1,6 +1,3 @@
-# Getting started
-
-
 ## What is Ditto?
 
 Ditto is a model mapper specifically designed to map `IPublishedContent` objects to a custom type. The goal is to easily enable the use of strongly-typed models within your MVC views.
