@@ -3,12 +3,16 @@
 
 ## What is Ditto?
 
-Ditto is a model mapper specifically designed to map `IPublishedContent` objects to a custom type. The goal is to easily enable the use of strongly-typed models within your MVC views. Ditto will attempt to automatically map the `IPublishedContent` properties with the properties of the model/POCO object based on naming convention.
+Ditto is a model mapper specifically designed to map `IPublishedContent` objects to a custom type. The goal is to easily enable the use of strongly-typed models within your MVC views.
+
+Ditto will automatically map the properties from `IPublishedContent` with the properties of the your model object (POCO class) based on naming conventions.
 
 
 ## Why use Ditto?
 
-Strongly-typed models in MVC views are cool! Mapping code is boring! Ditto offers a simple way to achieve this. The real question is "why have strongly-typed models?" Cleaner MVC views, smaller view-models, separation of concerns, but to name a few.
+Strongly-typed models in MVC views are cool! Mapping code is boring! Ditto offers a simple way to achieve this.
+
+The real question is "why have strongly-typed models?", this leads to cleaner MVC views, smaller simpler view-models, and separation of concerns.
 
 
 ## How do I use Ditto?
@@ -26,4 +30,4 @@ For more detailed examples, please see the [Basic usage](usage) section, followe
 
 ## Where do I configure Ditto?
 
-Ditto does not require any pre-configuration within your website/web-application.  For complex mappings, you can decorate your model type with custom attributes, typically these would be `ValueResolvers` or `TypeConverters`, (or a comibnation of both).
+Ditto does not require any pre-configuration within your website/web-application.  For complex mappings, you can decorate your model type with custom attributes, typically these would be [`ValueResolvers`](usage-advanced-valueresolvers) or [`TypeConverters`](usage-advanced-typeconverters), (or a combination of both).

@@ -1,5 +1,3 @@
-# Advanced usage
-
 ## Lists (mapping child nodes)
 
-> // TODO: Add examples
+> // TODO: Add example of how `.As<T>` is applied to `Model.Content.Children`

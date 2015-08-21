@@ -1,5 +1,3 @@
-# Advanced usage
+## Lazy Loading
 
-## Lazy Loading (marking properties with `virtual`)
-
-> // TODO: Add examples
+> // TODO: Add examples of marking properties with `virtual`

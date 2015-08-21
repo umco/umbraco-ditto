@@ -1,6 +1,6 @@
 # `IPublishedContent` Model Factory
 
-> **Warning:** You will receive limited support if you choose to use the Model Factory with Ditto.
+> **Warning:** The Model Factory implementation for Ditto should be considered as a prototype / proof-of-concept. You will receive limited support (from the Ditto team) if you choose to use it.
 
 As of v7.1.4, Umbraco ships with using a default model factory for `IPublishedContent`.
 For more information about the [IPublishedContentModelFactory](https://github.com/zpqrtbnk/Zbu.ModelsBuilder/wiki/IPublishedContentModelFactory) please the "Zbu.ModelsBuilder" wiki:
@@ -10,7 +10,13 @@ For more information about the [IPublishedContentModelFactory](https://github.co
 
 ## Configuration
 
-Ditto comes with a custom model factory, to enable this, use the following code:
+Ditto offers a custom model factory, to enable this, first you need to install the NuGet package:
+
+```bash
+PM> Install-Package Our.Umbraco.Ditto.ModelFactory
+```
+
+Then, use the following code:
 
 ```csharp
 using Our.Umbraco.Ditto;

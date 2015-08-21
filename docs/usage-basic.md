@@ -1,12 +1,10 @@
-# Usage
-
 ## Basic usage - `As<T>` extension method
 
 For basic use of Ditto, let's start with a standard DocumentType with a few properties: Title, BodyText and Image:
 
 ![Umbraco DocType properties](umbraco-doctype-properties.png)
 
-From that we will base the structure of our POCO model on those properties, we'd manually create a C# class:
+Using those properties as the structure of our view-model (POCO class), we can manually create a C# class:
 
 ```csharp
 public class MyTextModel
@@ -19,13 +17,17 @@ public class MyTextModel
 }
 ```
 
-> Note, that **the property names should corresponding with the DocumentType's property alias.** (If you wish to name your properties differently, please [see the documentation about the `UmbracoProperty` attribute.](usage-advanced-attributes/#umbracoproperty))
+> Note, in this case **the property names should correspond with the DocumentType's property aliases.** (If you wish to name your properties differently, please [see the documentation about the `UmbracoProperty` attribute.](usage-advanced-attributes/#umbracoproperty))
 > 
 > The C# class name (`MyTextModel` in this example), does not need to match with the DocumentType alias.
 
 Now you can map your `IPublishedContent` (content node of that DocumentType) to your corresponding POCO model using the `As<T>` extension method.
 
-Here is an example of using the `As<T>` method within your MVC view:
+```csharp
+var poco = Model.Content.As<MyTextModel>();
+```
+
+Here is an example in the context of an MVC view:
 
 ```html
 @using Our.Umbraco.Ditto

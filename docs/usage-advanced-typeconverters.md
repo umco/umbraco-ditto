@@ -1,5 +1,3 @@
-# Advanced usage
-
 ## Type Converters
 
 Sooner or later you'll reach a point where you will want to map a DocumentType property with a complex .NET type (either from within the .NET Framework, or custom).  To map these types with Ditto, you can use a standard .NET `TypeConverter`.
@@ -8,12 +6,11 @@ Sooner or later you'll reach a point where you will want to map a DocumentType p
 > 
 > Then from there, refer to the MSDN documentation on [How to: Implement a Type Converter](http://msdn.microsoft.com/en-gb/library/ayybcxe5.aspx) 
 
-Now with our example, let's say that you wanted the `Content` (formerly `BodyText`) property to be of type `HtmlString` (rather than a basic `string`).  You can reference a custom `TypeConverter` by adding the following attribute to the POCO property:
+Now with our example, let's say that you wanted the `BodyText` property to be of type `HtmlString` (rather than a basic `string`).  You can reference a custom `TypeConverter` by adding the following attribute to the POCO property:
 
 ```csharp
-[System.ComponentModel.TypeConverter(typeof(MyCustomConverter))]
-[Our.Umbraco.Ditto.UmbracoProperty("bodyText")]
-public System.Web.HtmlString Content { get; set; }
+[TypeConverter(typeof(MyCustomConverter))]
+public HtmlString BodyText { get; set; }
 ```
 
 Then when the POCO property is populated the (raw) value (from `IPublishedContent`) will be processed through the custom `TypeConverter` and converted to the desired .NET type. 

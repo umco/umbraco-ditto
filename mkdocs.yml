@@ -3,7 +3,7 @@ site_name: Ditto
 repo_url: https://github.com/leekelleher/umbraco-ditto/tree/develop/docs
 
 pages:
-  - 'Ditto': 'index.md'
+  - 'Introduction': 'index.md'
   - 'Installation': 'install.md'
   - 'Getting started': 'getting-started.md'
   - 'Usage':
@@ -14,4 +14,4 @@ pages:
     - 'Advanced usage: Conversion Handlers': 'usage-advanced-conversionhandlers.md'
     - 'Advanced usage: Lazy Loading': 'usage-advanced-lazyloading.md'
     - 'Advanced usage: Lists': 'usage-advanced-lists.md'
-  - 'PublishedModelFactory': 'publishedmodelfactory.md'
+  - 'PublishedContentModelFactory': 'publishedcontentmodelfactory.md'
