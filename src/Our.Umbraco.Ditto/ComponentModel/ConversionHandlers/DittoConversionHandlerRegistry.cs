@@ -67,7 +67,7 @@
                 }
                 else
                 {
-                    Cache.Add(objType, new[] { handlerType });
+                    Cache.Add(objType, new List<Type> { handlerType });
                 }
             }
         }
