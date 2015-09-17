@@ -214,6 +214,7 @@
     <Compile Include="CaseSensitivityTests.cs" />
     <Compile Include="BasicMappingTests.cs" />
     <Compile Include="CastableInterfaceTests.cs" />
+    <Compile Include="ClassLevelTypeConverterTests.cs" />
     <Compile Include="CustomTypeConverterTests.cs" />
     <Compile Include="ConversionHandlerTests.cs" />
     <Compile Include="CustomValueResolverTests.cs" />

@@ -587,6 +587,12 @@
                                     }
                                 }
                             }
+                            else if (propertyType.IsInstanceOfType(propertyValue))
+                            {
+                                // If the TypeConverter's `CanConvertFrom` has returned false,
+                                // then we can check if the value is the same type as the target type.
+                                result = propertyValue;
+                            }
                         }
                     }
                 }
