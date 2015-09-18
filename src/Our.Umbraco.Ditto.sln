@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Package", "Build Pack
 		..\appveyor.yml = ..\appveyor.yml
 		..\build-appveyor.cmd = ..\build-appveyor.cmd
 		..\build.cmd = ..\build.cmd
+		..\build\Ditto.ModelFactory.nuspec = ..\build\Ditto.ModelFactory.nuspec
 		..\build\Ditto.ModelFactory.proj = ..\build\Ditto.ModelFactory.proj
 		..\build\Ditto.proj = ..\build\Ditto.proj
 		..\build\package.nuspec = ..\build\package.nuspec
