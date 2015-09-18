@@ -59,6 +59,51 @@
         }
 
         /// <summary>
+        /// Tests the <see cref="TypeInferenceExtensions.IsEnumerableType"/> method.
+        /// </summary>
+        /// <param name="input">The input <see cref="Type"/>.</param>
+        /// <param name="expected">The expected result.
+        /// </param>
+        [Test]
+        [TestCase(typeof(string), false)]
+        [TestCase(typeof(bool), false)]
+        [TestCase(typeof(int), false)]
+        [TestCase(typeof(long), false)]
+        [TestCase(typeof(List<string>), true)]
+        [TestCase(typeof(Collection<string>), true)]
+        [TestCase(typeof(HashSet<string>), true)]
+        [TestCase(typeof(Enumerable), false)]
+        [TestCase(typeof(Dictionary<string, string>), false)]
+        public void TestIsCastableEnumerableType(Type input, bool expected)
+        {
+            Assert.AreEqual(input.IsCastableEnumerableType(), expected);
+        }
+
+        /// <summary>
+        /// Tests the <see cref="TypeInferenceExtensions.IsEnumerableType"/> method.
+        /// </summary>
+        /// <param name="input">The input <see cref="Type"/>.</param>
+        /// <param name="expected">The expected result.
+        /// </param>
+        [Test]
+        [TestCase(typeof(string), false)]
+        [TestCase(typeof(bool), false)]
+        [TestCase(typeof(int), false)]
+        [TestCase(typeof(long), false)]
+        [TestCase(typeof(List<string>), false)]
+        [TestCase(typeof(Collection<string>), false)]
+        [TestCase(typeof(HashSet<string>), false)]
+        [TestCase(typeof(Enumerable), false)]
+        [TestCase(typeof(Dictionary<string, string>), true)]
+        [TestCase(typeof(List<KeyValuePair<string, string>>), true)]
+        [TestCase(typeof(Collection<KeyValuePair<string, string>>), true)]
+        [TestCase(typeof(HashSet<KeyValuePair<string, string>>), true)]
+        public void TestIsEnumerableOfKeyValueType(Type input, bool expected)
+        {
+            Assert.AreEqual(input.IsEnumerableOfKeyValueType(), expected);
+        }
+
+        /// <summary>
         /// Tests the <see cref="TypeInferenceExtensions.IsEnumerableOfType"/> method.
         /// <remarks>
         /// Resharper doesn't work properly if the first parameter is an array.
