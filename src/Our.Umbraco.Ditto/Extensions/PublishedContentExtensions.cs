@@ -488,8 +488,8 @@
             var propertyType = propertyInfo.PropertyType;
             var typeInfo = propertyType.GetTypeInfo();
 
-            // This should return false against typeof(string) also.
-            var propertyIsEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
+            // This should return false against typeof(string) etc also.
+            var propertyIsEnumerableType = propertyType.IsCastableEnumerableType();
 
             // Try any custom type converters first.
             // 1: Check the property.
@@ -563,8 +563,10 @@
                                     else
                                     {
                                         // Return single expected items from converters returning an IEnumerable.
-                                        // Check for string.
-                                        if (convertedType.IsEnumerableType() && !(convertedType == typeof(string) && propertyType == typeof(string)))
+                                        // Check for key/value pairs and strings.
+                                        if (convertedType.IsEnumerableType()
+                                            && !convertedType.IsEnumerableOfKeyValueType()
+                                            && !(convertedType == typeof(string) && propertyType == typeof(string)))
                                         {
                                             // Use 'FirstOrDefault' to convert the type back to T.
                                             result = EnumerableInvocations.FirstOrDefault(

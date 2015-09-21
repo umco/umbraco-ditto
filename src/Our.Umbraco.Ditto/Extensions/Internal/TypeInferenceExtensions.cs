@@ -14,12 +14,8 @@
         /// <summary>
         /// Determines whether the specified type is an enumerable of the given argument type.
         /// </summary>
-        /// <param name="type">
-        /// The type.
-        /// </param>
-        /// <param name="typeArgument">
-        /// The generic type argument.
-        /// </param>
+        /// <param name="type">The type.</param>
+        /// <param name="typeArgument">The generic type argument.</param>
         /// <returns>
         /// True if the type is an enumerable of the given argument type otherwise; false.
         /// </returns>
@@ -47,6 +43,45 @@
         public static bool IsEnumerableType(this Type type)
         {
             return type.TryGetElementType(typeof(IEnumerable<>)) != null;
+        }
+
+        /// <summary>
+        /// Determines whether the specified type is an enumerable type containing a 
+        /// key value pair as the generic type parameter.
+        /// <remarks>
+        /// <see cref="M:Enumerable.FirstOrDefault"/> will throw an error when passed an
+        /// <see cref="T:IEnumerable{KeyValuePair{,}}"/> this includes <see cref="T:Dictionary{,}"/>.
+        /// </remarks>
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>
+        /// True if the type is an enumerable type with the generic parameter of a key/value 
+        /// pair otherwise; false.</returns>
+        public static bool IsEnumerableOfKeyValueType(this Type type)
+        {
+            return type.TryGetElementType(typeof(IDictionary<,>)) != null ||
+                (type.IsEnumerableType() && type.IsGenericType && type.GenericTypeArguments.Any()
+                 && type.GenericTypeArguments[0].IsGenericType
+                 && type.GenericTypeArguments[0].GetGenericTypeDefinition() == typeof(KeyValuePair<,>));
+        }
+
+        /// <summary>
+        /// Determines whether the specified type is an enumerable type that is safe to cast
+        /// following processing via a type converter.
+        /// <remarks>
+        /// This should exclude <see cref="T:string"/>, <see cref="T:Dictionary{,}"/>
+        /// </remarks>
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>True if the type is a cast-safe, enumerable type otherwise; false.</returns>
+        public static bool IsCastableEnumerableType(this Type type)
+        {
+            // String, though enumerable have no generic arguments.
+            // Types with more than one generic argument cnnot be cast. 
+            // Dictionary, though enumerable, requires linq to convert and shouldn't be attempted anyway.
+            return type.IsEnumerableType() && type.GenericTypeArguments.Any()
+                    && type.GenericTypeArguments.Length == 1
+                    && type.TryGetElementType(typeof(IDictionary<,>)) == null;
         }
 
         /// <summary>

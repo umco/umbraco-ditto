@@ -218,6 +218,7 @@
     <Compile Include="CustomTypeConverterTests.cs" />
     <Compile Include="ConversionHandlerTests.cs" />
     <Compile Include="CustomValueResolverTests.cs" />
+    <Compile Include="EnumerableDetectionTests.cs" />
     <Compile Include="GlobalValueResolverTests.cs" />
     <Compile Include="MultipleConversionHandlerTests.cs" />
     <Compile Include="PrefixedPropertyTests.cs" />
