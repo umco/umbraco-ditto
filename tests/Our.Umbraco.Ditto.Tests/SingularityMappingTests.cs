@@ -16,7 +16,7 @@
         }
 
         [Test]
-        public void MyTest()
+        public void Single_PublishedContent_Mapped_From_Collection()
         {
             var mock = new PublishedContentMock();
             var items = Enumerable.Repeat<IPublishedContent>(mock, 3);
