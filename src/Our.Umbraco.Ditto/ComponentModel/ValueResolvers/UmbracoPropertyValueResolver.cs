@@ -59,9 +59,16 @@
             if (!umbracoPropertyName.IsNullOrWhiteSpace())
             {
                 var contentProperty = contentType.GetProperty(umbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
-                propertyValue = contentProperty != null
-                    ? contentProperty.GetValue(content, null)
-                    : content.GetPropertyValue(umbracoPropertyName, recursive);
+
+                if (contentProperty != null)
+                {
+                    propertyValue = contentProperty.GetValue(content, null);
+                }
+
+                if (propertyValue == null)
+                {
+                    propertyValue = content.GetPropertyValue(umbracoPropertyName, recursive);
+                }
             }
 
             // Try fetching the alt value.
