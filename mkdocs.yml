@@ -14,4 +14,3 @@ pages:
     - 'Advanced usage: Conversion Handlers': 'usage-advanced-conversionhandlers.md'
     - 'Advanced usage: Lazy Loading': 'usage-advanced-lazyloading.md'
     - 'Advanced usage: Lists': 'usage-advanced-lists.md'
-  - 'PublishedContentModelFactory': 'publishedcontentmodelfactory.md'
