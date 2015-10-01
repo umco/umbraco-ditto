@@ -76,9 +76,16 @@
                 && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
             {
                 var contentProperty = contentType.GetProperty(altUmbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
-                propertyValue = contentProperty != null
-                    ? contentProperty.GetValue(content, null)
-                    : content.GetPropertyValue(altUmbracoPropertyName, recursive);
+
+                if (contentProperty != null)
+                {
+                    propertyValue = contentProperty.GetValue(content, null);
+                }
+
+                if (propertyValue == null)
+                {
+                    propertyValue = content.GetPropertyValue(altUmbracoPropertyName, recursive);
+                }
             }
 
             // Try setting the default value.
