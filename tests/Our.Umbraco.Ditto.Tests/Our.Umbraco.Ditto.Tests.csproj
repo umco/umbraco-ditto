@@ -222,6 +222,7 @@
     <Compile Include="EnumerableDetectionTests.cs" />
     <Compile Include="GlobalValueResolverTests.cs" />
     <Compile Include="MultipleConversionHandlerTests.cs" />
+    <Compile Include="PocoConstructorTests.cs" />
     <Compile Include="PrefixedPropertyTests.cs" />
     <Compile Include="SingularityMappingTests.cs" />
     <Compile Include="ValueResolverContextTests.cs" />
