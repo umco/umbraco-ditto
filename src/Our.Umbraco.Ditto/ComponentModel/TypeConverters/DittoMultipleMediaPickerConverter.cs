@@ -11,6 +11,7 @@
     /// <summary>
     /// Provides a unified way of converting multi media picker properties to strong typed collections.
     /// </summary>
+    [Obsolete("This converter has been deprecated, please use the DittoPickerConverter instead.", false)]
     public class DittoMultipleMediaPickerConverter : DittoConverter
     {
         /// <summary>
