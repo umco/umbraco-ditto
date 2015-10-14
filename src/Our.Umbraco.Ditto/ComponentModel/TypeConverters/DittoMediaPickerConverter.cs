@@ -10,6 +10,7 @@
     /// <summary>
     /// Provides a unified way of converting media picker properties to strong typed model.
     /// </summary>
+    [Obsolete("This converter has been deprecated, please use the DittoPickerConverter instead.", false)]
     public class DittoMediaPickerConverter : DittoConverter
     {
         /// <summary>

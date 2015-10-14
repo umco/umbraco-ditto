@@ -10,6 +10,7 @@
     /// <summary>
     /// Provides a unified way of converting content picker properties to strong typed model.
     /// </summary>
+    [Obsolete("This converter has been deprecated, please use the DittoPickerConverter instead.", false)]
     public class DittoContentPickerConverter : DittoConverter
     {
         /// <summary>
