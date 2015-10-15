@@ -496,9 +496,9 @@
             // 2: Check any type arguments in generic enumerable types.
             // 3: Check the type itself.
             var converterAttribute =
-                propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
-                ?? (propertyIsEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
-                                             : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
+                propertyInfo.GetCustomAttribute<DittoTypeConverterAttribute>()
+                ?? (propertyIsEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<DittoTypeConverterAttribute>(true)
+                                             : propertyType.GetCustomAttribute<DittoTypeConverterAttribute>(true));
 
             if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
             {
@@ -509,7 +509,7 @@
                     var converterType = Type.GetType(converterAttribute.ConverterTypeName);
                     if (converterType != null)
                     {
-                        var converter = converterType.GetDependencyResolvedInstance() as TypeConverter;
+                        var converter = converterType.GetDependencyResolvedInstance() as IDittoTypeConverter;
 
                         if (converter != null)
                         {
@@ -603,7 +603,7 @@
             {
                 // Handle Html strings so we don't have to set the attribute.
                 var converterType = typeof(DittoHtmlStringConverter);
-                var converter = converterType.GetDependencyResolvedInstance() as TypeConverter;
+                var converter = converterType.GetDependencyResolvedInstance() as IDittoTypeConverter;
 
                 if (converter != null)
                 {

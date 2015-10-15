@@ -7,17 +7,19 @@
     using Our.Umbraco.Ditto.Tests.Mocks;
     using global::Umbraco.Core.Models;
 
+    using Newtonsoft.Json;
+
     [TestFixture]
     public class CustomTypeConverterTests
     {
         public class MyModel
         {
             [UmbracoProperty("Id")]
-            [TypeConverter(typeof(MyCustomConverter))]
-            public IPublishedContent MyProperty { get; set; }
+            [DittoTypeConverter(typeof(MyCustomConverter))]
+            public virtual IPublishedContent MyProperty { get; set; }
         }
 
-        public class MyCustomConverter : TypeConverter
+        public class MyCustomConverter : DittoConverter
         {
             public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
             {
@@ -49,6 +51,26 @@
 
             Assert.That(model.MyProperty, Is.InstanceOf<IPublishedContent>());
             Assert.That(model.MyProperty.Id, Is.EqualTo(id));
+        }
+
+        [Test]
+        public void CanSerializeModelWithTypeAttribute()
+        {
+            var id = 1234;
+
+            var content = new PublishedContentMock()
+            {
+                Id = id
+            };
+
+            var model = content.As<MyModel>();
+
+            Assert.That(model.MyProperty, Is.InstanceOf<IPublishedContent>());
+            Assert.That(model.MyProperty.Id, Is.EqualTo(id));
+
+            var serialized = JsonConvert.SerializeObject(model);
+            Assert.NotNull(serialized);
+            Assert.True(serialized.IndexOf("\"Id\":1234", StringComparison.Ordinal) > -1);
         }
     }
 }
