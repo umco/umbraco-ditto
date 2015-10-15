@@ -13,11 +13,11 @@
     {
         public class MyModel
         {
-            [TypeConverter(typeof(MyConverter))]
+            [DittoTypeConverter(typeof(MyConverter))]
             public Dictionary<string, string> MyProperty { get; set; }
         }
 
-        public class MyConverter : TypeConverter
+        public class MyConverter : DittoConverter
         {
             public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
             {

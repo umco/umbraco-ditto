@@ -11,7 +11,7 @@
     {
         public class MyModel
         {
-            [TypeConverter(typeof(DittoPickerConverter))]
+            [DittoTypeConverter(typeof(DittoPickerConverter))]
             public IPublishedContent MyProperty { get; set; }
         }
 

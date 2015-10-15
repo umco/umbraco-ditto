@@ -87,6 +87,7 @@
     <Compile Include="ComponentModel\Attributes\DittoOnConvertedAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\CurrentContentAsAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoIgnoreAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\DittoTypeConverterAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoValueResolverAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\UmbracoDictionaryAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\UmbracoPropertiesAttribute.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="ComponentModel\TypeConverters\DittoMediaPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoContentPickerConverter.cs" />
     <Compile Include="ComponentModel\TypeConverters\DittoHtmlStringConverter.cs" />
+    <Compile Include="ComponentModel\TypeConverters\IDittoTypeConverter.cs" />
     <Compile Include="ComponentModel\ValueResolvers\AppSettingValueResolver.cs" />
     <Compile Include="ComponentModel\ValueResolvers\CurrentContentAsValueResolver.cs" />
     <Compile Include="ComponentModel\ValueResolvers\DittoValueResolverRegistry.cs" />
