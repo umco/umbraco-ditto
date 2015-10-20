@@ -39,16 +39,25 @@
         public void Custom_TypeConverter_Converts()
         {
             var id = 1234;
-
-            var content = new PublishedContentMock()
-            {
-                Id = id
-            };
+            var content = new PublishedContentMock() { Id = id };
 
             var model = content.As<MyModel>();
 
             Assert.That(model.MyProperty, Is.InstanceOf<IPublishedContent>());
             Assert.That(model.MyProperty.Id, Is.EqualTo(id));
+        }
+
+        [Test]
+        public void Custom_TypeConverter_Serializes()
+        {
+            var id = 1234;
+            var content = new PublishedContentMock() { Id = id };
+
+            var model = content.As<MyModel>();
+            var serialized = Newtonsoft.Json.JsonConvert.SerializeObject(model);
+
+            Assert.That(serialized, Is.Not.Null);
+            Assert.That(serialized.IndexOf("\"Id\":1234", StringComparison.Ordinal), Is.GreaterThan(-1));
         }
     }
 }
