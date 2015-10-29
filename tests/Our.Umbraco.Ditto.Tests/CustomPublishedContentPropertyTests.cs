@@ -19,22 +19,25 @@
         [Test]
         public void CustomPublishedContent_Property_IsMapped()
         {
-            var value = "myValue";
+            var propertyValue = "foo";
+            var objectValue = "bar";
 
             var property = new PublishedContentPropertyMock
             {
                 Alias = "myProperty",
-                Value = value
+                Value = propertyValue
             };
 
             var content = new CustomPublishedContentMock
             {
-                Properties = new[] { property }
+                Properties = new[] { property },
+                MyProperty = objectValue
             };
 
             var model = content.As<MyModel>();
 
-            Assert.That(model.MyProperty, Is.EqualTo(value));
+            Assert.That(model.MyProperty, Is.Not.EqualTo(propertyValue));
+            Assert.That(model.MyProperty, Is.EqualTo(objectValue));
         }
     }
 }
