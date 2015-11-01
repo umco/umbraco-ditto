@@ -22,7 +22,7 @@
         public static bool IsEnumerableOfType(this Type type, Type typeArgument)
         {
             Type t = type.TryGetElementType(typeof(IEnumerable<>));
-            return t != null && t.IsAssignableFrom(typeArgument);
+            return t != null && typeArgument.IsAssignableFrom(t);
         }
 
         /// <summary>
