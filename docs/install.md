@@ -1,5 +1,3 @@
-# Installation
-
 > **_Note:_** Ditto has been developed against **Umbraco v6.2.5** and will support that version and above.
 
 Ditto can be installed from either Our Umbraco or NuGet package repositories, or build manually from the source-code:
@@ -26,7 +24,7 @@ If you prefer, you can compile Ditto yourself, you'll need:
 
 * Visual Studio 2012 (or above)
 
-To clone it locally click the "Clone in Windows" button above or run the following git commands.
+To clone it locally run the following git commands:
 
 ```bash
 git clone https://github.com/leekelleher/umbraco-ditto.git umbraco-ditto

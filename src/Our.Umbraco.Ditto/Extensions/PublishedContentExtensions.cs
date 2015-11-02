@@ -62,7 +62,7 @@
         /// The <see cref="Type"/> of items to return.
         /// </typeparam>
         /// <returns>
-        /// The resolved <see cref="T"/>.
+        /// The resolved generic <see cref="Type"/>.
         /// </returns>
         public static T As<T>(
             this IPublishedContent content,
@@ -415,7 +415,7 @@
 
             if (valueAttr == null)
             {
-                // Check for globally registerd resolver
+                // Check for globally registered resolver
                 valueAttr = DittoValueResolverRegistry.Instance.GetRegisteredResolverAttributeFor(propertyInfo.PropertyType);
             }
 
@@ -488,8 +488,8 @@
             var propertyType = propertyInfo.PropertyType;
             var typeInfo = propertyType.GetTypeInfo();
 
-            // This should return false against typeof(string) also.
-            var propertyIsEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
+            // This should return false against typeof(string) etc also.
+            var propertyIsEnumerableType = propertyType.IsCastableEnumerableType();
 
             // Try any custom type converters first.
             // 1: Check the property.
@@ -563,8 +563,10 @@
                                     else
                                     {
                                         // Return single expected items from converters returning an IEnumerable.
-                                        // Check for string.
-                                        if (convertedType.IsEnumerableType() && !(convertedType == typeof(string) && propertyType == typeof(string)))
+                                        // Check for key/value pairs and strings.
+                                        if (convertedType.IsEnumerableType()
+                                            && !convertedType.IsEnumerableOfKeyValueType()
+                                            && !(convertedType == typeof(string) && propertyType == typeof(string)))
                                         {
                                             // Use 'FirstOrDefault' to convert the type back to T.
                                             result = EnumerableInvocations.FirstOrDefault(
@@ -587,11 +589,17 @@
                                     }
                                 }
                             }
+                            else if (propertyType.IsInstanceOfType(propertyValue))
+                            {
+                                // If the TypeConverter's `CanConvertFrom` has returned false,
+                                // then we can check if the value is the same type as the target type.
+                                result = propertyValue;
+                            }
                         }
                     }
                 }
             }
-            else if (propertyInfo.PropertyType == typeof(HtmlString))
+            else if (propertyType == typeof(HtmlString))
             {
                 // Handle Html strings so we don't have to set the attribute.
                 var converterType = typeof(DittoHtmlStringConverter);
@@ -621,30 +629,30 @@
                     }
                 }
             }
-            else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
+            else if (propertyType.IsInstanceOfType(propertyValue))
             {
                 // Simple types
                 result = propertyValue;
             }
-            else if (propertyValue is IPublishedContent && propertyInfo.PropertyType.IsClass)
+            else if (propertyValue is IPublishedContent && propertyType.IsClass)
             {
                 // If the property value is an IPublishedContent, then we can use Ditto to map to the target type.
-                result = ((IPublishedContent)propertyValue).As(propertyInfo.PropertyType);
+                result = ((IPublishedContent)propertyValue).As(propertyType);
             }
             else if (propertyValue != null
                 && propertyValue.GetType().IsEnumerableOfType(typeof(IPublishedContent))
-                && propertyInfo.PropertyType.IsEnumerable()
-                && propertyInfo.PropertyType.GetEnumerableType() != null
-                && propertyInfo.PropertyType.GetEnumerableType().IsClass)
+                && propertyType.IsEnumerable()
+                && propertyType.GetEnumerableType() != null
+                && propertyType.GetEnumerableType().IsClass)
             {
                 // If the property value is IEnumerable<IPublishedContent>, then we can use Ditto to map to the target type.
-                result = ((IEnumerable<IPublishedContent>)propertyValue).As(propertyInfo.PropertyType.GetEnumerableType());
+                result = ((IEnumerable<IPublishedContent>)propertyValue).As(propertyType.GetEnumerableType());
             }
             else
             {
                 using (DittoDisposableTimer.DebugDuration<object>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
                 {
-                    var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
+                    var convert = propertyValue.TryConvertTo(propertyType);
                     if (convert.Success)
                     {
                         result = convert.Result;

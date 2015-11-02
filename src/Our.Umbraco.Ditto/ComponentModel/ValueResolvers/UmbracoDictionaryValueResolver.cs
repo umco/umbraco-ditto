@@ -1,7 +1,7 @@
-﻿using global::Umbraco.Web;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
+    using global::Umbraco.Web;
+
     /// <summary>
     /// The Umbraco dictionary value resolver.
     /// </summary>
@@ -15,7 +15,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ResolveValue()
         {
-            var dictionaryKey = Attribute.DictionaryKey ?? (Context.PropertyDescriptor != null ? Context.PropertyDescriptor.Name : string.Empty);
+            var dictionaryKey = this.Attribute.DictionaryKey ?? (this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty);
 
             if (string.IsNullOrWhiteSpace(dictionaryKey))
             {
@@ -23,7 +23,7 @@ namespace Our.Umbraco.Ditto
             }
 
             // HACK: [LK:2015-04-14] Resorting to using `UmbracoHelper`, as `CultureDictionaryFactoryResolver` isn't public in v6.2.x.
-            return new UmbracoHelper(UmbracoContext.Current, Content).GetDictionaryValue(dictionaryKey);
+            return new UmbracoHelper(UmbracoContext.Current, this.Content).GetDictionaryValue(dictionaryKey);
         }
     }
 }

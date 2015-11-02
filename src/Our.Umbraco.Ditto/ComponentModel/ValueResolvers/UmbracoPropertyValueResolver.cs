@@ -1,10 +1,10 @@
-﻿using System.Reflection;
-using global::Umbraco.Core;
-using global::Umbraco.Core.Models;
-using global::Umbraco.Web;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
+    using System.Reflection;
+    using global::Umbraco.Core;
+    using global::Umbraco.Core.Models;
+    using global::Umbraco.Web;
+
     /// <summary>
     /// The Umbraco property value resolver.
     /// </summary>
@@ -18,16 +18,16 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ResolveValue()
         {
-            var defaultValue = Attribute.DefaultValue;
+            var defaultValue = this.Attribute.DefaultValue;
 
-            var recursive = Attribute.Recursive;
-            var propName = Context.PropertyDescriptor != null ? Context.PropertyDescriptor.Name : string.Empty;
-            var altPropName = "";
+            var recursive = this.Attribute.Recursive;
+            var propName = this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty;
+            var altPropName = string.Empty;
 
             // Check for umbraco properties attribute on class
-            if (Context.PropertyDescriptor != null)
+            if (this.Context.PropertyDescriptor != null)
             {
-                var classAttr = Context.PropertyDescriptor.ComponentType
+                var classAttr = this.Context.PropertyDescriptor.ComponentType
                     .GetCustomAttribute<UmbracoPropertiesAttribute>();
                 if (classAttr != null)
                 {
@@ -43,10 +43,10 @@ namespace Our.Umbraco.Ditto
                 }
             }
 
-            var umbracoPropertyName = Attribute.PropertyName ?? propName;
-            var altUmbracoPropertyName = Attribute.AltPropertyName ?? altPropName;
+            var umbracoPropertyName = this.Attribute.PropertyName ?? propName;
+            var altUmbracoPropertyName = this.Attribute.AltPropertyName ?? altPropName;
 
-            var content = Context.Instance as IPublishedContent;
+            var content = this.Context.Instance as IPublishedContent;
             if (content == null)
             {
                 return defaultValue;
@@ -59,9 +59,16 @@ namespace Our.Umbraco.Ditto
             if (!umbracoPropertyName.IsNullOrWhiteSpace())
             {
                 var contentProperty = contentType.GetProperty(umbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
-                propertyValue = contentProperty != null
-                    ? contentProperty.GetValue(content, null)
-                    : content.GetPropertyValue(umbracoPropertyName, recursive);
+
+                if (contentProperty != null)
+                {
+                    propertyValue = contentProperty.GetValue(content, null);
+                }
+
+                if (propertyValue == null)
+                {
+                    propertyValue = content.GetPropertyValue(umbracoPropertyName, recursive);
+                }
             }
 
             // Try fetching the alt value.
@@ -69,9 +76,16 @@ namespace Our.Umbraco.Ditto
                 && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
             {
                 var contentProperty = contentType.GetProperty(altUmbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
-                propertyValue = contentProperty != null
-                    ? contentProperty.GetValue(content, null)
-                    : content.GetPropertyValue(altUmbracoPropertyName, recursive);
+
+                if (contentProperty != null)
+                {
+                    propertyValue = contentProperty.GetValue(content, null);
+                }
+
+                if (propertyValue == null)
+                {
+                    propertyValue = content.GetPropertyValue(altUmbracoPropertyName, recursive);
+                }
             }
 
             // Try setting the default value.

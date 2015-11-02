@@ -1,11 +1,10 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-
-using global::Umbraco.Core.Models;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
+    using global::Umbraco.Core.Models;
+
     /// <summary>
     /// The Ditto value resolver.
     /// Provides reusable methods for returning property values from Umbraco.
@@ -18,7 +17,7 @@ namespace Our.Umbraco.Ditto
         public IPublishedContent Content { get; protected set; }
 
         /// <summary>
-        /// Gets or sets the resovler context.
+        /// Gets or sets the resolver context.
         /// </summary>
         public DittoValueResolverContext Context { get; protected set; }
 
@@ -30,7 +29,15 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Gets or sets the culture object.
         /// </summary>
-        public CultureInfo Culture { get; protected set; } 
+        public CultureInfo Culture { get; protected set; }
+
+        /// <summary>
+        /// Performs the value resolution.
+        /// </summary>
+        /// /// <returns>
+        /// The <see cref="object"/> representing the raw value.
+        /// </returns>
+        public abstract object ResolveValue();
 
         /// <summary>
         /// Gets the raw value for the current property from Umbraco.
@@ -46,31 +53,25 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        internal virtual object ResolveValue(DittoValueResolverContext context, DittoValueResolverAttribute attribute,
+        internal virtual object ResolveValue(
+            DittoValueResolverContext context,
+            DittoValueResolverAttribute attribute,
             CultureInfo culture)
         {
-            Content = context.Instance as IPublishedContent;
-            Context = context;
-            Attribute = attribute;
-            Culture = culture;
+            this.Content = context.Instance as IPublishedContent;
+            this.Context = context;
+            this.Attribute = attribute;
+            this.Culture = culture;
 
-            return ResolveValue();
+            return this.ResolveValue();
         }
-
-        /// <summary>
-        /// Performs the value resolution.
-        /// </summary>
-        /// /// <returns>
-        /// The <see cref="object"/> representing the raw value.
-        /// </returns>
-        public abstract object ResolveValue();
     }
 
     /// <summary>
     /// A generic value resolver to resolve a raw value.
     /// </summary>
     /// <typeparam name="TContextType">
-    /// The <see cref="T:System.Type"/> of context object that provides dynamic context to this resovler. 
+    /// The <see cref="T:System.Type"/> of context object that provides dynamic context to this resolver. 
     /// </typeparam>
     /// <typeparam name="TAttributeType">
     /// The <see cref="T:System.Type"/> of attribute that provides static config for this resolver. 
@@ -81,7 +82,7 @@ namespace Our.Umbraco.Ditto
         where TAttributeType : DittoValueResolverAttribute
     {
         /// <summary>
-        /// Gets or sets the resovler context.
+        /// Gets or sets the resolver context.
         /// </summary>
         public new TContextType Context { get; protected set; }
 
@@ -104,8 +105,10 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="object"/> representing the raw value.
         /// </returns>
-        internal override object ResolveValue(DittoValueResolverContext context, 
-            DittoValueResolverAttribute attribute, CultureInfo culture)
+        internal override object ResolveValue(
+            DittoValueResolverContext context,
+            DittoValueResolverAttribute attribute,
+            CultureInfo culture)
         {
             if (!(context is TContextType))
             {
@@ -121,12 +124,12 @@ namespace Our.Umbraco.Ditto
                     "attribute");
             }
 
-            Content = context.Instance as IPublishedContent;
-            Context = context as TContextType;
-            Attribute = attribute as TAttributeType;
-            Culture = culture;
+            this.Content = context.Instance as IPublishedContent;
+            this.Context = context as TContextType;
+            this.Attribute = attribute as TAttributeType;
+            this.Culture = culture;
 
-            return ResolveValue();
+            return this.ResolveValue();
         }
     }
 
@@ -134,10 +137,11 @@ namespace Our.Umbraco.Ditto
     /// A generic value resolver to resolve a raw value.
     /// </summary>
     /// <typeparam name="TContextType">
-    /// The <see cref="T:System.Type"/> of context object that provides dynamic context to this resovler. 
+    /// The <see cref="T:System.Type"/> of context object that provides dynamic context to this resolver. 
     /// </typeparam>
     public abstract class DittoValueResolver<TContextType> :
         DittoValueResolver<TContextType, DittoValueResolverAttribute>
         where TContextType : DittoValueResolverContext
-    { }
+    {
+    }
 }

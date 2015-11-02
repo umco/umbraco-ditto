@@ -1,7 +1,7 @@
-﻿using System.Web.Configuration;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
+    using System.Web.Configuration;
+
     /// <summary>
     /// The web.config app setting value resolver.
     /// </summary>
@@ -15,7 +15,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ResolveValue()
         {
-            var appSettingKey = Attribute.AppSettingKey ?? (Context.PropertyDescriptor != null ? Context.PropertyDescriptor.Name : string.Empty);
+            var appSettingKey = this.Attribute.AppSettingKey ?? (this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty);
 
             if (string.IsNullOrWhiteSpace(appSettingKey))
             {

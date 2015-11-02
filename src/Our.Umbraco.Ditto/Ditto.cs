@@ -1,7 +1,7 @@
-﻿using System.ComponentModel;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
+    using System.ComponentModel;
+
     /// <summary>
     /// The public facade for non extension method Ditto actions
     /// </summary>

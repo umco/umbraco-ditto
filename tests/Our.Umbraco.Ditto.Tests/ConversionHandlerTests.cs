@@ -1,8 +1,8 @@
 ﻿namespace Our.Umbraco.Ditto.Tests
 {
-    using global::Umbraco.Web;
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;
+    using global::Umbraco.Web;
 
     [TestFixture]
     public class ConversionHandlerTests

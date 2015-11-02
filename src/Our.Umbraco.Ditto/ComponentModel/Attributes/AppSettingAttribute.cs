@@ -3,8 +3,8 @@
     using System;
 
     /// <summary>
-    /// The Umbraco dictionary value attribute.
-    /// Used for providing Umbraco with additional information about a dictionary item to aid property value conversion.
+    /// The AppSetting value attribute.
+    /// Used for providing additional information about an AppSetting item to aid property value conversion.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class AppSettingAttribute : DittoValueResolverAttribute
@@ -18,7 +18,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoDictionaryAttribute"/> class.
+        /// Initializes a new instance of the <see cref="AppSettingAttribute"/> class.
         /// </summary>
         /// <param name="appSettingKey">
         /// The app setting key in the web.config

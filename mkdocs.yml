@@ -3,7 +3,14 @@ site_name: Ditto
 repo_url: https://github.com/leekelleher/umbraco-ditto/tree/develop/docs
 
 pages:
-  - Introduction: 'index.md'
-  - Installation: 'install.md'
-  - Usage: 'usage.md'
-  - Configuration: 'configuration.md'
+  - 'Introduction': 'index.md'
+  - 'Installation': 'install.md'
+  - 'Getting started': 'getting-started.md'
+  - 'Usage':
+    - 'Basic usage': 'usage-basic.md'
+    - 'Advanced usage: Attributes': 'usage-advanced-attributes.md'
+    - 'Advanced usage: ValueResolvers': 'usage-advanced-valueresolvers.md'
+    - 'Advanced usage: TypeConverters': 'usage-advanced-typeconverters.md'
+    - 'Advanced usage: Conversion Handlers': 'usage-advanced-conversionhandlers.md'
+    - 'Advanced usage: Lazy Loading': 'usage-advanced-lazyloading.md'
+    - 'Advanced usage: Lists': 'usage-advanced-lists.md'

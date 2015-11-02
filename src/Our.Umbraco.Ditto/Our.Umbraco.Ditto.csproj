@@ -57,6 +57,7 @@
     <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.30506.0\lib\net40\System.Web.Http.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml">
       <Private>False</Private>
@@ -80,16 +81,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\AppSettingAttribute.cs" />
-    <Compile Include="Attributes\DittoConversionHandlerAttribute.cs" />
-    <Compile Include="Attributes\DittoOnConvertingAttribute.cs" />
-    <Compile Include="Attributes\DittoOnConvertedAttribute.cs" />
-    <Compile Include="Attributes\CurrentContentAsAttribute.cs" />
-    <Compile Include="Attributes\DittoIgnoreAttribute.cs" />
-    <Compile Include="Attributes\DittoValueResolverAttribute.cs" />
-    <Compile Include="Attributes\UmbracoDictionaryAttribute.cs" />
-    <Compile Include="Attributes\UmbracoPropertiesAttribute.cs" />
-    <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\AppSettingAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\DittoConversionHandlerAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\DittoOnConvertingAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\DittoOnConvertedAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\CurrentContentAsAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\DittoIgnoreAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\DittoValueResolverAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\UmbracoDictionaryAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\UmbracoPropertiesAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="Common\DittoDisposableTimer.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />

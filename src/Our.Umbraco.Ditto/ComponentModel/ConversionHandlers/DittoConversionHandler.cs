@@ -1,8 +1,24 @@
-﻿using System;
-using Umbraco.Core.Models;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
+    using System;
+    using global::Umbraco.Core.Models;
+
+    /// <summary>
+    /// The types of conversion handler.
+    /// </summary>
+    internal enum DittoConversionHandlerType
+    {
+        /// <summary>
+        /// Used for when Ditto is converting.
+        /// </summary>
+        OnConverting,
+
+        /// <summary>
+        /// Used for when Ditto has converted.
+        /// </summary>
+        OnConverted
+    }
+
     /// <summary>
     /// The Ditto conversion handler.
     /// Provides a method of running custom code before and after Ditto conversion.
@@ -34,17 +50,31 @@ namespace Our.Umbraco.Ditto
         public object Model { get; protected set; }
 
         /// <summary>
+        /// Called just before conversion of the model occurs.
+        /// </summary>
+        public virtual void OnConverting()
+        {
+        }
+
+        /// <summary>
+        /// Called just after conversion of the model occurs.
+        /// </summary>
+        public virtual void OnConverted()
+        {
+        }
+
+        /// <summary>
         /// Runs the conversion handler.
         /// </summary>
         /// <param name="ctx">The context.</param>
         /// <param name="type">The handler type to run.</param>
         internal virtual void Run(DittoConversionHandlerContext ctx, DittoConversionHandlerType type)
         {
-            Content = ctx.Content;
-            ModelType = ctx.ModelType;
-            Model = ctx.Model;
+            this.Content = ctx.Content;
+            this.ModelType = ctx.ModelType;
+            this.Model = ctx.Model;
 
-            Run(type);
+            this.Run(type);
         }
 
         /// <summary>
@@ -56,26 +86,14 @@ namespace Our.Umbraco.Ditto
             switch (type)
             {
                 case DittoConversionHandlerType.OnConverting:
-                    OnConverting();
+                    this.OnConverting();
                     break;
 
                 case DittoConversionHandlerType.OnConverted:
-                    OnConverted();
+                    this.OnConverted();
                     break;
             }
         }
-
-        /// <summary>
-        /// Called just before conversion of the model occurs.
-        /// </summary>
-        public virtual void OnConverting()
-        { }
-
-        /// <summary>
-        /// Called just after conversion of the model occurs.
-        /// </summary>
-        public virtual void OnConverted()
-        { }
     }
 
     /// <summary>
@@ -100,17 +118,11 @@ namespace Our.Umbraco.Ditto
         /// <param name="type">The handler type to run.</param>
         internal override void Run(DittoConversionHandlerContext ctx, DittoConversionHandlerType type)
         {
-            Content = ctx.Content;
-            ModelType = ctx.ModelType;
-            Model = ctx.Model as TConvertedType;
+            this.Content = ctx.Content;
+            this.ModelType = ctx.ModelType;
+            this.Model = ctx.Model as TConvertedType;
 
-            Run(type);
+            this.Run(type);
         }
-    }
-
-    internal enum DittoConversionHandlerType
-    {
-        OnConverting,
-        OnConverted
     }
 }

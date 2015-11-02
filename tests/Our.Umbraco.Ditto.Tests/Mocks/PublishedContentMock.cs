@@ -9,7 +9,7 @@
     using global::Umbraco.Core.Models.PublishedContent;
 
     /// <summary>
-    /// This class will implement all the methods needed to moch the behaviour of an IPublishedContent node.
+    /// This class will implement all the methods needed to mock the behavior of an IPublishedContent node.
     /// Add to the constructor as more data is needed.
     /// </summary>
     public class PublishedContentMock : IPublishedContent

@@ -11,6 +11,7 @@
     /// <summary>
     /// Provides a unified way of converting multi media picker properties to strong typed collections.
     /// </summary>
+    [Obsolete("This converter has been deprecated, please use the DittoPickerConverter instead.", false)]
     public class DittoMultipleMediaPickerConverter : DittoConverter
     {
         /// <summary>
@@ -76,7 +77,7 @@
             if (value is int)
             {
                 var id = (int)value;
-                return ConvertMediaFromInt(id, targetType, culture).YieldSingleItem();
+                return this.ConvertMediaFromInt(id, targetType, culture).YieldSingleItem();
             }
 
             var s = value as string;
