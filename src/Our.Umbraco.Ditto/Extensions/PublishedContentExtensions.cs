@@ -142,7 +142,7 @@
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
         {
-            using (DisposableTimer.DebugDuration<IEnumerable<object>>("IEnumerable As"))
+            using (DittoDisposableTimer.DebugDuration<IEnumerable<object>>("IEnumerable As"))
             {
                 var typedItems = items.Select(x => x.As(type, culture, null, valueResolverContexts, onConverting, onConverted));
 
@@ -197,7 +197,7 @@
                 throw new ArgumentException(string.Format("The instance parameter does not implement Type '{0}'", type.Name), "instance");
             }
 
-            using (DisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
+            using (DittoDisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
             {
                 return ConvertContent(content, type, culture, instance, valueResolverContexts, onConverting, onConverted);
             }
@@ -324,7 +324,7 @@
             {
                 foreach (var propertyInfo in virtualProperties)
                 {
-                    using (DisposableTimer.DebugDuration<object>(string.Format("ForEach Virtual Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
+                    using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Virtual Property ({1} {0})", propertyInfo.Name, content.Id)))
                     {
                         // Check for the ignore attribute.
                         var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
@@ -366,7 +366,7 @@
             {
                 foreach (var propertyInfo in nonVirtualProperties)
                 {
-                    using (DisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
+                    using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
                     {
                         // Check for the ignore attribute.
                         var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
@@ -426,7 +426,7 @@
             }
 
             // Time custom value-resolver.
-            using (DisposableTimer.DebugDuration<object>(string.Format("Custom ValueResolver ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+            using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueResolver ({0}, {1})", content.Id, propertyInfo.Name)))
             {
                 var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
 
@@ -503,7 +503,7 @@
             if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
             {
                 // Time custom conversions.
-                using (DisposableTimer.DebugDuration<object>(string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
                 {
                     // Get the custom converter from the attribute and attempt to convert.
                     var converterType = Type.GetType(converterAttribute.ConverterTypeName);
@@ -650,7 +650,7 @@
             }
             else
             {
-                using (DisposableTimer.DebugDuration<object>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                using (DittoDisposableTimer.DebugDuration<object>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
                 {
                     var convert = propertyValue.TryConvertTo(propertyType);
                     if (convert.Success)

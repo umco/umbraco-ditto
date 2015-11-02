@@ -91,6 +91,7 @@
     <Compile Include="ComponentModel\Attributes\UmbracoDictionaryAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\UmbracoPropertiesAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\UmbracoPropertyAttribute.cs" />
+    <Compile Include="Common\DittoDisposableTimer.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandlerRegistry.cs" />
