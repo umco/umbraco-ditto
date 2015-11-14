@@ -459,6 +459,7 @@
                 }
 
                 // Populate internal context properties
+                context.ConversionType = instance.GetType();
                 context.Instance = content;
                 context.PropertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
 
