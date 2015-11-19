@@ -519,6 +519,7 @@
                             var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
                             var context = new DittoTypeConverterContext
                             {
+                                ConversionType = instance.GetType(),
                                 Instance = content,
                                 PropertyDescriptor = descriptor
                             };
@@ -612,6 +613,7 @@
                     var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
                     var context = new DittoTypeConverterContext
                     {
+                        ConversionType = instance.GetType(),
                         Instance = content,
                         PropertyDescriptor = descriptor
                     };

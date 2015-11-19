@@ -11,6 +11,11 @@
     public abstract class PublishedContentContext : ITypeDescriptorContext
     {
         /// <summary>
+        /// Gets the object <see cref="T:System.Type"/> of the instance that is being converted.
+        /// </summary>
+        public Type ConversionType { get; internal set; }
+
+        /// <summary>
         /// Gets the object that is connected with this type descriptor request.
         /// </summary>
         /// <returns>
