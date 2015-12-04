@@ -342,8 +342,8 @@ namespace Our.Umbraco.Ditto
                                 () =>
                                 {
                                     // Get the value from Umbraco.
-                                    object propertyValue = GetProcessedValue(content, culture, deferredPropertyInfo, localInstance, processorContexts);
-                                    return GetConvertedValue(content, culture, deferredPropertyInfo, propertyValue, localInstance);
+                                    object propertyValue = GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, processorContexts);
+                                    return GetConvertedValue(content, culture, type, deferredPropertyInfo, propertyValue, localInstance);
                                 }));
                     }
                 }
@@ -377,8 +377,8 @@ namespace Our.Umbraco.Ditto
 
                         // Set the value normally.
                         // ReSharper disable once PossibleMultipleEnumeration
-                        object propertyValue = GetProcessedValue(content, culture, propertyInfo, instance, processorContexts);
-                        object value = GetConvertedValue(content, culture, propertyInfo, propertyValue, instance);
+                        object propertyValue = GetProcessedValue(content, culture, type, propertyInfo, instance, processorContexts);
+                        object value = GetConvertedValue(content, culture, type, propertyInfo, propertyValue, instance);
 
                         propertyInfo.SetValue(instance, value, null);
                     }
@@ -395,17 +395,19 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Returns the processed value for the given type and property.
         /// </summary>
-        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
-        /// <param name="culture">The <see cref="CultureInfo"/></param>
-        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
+        /// <param name="content">The <see cref="IPublishedContent" /> to convert.</param>
+        /// <param name="culture">The <see cref="CultureInfo" /></param>
+        /// <param name="type">The type.</param>
+        /// <param name="propertyInfo">The <see cref="PropertyInfo" /> property info associated with the type.</param>
         /// <param name="instance">The instance to assign the value to.</param>
-        /// <param name="processorContexts">
-        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
-        /// </param>
-        /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
+        /// <param name="processorContexts">A collection of <see cref="DittoProcessorContext" /> entities to use whilst processing values.</param>
+        /// <returns>
+        /// The <see cref="object" /> representing the Umbraco value.
+        /// </returns>
         private static object GetProcessedValue(
             IPublishedContent content,
             CultureInfo culture,
+            Type type,
             PropertyInfo propertyInfo,
             object instance,
             IEnumerable<DittoProcessorContext> processorContexts = null)
@@ -465,6 +467,8 @@ namespace Our.Umbraco.Ditto
                     }
 
                     // Populate internal context properties
+                    context.Type = type;
+                    context.Content = content;
                     context.Value = currentValue;
                     context.PropertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
 
@@ -479,15 +483,19 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Set the typed value to the given instance.
         /// </summary>
-        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
-        /// <param name="culture">The <see cref="CultureInfo"/></param>
-        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
+        /// <param name="content">The <see cref="IPublishedContent" /> to convert.</param>
+        /// <param name="culture">The <see cref="CultureInfo" /></param>
+        /// <param name="type">The type.</param>
+        /// <param name="propertyInfo">The <see cref="PropertyInfo" /> property info associated with the type.</param>
         /// <param name="propertyValue">The property value.</param>
         /// <param name="instance">The instance to assign the value to.</param>
-        /// <returns>The strong typed converted value for the given property.</returns>
+        /// <returns>
+        /// The strong typed converted value for the given property.
+        /// </returns>
         private static object GetConvertedValue(
             IPublishedContent content,
             CultureInfo culture,
+            Type type,
             PropertyInfo propertyInfo,
             object propertyValue,
             object instance)
@@ -620,8 +628,10 @@ namespace Our.Umbraco.Ditto
                     var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
                     var context = new DittoProcessorContext
                     {
+                        Content = content,
                         Value = propertyValue,
-                        PropertyDescriptor = descriptor
+                        PropertyDescriptor = descriptor,
+                        Type = type
                     };
 
                     // We're deliberately passing null.
