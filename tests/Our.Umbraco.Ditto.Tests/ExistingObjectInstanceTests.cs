@@ -16,7 +16,7 @@
 
         public class MyInheritedModel : MyBaseModel
         {
-            [UmbracoProperty("prop3")]
+            [UmbracoPropertyProcessor("prop3")]
             public string MyProperty3 { get; set; }
         }
 

@@ -1,9 +1,9 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Registry for globally registered conversion handlers.
     /// </summary>

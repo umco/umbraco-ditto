@@ -1,7 +1,7 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
+﻿using System;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// The Ditto conversion handler attribute.
     /// Provides the ability to associate a handler class with a model to handle pre/post conversion custom logic.

@@ -8,25 +8,25 @@
     using global::Umbraco.Web.Media.EmbedProviders.Settings;
 
     [TestFixture]
-    public class ValueResolverContextTests
+    public class ProcessorContextTests
     {
         public class MyValueResolverModel
         {
-            [DittoValueResolver(typeof(MyValueResolver))]
+            [DittoProcessor(typeof(MyProcessor))]
             public string MyProperty { get; set; }
         }
 
-        public class MyValueResolver : DittoValueResolver<MyValueResolverContext>
+        public class MyProcessor : DittoProcessor<object, MyProcessorContext>
         {
-            public override object ResolveValue()
+            public override object ProcessValue()
             {
                 return Context.MyContextProperty;
             }
         }
 
-        public class MyValueResolverContext : DittoValueResolverContext
+        public class MyProcessorContext : DittoProcessorContext
         {
-            public MyValueResolverContext()
+            public MyProcessorContext()
             {
                 MyContextProperty = "Default value";
             }
@@ -38,12 +38,12 @@
         public void ValueResolverContext_Resolves()
         {
             var content = new PublishedContentMock();
-            var context = new MyValueResolverContext
+            var context = new MyProcessorContext
             {
                 MyContextProperty = "Test"
             };
 
-            var model = content.As<MyValueResolverModel>(valueResolverContexts: new[] { context });
+            var model = content.As<MyValueResolverModel>(processorContexts: new[] { context });
 
             Assert.That(model.MyProperty, Is.EqualTo("Test"));
         }

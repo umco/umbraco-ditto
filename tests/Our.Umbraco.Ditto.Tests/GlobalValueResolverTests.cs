@@ -28,27 +28,27 @@
             public int Value { get; set; }
         }
 
-        public class MyIntValueResolverAttr : DittoValueResolverAttribute
+        public class MyIntProcessorAttr : DittoProcessorAttribute
         {
-            public MyIntValueResolverAttr()
-                : base(typeof(MyIntValueResolver))
+            public MyIntProcessorAttr()
+                : base(typeof(MyIntProcessor))
             {
             }
 
             public int AttrProp { get; set; }
         }
 
-        public class MyIntValueResolver : DittoValueResolver<DittoValueResolverContext, MyIntValueResolverAttr>
+        public class MyIntProcessor : DittoProcessor<object, DittoProcessorContext, MyIntProcessorAttr>
         {
-            public override object ResolveValue()
+            public override object ProcessValue()
             {
                 return new MyIntModel { Value = Attribute.AttrProp };
             }
         }
 
-        public class MyStrValueResolver : DittoValueResolver
+        public class MyStrValueResolver : DittoProcessor
         {
-            public override object ResolveValue()
+            public override object ProcessValue()
             {
                 return new MyStringModel { Value = "Test" };
             }
@@ -57,8 +57,8 @@
         [Test]
         public void Global_Value_Converter_Resolves()
         {
-            Ditto.RegisterValueResolver<MyStringModel, MyStrValueResolver>();
-            Ditto.RegisterValueResolverAttribute<MyIntModel, MyIntValueResolverAttr>(new MyIntValueResolverAttr { AttrProp = 5 });
+            Ditto.RegisterProcessor<MyStringModel, MyStrValueResolver>();
+            Ditto.RegisterProcessorAttribute<MyIntModel, MyIntProcessorAttr>(new MyIntProcessorAttr { AttrProp = 5 });
 
             var content = new PublishedContentMock();
 

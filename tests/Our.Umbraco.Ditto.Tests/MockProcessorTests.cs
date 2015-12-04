@@ -8,13 +8,13 @@
     using Our.Umbraco.Ditto.Tests.Mocks;
 
     [TestFixture]
-    public class MockValueResolverTests
+    public class MockProcessorTests
     {
         [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-        public class MockValueAttribute : DittoValueResolverAttribute
+        public class MockProcessorAttribute : DittoProcessorAttribute
         {
-            public MockValueAttribute(object rawValue)
-                : base(typeof(MockValueResolver))
+            public MockProcessorAttribute(object rawValue)
+                : base(typeof(MockProcessor))
             {
                 this.RawValue = rawValue;
             }
@@ -22,9 +22,9 @@
             public object RawValue { get; set; }
         }
 
-        public class MockValueResolver : DittoValueResolver<DittoValueResolverContext, MockValueAttribute>
+        public class MockProcessor : DittoProcessor<object, DittoProcessorContext, MockProcessorAttribute>
         {
-            public override object ResolveValue()
+            public override object ProcessValue()
             {
                 return Attribute.RawValue;
             }
@@ -32,7 +32,7 @@
 
         public class MyMockValueModel
         {
-            [MockValue("Mock Property Value")]
+            [MockProcessor("Mock Property Value")]
             public string MyProperty { get; set; }
         }
 

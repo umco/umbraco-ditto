@@ -1,22 +1,13 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System.Reflection;
-    using global::Umbraco.Core;
-    using global::Umbraco.Core.Models;
-    using global::Umbraco.Web;
+﻿using System.Reflection;
+using Umbraco.Core;
+using Umbraco.Core.Models;
+using Umbraco.Web;
 
-    /// <summary>
-    /// The Umbraco property value resolver.
-    /// </summary>
-    public class UmbracoPropertyValueResolver : DittoValueResolver<DittoValueResolverContext, UmbracoPropertyAttribute>
+namespace Our.Umbraco.Ditto
+{
+    public class UmbracoPropertyProcessor : DittoProcessor<IPublishedContent, DittoProcessorContext, UmbracoPropertyProcessorAttribute>
     {
-        /// <summary>
-        /// Gets the raw value for the current property from Umbraco.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="object"/> representing the raw value.
-        /// </returns>
-        public override object ResolveValue()
+        public override object ProcessValue()
         {
             var defaultValue = this.Attribute.DefaultValue;
 
@@ -28,7 +19,7 @@
             if (this.Context.PropertyDescriptor != null)
             {
                 var classAttr = this.Context.PropertyDescriptor.ComponentType
-                    .GetCustomAttribute<UmbracoPropertiesAttribute>();
+                    .GetCustomAttribute<UmbracoPropertiesProcessorAttribute>();
                 if (classAttr != null)
                 {
                     // Apply the prefix
@@ -46,7 +37,7 @@
             var umbracoPropertyName = this.Attribute.PropertyName ?? propName;
             var altUmbracoPropertyName = this.Attribute.AltPropertyName ?? altPropName;
 
-            var content = this.Context.Instance as IPublishedContent;
+            var content = this.Value;
             if (content == null)
             {
                 return defaultValue;

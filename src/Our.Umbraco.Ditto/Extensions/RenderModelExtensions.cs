@@ -15,8 +15,8 @@
         /// <param name="model">
         /// The <see cref="RenderModel"/> to convert.
         /// </param>
-        /// <param name="valueResolverContexts">
-        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// <param name="processorContexts">
+        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
         /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
@@ -32,7 +32,7 @@
         /// </returns>
         public static T As<T>(
             this RenderModel model,
-            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
+            IEnumerable<DittoProcessorContext> processorContexts = null,
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
@@ -44,7 +44,7 @@
 
             using (DittoDisposableTimer.DebugDuration<T>(string.Format("RenderModel As ({0})", model.Content.DocumentTypeAlias)))
             {
-                return model.Content.As<T>(model.CurrentCulture, null, valueResolverContexts, onConverting, onConverted);
+                return model.Content.As<T>(model.CurrentCulture, null, processorContexts, onConverting, onConverted);
             }
         }
     }

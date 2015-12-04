@@ -1,14 +1,14 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
     public class AppSettingsTests
     {
         public class MyAppSettingsModel
         {
-            [AppSetting("MyAppSettingKey")]
+            [AppSettingProcessor("MyAppSettingKey")]
             public string MyProperty { get; set; }
         }
 

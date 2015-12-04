@@ -1,91 +1,54 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Umbraco.Core;
+using Umbraco.Core.Models;
+using Umbraco.Web;
+using Umbraco.Web.Security;
+
+namespace Our.Umbraco.Ditto
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Globalization;
-    using System.Linq;
-
-    using global::Umbraco.Core;
-    using global::Umbraco.Core.Models;
-    using global::Umbraco.Web;
-    using global::Umbraco.Web.Security;
-
     /// <summary>
     /// Provides a unified way of converting picker properties to strong typed objects.
     /// Can be used to return either single items or collections.
     /// Adapted from <see href="https://github.com/Jeavon/Umbraco-Core-Property-Value-Converters/blob/v2/Our.Umbraco.PropertyConverters/MultiNodeTreePickerPropertyConverter.cs"/>
     /// </summary>
-    public class DittoPickerConverter : DittoConverter
+    public class DittoPickerProcessor : DittoProcessor
     {
-        /// <summary>
-        /// Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
-        /// </summary>
-        /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
-        /// <param name="sourceType">A <see cref="T:System.Type" /> that represents the type you want to convert from.</param>
-        /// <returns>
-        /// true if this converter can perform the conversion; otherwise, false.
-        /// </returns>
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-        {
-            // We can pass null here.
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (sourceType == null
-                || sourceType == typeof(string)
-                || sourceType == typeof(int)
-                || typeof(IPublishedContent).IsAssignableFrom(sourceType)
-                || sourceType.IsEnumerableOfType(typeof(IPublishedContent))
-                || sourceType.IsEnumerableOfType(typeof(string))
-                || sourceType.IsEnumerableOfType(typeof(int)))
-            {
-                return true;
-            }
-
-            return base.CanConvertFrom(context, sourceType);
-        }
-
-        /// <summary>
-        /// Converts the given object to the type of this converter, using the specified context and culture information.
-        /// </summary>
-        /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
-        /// <param name="culture">The <see cref="T:System.Globalization.CultureInfo" /> to use as the current culture.</param>
-        /// <param name="value">The <see cref="T:System.Object" /> to convert.</param>
-        /// <returns>
-        /// An <see cref="T:System.Object" /> that represents the converted value.
-        /// </returns>
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        public override object ProcessValue()
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (context == null || context.PropertyDescriptor == null)
+            if (Context == null || Context.PropertyDescriptor == null)
             {
                 return Enumerable.Empty<object>();
             }
 
-            var propertyType = context.PropertyDescriptor.PropertyType;
+            var propertyType = Context.PropertyDescriptor.PropertyType;
             var isGenericType = propertyType.IsGenericType;
             var targetType = isGenericType
                                 ? propertyType.GenericTypeArguments.First()
                                 : propertyType;
 
-            if (value.IsNullOrEmptyString())
+            if (Value.IsNullOrEmptyString())
             {
                 return EnumerableInvocations.Empty(targetType);
             }
 
             // Single IPublishedContent 
-            IPublishedContent content = value as IPublishedContent;
+            IPublishedContent content = Value as IPublishedContent;
             if (content != null)
             {
-                return content.As(targetType, culture);
+                return content.As(targetType, Culture);
             }
 
             // ReSharper disable once PossibleNullReferenceException
-            var type = value.GetType();
+            var type = Value.GetType();
 
             // Multiple IPublishedContent 
             if (type.IsEnumerableOfType(typeof(IPublishedContent)))
             {
-                return ((IEnumerable<IPublishedContent>)value).As(targetType, culture);
+                return ((IEnumerable<IPublishedContent>)Value).As(targetType, Culture);
             }
 
             int[] nodeIds = { };
@@ -96,21 +59,21 @@
                 if (type.IsEnumerableOfType(typeof(string)))
                 {
                     int n;
-                    nodeIds = ((IEnumerable<string>)value)
-                                  .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
+                    nodeIds = ((IEnumerable<string>)Value)
+                                  .Select(x => int.TryParse(x, NumberStyles.Any, Culture, out n) ? n : -1)
                                   .ToArray();
                 }
 
                 if (type.IsEnumerableOfType(typeof(int)))
                 {
-                    nodeIds = ((IEnumerable<int>)value).ToArray();
+                    nodeIds = ((IEnumerable<int>)Value).ToArray();
                 }
             }
 
             // Now csv strings.
             if (!nodeIds.Any())
             {
-                var s = value as string ?? value.ToString();
+                var s = Value as string ?? Value.ToString();
                 if (!string.IsNullOrWhiteSpace(s))
                 {
                     int n;
@@ -118,7 +81,7 @@
                     ? s.GetXmlIds()
                     : s
                     .ToDelimitedList()
-                    .Select(x => int.TryParse(x, NumberStyles.Any, culture, out n) ? n : -1)
+                    .Select(x => int.TryParse(x, NumberStyles.Any, Culture, out n) ? n : -1)
                     .Where(x => x > 0)
                     .ToArray();
                 }
@@ -145,10 +108,10 @@
                     }
                 }
 
-                return multiPicker.As(targetType, culture);
+                return multiPicker.As(targetType, Culture);
             }
 
-            return base.ConvertFrom(context, culture, value);
+            return null;
         }
 
         /// <summary>

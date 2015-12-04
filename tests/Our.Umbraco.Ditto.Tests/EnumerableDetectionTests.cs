@@ -13,18 +13,13 @@
     {
         public class MyModel
         {
-            [TypeConverter(typeof(MyConverter))]
+            [DittoProcessor(typeof(MyProcessor))]
             public Dictionary<string, string> MyProperty { get; set; }
         }
 
-        public class MyConverter : TypeConverter
+        public class MyProcessor : DittoProcessor
         {
-            public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-            {
-                return true;
-            }
-
-            public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+            public override object ProcessValue()
             {
                 return new Dictionary<string, string>
                 {

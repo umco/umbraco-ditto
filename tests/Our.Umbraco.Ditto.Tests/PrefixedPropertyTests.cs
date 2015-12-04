@@ -6,7 +6,7 @@
     [TestFixture]
     public class PrefixedPropertyTests
     {
-        [UmbracoProperties(Prefix = "Site", Recursive = true)]
+        [UmbracoPropertiesProcessor(Prefix = "Site", Recursive = true)]
         public class MyModel
         {
             public string Name { get; set; }
@@ -15,7 +15,7 @@
 
             public string Fallback { get; set; }
 
-            [UmbracoProperty("UnprefixedProp")]
+            [UmbracoPropertyProcessor("UnprefixedProp")]
             public string UnprefixedProp { get; set; }
         }
 

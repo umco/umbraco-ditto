@@ -1,19 +1,19 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System;
+using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Web;
+using Our.Umbraco.Ditto.ComponentModel.Processors;
+using Umbraco.Core;
+using Umbraco.Core.Models;
+using Umbraco.Web;
+
+namespace Our.Umbraco.Ditto
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Globalization;
-    using System.Linq;
-    using System.Reflection;
-    using System.Web;
-
-    using global::Umbraco.Core;
-    using global::Umbraco.Core.Models;
-    using global::Umbraco.Web;
-
     /// <summary>
     /// Encapsulates extension methods for <see cref="IPublishedContent"/>.
     /// </summary>
@@ -49,8 +49,8 @@
         /// <param name="instance">
         /// An existing instance of T to populate
         /// </param>
-        /// <param name="valueResolverContexts">
-        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// <param name="processorContexts">
+        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
         /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
@@ -62,18 +62,18 @@
         /// The <see cref="Type"/> of items to return.
         /// </typeparam>
         /// <returns>
-        /// The resolved generic <see cref="Type"/>.
+        /// The converted generic <see cref="Type"/>.
         /// </returns>
         public static T As<T>(
             this IPublishedContent content,
             CultureInfo culture = null,
             T instance = null,
-            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
+            IEnumerable<DittoProcessorContext> processorContexts = null,
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
         {
-            return content.As(typeof(T), culture, instance, valueResolverContexts, onConverting, onConverted) as T;
+            return content.As(typeof(T), culture, instance, processorContexts, onConverting, onConverted) as T;
         }
 
         /// <summary>
@@ -83,8 +83,8 @@
         /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
         /// </param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
-        /// <param name="valueResolverContexts">
-        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// <param name="processorContexts">
+        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
         /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
@@ -96,17 +96,17 @@
         /// The <see cref="Type"/> of items to return.
         /// </typeparam>
         /// <returns>
-        /// The resolved <see cref="IEnumerable{T}"/>.
+        /// The converted <see cref="IEnumerable{T}"/>.
         /// </returns>
         public static IEnumerable<T> As<T>(
             this IEnumerable<IPublishedContent> items,
             CultureInfo culture = null,
-            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
+            IEnumerable<DittoProcessorContext> processorContexts = null,
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
         {
-            return items.As(typeof(T), culture, valueResolverContexts, onConverting, onConverted)
+            return items.As(typeof(T), culture, processorContexts, onConverting, onConverted)
                         .Select(x => x as T);
         }
 
@@ -122,8 +122,8 @@
         /// <param name="culture">
         /// The <see cref="CultureInfo"/>.
         /// </param>
-        /// <param name="valueResolverContexts">
-        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// <param name="processorContexts">
+        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
         /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
@@ -132,19 +132,19 @@
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         /// <returns>
-        /// The resolved <see cref="IEnumerable{T}"/>.
+        /// The converted <see cref="IEnumerable{T}"/>.
         /// </returns>
         public static IEnumerable<object> As(
             this IEnumerable<IPublishedContent> items,
             Type type,
             CultureInfo culture = null,
-            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
+            IEnumerable<DittoProcessorContext> processorContexts = null,
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
         {
             using (DittoDisposableTimer.DebugDuration<IEnumerable<object>>("IEnumerable As"))
             {
-                var typedItems = items.Select(x => x.As(type, culture, null, valueResolverContexts, onConverting, onConverted));
+                var typedItems = items.Select(x => x.As(type, culture, null, processorContexts, onConverting, onConverted));
 
                 // We need to cast back here as nothing is strong typed anymore.
                 return (IEnumerable<object>)EnumerableInvocations.Cast(type, typedItems);
@@ -166,8 +166,8 @@
         /// <param name="instance">
         /// An existing instance of T to populate
         /// </param>
-        /// <param name="valueResolverContexts">
-        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// <param name="processorContexts">
+        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
         /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
@@ -183,7 +183,7 @@
             Type type,
             CultureInfo culture = null,
             object instance = null,
-            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
+            IEnumerable<DittoProcessorContext> processorContexts = null,
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
         {
@@ -199,7 +199,7 @@
 
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
             {
-                return ConvertContent(content, type, culture, instance, valueResolverContexts, onConverting, onConverted);
+                return ConvertContent(content, type, culture, instance, processorContexts, onConverting, onConverted);
             }
         }
 
@@ -218,8 +218,8 @@
         /// <param name="instance">
         /// An existing instance of T to populate
         /// </param>
-        /// <param name="valueResolverContexts">
-        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// <param name="processorContexts">
+        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
         /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
@@ -238,7 +238,7 @@
             Type type,
             CultureInfo culture = null,
             object instance = null,
-            IEnumerable<DittoValueResolverContext> valueResolverContexts = null,
+            IEnumerable<DittoProcessorContext> processorContexts = null,
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
         {
@@ -342,7 +342,7 @@
                                 () =>
                                 {
                                     // Get the value from Umbraco.
-                                    object propertyValue = GetResolvedValue(content, culture, deferredPropertyInfo, localInstance, valueResolverContexts);
+                                    object propertyValue = GetProcessedValue(content, culture, deferredPropertyInfo, localInstance, processorContexts);
                                     return GetConvertedValue(content, culture, deferredPropertyInfo, propertyValue, localInstance);
                                 }));
                     }
@@ -377,10 +377,10 @@
 
                         // Set the value normally.
                         // ReSharper disable once PossibleMultipleEnumeration
-                        object propertyValue = GetResolvedValue(content, culture, propertyInfo, instance, valueResolverContexts);
-                        object result = GetConvertedValue(content, culture, propertyInfo, propertyValue, instance);
+                        object propertyValue = GetProcessedValue(content, culture, propertyInfo, instance, processorContexts);
+                        object value = GetConvertedValue(content, culture, propertyInfo, propertyValue, instance);
 
-                        propertyInfo.SetValue(instance, result, null);
+                        propertyInfo.SetValue(instance, value, null);
                     }
                 }
             }
@@ -393,77 +393,86 @@
         }
 
         /// <summary>
-        /// Returns the resolved value for the given type and property.
+        /// Returns the processed value for the given type and property.
         /// </summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> property info associated with the type.</param>
         /// <param name="instance">The instance to assign the value to.</param>
-        /// <param name="valueResolverContexts">
-        /// A collection of <see cref="DittoValueResolverContext"/> entities to use whilst resolving values.
+        /// <param name="processorContexts">
+        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
         /// </param>
         /// <returns>The <see cref="object"/> representing the Umbraco value.</returns>
-        private static object GetResolvedValue(
+        private static object GetProcessedValue(
             IPublishedContent content,
             CultureInfo culture,
             PropertyInfo propertyInfo,
             object instance,
-            IEnumerable<DittoValueResolverContext> valueResolverContexts = null)
+            IEnumerable<DittoProcessorContext> processorContexts = null)
         {
             // Check the property for an associated value attribute, otherwise fall-back on expected behaviour.
-            var valueAttr = propertyInfo.GetCustomAttribute<DittoValueResolverAttribute>(true);
+            var valueAttrs = propertyInfo.GetCustomAttributes<DittoProcessorAttribute>(true)
+                .OrderBy(x => x.Order)
+                .ToArray();
 
-            if (valueAttr == null)
+            if (!valueAttrs.Any())
             {
-                // Check for globally registered resolver
-                valueAttr = DittoValueResolverRegistry.Instance.GetRegisteredResolverAttributeFor(propertyInfo.PropertyType);
+                // Check for globally registered processors
+                valueAttrs = DittoProcessorRegistry.Instance.GetRegisteredProcessorAttributesFor(propertyInfo.PropertyType).ToArray();
             }
 
-            if (valueAttr == null)
+            if (!valueAttrs.Any())
             {
                 // Default to umbraco property attribute
-                valueAttr = new UmbracoPropertyAttribute();
+                valueAttrs = new DittoProcessorAttribute[] { new UmbracoPropertyProcessorAttribute() };
             }
 
-            // Time custom value-resolver.
-            using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueResolver ({0}, {1})", content.Id, propertyInfo.Name)))
+            // Time custom value-processor.
+            using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
             {
-                var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
+                object currentValue = content;
 
-                DittoValueResolverContext context = null;
-
-                // Get the value from the custom attribute.
-                // TODO: Cache these?
-                var resolverTypeInstances = valueAttr.ResolverType.GetGenericTypeImplementations(typeof(DittoValueResolver<,>)).ToArray();
-                if (resolverTypeInstances.Length == 1)
+                foreach (var valueAttr in valueAttrs)
                 {
-                    var contextType = resolverTypeInstances[0].GetGenericArguments().FirstOrDefault(x => typeof(DittoValueResolverContext).IsAssignableFrom(x));
-                    if (contextType != null)
+                    var processor = (DittoProcessor)valueAttr.ProcessorType.GetInstance();
+
+                    DittoProcessorContext context = null;
+
+                    // Get the value from the custom attribute.
+                    // TODO: Cache these?
+                    var processorTypeInstances = valueAttr.ProcessorType.GetGenericTypeImplementations(typeof(DittoProcessor<,,>)).ToArray();
+                    if (processorTypeInstances.Length == 1)
                     {
-                        var resolverContext = valueResolverContexts != null ? valueResolverContexts.FirstOrDefault(x => x.GetType() == contextType) : null;
-                        if (resolverContext != null)
+                        var contextType = processorTypeInstances[0].GetGenericArguments().FirstOrDefault(x => typeof(DittoProcessorContext).IsAssignableFrom(x));
+                        if (contextType != null)
                         {
-                            context = resolverContext;
-                        }
-                        else
-                        {
-                            context = (DittoValueResolverContext)contextType.GetInstance();
+                            var processorContext = processorContexts != null ? processorContexts.FirstOrDefault(x => x.GetType() == contextType) : null;
+                            if (processorContext != null)
+                            {
+                                context = processorContext;
+                            }
+                            else
+                            {
+                                context = (DittoProcessorContext)contextType.GetInstance();
+                            }
                         }
                     }
+
+                    // No context found so create a default one
+                    if (context == null)
+                    {
+                        context = new DittoProcessorContext();
+                    }
+
+                    // Populate internal context properties
+                    context.Value = currentValue;
+                    context.PropertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+
+                    // Process value
+                    currentValue = processor.ProcessValue(context, valueAttr, culture);
                 }
 
-                // No context found so create a default one
-                if (context == null)
-                {
-                    context = new DittoValueResolverContext();
-                }
-
-                // Populate internal context properties
-                context.Instance = content;
-                context.PropertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-
-                // Resolve value
-                return resolver.ResolveValue(context, valueAttr, culture);
+                return currentValue;
             }
         }
 
@@ -486,146 +495,141 @@
             // Process the value.
             object result = null;
             var propertyType = propertyInfo.PropertyType;
-            var typeInfo = propertyType.GetTypeInfo();
+            //var typeInfo = propertyType.GetTypeInfo();
 
             // This should return false against typeof(string) etc also.
-            var propertyIsEnumerableType = propertyType.IsCastableEnumerableType();
+            //var propertyIsEnumerableType = propertyType.IsCastableEnumerableType();
 
-            // Try any custom type converters first.
-            // 1: Check the property.
-            // 2: Check any type arguments in generic enumerable types.
-            // 3: Check the type itself.
-            var converterAttribute =
-                propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
-                ?? (propertyIsEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
-                                             : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
+            //// Try any custom type converters first.
+            //// 1: Check the property.
+            //// 2: Check any type arguments in generic enumerable types.
+            //// 3: Check the type itself.
+            //var converterAttribute =
+            //    propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
+            //    ?? (propertyIsEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
+            //                                 : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
 
-            if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
-            {
-                // Time custom conversions.
-                using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
-                {
-                    // Get the custom converter from the attribute and attempt to convert.
-                    var converterType = Type.GetType(converterAttribute.ConverterTypeName);
-                    if (converterType != null)
-                    {
-                        var converter = converterType.GetDependencyResolvedInstance() as TypeConverter;
+            //if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
+            //{
+            //    // Time custom conversions.
+            //    using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
+            //    {
+            //        // Get the custom converter from the attribute and attempt to convert.
+            //        var converterType = Type.GetType(converterAttribute.ConverterTypeName);
+            //        if (converterType != null)
+            //        {
+            //            var converter = converterType.GetDependencyResolvedInstance() as TypeConverter;
 
-                        if (converter != null)
-                        {
-                            // Create context to pass to converter implementations.
-                            // This contains the IPublishedContent and the currently converting property descriptor.
-                            var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                            var context = new DittoTypeConverterContext
-                            {
-                                Instance = content,
-                                PropertyDescriptor = descriptor
-                            };
+            //            if (converter != null)
+            //            {
+            //                // Create context to pass to converter implementations.
+            //                // This contains the IPublishedContent and the currently converting property descriptor.
+            //                var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+            //                var context = new DittoTypeConverterContext
+            //                {
+            //                    Instance = content,
+            //                    PropertyDescriptor = descriptor
+            //                };
 
-                            Type propertyValueType = null;
-                            if (propertyValue != null)
-                            {
-                                propertyValueType = propertyValue.GetType();
-                            }
+            //                Type propertyValueType = null;
+            //                if (propertyValue != null)
+            //                {
+            //                    propertyValueType = propertyValue.GetType();
+            //                }
 
-                            // We're deliberately passing null.
-                            // ReSharper disable once AssignNullToNotNullAttribute
-                            if (converter.CanConvertFrom(context, propertyValueType))
-                            {
-                                object converted = converter.ConvertFrom(context, culture, propertyValue);
+            //                // We're deliberately passing null.
+            //                // ReSharper disable once AssignNullToNotNullAttribute
+            //                if (converter.CanConvertFrom(context, propertyValueType))
+            //                {
+            //                    object converted = converter.ConvertFrom(context, culture, propertyValue);
 
-                                if (converted != null)
-                                {
-                                    // Handle Typeconverters returning single objects when we want an IEnumerable.
-                                    // Use case: Someone selects a folder of images rather than a single image with the media picker.
-                                    var convertedType = converted.GetType();
+            //                    if (converted != null)
+            //                    {
+            //                        // Handle Typeconverters returning single objects when we want an IEnumerable.
+            //                        // Use case: Someone selects a folder of images rather than a single image with the media picker.
+            //                        var convertedType = converted.GetType();
 
-                                    if (propertyIsEnumerableType)
-                                    {
-                                        var parameterType = typeInfo.GenericTypeArguments.First();
+            //                        if (propertyIsEnumerableType)
+            //                        {
+            //                            var parameterType = typeInfo.GenericTypeArguments.First();
 
-                                        // Some converters return an IEnumerable so we check again.
-                                        if (!convertedType.IsEnumerableType())
-                                        {
-                                            // Using 'Cast' to convert the type back to IEnumerable<T>.
-                                            object enumerablePropertyValue = EnumerableInvocations.Cast(
-                                                parameterType,
-                                                converted.YieldSingleItem());
+            //                            // Some converters return an IEnumerable so we check again.
+            //                            if (!convertedType.IsEnumerableType())
+            //                            {
+            //                                // Using 'Cast' to convert the type back to IEnumerable<T>.
+            //                                object enumerablePropertyValue = EnumerableInvocations.Cast(
+            //                                    parameterType,
+            //                                    converted.YieldSingleItem());
 
-                                            result = enumerablePropertyValue;
-                                        }
-                                        else
-                                        {
-                                            // Nothing is strong typed anymore.
-                                            result = EnumerableInvocations.Cast(parameterType, (IEnumerable)converted);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Return single expected items from converters returning an IEnumerable.
-                                        // Check for key/value pairs and strings.
-                                        if (convertedType.IsEnumerableType()
-                                            && !convertedType.IsEnumerableOfKeyValueType()
-                                            && !(convertedType == typeof(string) && propertyType == typeof(string)))
-                                        {
-                                            // Use 'FirstOrDefault' to convert the type back to T.
-                                            result = EnumerableInvocations.FirstOrDefault(
-                                                propertyType,
-                                                (IEnumerable)converted);
-                                        }
-                                        else
-                                        {
-                                            result = converted;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    // Ensure we pass back an empty enumerable if the expected output is an enumerable.
-                                    // and null has been returned by the type converter.
-                                    if (propertyIsEnumerableType)
-                                    {
-                                        result = EnumerableInvocations.Empty(typeInfo.GenericTypeArguments.First());
-                                    }
-                                }
-                            }
-                            else if (propertyType.IsInstanceOfType(propertyValue))
-                            {
-                                // If the TypeConverter's `CanConvertFrom` has returned false,
-                                // then we can check if the value is the same type as the target type.
-                                result = propertyValue;
-                            }
-                        }
-                    }
-                }
-            }
-            else if (propertyType == typeof(HtmlString))
+            //                                result = enumerablePropertyValue;
+            //                            }
+            //                            else
+            //                            {
+            //                                // Nothing is strong typed anymore.
+            //                                result = EnumerableInvocations.Cast(parameterType, (IEnumerable)converted);
+            //                            }
+            //                        }
+            //                        else
+            //                        {
+            //                            // Return single expected items from converters returning an IEnumerable.
+            //                            // Check for key/value pairs and strings.
+            //                            if (convertedType.IsEnumerableType()
+            //                                && !convertedType.IsEnumerableOfKeyValueType()
+            //                                && !(convertedType == typeof(string) && propertyType == typeof(string)))
+            //                            {
+            //                                // Use 'FirstOrDefault' to convert the type back to T.
+            //                                result = EnumerableInvocations.FirstOrDefault(
+            //                                    propertyType,
+            //                                    (IEnumerable)converted);
+            //                            }
+            //                            else
+            //                            {
+            //                                result = converted;
+            //                            }
+            //                        }
+            //                    }
+            //                    else
+            //                    {
+            //                        // Ensure we pass back an empty enumerable if the expected output is an enumerable.
+            //                        // and null has been returned by the type converter.
+            //                        if (propertyIsEnumerableType)
+            //                        {
+            //                            result = EnumerableInvocations.Empty(typeInfo.GenericTypeArguments.First());
+            //                        }
+            //                    }
+            //                }
+            //                else if (propertyType.IsInstanceOfType(propertyValue))
+            //                {
+            //                    // If the TypeConverter's `CanConvertFrom` has returned false,
+            //                    // then we can check if the value is the same type as the target type.
+            //                    result = propertyValue;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            if (propertyType == typeof(HtmlString))
             {
                 // Handle Html strings so we don't have to set the attribute.
-                var converterType = typeof(DittoHtmlStringConverter);
-                var converter = converterType.GetDependencyResolvedInstance() as TypeConverter;
+                var processorType = typeof(HtmlStringProcessor);
+                var processor = processorType.GetDependencyResolvedInstance() as DittoProcessor;
 
-                if (converter != null)
+                if (processor != null)
                 {
                     // This contains the IPublishedContent and the currently converting property descriptor.
                     var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                    var context = new DittoTypeConverterContext
+                    var context = new DittoProcessorContext
                     {
-                        Instance = content,
+                        Value = propertyValue,
                         PropertyDescriptor = descriptor
                     };
 
-                    Type propertyValueType = null;
-                    if (propertyValue != null)
-                    {
-                        propertyValueType = propertyValue.GetType();
-                    }
-
                     // We're deliberately passing null.
                     // ReSharper disable once AssignNullToNotNullAttribute
-                    if (converter.CanConvertFrom(context, propertyValueType))
+                    var processedValue = processor.ProcessValue(context, new DittoProcessorAttribute(typeof(HtmlStringProcessor)), culture);
+                    if (processedValue is HtmlString)
                     {
-                        result = converter.ConvertFrom(context, culture, propertyValue);
+                        result = processedValue;
                     }
                 }
             }

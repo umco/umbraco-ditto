@@ -17,7 +17,7 @@
         {
             public int Id { get; set; }
 
-            [UmbracoProperty("Id")]
+            [UmbracoPropertyProcessor("Id")]
             public int MyProperty { get; set; }
         }
 

@@ -7,9 +7,8 @@
     using Our.Umbraco.Ditto.Tests.Mocks;
 
     [TestFixture]
-    public class ClassLevelTypeConverterTests
+    public class ChainedProcessorTests
     {
-        [TypeConverter(typeof(MyCustomConverter))]
         public class MyCustomModel
         {
             public MyCustomModel(string name)
@@ -22,42 +21,38 @@
 
         public class MyModel1
         {
-            [UmbracoProperty("Name")]
+            [UmbracoPropertyProcessor(0, "Name")]
+            [DittoProcessor(1, typeof(MyCustomProcessor2))]
             public MyCustomModel MyProperty { get; set; }
         }
 
         public class MyModel2
         {
-            [DittoValueResolver(typeof(MyCustomValueResolver))]
+            [DittoProcessor(typeof(MyCustomProcessor))]
             public MyCustomModel MyProperty { get; set; }
         }
 
-        public class MyCustomValueResolver : DittoValueResolver
+        public class MyCustomProcessor : DittoProcessor
         {
-            public override object ResolveValue()
+            public override object ProcessValue()
             {
                 return new MyCustomModel("MyCustomName");
             }
         }
 
-        public class MyCustomConverter : TypeConverter
+        public class MyCustomProcessor2 : DittoProcessor
         {
-            public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+            public override object ProcessValue()
             {
-                return sourceType == typeof(string);
-            }
+                if (Value is string)
+                    return new MyCustomModel((string)Value);
 
-            public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-            {
-                if (value is string)
-                    return new MyCustomModel((string)value);
-
-                return base.ConvertFrom(context, culture, value);
+                return null;
             }
         }
 
         [Test]
-        public void ClassLevel_TypeConverter_UmbracoProperty()
+        public void ChainedProcessor_ChainedProcessor()
         {
             // In this test, the `MyProperty` property gets a `string` value
             // via the `UmbracoProperty`. The `string` type/value is passed
@@ -76,7 +71,7 @@
         }
 
         [Test]
-        public void ClassLevel_TypeConverter_ValueResolver()
+        public void ChainedProcessor_SingleProcessor()
         {
             // In this test, the `MyProperty` property gets its value from
             // the `MyCustomValueResolver` (returning a `MyCustomModel`).
