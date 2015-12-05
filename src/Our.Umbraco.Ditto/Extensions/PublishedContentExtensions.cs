@@ -415,30 +415,33 @@ namespace Our.Umbraco.Ditto
             // Check the property for an associated value attribute, otherwise fall-back on expected behaviour.
             var valueAttrs = propertyInfo.GetCustomAttributes<DittoProcessorAttribute>(true)
                 .OrderBy(x => x.Order)
-                .ToArray();
+                .ToList();
 
             if (!valueAttrs.Any())
             {
                 // Check for globally registered processors
                 valueAttrs = DittoProcessorRegistry.Instance.GetRegisteredProcessorAttributesFor(propertyInfo.PropertyType)
                     .OrderBy(x => x.Order)
-                    .ToArray();
+                    .ToList();
             }
 
             if (!valueAttrs.Any())
             {
                 // Default to umbraco property attribute
-                valueAttrs = new DittoProcessorAttribute[] { new UmbracoPropertyProcessorAttribute() };
+                valueAttrs = new List<DittoProcessorAttribute>(new []{ new UmbracoPropertyProcessorAttribute() });
             }
 
             // Process any multi processor attributes
             valueAttrs = valueAttrs.SelectMany(x => (x is DittoMultiProcessorAttribute) ? ((DittoMultiProcessorAttribute)x).Attributes.ToArray() : new[] { x })
-                .ToArray();
+                .ToList();
 
             // Time custom value-processor.
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
             {
                 object currentValue = content;
+
+                var processorContextsList = processorContexts != null? processorContexts.ToList() : new List<DittoProcessorContext>();
+                var propDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
 
                 foreach (var valueAttr in valueAttrs)
                 {
@@ -454,7 +457,7 @@ namespace Our.Umbraco.Ditto
                         var contextType = processorTypeInstances[0].GetGenericArguments().FirstOrDefault(x => typeof(DittoProcessorContext).IsAssignableFrom(x));
                         if (contextType != null)
                         {
-                            var processorContext = processorContexts != null ? processorContexts.FirstOrDefault(x => x.GetType() == contextType) : null;
+                            var processorContext = processorContextsList.FirstOrDefault(x => x.GetType() == contextType);
                             if (processorContext != null)
                             {
                                 context = processorContext;
@@ -476,7 +479,7 @@ namespace Our.Umbraco.Ditto
                     context.TargetType = type;
                     context.Content = content;
                     context.Value = currentValue;
-                    context.PropertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                    context.PropertyDescriptor = propDescriptor;
 
                     // Process value
                     currentValue = processor.ProcessValue(context, valueAttr, culture);
@@ -625,34 +628,35 @@ namespace Our.Umbraco.Ditto
 
             //TODO: Move this to 
 
-            if (propertyType == typeof(HtmlString))
-            {
-                // Handle Html strings so we don't have to set the attribute.
-                var processorType = typeof(HtmlStringProcessor);
-                var processor = processorType.GetDependencyResolvedInstance() as DittoProcessor;
+            //if (propertyType == typeof(HtmlString))
+            //{
+            //    // Handle Html strings so we don't have to set the attribute.
+            //    var processorType = typeof(HtmlStringProcessor);
+            //    var processor = processorType.GetDependencyResolvedInstance() as DittoProcessor;
 
-                if (processor != null)
-                {
-                    // This contains the IPublishedContent and the currently converting property descriptor.
-                    var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-                    var context = new DittoProcessorContext
-                    {
-                        Content = content,
-                        Value = propertyValue,
-                        PropertyDescriptor = descriptor,
-                        TargetType = type
-                    };
+            //    if (processor != null)
+            //    {
+            //        // This contains the IPublishedContent and the currently converting property descriptor.
+            //        var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+            //        var context = new DittoProcessorContext
+            //        {
+            //            Content = content,
+            //            Value = propertyValue,
+            //            PropertyDescriptor = descriptor,
+            //            TargetType = type
+            //        };
 
-                    // We're deliberately passing null.
-                    // ReSharper disable once AssignNullToNotNullAttribute
-                    var processedValue = processor.ProcessValue(context, new DittoProcessorAttribute(typeof(HtmlStringProcessor)), culture);
-                    if (processedValue is HtmlString)
-                    {
-                        result = processedValue;
-                    }
-                }
-            }
-            else if (propertyType.IsInstanceOfType(propertyValue))
+            //        // We're deliberately passing null.
+            //        // ReSharper disable once AssignNullToNotNullAttribute
+            //        var processedValue = processor.ProcessValue(context, new DittoProcessorAttribute(typeof(HtmlStringProcessor)), culture);
+            //        if (processedValue is HtmlString)
+            //        {
+            //            result = processedValue;
+            //        }
+            //    }
+            //}
+            //else 
+            if (propertyType.IsInstanceOfType(propertyValue))
             {
                 // Simple types
                 result = propertyValue;
