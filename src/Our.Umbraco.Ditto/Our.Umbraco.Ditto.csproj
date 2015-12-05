@@ -81,37 +81,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComponentModel\Attributes\AppSettingProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\AppSettingProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoConversionHandlerAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertingAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertedAttribute.cs" />
-    <Compile Include="ComponentModel\Attributes\CurrentContentProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\CurrentContentProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoMultiProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoProcessorAttribute.cs" />
-    <Compile Include="ComponentModel\Attributes\UmbracoDictionaryProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\EnumProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\HtmlStringProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\PickerProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\UmbracoDictionaryProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\UmbracoPropertiesProcessorAttribute.cs" />
-    <Compile Include="ComponentModel\Attributes\AltUmbracoPropertyProcessorAttribute.cs" />
-    <Compile Include="ComponentModel\Attributes\UmbracoPropertyProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\AltUmbracoPropertyProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\UmbracoPropertyProcessorAttribute.cs" />
     <Compile Include="Common\DittoDisposableTimer.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandlerRegistry.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandlerContext.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandler.cs" />
-    <Compile Include="ComponentModel\Processors\DittoMultiProcessor.cs" />
-    <Compile Include="ComponentModel\Processors\AppSettingProcessor.cs" />
-    <Compile Include="ComponentModel\Processors\CurrentContentProcessor.cs" />
-    <Compile Include="ComponentModel\Processors\EnumProcessor.cs" />
-    <Compile Include="ComponentModel\Processors\DittoPickerProcessor.cs" />
     <Compile Include="ComponentModel\Processors\DittoProcessorRegistry.cs" />
-    <Compile Include="ComponentModel\Processors\HtmlStringProcessor.cs" />
-    <Compile Include="ComponentModel\Processors\UltimatePickerProcessor.cs" />
-    <Compile Include="ComponentModel\Processors\UmbracoDictionaryProcessor.cs" />
-    <Compile Include="ComponentModel\Processors\AltUmbracoPropertyProcessor.cs" />
-    <Compile Include="ComponentModel\Processors\UmbracoPropertyProcessor.cs" />
     <Compile Include="ComponentModel\Processors\DittoProcessorContext.cs" />
-    <Compile Include="ComponentModel\Processors\DittoProcessor.cs" />
+    <Compile Include="ComponentModel\Processors\UltimatePickerProcessorAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Ditto.cs" />
     <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
     <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />

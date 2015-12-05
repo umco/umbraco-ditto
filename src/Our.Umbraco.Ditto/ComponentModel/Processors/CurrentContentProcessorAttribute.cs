@@ -4,17 +4,19 @@ using Umbraco.Core.Models;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// The current content value resolver.
+    /// The current content processor attribute.
+    /// Used for providing Ditto with the current <see cref="IPublishedContent"/> object from Umbraco.
     /// </summary>
-    public class CurrentContentProcessor : DittoProcessor<IPublishedContent, DittoProcessorContext, CurrentContentProcessorAttribute>
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public class CurrentContentProcessorAttribute : DittoProcessorAttribute
     {
         /// <summary>
         /// Processes the value.
-        /// Gets the current <see cref="IPublishedContent"/> from Umbraco.
         /// </summary>
         /// <returns>
-        /// The <see cref="object"/> representing the processed value.
+        /// The <see cref="object" /> representing the processed value.
         /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
             // NOTE: [LK] In order to prevent an infinite loop / stack-overflow, we check if the
@@ -27,7 +29,7 @@ namespace Our.Umbraco.Ditto
                         this.Context.PropertyDescriptor.PropertyType.Name));
             }
 
-            return this.Value;
+            return Value;
         }
     }
 }

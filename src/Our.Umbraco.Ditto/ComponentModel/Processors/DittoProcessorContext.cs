@@ -10,14 +10,6 @@ namespace Our.Umbraco.Ditto
     public class DittoProcessorContext
     {
         /// <summary>
-        /// Gets the value.
-        /// </summary>
-        /// <value>
-        /// The value.
-        /// </value>
-        public object Value { get; internal set; }
-
-        /// <summary>
         /// Gets the IPublishedContent instance being processed.
         /// </summary>
         /// <value>

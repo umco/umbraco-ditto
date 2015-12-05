@@ -1,13 +1,15 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
 using Umbraco.Core.Dynamics;
 using Umbraco.Web.Templates;
 
-namespace Our.Umbraco.Ditto.ComponentModel.Processors
+namespace Our.Umbraco.Ditto
 {
     /// <summary>
     /// Provides a unified way of converting objects to a <see cref="HtmlString"/>.
     /// </summary>
-    public class HtmlStringProcessor : DittoProcessor<object>
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public class HtmlStringProcessorAttribute : DittoProcessorAttribute
     {
         /// <summary>
         /// Processes the value.

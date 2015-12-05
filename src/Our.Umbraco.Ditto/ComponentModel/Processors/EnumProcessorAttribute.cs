@@ -6,9 +6,10 @@ using Umbraco.Core;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Provides a unified way of converting objects to an <see cref="Enum"/>.
+    /// 
     /// </summary>
-    public class EnumProcessor : DittoProcessor
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public class EnumProcessorAttribute : DittoProcessorAttribute
     {
         /// <summary>
         /// Processes the value.
@@ -16,6 +17,7 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="object" /> representing the processed value.
         /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse

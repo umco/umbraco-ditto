@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.Configuration;
 
 namespace Our.Umbraco.Ditto
 {
@@ -10,25 +11,35 @@ namespace Our.Umbraco.Ditto
     public class AppSettingProcessorAttribute : DittoProcessorAttribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AppSettingProcessorAttribute"/> class.
+        /// Gets or sets the app setting key.
         /// </summary>
-        public AppSettingProcessorAttribute()
-            : base(typeof(AppSettingProcessor))
-        { }
+        public string AppSettingKey { get; protected set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AppSettingProcessorAttribute" /> class.
         /// </summary>
         /// <param name="appSettingKey">The app setting key in the web.config</param>
         public AppSettingProcessorAttribute(string appSettingKey)
-            : this()
         {
             this.AppSettingKey = appSettingKey;
         }
 
         /// <summary>
-        /// Gets or sets the app setting key.
+        /// Processes the value.
         /// </summary>
-        public string AppSettingKey { get; set; }
+        /// <returns>
+        /// The <see cref="object" /> representing the processed value.
+        /// </returns>
+        public override object ProcessValue()
+        {
+            var appSettingKey = AppSettingKey ?? (this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty);
+
+            if (string.IsNullOrWhiteSpace(appSettingKey))
+            {
+                return null;
+            }
+
+            return WebConfigurationManager.AppSettings[appSettingKey];
+        }
     }
 }

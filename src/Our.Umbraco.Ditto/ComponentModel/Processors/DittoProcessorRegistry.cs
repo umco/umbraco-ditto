@@ -45,17 +45,6 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Registers the processor.
-        /// </summary>
-        /// <typeparam name="TObjectType">The type of the object type.</typeparam>
-        /// <typeparam name="TProcessorType">The type of the processor type.</typeparam>
-        public void RegisterProcessor<TObjectType, TProcessorType>()
-            where TProcessorType : DittoProcessor
-        {
-            this.RegisterProcessorAttribute<TObjectType, DittoProcessorAttribute>(new DittoProcessorAttribute(typeof(TProcessorType)));
-        }
-
-        /// <summary>
         /// Registers the processor attribute.
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object type.</typeparam>

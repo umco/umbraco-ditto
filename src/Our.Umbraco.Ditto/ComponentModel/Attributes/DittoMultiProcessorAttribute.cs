@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Our.Umbraco.Ditto.ComponentModel.Processors;
 
 namespace Our.Umbraco.Ditto
 {
@@ -23,7 +22,6 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="attributes">The attributes.</param>
         protected DittoMultiProcessorAttribute(IEnumerable<DittoProcessorAttribute> attributes)
-            : base(typeof(DittoMultiProcessor))
         {
             this.Attributes = new List<DittoProcessorAttribute>(attributes); 
         }

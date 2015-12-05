@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -6,21 +7,69 @@ using Umbraco.Web;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// The Umbraco Property processor.
+    /// The Umbraco property processor attribute.
     /// </summary>
-    public class UmbracoPropertyProcessor : DittoProcessor<IPublishedContent, DittoProcessorContext, UmbracoPropertyProcessorAttribute>
+    [AttributeUsage(AttributeTargets.Property)]
+    public class UmbracoPropertyProcessorAttribute : DittoProcessorAttribute
     {
+        /// <summary>
+        /// Gets or sets the name of the property.
+        /// </summary>
+        /// <value>
+        /// The name of the property.
+        /// </value>
+        public string PropertyName { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="UmbracoPropertyProcessorAttribute"/> is recursive.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if recursive; otherwise, <c>false</c>.
+        /// </value>
+        public bool Recursive { get; set; }
+
+        /// <summary>
+        /// Gets or sets the default value.
+        /// </summary>
+        /// <value>
+        /// The default value.
+        /// </value>
+        public object DefaultValue { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPropertyProcessorAttribute"/> class.
+        /// </summary>
+        public UmbracoPropertyProcessorAttribute()
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPropertyProcessorAttribute"/> class.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <param name="recursive">if set to <c>true</c> [recursive].</param>
+        /// <param name="defaultValue">The default value.</param>
+        public UmbracoPropertyProcessorAttribute(
+            string propertyName,
+            bool recursive = false,
+            object defaultValue = null)
+        {
+            this.PropertyName = propertyName;
+            this.Recursive = recursive;
+            this.DefaultValue = defaultValue;
+        }
+
         /// <summary>
         /// Processes the value.
         /// </summary>
         /// <returns>
         /// The <see cref="object" /> representing the processed value.
         /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
-            var defaultValue = this.Attribute.DefaultValue;
+            var defaultValue = DefaultValue;
 
-            var recursive = this.Attribute.Recursive;
+            var recursive = Recursive;
             var propName = this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty;
             var altPropName = string.Empty;
 
@@ -43,10 +92,10 @@ namespace Our.Umbraco.Ditto
                 }
             }
 
-            var umbracoPropertyName = this.Attribute.PropertyName ?? propName;
+            var umbracoPropertyName = PropertyName ?? propName;
             var altUmbracoPropertyName = altPropName;
 
-            var content = this.Value;
+            var content = this.Value as IPublishedContent;
             if (content == null)
             {
                 return defaultValue;

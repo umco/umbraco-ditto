@@ -17,17 +17,6 @@
         }
 
         /// <summary>
-        /// Registers a global value resolver.
-        /// </summary>
-        /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>
-        /// <typeparam name="TProcessorType">The type of the processor type.</typeparam>
-        public static void RegisterProcessor<TObjectType, TProcessorType>()
-            where TProcessorType : DittoProcessor
-        {
-            DittoProcessorRegistry.Instance.RegisterProcessor<TObjectType, TProcessorType>();
-        }
-
-        /// <summary>
         /// Registers a global value resolver attribute.
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>

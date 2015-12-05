@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Umbraco.Core;
@@ -10,7 +11,8 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// Provides a unified way of converting ultimate picker properties to strong typed collections.
     /// </summary>
-    public class UltimatePickerProcessor : DittoProcessor
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public class UltimatePickerProcessor : DittoProcessorAttribute
     {
         /// <summary>
         /// Converts the given object to the type of this converter, using the specified context and culture information.

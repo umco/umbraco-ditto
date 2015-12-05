@@ -10,16 +10,18 @@ using Umbraco.Web.Security;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Provides a unified way of converting picker properties to strong typed objects.
-    /// Can be used to return either single items or collections.
-    /// Adapted from <see href="https://github.com/Jeavon/Umbraco-Core-Property-Value-Converters/blob/v2/Our.Umbraco.PropertyConverters/MultiNodeTreePickerPropertyConverter.cs"/>
+    /// 
     /// </summary>
-    public class DittoPickerProcessor : DittoProcessor
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public class PickerProcessorAttribute : DittoProcessorAttribute
     {
         /// <summary>
         /// Processes the value.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// The <see cref="object" /> representing the processed value.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
