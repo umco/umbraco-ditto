@@ -11,7 +11,7 @@ namespace Our.Umbraco.Ditto
         /// Gets the value from the web.config app setting
         /// </summary>
         /// <returns>
-        /// The <see cref="object"/> representing the raw value.
+        /// The <see cref="object"/> representing the processed value.
         /// </returns>
         public override object ProcessValue() 
         {

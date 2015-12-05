@@ -469,7 +469,7 @@ namespace Our.Umbraco.Ditto
                     }
 
                     // Populate internal context properties
-                    context.Type = type;
+                    context.TargetType = type;
                     context.Content = content;
                     context.Value = currentValue;
                     context.PropertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
@@ -636,7 +636,7 @@ namespace Our.Umbraco.Ditto
                         Content = content,
                         Value = propertyValue,
                         PropertyDescriptor = descriptor,
-                        Type = type
+                        TargetType = type
                     };
 
                     // We're deliberately passing null.

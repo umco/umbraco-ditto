@@ -1,0 +1,103 @@
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Umbraco.Core;
+using Umbraco.Core.Models;
+using Umbraco.Web;
+
+namespace Our.Umbraco.Ditto
+{
+    /// <summary>
+    /// Provides a unified way of converting ultimate picker properties to strong typed collections.
+    /// </summary>
+    public class UltimatePickerProcessor : DittoProcessor
+    {
+        /// <summary>
+        /// Converts the given object to the type of this converter, using the specified context and culture information.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Object" /> that represents the converted value.
+        /// </returns>
+        public override object ProcessValue()
+        {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (Context == null || Context.PropertyDescriptor == null)
+            {
+                // There's no way to determine the type here.
+                return null;
+            }
+
+            var propertyType = Context.PropertyDescriptor.PropertyType;
+            var isGenericType = propertyType.IsGenericType;
+            var targetType = isGenericType
+                                ? propertyType.GenericTypeArguments.First()
+                                : propertyType;
+
+            if (Value.IsNullOrEmptyString())
+            {
+                if (isGenericType)
+                {
+                    return EnumerableInvocations.Empty(targetType);
+                }
+
+                return null;
+            }
+
+            // If a single item is selected, this comes back as an int, not a string.
+            if (Value is int)
+            {
+                var id = (int)Value;
+
+                // CheckBoxList, ListBox
+                if (targetType != null)
+                {
+                    return this.ConvertContentFromInt(id, targetType, Culture).YieldSingleItem();
+                }
+
+                // AutoComplete, DropDownList, RadioButton
+                return this.ConvertContentFromInt(id, propertyType, Culture);
+            }
+
+            if (Value != null)
+            {
+                string s = Value as string ?? Value.ToString();
+                if (!string.IsNullOrWhiteSpace(s))
+                {
+                    int n;
+                    var nodeIds = s
+                        .ToDelimitedList()
+                        .Select(x => int.TryParse(x, NumberStyles.Any, Culture, out n) ? n : -1)
+                        .Where(x => x > 0)
+                        .ToArray();
+
+                    if (nodeIds.Any())
+                    {
+                        var ultimatePicker = new List<IPublishedContent>();
+
+                        // ReSharper disable once LoopCanBeConvertedToQuery
+                        foreach (var nodeId in nodeIds)
+                        {
+                            var item = UmbracoContext.Current.ContentCache.GetById(nodeId);
+
+                            if (item != null)
+                            {
+                                ultimatePicker.Add(item);
+                            }
+                        }
+
+                        // CheckBoxList, ListBox
+                        if (isGenericType)
+                        {
+                            return ultimatePicker.As(targetType, Culture);
+                        }
+
+                        // AutoComplete, DropDownList, RadioButton
+                        return ultimatePicker.As(targetType, Culture).FirstOrDefault();
+                    }
+                }
+            }
+
+            return null;
+        }
+    }
+}

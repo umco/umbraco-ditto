@@ -4,8 +4,17 @@ using Umbraco.Web.Templates;
 
 namespace Our.Umbraco.Ditto.ComponentModel.Processors
 {
+    /// <summary>
+    /// Provides a unified way of converting objects to a <see cref="HtmlString"/>.
+    /// </summary>
     public class HtmlStringProcessor : DittoProcessor<object>
     {
+        /// <summary>
+        /// Processes the value.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="object" /> representing the processed value.
+        /// </returns>
         public override object ProcessValue()
         {
             if (Value.IsNullOrEmptyString())

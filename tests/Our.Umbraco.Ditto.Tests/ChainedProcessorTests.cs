@@ -18,9 +18,10 @@
 
         public class MyModel1
         {
-            [UmbracoPropertyProcessor("Name", Order = 0), 
-                DittoProcessor(typeof(MyCustomProcessor2), Order = 1), 
-                DittoProcessor(typeof(MyCustomProcessor3), Order = 2)]
+            [UmbracoPropertyProcessor("Title", Order = 0), 
+                AltUmbracoPropertyProcessor("Name", Order = 1), 
+                DittoProcessor(typeof(MyCustomProcessor2), Order = 2), 
+                DittoProcessor(typeof(MyCustomProcessor3), Order = 3)]
             public MyCustomModel MyProperty { get; set; }
         }   
 

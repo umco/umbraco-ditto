@@ -12,7 +12,7 @@ namespace Our.Umbraco.Ditto
         /// Gets the raw value for the current value being processed.
         /// </summary>
         /// <returns>
-        /// The <see cref="object"/> representing the processed value.
+        /// The <see cref="object" /> representing the processed value.
         /// </returns>
         public override object ProcessValue()
         {

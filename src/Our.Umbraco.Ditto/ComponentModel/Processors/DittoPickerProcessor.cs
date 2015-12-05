@@ -16,6 +16,10 @@ namespace Our.Umbraco.Ditto
     /// </summary>
     public class DittoPickerProcessor : DittoProcessor
     {
+        /// <summary>
+        /// Processes the value.
+        /// </summary>
+        /// <returns></returns>
         public override object ProcessValue()
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse

@@ -25,11 +25,10 @@ namespace Our.Umbraco.Ditto
         private static readonly object CacheLock = new object();
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="DittoValueResolverRegistry"/> class from being created.
+        /// Prevents a default instance of the <see cref="DittoProcessorRegistry"/> class from being created.
         /// </summary>
         private DittoProcessorRegistry()
-        {
-        }
+        { }
 
         /// <summary>
         /// Gets the singleton instance.

@@ -5,8 +5,17 @@ using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
 {
+    /// <summary>
+    /// The Umbraco Property processor.
+    /// </summary>
     public class UmbracoPropertyProcessor : DittoProcessor<IPublishedContent, DittoProcessorContext, UmbracoPropertyProcessorAttribute>
     {
+        /// <summary>
+        /// Processes the value.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="object" /> representing the processed value.
+        /// </returns>
         public override object ProcessValue()
         {
             var defaultValue = this.Attribute.DefaultValue;
@@ -35,7 +44,7 @@ namespace Our.Umbraco.Ditto
             }
 
             var umbracoPropertyName = this.Attribute.PropertyName ?? propName;
-            var altUmbracoPropertyName = this.Attribute.AltPropertyName ?? altPropName;
+            var altUmbracoPropertyName = altPropName;
 
             var content = this.Value;
             if (content == null)
