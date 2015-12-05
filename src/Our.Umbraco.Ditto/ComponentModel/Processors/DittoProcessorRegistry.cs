@@ -50,10 +50,10 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object type.</typeparam>
         /// <typeparam name="TProcessorType">The type of the processor type.</typeparam>
-        public void RegisterProcessor<TObjectType, TProcessorType>(int order = 0)
+        public void RegisterProcessor<TObjectType, TProcessorType>()
             where TProcessorType : DittoProcessor
         {
-            this.RegisterProcessorAttribute<TObjectType, DittoProcessorAttribute>(new DittoProcessorAttribute(order, typeof(TProcessorType)));
+            this.RegisterProcessorAttribute<TObjectType, DittoProcessorAttribute>(new DittoProcessorAttribute(typeof(TProcessorType)));
         }
 
         /// <summary>
@@ -61,10 +61,10 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object type.</typeparam>
         /// <typeparam name="TProcessorAttributeType">The type of the processor attribute type.</typeparam>
-        public void RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>(int order = 0)
+        public void RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>()
             where TProcessorAttributeType : DittoProcessorAttribute, new()
         {
-            this.RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>((TProcessorAttributeType)typeof(TProcessorAttributeType).GetInstance(order));
+            this.RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>((TProcessorAttributeType)typeof(TProcessorAttributeType).GetInstance());
         }
 
         /// <summary>
@@ -85,6 +85,8 @@ namespace Our.Umbraco.Ditto
                     Cache.Add(objType, new List<DittoProcessorAttribute>());
                     
                 }
+
+                instance.Order = Cache[objType].Count;
 
                 Cache[objType].Add(instance);
             }

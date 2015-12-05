@@ -14,15 +14,7 @@
         /// Initializes a new instance of the <see cref="CurrentContentProcessorAttribute"/> class.
         /// </summary>
         public CurrentContentProcessorAttribute()
-            : this(0)
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CurrentContentProcessorAttribute"/> class.
-        /// </summary>
-        /// <param name="order">The order.</param>
-        public CurrentContentProcessorAttribute(int order)
-            : base(order, typeof(CurrentContentProcessor))
+            : base(typeof(CurrentContentProcessor))
         { }
     }
 }

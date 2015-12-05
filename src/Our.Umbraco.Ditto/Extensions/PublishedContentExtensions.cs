@@ -420,7 +420,9 @@ namespace Our.Umbraco.Ditto
             if (!valueAttrs.Any())
             {
                 // Check for globally registered processors
-                valueAttrs = DittoProcessorRegistry.Instance.GetRegisteredProcessorAttributesFor(propertyInfo.PropertyType).ToArray();
+                valueAttrs = DittoProcessorRegistry.Instance.GetRegisteredProcessorAttributesFor(propertyInfo.PropertyType)
+                    .OrderBy(x => x.Order)
+                    .ToArray();
             }
 
             if (!valueAttrs.Any())
@@ -616,6 +618,9 @@ namespace Our.Umbraco.Ditto
             //        }
             //    }
             //}
+
+            //TODO: Move this to 
+
             if (propertyType == typeof(HtmlString))
             {
                 // Handle Html strings so we don't have to set the attribute.

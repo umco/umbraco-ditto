@@ -58,6 +58,7 @@
         public void Global_Value_Converter_Resolves()
         {
             Ditto.RegisterProcessor<MyStringModel, MyStrValueResolver>();
+            Ditto.RegisterProcessorAttribute<MyIntModel, MyIntProcessorAttr>(new MyIntProcessorAttr { AttrProp = 2 });
             Ditto.RegisterProcessorAttribute<MyIntModel, MyIntProcessorAttr>(new MyIntProcessorAttr { AttrProp = 5 });
 
             var content = new PublishedContentMock();

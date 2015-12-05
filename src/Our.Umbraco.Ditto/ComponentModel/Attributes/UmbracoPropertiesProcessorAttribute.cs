@@ -9,12 +9,6 @@ namespace Our.Umbraco.Ditto
     public class UmbracoPropertiesProcessorAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPropertiesProcessorAttribute"/> class.
-        /// </summary>
-        public UmbracoPropertiesProcessorAttribute()
-        { }
-
-        /// <summary>
         /// Gets or sets the prefix.
         /// </summary>
         public string Prefix { get; set; }

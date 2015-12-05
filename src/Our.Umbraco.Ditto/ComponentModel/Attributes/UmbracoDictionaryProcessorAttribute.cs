@@ -13,32 +13,15 @@ namespace Our.Umbraco.Ditto
         /// Initializes a new instance of the <see cref="UmbracoDictionaryProcessorAttribute"/> class.
         /// </summary>
         public UmbracoDictionaryProcessorAttribute()
-            : this(0)
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoDictionaryProcessorAttribute"/> class.
-        /// </summary>
-        /// <param name="order">The order.</param>
-        public UmbracoDictionaryProcessorAttribute(int order)
-            : base(order, typeof(UmbracoDictionaryPocessor))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoDictionaryProcessorAttribute"/> class.
-        /// </summary>
-        /// <param name="dictionaryKey">The dictionary key.</param>
-        public UmbracoDictionaryProcessorAttribute(string dictionaryKey)
-            : this(0, dictionaryKey)
+            : base(typeof(UmbracoDictionaryProcessorAttribute))
         { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoDictionaryProcessorAttribute" /> class.
         /// </summary>
-        /// <param name="order">The order.</param>
         /// <param name="dictionaryKey">The dictionary key.</param>
-        public UmbracoDictionaryProcessorAttribute(int order, string dictionaryKey)
-            : this(order)
+        public UmbracoDictionaryProcessorAttribute(string dictionaryKey)
+            : this()
         {
             this.DictionaryKey = dictionaryKey;
         }

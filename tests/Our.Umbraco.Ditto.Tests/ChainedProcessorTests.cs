@@ -1,8 +1,5 @@
 ﻿namespace Our.Umbraco.Ditto.Tests
 {
-    using System;
-    using System.ComponentModel;
-    using System.Globalization;
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;
 
@@ -21,10 +18,11 @@
 
         public class MyModel1
         {
-            [UmbracoPropertyProcessor(0, "Name")]
-            [DittoProcessor(1, typeof(MyCustomProcessor2))]
+            [UmbracoPropertyProcessor("Name", Order = 0), 
+                DittoProcessor(typeof(MyCustomProcessor2), Order = 1), 
+                DittoProcessor(typeof(MyCustomProcessor3), Order = 2)]
             public MyCustomModel MyProperty { get; set; }
-        }
+        }   
 
         public class MyModel2
         {
@@ -48,6 +46,14 @@
                     return new MyCustomModel((string)Value);
 
                 return null;
+            }
+        }
+
+        public class MyCustomProcessor3 : DittoProcessor
+        {
+            public override object ProcessValue()
+            {
+                return Value;
             }
         }
 

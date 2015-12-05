@@ -12,15 +12,7 @@ namespace Our.Umbraco.Ditto
         /// Initializes a new instance of the <see cref="UmbracoPropertyProcessorAttribute"/> class.
         /// </summary>
         public UmbracoPropertyProcessorAttribute()
-            : this(0)
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPropertyProcessorAttribute"/> class.
-        /// </summary>
-        /// <param name="order">The order.</param>
-        public UmbracoPropertyProcessorAttribute(int order)
-            : base(order, typeof(UmbracoPropertyProcessor))
+            : base(typeof(UmbracoPropertyProcessor))
         { }
 
         /// <summary>
@@ -35,24 +27,7 @@ namespace Our.Umbraco.Ditto
             string altPropertyName = "",
             bool recursive = false,
             object defaultValue = null)
-            : this(0, propertyName, altPropertyName, recursive, defaultValue)
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPropertyProcessorAttribute"/> class.
-        /// </summary>
-        /// <param name="order">The order.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <param name="altPropertyName">Name of the alt property.</param>
-        /// <param name="recursive">if set to <c>true</c> [recursive].</param>
-        /// <param name="defaultValue">The default value.</param>
-        public UmbracoPropertyProcessorAttribute(
-            int order,
-            string propertyName,
-            string altPropertyName = "",
-            bool recursive = false,
-            object defaultValue = null)
-            : this(order)
+            : this()
         {
             this.PropertyName = propertyName;
             this.AltPropertyName = altPropertyName;

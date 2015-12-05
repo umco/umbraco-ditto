@@ -10,36 +10,18 @@ namespace Our.Umbraco.Ditto
     public class AppSettingProcessorAttribute : DittoProcessorAttribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AppSettingProcessorAttribute" /> class.
+        /// Initializes a new instance of the <see cref="AppSettingProcessorAttribute"/> class.
         /// </summary>
         public AppSettingProcessorAttribute()
-            : this(0)
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AppSettingProcessorAttribute"/> class.
-        /// </summary>
-        /// <param name="order">The order.</param>
-        public AppSettingProcessorAttribute(int order)
-            : base(order, typeof(AppSettingProcessor))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AppSettingProcessorAttribute"/> class.
-        /// </summary>
-        /// <param name="appSettingKey">The application setting key.</param>
-        public AppSettingProcessorAttribute(string appSettingKey)
-            : this(0, appSettingKey)
+            : base(typeof(AppSettingProcessor))
         { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AppSettingProcessorAttribute" /> class.
         /// </summary>
-        /// <param name="order">The order.</param>
         /// <param name="appSettingKey">The app setting key in the web.config</param>
-        public AppSettingProcessorAttribute(int order, 
-            string appSettingKey)
-            : this(order)
+        public AppSettingProcessorAttribute(string appSettingKey)
+            : this()
         {
             this.AppSettingKey = appSettingKey;
         }
