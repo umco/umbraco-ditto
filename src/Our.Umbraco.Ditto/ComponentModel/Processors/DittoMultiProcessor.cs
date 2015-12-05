@@ -1,9 +1,7 @@
-﻿using System.Web.Configuration;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// The web.config app setting value processor.
+    /// The multi processor.
     /// </summary>
     public class DittoMultiProcessor : DittoProcessor<object, DittoProcessorContext, DittoMultiProcessorAttribute>
     {
@@ -16,7 +14,7 @@ namespace Our.Umbraco.Ditto
         public override object ProcessValue()
         {
             // We don't actually do anything here, we are just a holder
-            // all the magic happen in PublishedContentExtensions.As method
+            // all the magic happen in the PublishedContentExtensions.As method
             return null;
         }
     }
