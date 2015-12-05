@@ -87,6 +87,7 @@
     <Compile Include="ComponentModel\Attributes\DittoOnConvertedAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\CurrentContentProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoIgnoreAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\DittoMultiProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\UmbracoDictionaryProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\UmbracoPropertiesProcessorAttribute.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandlerRegistry.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandlerContext.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandler.cs" />
+    <Compile Include="ComponentModel\Processors\DittoMultiProcessor.cs" />
     <Compile Include="ComponentModel\Processors\AppSettingProcessor.cs" />
     <Compile Include="ComponentModel\Processors\CurrentContentProcessor.cs" />
     <Compile Include="ComponentModel\Processors\EnumProcessor.cs" />

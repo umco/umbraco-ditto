@@ -431,6 +431,10 @@ namespace Our.Umbraco.Ditto
                 valueAttrs = new DittoProcessorAttribute[] { new UmbracoPropertyProcessorAttribute() };
             }
 
+            // Process any multi processor attributes
+            valueAttrs = valueAttrs.SelectMany(x => (x is DittoMultiProcessorAttribute) ? ((DittoMultiProcessorAttribute)x).Attributes.ToArray() : new[] { x })
+                .ToArray();
+
             // Time custom value-processor.
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
             {

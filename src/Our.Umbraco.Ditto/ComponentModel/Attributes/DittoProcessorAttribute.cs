@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 namespace Our.Umbraco.Ditto
 {
@@ -28,7 +27,6 @@ namespace Our.Umbraco.Ditto
             }
 
             this.ProcessorType = processorType;
-            //this.Order = order;
         }
 
         /// <summary>
