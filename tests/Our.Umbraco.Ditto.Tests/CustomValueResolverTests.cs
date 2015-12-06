@@ -9,15 +9,18 @@ namespace Our.Umbraco.Ditto.Tests
     {
         public class MyModel
         {
-            [DittoProcessor(typeof(MyCustomProcessor))]
+            [MyCustomProcessor]
             public string Name { get; set; }
         }
 
-        public class MyCustomProcessor : DittoProcessor<IPublishedContent>
+        public class MyCustomProcessor : DittoProcessorAttribute
         {
             public override object ProcessValue()
             {
-                return (Value != null) ? Value.Name + " Test" : null;
+                var content = Value as IPublishedContent;
+                if (content == null) return null;
+
+                return content.Name + " Test";
             }
         }
 

@@ -25,5 +25,18 @@ namespace Our.Umbraco.Ditto
         {
             this.Attributes = new List<DittoProcessorAttribute>(attributes); 
         }
+
+        /// <summary>
+        /// Processes the value.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="object" /> representing the processed value.
+        /// </returns>
+        public override object ProcessValue()
+        {
+            // We don't actually implement anything here, it all happens in the 
+            // published content extension method, so we'll just return null here
+            return null;
+        }
     }
 }

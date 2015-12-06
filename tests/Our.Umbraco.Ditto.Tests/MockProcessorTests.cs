@@ -13,20 +13,16 @@
         [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
         public class MockProcessorAttribute : DittoProcessorAttribute
         {
+            public object RawValue { get; set; }
+
             public MockProcessorAttribute(object rawValue)
-                : base(typeof(MockProcessor))
             {
                 this.RawValue = rawValue;
             }
 
-            public object RawValue { get; set; }
-        }
-
-        public class MockProcessor : DittoProcessor<object, DittoProcessorContext, MockProcessorAttribute>
-        {
             public override object ProcessValue()
             {
-                return Attribute.RawValue;
+                return RawValue;
             }
         }
 

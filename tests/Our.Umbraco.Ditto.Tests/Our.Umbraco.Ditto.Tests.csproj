@@ -218,20 +218,27 @@
     <Compile Include="ConversionHandlerTests.cs" />
     <Compile Include="CurrentContentTests.cs" />
     <Compile Include="CustomPublishedContentPropertyTests.cs" />
+    <Compile Include="CustomValueResolverTests.cs" />
+    <Compile Include="EnumerableDetectionTests.cs" />
     <Compile Include="EnumerableTests.cs" />
     <Compile Include="ExistingObjectInstanceTests.cs" />
+    <Compile Include="GlobalValueResolverTests.cs" />
     <Compile Include="IgnoreAttributeTests.cs" />
     <Compile Include="ImageCropDataSetMappingTests.cs" />
     <Compile Include="JsonSerializationWithTypeConverterTests.cs" />
+    <Compile Include="MockProcessorTests.cs" />
     <Compile Include="Models\ImageCropModels.cs" />
     <Compile Include="AppSettingsTests.cs" />
     <Compile Include="Mocks\PublishedContentMock.cs" />
     <Compile Include="Mocks\PublishedContentPropertyMock.cs" />
     <Compile Include="MultipleConversionHandlerTests.cs" />
+    <Compile Include="MultiProcessorTests.cs" />
     <Compile Include="NestedPublishedContentTests.cs" />
     <Compile Include="PocoConstructorTests.cs" />
     <Compile Include="PrefixedPropertyTests.cs" />
+    <Compile Include="ProcessorContextTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SingularityMappingTests.cs" />
     <Compile Include="TypeInferenceTests.cs" />
   </ItemGroup>
   <ItemGroup>

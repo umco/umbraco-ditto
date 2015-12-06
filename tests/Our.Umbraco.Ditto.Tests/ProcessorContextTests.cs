@@ -1,26 +1,32 @@
-﻿namespace Our.Umbraco.Ditto.Tests
+﻿using System;
+
+namespace Our.Umbraco.Ditto.Tests
 {
-    using System.Collections.Generic;
-    using System.Globalization;
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;
-    using global::Umbraco.Core;
-    using global::Umbraco.Web.Media.EmbedProviders.Settings;
 
     [TestFixture]
     public class ProcessorContextTests
     {
         public class MyValueResolverModel
         {
-            [DittoProcessor(typeof(MyProcessor))]
+            [MyProcessor]
             public string MyProperty { get; set; }
         }
 
-        public class MyProcessor : DittoProcessor<object, MyProcessorContext>
+        public class MyProcessorAttribute : DittoProcessorAttribute
         {
+            public override Type ContextType
+            {
+                get
+                {
+                    return typeof(MyProcessorContext);
+                }
+            }
+
             public override object ProcessValue()
             {
-                return Context.MyContextProperty;
+                return ((MyProcessorContext)Context).MyContextProperty;
             }
         }
 

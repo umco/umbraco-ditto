@@ -1,12 +1,7 @@
 ﻿namespace Our.Umbraco.Ditto.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;
-    using global::Umbraco.Core;
-    using global::Umbraco.Web.Media.EmbedProviders.Settings;
 
     [TestFixture]
     public class GlobalValueResolverTests
@@ -30,23 +25,15 @@
 
         public class MyIntProcessorAttr : DittoProcessorAttribute
         {
-            public MyIntProcessorAttr()
-                : base(typeof(MyIntProcessor))
-            {
-            }
-
             public int AttrProp { get; set; }
-        }
 
-        public class MyIntProcessor : DittoProcessor<object, DittoProcessorContext, MyIntProcessorAttr>
-        {
             public override object ProcessValue()
             {
-                return new MyIntModel { Value = Attribute.AttrProp };
+                return new MyIntModel { Value = AttrProp };
             }
         }
 
-        public class MyStrValueResolver : DittoProcessor
+        public class MyStrProcessorAttribute : DittoProcessorAttribute
         {
             public override object ProcessValue()
             {
@@ -57,7 +44,7 @@
         [Test]
         public void Global_Value_Converter_Resolves()
         {
-            Ditto.RegisterProcessor<MyStringModel, MyStrValueResolver>();
+            Ditto.RegisterProcessorAttribute<MyStringModel, MyStrProcessorAttribute>();
             Ditto.RegisterProcessorAttribute<MyIntModel, MyIntProcessorAttr>(new MyIntProcessorAttr { AttrProp = 2 });
             Ditto.RegisterProcessorAttribute<MyIntModel, MyIntProcessorAttr>(new MyIntProcessorAttr { AttrProp = 5 });
 

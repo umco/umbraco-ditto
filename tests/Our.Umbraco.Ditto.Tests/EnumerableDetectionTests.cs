@@ -13,11 +13,11 @@
     {
         public class MyModel
         {
-            [DittoProcessor(typeof(MyProcessor))]
+            [MyProcessor]
             public Dictionary<string, string> MyProperty { get; set; }
         }
 
-        public class MyProcessor : DittoProcessor
+        public class MyProcessorAttribute : DittoProcessorAttribute
         {
             public override object ProcessValue()
             {

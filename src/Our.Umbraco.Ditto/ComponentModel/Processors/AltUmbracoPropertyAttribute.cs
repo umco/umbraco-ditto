@@ -28,7 +28,11 @@ namespace Our.Umbraco.Ditto
         {
             if (Value.IsNullOrEmptyString())
             {
-                return base.ProcessValue(Context.Content, Context);
+                // Reset value to published content
+                Value = Context.Content;
+
+                // Run base processor
+                return base.ProcessValue();
             }
 
             return Value;
