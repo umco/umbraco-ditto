@@ -8,7 +8,6 @@ namespace Our.Umbraco.Ditto
     /// The Umbraco dictionary value processor attribute.
     /// Used for providing Umbraco with additional information about a dictionary item to aid property value processing.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class UmbracoDictionaryAttribute : DittoProcessorAttribute
     {
         /// <summary>

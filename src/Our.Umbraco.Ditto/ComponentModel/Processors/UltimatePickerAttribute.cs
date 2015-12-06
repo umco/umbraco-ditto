@@ -11,7 +11,6 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// Provides a unified way of converting ultimate picker properties to strong typed collections.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class UltimatePickerAttribute : DittoProcessorAttribute
     {
         /// <summary>

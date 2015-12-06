@@ -14,16 +14,9 @@ namespace Our.Umbraco.Ditto.Tests
             public string MyProperty { get; set; }
         }
 
+        [DittoProcessorMetaData(ContextType = typeof(MyProcessorContext))]
         public class MyProcessorAttribute : DittoProcessorAttribute
         {
-            public override Type ContextType
-            {
-                get
-                {
-                    return typeof(MyProcessorContext);
-                }
-            }
-
             public override object ProcessValue()
             {
                 return ((MyProcessorContext)Context).MyContextProperty;

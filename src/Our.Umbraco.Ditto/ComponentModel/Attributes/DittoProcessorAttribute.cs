@@ -9,7 +9,8 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property)]
+    [DittoProcessorMetaData(ValueType = typeof(object), ContextType = typeof(DittoProcessorContext))]
     public abstract class DittoProcessorAttribute : Attribute
     {
         /// <summary>
@@ -21,6 +22,14 @@ namespace Our.Umbraco.Ditto
         public object Value { get; internal set; }
 
         /// <summary>
+        /// Gets or sets the type of the value.
+        /// </summary>
+        /// <value>
+        /// The type of the value.
+        /// </value>
+        internal Type ValueType { get; set; }
+
+        /// <summary>
         /// Gets or sets the context.
         /// </summary>
         /// <value>
@@ -29,12 +38,12 @@ namespace Our.Umbraco.Ditto
         public DittoProcessorContext Context { get; internal set; }
 
         /// <summary>
-        /// Gets the type of the context.
+        /// Gets or sets the type of the context.
         /// </summary>
         /// <value>
-        /// The type of the context.
+        /// The type of the value.
         /// </value>
-        public virtual Type ContextType { get { return typeof(DittoProcessorContext); } }
+        internal Type ContextType { get; set; }
 
         /// <summary>
         /// Gets or sets the order.
@@ -43,6 +52,21 @@ namespace Our.Umbraco.Ditto
         /// The order.
         /// </value>
         public int Order { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoProcessorAttribute"/> class.
+        /// </summary>
+        protected DittoProcessorAttribute()
+        {
+            var metaData = this.GetType().GetCustomAttribute<DittoProcessorMetaDataAttribute>(true);
+            if (metaData == null)
+            {
+                throw new ApplicationException("Ditto processor attributes require a DittoProcessorMetaData attribute to be applied to the class but none was found");
+            }
+
+            ValueType = metaData.ValueType;
+            ContextType = metaData.ContextType;
+        }
 
         /// <summary>
         /// Processes the value.
@@ -57,7 +81,6 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="context">The context.</param>
-        /// <param name="culture">The culture.</param>
         /// <returns>
         /// The <see cref="object" /> representing the processed value.
         /// </returns>
@@ -65,6 +88,21 @@ namespace Our.Umbraco.Ditto
             object value,
             DittoProcessorContext context)
         {
+            if (value != null && !ValueType.IsInstanceOfType(value))
+            {
+                throw new ArgumentException("Expected a value argument of type " + ValueType + " but got " + value.GetType(), "value");
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+
+            if (!ContextType.IsInstanceOfType(context))
+            {
+                throw new ArgumentException("Expected a context argument of type " + ContextType + " but got " + context.GetType(), "context");
+            }
+
             Value = value;
             Context = context;
 

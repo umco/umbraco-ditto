@@ -8,7 +8,6 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class EnumAttribute : DittoProcessorAttribute
     {
         /// <summary>

@@ -7,7 +7,6 @@ namespace Our.Umbraco.Ditto
     /// The current content processor attribute.
     /// Used for providing Ditto with the current <see cref="IPublishedContent"/> object from Umbraco.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class CurrentContentAttribute : DittoProcessorAttribute
     {
         /// <summary>

@@ -81,6 +81,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentModel\Attributes\DittoProcessorMetaDataAttribute.cs" />
     <Compile Include="ComponentModel\Processors\AppSettingAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoConversionHandlerAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertingAttribute.cs" />

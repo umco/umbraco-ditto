@@ -9,7 +9,6 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// The Umbraco property processor attribute.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
     public class UmbracoPropertyAttribute : DittoProcessorAttribute
     {
         /// <summary>

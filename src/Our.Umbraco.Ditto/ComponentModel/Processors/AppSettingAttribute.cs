@@ -7,7 +7,6 @@ namespace Our.Umbraco.Ditto
     /// The AppSetting value attribute.
     /// Used for providing additional information about an AppSetting item to aid property value conversion.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class AppSettingrAttribute : DittoProcessorAttribute
     {
         /// <summary>

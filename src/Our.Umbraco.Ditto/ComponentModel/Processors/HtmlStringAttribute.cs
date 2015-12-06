@@ -8,7 +8,6 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// Provides a unified way of converting objects to a <see cref="HtmlString"/>.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class HtmlStringAttribute : DittoProcessorAttribute
     {
         /// <summary>
