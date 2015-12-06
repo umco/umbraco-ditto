@@ -6,7 +6,7 @@ using Umbraco.Core;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// 
+    /// An enum ditto processor
     /// </summary>
     public class EnumAttribute : DittoProcessorAttribute
     {

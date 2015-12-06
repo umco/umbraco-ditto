@@ -7,7 +7,7 @@ using Umbraco.Web.Security;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// 
+    /// The abstract base class for all Ditto processor attributes
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     [DittoProcessorMetaData(ValueType = typeof(object), ContextType = typeof(DittoProcessorContext))]
