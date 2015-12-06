@@ -76,7 +76,7 @@ namespace Our.Umbraco.Ditto
             if (this.Context.PropertyDescriptor != null)
             {
                 var classAttr = this.Context.PropertyDescriptor.ComponentType
-                    .GetCustomAttribute<UmbracoPropertiesProcessorAttribute>();
+                    .GetCustomAttribute<UmbracoPropertiesAttribute>();
                 if (classAttr != null)
                 {
                     // Apply the prefix

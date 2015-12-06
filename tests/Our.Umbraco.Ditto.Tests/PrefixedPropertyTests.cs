@@ -6,7 +6,7 @@
     [TestFixture]
     public class PrefixedPropertyTests
     {
-        [UmbracoPropertiesProcessor(Prefix = "Site", Recursive = true)]
+        [UmbracoProperties(Prefix = "Site", Recursive = true)]
         public class MyModel
         {
             public string Name { get; set; }

@@ -5,8 +5,8 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// The Umbraco properties attribute.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class UmbracoPropertiesProcessorAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class)]
+    public class UmbracoPropertiesAttribute : Attribute
     {
         /// <summary>
         /// Gets or sets the prefix.

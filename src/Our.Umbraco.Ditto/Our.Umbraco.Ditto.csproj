@@ -94,7 +94,7 @@
     <Compile Include="ComponentModel\Processors\HtmlStringAttribute.cs" />
     <Compile Include="ComponentModel\Processors\UmbracoPickerAttribute.cs" />
     <Compile Include="ComponentModel\Processors\UmbracoDictionaryAttribute.cs" />
-    <Compile Include="ComponentModel\Attributes\UmbracoPropertiesProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\UmbracoPropertiesAttribute.cs" />
     <Compile Include="ComponentModel\Processors\AltUmbracoPropertyAttribute.cs" />
     <Compile Include="ComponentModel\Processors\UmbracoPropertyAttribute.cs" />
     <Compile Include="Common\DittoDisposableTimer.cs" />

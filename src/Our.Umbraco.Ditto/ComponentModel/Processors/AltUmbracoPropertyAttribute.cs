@@ -3,7 +3,7 @@
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// The Umbraco property processor attribute.
+    /// The alt Umbraco property processor attribute.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class AltUmbracoPropertyAttribute : UmbracoPropertyAttribute
