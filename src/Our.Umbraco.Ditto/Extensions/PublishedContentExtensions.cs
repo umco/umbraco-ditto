@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Web;
-using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -409,7 +406,7 @@ namespace Our.Umbraco.Ditto
             object instance,
             IEnumerable<DittoProcessorContext> processorContexts = null)
         {
-            // Check the property for an associated value attribute, otherwise fall-back on expected behaviour.
+            // Check the property for any explicit processor attributes
             var processorAttrs = propertyInfo.GetCustomAttributes<DittoProcessorAttribute>(true)
                 .OrderBy(x => x.Order)
                 .ToList();
@@ -428,7 +425,7 @@ namespace Our.Umbraco.Ditto
                 processorAttrs = new List<DittoProcessorAttribute>(new []{ new UmbracoPropertyAttribute() });
             }
 
-            // Process any multi processor attributes
+            // Break apart any multi processor attributes into their constituant processors
             processorAttrs = processorAttrs.SelectMany(x => (x is DittoMultiProcessorAttribute) ? ((DittoMultiProcessorAttribute)x).Attributes.ToArray() : new[] { x })
                 .ToList();
 
@@ -444,23 +441,14 @@ namespace Our.Umbraco.Ditto
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
             {
                 object currentValue = content;
-
                 var processorContextsList = processorContexts != null? processorContexts.ToList() : new List<DittoProcessorContext>();
                 var propDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
 
                 foreach (var processorAttr in processorAttrs)
                 {
-                    DittoProcessorContext context = null;
-
-                    var processorContext = processorContextsList.FirstOrDefault(x => x.GetType() == processorAttr.ContextType);
-                    if (processorContext != null)
-                    {
-                        context = processorContext;
-                    }
-                    else
-                    {
-                        context = (DittoProcessorContext)processorAttr.ContextType.GetInstance();
-                    }
+                    // Create new context
+                    var context = processorContextsList.FirstOrDefault(x => x.GetType() == processorAttr.ContextType)
+                        ?? (DittoProcessorContext)processorAttr.ContextType.GetInstance();
 
                     // Populate internal context properties
                     context.TargetType = type;
