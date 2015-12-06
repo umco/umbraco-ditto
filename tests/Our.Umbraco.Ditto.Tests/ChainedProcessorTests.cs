@@ -18,20 +18,20 @@
 
         public class MyModel1
         {
-            [UmbracoPropertyProcessor("Title", Order = 0), 
-                AltUmbracoPropertyProcessor("Name", Order = 1), 
-                DittoProcessor(typeof(MyCustomProcessor2), Order = 2), 
-                DittoProcessor(typeof(MyCustomProcessor3), Order = 3)]
+            [UmbracoProperty("Title", Order = 0), 
+                AltUmbracoProperty("Name", Order = 1),
+                MyCustomProcessor2(Order = 2),
+                MyCustomProcessor3(Order = 3)]
             public MyCustomModel MyProperty { get; set; }
         }   
 
         public class MyModel2
         {
-            [DittoProcessor(typeof(MyCustomProcessor))]
+            [MyCustomProcessor]
             public MyCustomModel MyProperty { get; set; }
         }
 
-        public class MyCustomProcessor : DittoProcessor
+        public class MyCustomProcessorAttribute : DittoProcessorAttribute
         {
             public override object ProcessValue()
             {
@@ -39,7 +39,7 @@
             }
         }
 
-        public class MyCustomProcessor2 : DittoProcessor
+        public class MyCustomProcessor2Attribute : DittoProcessorAttribute
         {
             public override object ProcessValue()
             {
@@ -50,7 +50,7 @@
             }
         }
 
-        public class MyCustomProcessor3 : DittoProcessor
+        public class MyCustomProcessor3Attribute : DittoProcessorAttribute
         {
             public override object ProcessValue()
             {

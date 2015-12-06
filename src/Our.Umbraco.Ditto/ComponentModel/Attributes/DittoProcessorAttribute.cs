@@ -37,14 +37,6 @@ namespace Our.Umbraco.Ditto
         public virtual Type ContextType { get { return typeof(DittoProcessorContext); } }
 
         /// <summary>
-        /// Gets or sets the culture.
-        /// </summary>
-        /// <value>
-        /// The culture.
-        /// </value>
-        public CultureInfo Culture { get; internal set; }
-
-        /// <summary>
         /// Gets or sets the order.
         /// </summary>
         /// <value>
@@ -71,12 +63,10 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         internal virtual object ProcessValue(
             object value,
-            DittoProcessorContext context,
-            CultureInfo culture)
+            DittoProcessorContext context)
         {
             Value = value;
             Context = context;
-            Culture = culture;
 
             return this.ProcessValue();
         }

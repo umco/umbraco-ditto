@@ -12,7 +12,7 @@ namespace Our.Umbraco.Ditto
     /// Provides a unified way of converting ultimate picker properties to strong typed collections.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class UltimatePickerProcessor : DittoProcessorAttribute
+    public class UltimatePickerAttribute : DittoProcessorAttribute
     {
         /// <summary>
         /// Converts the given object to the type of this converter, using the specified context and culture information.
@@ -53,11 +53,11 @@ namespace Our.Umbraco.Ditto
                 // CheckBoxList, ListBox
                 if (targetType != null)
                 {
-                    return this.ConvertContentFromInt(id, targetType, Culture).YieldSingleItem();
+                    return this.ConvertContentFromInt(id, targetType, Context.Culture).YieldSingleItem();
                 }
 
                 // AutoComplete, DropDownList, RadioButton
-                return this.ConvertContentFromInt(id, propertyType, Culture);
+                return this.ConvertContentFromInt(id, propertyType, Context.Culture);
             }
 
             if (Value != null)
@@ -68,7 +68,7 @@ namespace Our.Umbraco.Ditto
                     int n;
                     var nodeIds = s
                         .ToDelimitedList()
-                        .Select(x => int.TryParse(x, NumberStyles.Any, Culture, out n) ? n : -1)
+                        .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
                         .Where(x => x > 0)
                         .ToArray();
 
@@ -90,11 +90,11 @@ namespace Our.Umbraco.Ditto
                         // CheckBoxList, ListBox
                         if (isGenericType)
                         {
-                            return ultimatePicker.As(targetType, Culture);
+                            return ultimatePicker.As(targetType, Context.Culture);
                         }
 
                         // AutoComplete, DropDownList, RadioButton
-                        return ultimatePicker.As(targetType, Culture).FirstOrDefault();
+                        return ultimatePicker.As(targetType, Context.Culture).FirstOrDefault();
                     }
                 }
             }

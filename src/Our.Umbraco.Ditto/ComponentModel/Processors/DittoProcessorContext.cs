@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto
@@ -32,5 +33,13 @@ namespace Our.Umbraco.Ditto
         /// The property descriptor.
         /// </value>
         public PropertyDescriptor PropertyDescriptor { get; internal set; }
+
+        /// <summary>
+        /// Gets the culture.
+        /// </summary>
+        /// <value>
+        /// The culture.
+        /// </value>
+        public CultureInfo Culture { get; internal set; }
     }
 }

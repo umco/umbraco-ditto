@@ -427,7 +427,7 @@ namespace Our.Umbraco.Ditto
             if (!processorAttrs.Any())
             {
                 // Default to umbraco property attribute
-                processorAttrs = new List<DittoProcessorAttribute>(new []{ new UmbracoPropertyProcessorAttribute() });
+                processorAttrs = new List<DittoProcessorAttribute>(new []{ new UmbracoPropertyAttribute() });
             }
 
             // Process any multi processor attributes
@@ -460,9 +460,10 @@ namespace Our.Umbraco.Ditto
                     context.TargetType = type;
                     context.Content = content;
                     context.PropertyDescriptor = propDescriptor;
+                    context.Culture = culture;
 
                     // Process value
-                    currentValue = processorAttr.ProcessValue(currentValue, context, culture);
+                    currentValue = processorAttr.ProcessValue(currentValue, context);
                 }
 
                 return currentValue;

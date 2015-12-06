@@ -8,7 +8,7 @@ namespace Our.Umbraco.Ditto.Tests
     {
         public class MyAppSettingsModel
         {
-            [AppSettingProcessor("MyAppSettingKey")]
+            [AppSettingr("MyAppSettingKey")]
             public string MyProperty { get; set; }
         }
 

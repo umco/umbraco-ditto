@@ -6,15 +6,15 @@ namespace Our.Umbraco.Ditto
     /// The Umbraco property processor attribute.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class AltUmbracoPropertyProcessorAttribute : UmbracoPropertyProcessorAttribute
+    public class AltUmbracoPropertyAttribute : UmbracoPropertyAttribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AltUmbracoPropertyProcessorAttribute"/> class.
+        /// Initializes a new instance of the <see cref="AltUmbracoPropertyAttribute"/> class.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="recursive">if set to <c>true</c> [recursive].</param>
         /// <param name="defaultValue">The default value.</param>
-        public AltUmbracoPropertyProcessorAttribute(string propertyName, bool recursive = false, object defaultValue = null)
+        public AltUmbracoPropertyAttribute(string propertyName, bool recursive = false, object defaultValue = null)
             : base(propertyName, recursive, defaultValue)
         { }
 
@@ -28,7 +28,7 @@ namespace Our.Umbraco.Ditto
         {
             if (Value.IsNullOrEmptyString())
             {
-                return base.ProcessValue(Context.Content, Context, Culture);
+                return base.ProcessValue(Context.Content, Context);
             }
 
             return Value;

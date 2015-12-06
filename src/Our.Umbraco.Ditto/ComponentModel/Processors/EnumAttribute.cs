@@ -9,7 +9,7 @@ namespace Our.Umbraco.Ditto
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class EnumProcessorAttribute : DittoProcessorAttribute
+    public class EnumAttribute : DittoProcessorAttribute
     {
         /// <summary>
         /// Processes the value.
@@ -46,7 +46,7 @@ namespace Our.Umbraco.Ditto
                     foreach (string v in values)
                     {
                         // OR assignment. Stolen from ComponentModel EnumConverter.
-                        convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), Culture);
+                        convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), Context.Culture);
                     }
 
                     return Enum.ToObject(propertyType, convertedValue);
@@ -70,7 +70,7 @@ namespace Our.Umbraco.Ditto
                 if (valueType.IsEnum)
                 {
                     // This should work for most cases where enums base type is int.
-                    return Enum.ToObject(propertyType, Convert.ToInt64(Value, Culture));
+                    return Enum.ToObject(propertyType, Convert.ToInt64(Value, Context.Culture));
                 }
 
                 if (valueType.IsEnumerableOfType(typeof(string)))
@@ -83,7 +83,7 @@ namespace Our.Umbraco.Ditto
                         // ReSharper disable once LoopCanBeConvertedToQuery
                         foreach (string v in enumerable)
                         {
-                            convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), Culture);
+                            convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), Context.Culture);
                         }
 
                         return Enum.ToObject(propertyType, convertedValue);
@@ -100,7 +100,7 @@ namespace Our.Umbraco.Ditto
                 // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (Enum e in enums)
                 {
-                    convertedValue |= Convert.ToInt64(e, Culture);
+                    convertedValue |= Convert.ToInt64(e, Context.Culture);
                 }
 
                 return Enum.ToObject(propertyType, convertedValue);

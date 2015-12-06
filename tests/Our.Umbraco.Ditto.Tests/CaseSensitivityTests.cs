@@ -10,16 +10,16 @@
         {
             public string Name { get; set; }
 
-            [UmbracoPropertyProcessor("Name")]
+            [UmbracoProperty("Name")]
             public string Name_PascalCase { get; set; }
 
-            [UmbracoPropertyProcessor("NAME")]
+            [UmbracoProperty("NAME")]
             public string Name_UpperCase { get; set; }
 
-            [UmbracoPropertyProcessor("name")]
+            [UmbracoProperty("name")]
             public string Name_LowerCase { get; set; }
 
-            [UmbracoPropertyProcessor("NaMe")]
+            [UmbracoProperty("NaMe")]
             public string Name_MixedCase { get; set; }
         }
 

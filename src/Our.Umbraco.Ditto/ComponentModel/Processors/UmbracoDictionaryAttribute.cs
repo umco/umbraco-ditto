@@ -9,7 +9,7 @@ namespace Our.Umbraco.Ditto
     /// Used for providing Umbraco with additional information about a dictionary item to aid property value processing.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class UmbracoDictionaryProcessorAttribute : DittoProcessorAttribute
+    public class UmbracoDictionaryAttribute : DittoProcessorAttribute
     {
         /// <summary>
         /// Gets or sets the dictionary key.
@@ -17,10 +17,10 @@ namespace Our.Umbraco.Ditto
         public string DictionaryKey { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoDictionaryProcessorAttribute" /> class.
+        /// Initializes a new instance of the <see cref="UmbracoDictionaryAttribute" /> class.
         /// </summary>
         /// <param name="dictionaryKey">The dictionary key.</param>
-        public UmbracoDictionaryProcessorAttribute(string dictionaryKey)
+        public UmbracoDictionaryAttribute(string dictionaryKey)
         {
             this.DictionaryKey = dictionaryKey;
         }

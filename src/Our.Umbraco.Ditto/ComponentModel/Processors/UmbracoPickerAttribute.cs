@@ -13,7 +13,7 @@ namespace Our.Umbraco.Ditto
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class PickerProcessorAttribute : DittoProcessorAttribute
+    public class UmbracoPickerAttribute : DittoProcessorAttribute
     {
         /// <summary>
         /// Processes the value.
@@ -45,7 +45,7 @@ namespace Our.Umbraco.Ditto
             IPublishedContent content = Value as IPublishedContent;
             if (content != null)
             {
-                return content.As(targetType, Culture);
+                return content.As(targetType, Context.Culture);
             }
 
             // ReSharper disable once PossibleNullReferenceException
@@ -54,7 +54,7 @@ namespace Our.Umbraco.Ditto
             // Multiple IPublishedContent 
             if (type.IsEnumerableOfType(typeof(IPublishedContent)))
             {
-                return ((IEnumerable<IPublishedContent>)Value).As(targetType, Culture);
+                return ((IEnumerable<IPublishedContent>)Value).As(targetType, Context.Culture);
             }
 
             int[] nodeIds = { };
@@ -66,7 +66,7 @@ namespace Our.Umbraco.Ditto
                 {
                     int n;
                     nodeIds = ((IEnumerable<string>)Value)
-                                  .Select(x => int.TryParse(x, NumberStyles.Any, Culture, out n) ? n : -1)
+                                  .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
                                   .ToArray();
                 }
 
@@ -87,7 +87,7 @@ namespace Our.Umbraco.Ditto
                     ? s.GetXmlIds()
                     : s
                     .ToDelimitedList()
-                    .Select(x => int.TryParse(x, NumberStyles.Any, Culture, out n) ? n : -1)
+                    .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
                     .Where(x => x > 0)
                     .ToArray();
                 }
@@ -114,7 +114,7 @@ namespace Our.Umbraco.Ditto
                     }
                 }
 
-                return multiPicker.As(targetType, Culture);
+                return multiPicker.As(targetType, Context.Culture);
             }
 
             return null;

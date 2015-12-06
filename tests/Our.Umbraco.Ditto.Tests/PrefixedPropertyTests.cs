@@ -15,7 +15,7 @@
 
             public string Fallback { get; set; }
 
-            [UmbracoPropertyProcessor("UnprefixedProp")]
+            [UmbracoProperty("UnprefixedProp")]
             public string UnprefixedProp { get; set; }
         }
 

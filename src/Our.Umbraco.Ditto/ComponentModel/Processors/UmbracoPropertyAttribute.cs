@@ -10,7 +10,7 @@ namespace Our.Umbraco.Ditto
     /// The Umbraco property processor attribute.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class UmbracoPropertyProcessorAttribute : DittoProcessorAttribute
+    public class UmbracoPropertyAttribute : DittoProcessorAttribute
     {
         /// <summary>
         /// Gets or sets the name of the property.
@@ -21,7 +21,7 @@ namespace Our.Umbraco.Ditto
         public string PropertyName { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="UmbracoPropertyProcessorAttribute"/> is recursive.
+        /// Gets or sets a value indicating whether this <see cref="UmbracoPropertyAttribute"/> is recursive.
         /// </summary>
         /// <value>
         ///   <c>true</c> if recursive; otherwise, <c>false</c>.
@@ -37,18 +37,18 @@ namespace Our.Umbraco.Ditto
         public object DefaultValue { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPropertyProcessorAttribute"/> class.
+        /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.
         /// </summary>
-        public UmbracoPropertyProcessorAttribute()
+        public UmbracoPropertyAttribute()
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPropertyProcessorAttribute"/> class.
+        /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="recursive">if set to <c>true</c> [recursive].</param>
         /// <param name="defaultValue">The default value.</param>
-        public UmbracoPropertyProcessorAttribute(
+        public UmbracoPropertyAttribute(
             string propertyName,
             bool recursive = false,
             object defaultValue = null)
