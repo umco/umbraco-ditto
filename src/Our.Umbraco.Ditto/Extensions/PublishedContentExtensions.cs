@@ -306,7 +306,7 @@ namespace Our.Umbraco.Ditto
             if (virtualProperties == null && nonVirtualProperties == null)
             {
                 var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                     .Where(x => x.CanWrite).ToArray();
+                    .Where(x => x.CanWrite).ToArray();
 
                 // Split out the properties.
                 virtualProperties = properties.Where(p => p.IsVirtualAndOverridable()).ToArray();
@@ -341,8 +341,7 @@ namespace Our.Umbraco.Ditto
                                 () =>
                                 {
                                     // Get the value from Umbraco.
-                                    object propertyValue = GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, processorContexts);
-                                    return GetConvertedValue(content, culture, type, deferredPropertyInfo, propertyValue, localInstance);
+                                    return GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, processorContexts);
                                 }));
                     }
                 }
@@ -376,9 +375,8 @@ namespace Our.Umbraco.Ditto
 
                         // Set the value normally.
                         // ReSharper disable once PossibleMultipleEnumeration
-                        object propertyValue = GetProcessedValue(content, culture, type, propertyInfo, instance, processorContexts);
-                        object value = GetConvertedValue(content, culture, type, propertyInfo, propertyValue, instance);
-
+                        object value = GetProcessedValue(content, culture, type, propertyInfo, instance, processorContexts);
+                        
                         propertyInfo.SetValue(instance, value, null);
                     }
                 }
@@ -434,6 +432,14 @@ namespace Our.Umbraco.Ditto
             processorAttrs = processorAttrs.SelectMany(x => (x is DittoMultiProcessorAttribute) ? ((DittoMultiProcessorAttribute)x).Attributes.ToArray() : new[] { x })
                 .ToList();
 
+            // Add any core processors onto the end
+            processorAttrs.AddRange(new DittoProcessorAttribute[]
+            {
+                new EnumerableConverterAttribute(),
+                new RecursiveDittoAttribute(),
+                new TryConvertAttribute()
+            });
+
             // Time custom value-processor.
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
             {
@@ -468,207 +474,6 @@ namespace Our.Umbraco.Ditto
 
                 return currentValue;
             }
-        }
-
-        /// <summary>
-        /// Set the typed value to the given instance.
-        /// </summary>
-        /// <param name="content">The <see cref="IPublishedContent" /> to convert.</param>
-        /// <param name="culture">The <see cref="CultureInfo" /></param>
-        /// <param name="type">The type.</param>
-        /// <param name="propertyInfo">The <see cref="PropertyInfo" /> property info associated with the type.</param>
-        /// <param name="propertyValue">The property value.</param>
-        /// <param name="instance">The instance to assign the value to.</param>
-        /// <returns>
-        /// The strong typed converted value for the given property.
-        /// </returns>
-        private static object GetConvertedValue(
-            IPublishedContent content,
-            CultureInfo culture,
-            Type type,
-            PropertyInfo propertyInfo,
-            object propertyValue,
-            object instance)
-        {
-            // Process the value.
-            object result = null;
-            var propertyType = propertyInfo.PropertyType;
-            //var typeInfo = propertyType.GetTypeInfo();
-
-            // This should return false against typeof(string) etc also.
-            //var propertyIsEnumerableType = propertyType.IsCastableEnumerableType();
-
-            //// Try any custom type converters first.
-            //// 1: Check the property.
-            //// 2: Check any type arguments in generic enumerable types.
-            //// 3: Check the type itself.
-            //var converterAttribute =
-            //    propertyInfo.GetCustomAttribute<TypeConverterAttribute>()
-            //    ?? (propertyIsEnumerableType ? typeInfo.GenericTypeArguments.First().GetCustomAttribute<TypeConverterAttribute>(true)
-            //                                 : propertyType.GetCustomAttribute<TypeConverterAttribute>(true));
-
-            //if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
-            //{
-            //    // Time custom conversions.
-            //    using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
-            //    {
-            //        // Get the custom converter from the attribute and attempt to convert.
-            //        var converterType = Type.GetType(converterAttribute.ConverterTypeName);
-            //        if (converterType != null)
-            //        {
-            //            var converter = converterType.GetDependencyResolvedInstance() as TypeConverter;
-
-            //            if (converter != null)
-            //            {
-            //                // Create context to pass to converter implementations.
-            //                // This contains the IPublishedContent and the currently converting property descriptor.
-            //                var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-            //                var context = new DittoTypeConverterContext
-            //                {
-            //                    Instance = content,
-            //                    PropertyDescriptor = descriptor
-            //                };
-
-            //                Type propertyValueType = null;
-            //                if (propertyValue != null)
-            //                {
-            //                    propertyValueType = propertyValue.GetType();
-            //                }
-
-            //                // We're deliberately passing null.
-            //                // ReSharper disable once AssignNullToNotNullAttribute
-            //                if (converter.CanConvertFrom(context, propertyValueType))
-            //                {
-            //                    object converted = converter.ConvertFrom(context, culture, propertyValue);
-
-            //                    if (converted != null)
-            //                    {
-            //                        // Handle Typeconverters returning single objects when we want an IEnumerable.
-            //                        // Use case: Someone selects a folder of images rather than a single image with the media picker.
-            //                        var convertedType = converted.GetType();
-
-            //                        if (propertyIsEnumerableType)
-            //                        {
-            //                            var parameterType = typeInfo.GenericTypeArguments.First();
-
-            //                            // Some converters return an IEnumerable so we check again.
-            //                            if (!convertedType.IsEnumerableType())
-            //                            {
-            //                                // Using 'Cast' to convert the type back to IEnumerable<T>.
-            //                                object enumerablePropertyValue = EnumerableInvocations.Cast(
-            //                                    parameterType,
-            //                                    converted.YieldSingleItem());
-
-            //                                result = enumerablePropertyValue;
-            //                            }
-            //                            else
-            //                            {
-            //                                // Nothing is strong typed anymore.
-            //                                result = EnumerableInvocations.Cast(parameterType, (IEnumerable)converted);
-            //                            }
-            //                        }
-            //                        else
-            //                        {
-            //                            // Return single expected items from converters returning an IEnumerable.
-            //                            // Check for key/value pairs and strings.
-            //                            if (convertedType.IsEnumerableType()
-            //                                && !convertedType.IsEnumerableOfKeyValueType()
-            //                                && !(convertedType == typeof(string) && propertyType == typeof(string)))
-            //                            {
-            //                                // Use 'FirstOrDefault' to convert the type back to T.
-            //                                result = EnumerableInvocations.FirstOrDefault(
-            //                                    propertyType,
-            //                                    (IEnumerable)converted);
-            //                            }
-            //                            else
-            //                            {
-            //                                result = converted;
-            //                            }
-            //                        }
-            //                    }
-            //                    else
-            //                    {
-            //                        // Ensure we pass back an empty enumerable if the expected output is an enumerable.
-            //                        // and null has been returned by the type converter.
-            //                        if (propertyIsEnumerableType)
-            //                        {
-            //                            result = EnumerableInvocations.Empty(typeInfo.GenericTypeArguments.First());
-            //                        }
-            //                    }
-            //                }
-            //                else if (propertyType.IsInstanceOfType(propertyValue))
-            //                {
-            //                    // If the TypeConverter's `CanConvertFrom` has returned false,
-            //                    // then we can check if the value is the same type as the target type.
-            //                    result = propertyValue;
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-
-            //TODO: Move this to 
-
-            //if (propertyType == typeof(HtmlString))
-            //{
-            //    // Handle Html strings so we don't have to set the attribute.
-            //    var processorType = typeof(HtmlStringProcessor);
-            //    var processor = processorType.GetDependencyResolvedInstance() as DittoProcessor;
-
-            //    if (processor != null)
-            //    {
-            //        // This contains the IPublishedContent and the currently converting property descriptor.
-            //        var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-            //        var context = new DittoProcessorContext
-            //        {
-            //            Content = content,
-            //            Value = propertyValue,
-            //            PropertyDescriptor = descriptor,
-            //            TargetType = type
-            //        };
-
-            //        // We're deliberately passing null.
-            //        // ReSharper disable once AssignNullToNotNullAttribute
-            //        var processedValue = processor.ProcessValue(context, new DittoProcessorAttribute(typeof(HtmlStringProcessor)), culture);
-            //        if (processedValue is HtmlString)
-            //        {
-            //            result = processedValue;
-            //        }
-            //    }
-            //}
-            //else 
-            if (propertyType.IsInstanceOfType(propertyValue))
-            {
-                // Simple types
-                result = propertyValue;
-            }
-            else if (propertyValue is IPublishedContent && propertyType.IsClass)
-            {
-                // If the property value is an IPublishedContent, then we can use Ditto to map to the target type.
-                result = ((IPublishedContent)propertyValue).As(propertyType);
-            }
-            else if (propertyValue != null
-                && propertyValue.GetType().IsEnumerableOfType(typeof(IPublishedContent))
-                && propertyType.IsEnumerable()
-                && propertyType.GetEnumerableType() != null
-                && propertyType.GetEnumerableType().IsClass)
-            {
-                // If the property value is IEnumerable<IPublishedContent>, then we can use Ditto to map to the target type.
-                result = ((IEnumerable<IPublishedContent>)propertyValue).As(propertyType.GetEnumerableType());
-            }
-            else
-            {
-                using (DittoDisposableTimer.DebugDuration<object>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
-                {
-                    var convert = propertyValue.TryConvertTo(propertyType);
-                    if (convert.Success)
-                    {
-                        result = convert.Result;
-                    }
-                }
-            }
-
-            return result;
         }
 
         /// <summary>

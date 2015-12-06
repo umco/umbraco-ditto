@@ -86,10 +86,13 @@
     <Compile Include="ComponentModel\Attributes\DittoConversionHandlerAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertingAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertedAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\TryConvertAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\RecursiveDittoAttribute.cs" />
     <Compile Include="ComponentModel\Processors\CurrentContentAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoMultiProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\EnumerableConverterAttribute.cs" />
     <Compile Include="ComponentModel\Processors\EnumAttribute.cs" />
     <Compile Include="ComponentModel\Processors\HtmlStringAttribute.cs" />
     <Compile Include="ComponentModel\Processors\UmbracoPickerAttribute.cs" />
