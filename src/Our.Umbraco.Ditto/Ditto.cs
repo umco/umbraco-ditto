@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System.ComponentModel;
+
+namespace Our.Umbraco.Ditto
 {
     /// <summary>
     /// The public facade for non extension method Ditto actions
@@ -37,6 +39,17 @@
             where TProcessorAttributeType : DittoProcessorAttribute
         {
             DittoProcessorRegistry.Instance.RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>(instance);
+        }
+
+        /// <summary>
+        /// Registers a global type converter.
+        /// </summary>
+        /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>
+        /// <typeparam name="TConverterType">The type of the converter.</typeparam>
+        public static void RegisterTypeConverter<TObjectType, TConverterType>()
+            where TConverterType : TypeConverter
+        {
+            TypeDescriptor.AddAttributes(typeof(TObjectType), new TypeConverterAttribute(typeof(TConverterType)));
         }
     }
 }
