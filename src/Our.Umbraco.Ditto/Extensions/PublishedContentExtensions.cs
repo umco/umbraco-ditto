@@ -432,6 +432,7 @@ namespace Our.Umbraco.Ditto
             // Add any core processors onto the end
             processorAttrs.AddRange(new DittoProcessorAttribute[]
             {
+                new HtmlStringAttribute(), 
                 new EnumerableConverterAttribute(),
                 new RecursiveDittoAttribute(),
                 new TryConvertAttribute()

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Web;
+﻿using System.Web;
 using Umbraco.Core.Dynamics;
 using Umbraco.Web.Templates;
 
@@ -18,38 +17,41 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            if (Value.IsNullOrEmptyString())
+            if (typeof(IHtmlString).IsAssignableFrom(Context.PropertyDescriptor.PropertyType))
             {
-                return null;
-            }
-
-            if (Value is string)
-            {
-                var text = Value.ToString();
-
-                if (!string.IsNullOrWhiteSpace(text))
+                if (Value.IsNullOrEmptyString())
                 {
-                    text = text.Replace("\n", "<br/>\n");
+                    return null;
                 }
 
-                return new HtmlString(text);
-            }
-
-            if (Value is HtmlString)
-            {
-                var html = Value.ToString();
-
-                if (!string.IsNullOrWhiteSpace(html))
+                if (Value is string)
                 {
-                    html = TemplateUtilities.ParseInternalLinks(html);
+                    var text = Value.ToString();
+
+                    if (!string.IsNullOrWhiteSpace(text))
+                    {
+                        text = text.Replace("\n", "<br/>\n");
+                    }
+
+                    return new HtmlString(text);
                 }
 
-                return new HtmlString(html);
-            }
+                if (Value is HtmlString)
+                {
+                    var html = Value.ToString();
 
-            if (Value is DynamicXml)
-            {
-                return ((DynamicXml)Value).ToHtml();
+                    if (!string.IsNullOrWhiteSpace(html))
+                    {
+                        html = TemplateUtilities.ParseInternalLinks(html);
+                    }
+
+                    return new HtmlString(html);
+                }
+
+                if (Value is DynamicXml)
+                {
+                    return ((DynamicXml)Value).ToHtml();
+                }
             }
 
             return Value;
