@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace Our.Umbraco.Ditto
 {
@@ -7,6 +8,11 @@ namespace Our.Umbraco.Ditto
     /// </summary>
     public class Ditto
     {
+        /// <summary>
+        /// The ditto processor attribute targets
+        /// </summary>
+        public const AttributeTargets ProcessorAttributeTargets = AttributeTargets.Property | AttributeTargets.Class;
+
         /// <summary>
         /// Registers a global conversion handler.
         /// </summary>

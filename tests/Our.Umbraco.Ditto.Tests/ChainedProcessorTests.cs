@@ -16,6 +16,20 @@
             public string Name { get; set; }
         }
 
+        [UmbracoProperty("Title", Order = 0),
+                AltUmbracoProperty("Name", Order = 1),
+                MyCustomProcessor4(Order = 2),
+                MyCustomProcessor3(Order = 3)]
+        public class MyCustomModel2
+        {
+            public MyCustomModel2(string name)
+            {
+                Name = name;
+            }
+
+            public string Name { get; set; }
+        }
+
         public class MyModel1
         {
             [UmbracoProperty("Title", Order = 0), 
@@ -31,11 +45,24 @@
             public MyCustomModel MyProperty { get; set; }
         }
 
+        public class MyModel3
+        {
+            public MyCustomModel2 MyProperty { get; set; }
+        }
+
         public class MyCustomProcessorAttribute : DittoProcessorAttribute
         {
             public override object ProcessValue()
             {
                 return new MyCustomModel("MyCustomName");
+            }
+        }
+
+        public class MyCustomProcessor4Attribute : DittoProcessorAttribute
+        {
+            public override object ProcessValue()
+            {
+                return new MyCustomModel2("MyCustomName");
             }
         }
 
@@ -95,6 +122,25 @@
 
             Assert.IsNotNull(model.MyProperty);
             Assert.IsInstanceOf<MyCustomModel>(model.MyProperty);
+            Assert.That(model.MyProperty.Name, Is.EqualTo("MyCustomName"));
+        }
+
+        [Test]
+        public void ChainedProcessor_ChainedClassLevelProcessors()
+        {
+            // In this test, the `MyProperty` property gets a `string` value
+            // via the `UmbracoProperty`. The `string` type/value is passed
+            // to the `MyCustomConverter` so to convert the `string` to a
+            // `MyCustomModel` type/object.
+
+            var content = new PublishedContentMock() { Name = "MyName" };
+            var model = content.As<MyModel3>();
+
+            Assert.IsNotNull(model);
+            Assert.IsInstanceOf<MyModel3>(model);
+
+            Assert.IsNotNull(model.MyProperty);
+            Assert.IsInstanceOf<MyCustomModel2>(model.MyProperty);
             Assert.That(model.MyProperty.Name, Is.EqualTo("MyCustomName"));
         }
     }

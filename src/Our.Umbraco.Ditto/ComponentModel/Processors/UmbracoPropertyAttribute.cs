@@ -20,6 +20,14 @@ namespace Our.Umbraco.Ditto
         public string PropertyName { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the alterative property.
+        /// </summary>
+        /// <value>
+        /// The name of the property.
+        /// </value>
+        public string AltPropertyName { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this <see cref="UmbracoPropertyAttribute"/> is recursive.
         /// </summary>
         /// <value>
@@ -45,14 +53,17 @@ namespace Our.Umbraco.Ditto
         /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
-        /// <param name="recursive">if set to <c>true</c> [recursive].</param>
+        /// <param name="altPropertyName">Name of the alternative property.</param>
+        /// <param name="recursive">if set to <c>true</c> recurse.</param>
         /// <param name="defaultValue">The default value.</param>
         public UmbracoPropertyAttribute(
             string propertyName,
+            string altPropertyName = null,
             bool recursive = false,
             object defaultValue = null)
         {
             this.PropertyName = propertyName;
+            this.AltPropertyName = altPropertyName;
             this.Recursive = recursive;
             this.DefaultValue = defaultValue;
         }
@@ -92,9 +103,9 @@ namespace Our.Umbraco.Ditto
             }
 
             var umbracoPropertyName = PropertyName ?? propName;
-            var altUmbracoPropertyName = altPropName;
+            var altUmbracoPropertyName = AltPropertyName ?? altPropName;
 
-            var content = this.Value as IPublishedContent;
+            var content = this.Context.Content;
             if (content == null)
             {
                 return defaultValue;

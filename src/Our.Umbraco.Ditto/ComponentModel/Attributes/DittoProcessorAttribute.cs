@@ -9,7 +9,7 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// The abstract base class for all Ditto processor attributes
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
+    [AttributeUsage(Ditto.ProcessorAttributeTargets)]
     [DittoProcessorMetaData(ValueType = typeof(object), ContextType = typeof(DittoProcessorContext))]
     public abstract class DittoProcessorAttribute : Attribute
     {

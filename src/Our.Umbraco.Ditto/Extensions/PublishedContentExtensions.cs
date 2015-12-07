@@ -413,17 +413,16 @@ namespace Our.Umbraco.Ditto
 
             if (!processorAttrs.Any())
             {
-                // Check for globally registered processors
-                processorAttrs = DittoProcessorRegistry.Instance.GetRegisteredProcessorAttributesFor(propertyInfo.PropertyType)
-                    .OrderBy(x => x.Order)
-                    .ToList();
+                // Default to umbraco property attribute
+                processorAttrs.Add(new UmbracoPropertyAttribute());
             }
 
-            if (!processorAttrs.Any())
-            {
-                // Default to umbraco property attribute
-                processorAttrs = new List<DittoProcessorAttribute>(new []{ new UmbracoPropertyAttribute() });
-            }
+            // Check for type registered processors
+            processorAttrs.AddRange(propertyInfo.PropertyType.GetCustomAttributes<DittoProcessorAttribute>(true)
+                .OrderBy(x => x.Order));
+
+            // Check for globally registered processors
+            processorAttrs.AddRange(DittoProcessorRegistry.Instance.GetRegisteredProcessorAttributesFor(propertyInfo.PropertyType));
 
             // Break apart any multi processor attributes into their constituant processors
             processorAttrs = processorAttrs.SelectMany(x => (x is DittoMultiProcessorAttribute) ? ((DittoMultiProcessorAttribute)x).Attributes.ToArray() : new[] { x })

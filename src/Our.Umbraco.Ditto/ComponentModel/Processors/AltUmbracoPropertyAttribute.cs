@@ -5,7 +5,7 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// The alt Umbraco property processor attribute.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
+    [AttributeUsage(Ditto.ProcessorAttributeTargets, AllowMultiple = true)]
     public class AltUmbracoPropertyAttribute : UmbracoPropertyAttribute
     {
         /// <summary>
@@ -15,7 +15,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="recursive">if set to <c>true</c> [recursive].</param>
         /// <param name="defaultValue">The default value.</param>
         public AltUmbracoPropertyAttribute(string propertyName, bool recursive = false, object defaultValue = null)
-            : base(propertyName, recursive, defaultValue)
+            : base(propertyName, null, recursive, defaultValue)
         { }
 
         /// <summary>
