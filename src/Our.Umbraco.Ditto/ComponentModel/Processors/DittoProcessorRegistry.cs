@@ -74,8 +74,6 @@ namespace Our.Umbraco.Ditto
                     
                 }
 
-                instance.Order = Cache[objType].Count;
-
                 Cache[objType].Add(instance);
             }
         }
