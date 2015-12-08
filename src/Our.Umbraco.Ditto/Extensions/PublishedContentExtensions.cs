@@ -142,7 +142,7 @@
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
         {
-            using (DisposableTimer.DebugDuration<IEnumerable<object>>("IEnumerable As"))
+            using (DittoDisposableTimer.DebugDuration<IEnumerable<object>>("IEnumerable As"))
             {
                 var typedItems = items.Select(x => x.As(type, culture, null, valueResolverContexts, onConverting, onConverted));
 
@@ -197,7 +197,7 @@
                 throw new ArgumentException(string.Format("The instance parameter does not implement Type '{0}'", type.Name), "instance");
             }
 
-            using (DisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias), "Complete"))
+            using (DittoDisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
             {
                 return ConvertContent(content, type, culture, instance, valueResolverContexts, onConverting, onConverted);
             }
@@ -324,7 +324,7 @@
             {
                 foreach (var propertyInfo in virtualProperties)
                 {
-                    using (DisposableTimer.DebugDuration<object>(string.Format("ForEach Virtual Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
+                    using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Virtual Property ({1} {0})", propertyInfo.Name, content.Id)))
                     {
                         // Check for the ignore attribute.
                         var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
@@ -366,7 +366,7 @@
             {
                 foreach (var propertyInfo in nonVirtualProperties)
                 {
-                    using (DisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id), "Complete"))
+                    using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
                     {
                         // Check for the ignore attribute.
                         var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
@@ -426,7 +426,7 @@
             }
 
             // Time custom value-resolver.
-            using (DisposableTimer.DebugDuration<object>(string.Format("Custom ValueResolver ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+            using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueResolver ({0}, {1})", content.Id, propertyInfo.Name)))
             {
                 var resolver = (DittoValueResolver)valueAttr.ResolverType.GetInstance();
 
@@ -459,6 +459,7 @@
                 }
 
                 // Populate internal context properties
+                context.ConversionType = instance.GetType();
                 context.Instance = content;
                 context.PropertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
 
@@ -488,8 +489,8 @@
             var propertyType = propertyInfo.PropertyType;
             var typeInfo = propertyType.GetTypeInfo();
 
-            // This should return false against typeof(string) also.
-            var propertyIsEnumerableType = propertyType.IsEnumerableType() && typeInfo.GenericTypeArguments.Any();
+            // This should return false against typeof(string) etc also.
+            var propertyIsEnumerableType = propertyType.IsCastableEnumerableType();
 
             // Try any custom type converters first.
             // 1: Check the property.
@@ -503,7 +504,7 @@
             if (converterAttribute != null && converterAttribute.ConverterTypeName != null)
             {
                 // Time custom conversions.
-                using (DisposableTimer.DebugDuration<object>(string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
                 {
                     // Get the custom converter from the attribute and attempt to convert.
                     var converterType = Type.GetType(converterAttribute.ConverterTypeName);
@@ -518,6 +519,7 @@
                             var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
                             var context = new DittoTypeConverterContext
                             {
+                                ConversionType = instance.GetType(),
                                 Instance = content,
                                 PropertyDescriptor = descriptor
                             };
@@ -563,8 +565,10 @@
                                     else
                                     {
                                         // Return single expected items from converters returning an IEnumerable.
-                                        // Check for string.
-                                        if (convertedType.IsEnumerableType() && !(convertedType == typeof(string) && propertyType == typeof(string)))
+                                        // Check for key/value pairs and strings.
+                                        if (convertedType.IsEnumerableType()
+                                            && !convertedType.IsEnumerableOfKeyValueType()
+                                            && !(convertedType == typeof(string) && propertyType == typeof(string)))
                                         {
                                             // Use 'FirstOrDefault' to convert the type back to T.
                                             result = EnumerableInvocations.FirstOrDefault(
@@ -597,7 +601,7 @@
                     }
                 }
             }
-            else if (propertyInfo.PropertyType == typeof(HtmlString))
+            else if (propertyType == typeof(HtmlString))
             {
                 // Handle Html strings so we don't have to set the attribute.
                 var converterType = typeof(DittoHtmlStringConverter);
@@ -609,6 +613,7 @@
                     var descriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
                     var context = new DittoTypeConverterContext
                     {
+                        ConversionType = instance.GetType(),
                         Instance = content,
                         PropertyDescriptor = descriptor
                     };
@@ -627,30 +632,30 @@
                     }
                 }
             }
-            else if (propertyInfo.PropertyType.IsInstanceOfType(propertyValue))
+            else if (propertyType.IsInstanceOfType(propertyValue))
             {
                 // Simple types
                 result = propertyValue;
             }
-            else if (propertyValue is IPublishedContent && propertyInfo.PropertyType.IsClass)
+            else if (propertyValue is IPublishedContent && propertyType.IsClass)
             {
                 // If the property value is an IPublishedContent, then we can use Ditto to map to the target type.
-                result = ((IPublishedContent)propertyValue).As(propertyInfo.PropertyType);
+                result = ((IPublishedContent)propertyValue).As(propertyType);
             }
             else if (propertyValue != null
                 && propertyValue.GetType().IsEnumerableOfType(typeof(IPublishedContent))
-                && propertyInfo.PropertyType.IsEnumerable()
-                && propertyInfo.PropertyType.GetEnumerableType() != null
-                && propertyInfo.PropertyType.GetEnumerableType().IsClass)
+                && propertyType.IsEnumerable()
+                && propertyType.GetEnumerableType() != null
+                && propertyType.GetEnumerableType().IsClass)
             {
                 // If the property value is IEnumerable<IPublishedContent>, then we can use Ditto to map to the target type.
-                result = ((IEnumerable<IPublishedContent>)propertyValue).As(propertyInfo.PropertyType.GetEnumerableType());
+                result = ((IEnumerable<IPublishedContent>)propertyValue).As(propertyType.GetEnumerableType());
             }
             else
             {
-                using (DisposableTimer.DebugDuration<object>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name), "Complete"))
+                using (DittoDisposableTimer.DebugDuration<object>(string.Format("TypeConverter ({0}, {1})", content.Id, propertyInfo.Name)))
                 {
-                    var convert = propertyValue.TryConvertTo(propertyInfo.PropertyType);
+                    var convert = propertyValue.TryConvertTo(propertyType);
                     if (convert.Success)
                     {
                         result = convert.Result;

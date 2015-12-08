@@ -1,7 +1,5 @@
 ﻿namespace Our.Umbraco.Ditto.Tests
 {
-    using System;
-
     using NUnit.Framework;
 
     /// <summary>

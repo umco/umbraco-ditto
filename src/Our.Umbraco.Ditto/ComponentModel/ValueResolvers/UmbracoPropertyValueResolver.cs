@@ -25,9 +25,9 @@
             var altPropName = string.Empty;
 
             // Check for umbraco properties attribute on class
-            if (this.Context.PropertyDescriptor != null)
+            if (this.Context.ConversionType != null)
             {
-                var classAttr = this.Context.PropertyDescriptor.ComponentType
+                var classAttr = this.Context.ConversionType
                     .GetCustomAttribute<UmbracoPropertiesAttribute>();
                 if (classAttr != null)
                 {
@@ -76,9 +76,16 @@
                 && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
             {
                 var contentProperty = contentType.GetProperty(altUmbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
-                propertyValue = contentProperty != null
-                    ? contentProperty.GetValue(content, null)
-                    : content.GetPropertyValue(altUmbracoPropertyName, recursive);
+
+                if (contentProperty != null)
+                {
+                    propertyValue = contentProperty.GetValue(content, null);
+                }
+
+                if (propertyValue == null)
+                {
+                    propertyValue = content.GetPropertyValue(altUmbracoPropertyName, recursive);
+                }
             }
 
             // Try setting the default value.

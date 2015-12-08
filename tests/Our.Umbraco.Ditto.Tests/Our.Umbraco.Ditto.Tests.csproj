@@ -219,9 +219,17 @@
     <Compile Include="CustomTypeConverterTests.cs" />
     <Compile Include="ConversionHandlerTests.cs" />
     <Compile Include="CustomValueResolverTests.cs" />
+    <Compile Include="EnumerableDetectionTests.cs" />
     <Compile Include="GlobalValueResolverTests.cs" />
+    <Compile Include="IgnoreAttributeTests.cs" />
+    <Compile Include="ImageCropDataSetMappingTests.cs" />
+    <Compile Include="InheritedClassWithPrefixedPropertyTests.cs" />
+    <Compile Include="JsonSerializationWithTypeConverterTests.cs" />
+    <Compile Include="Models\ImageCropModels.cs" />
     <Compile Include="MultipleConversionHandlerTests.cs" />
+    <Compile Include="PocoConstructorTests.cs" />
     <Compile Include="PrefixedPropertyTests.cs" />
+    <Compile Include="SingularityMappingTests.cs" />
     <Compile Include="ValueResolverContextTests.cs" />
     <Compile Include="CurrentContentTests.cs" />
     <Compile Include="AppSettingsTests.cs" />
