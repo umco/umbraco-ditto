@@ -7,7 +7,7 @@ namespace Our.Umbraco.Ditto
     /// The AppSetting value attribute.
     /// Used for providing additional information about an AppSetting item to aid property value conversion.
     /// </summary>
-    public class AppSettingrAttribute : DittoProcessorAttribute
+    public class AppSettingAttribute : DittoProcessorAttribute
     {
         /// <summary>
         /// Gets or sets the app setting key.
@@ -15,10 +15,10 @@ namespace Our.Umbraco.Ditto
         public string AppSettingKey { get; protected set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AppSettingrAttribute" /> class.
+        /// Initializes a new instance of the <see cref="AppSettingAttribute" /> class.
         /// </summary>
         /// <param name="appSettingKey">The app setting key in the web.config</param>
-        public AppSettingrAttribute(string appSettingKey)
+        public AppSettingAttribute(string appSettingKey)
         {
             this.AppSettingKey = appSettingKey;
         }
