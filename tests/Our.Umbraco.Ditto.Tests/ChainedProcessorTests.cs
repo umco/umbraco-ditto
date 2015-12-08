@@ -16,10 +16,10 @@
             public string Name { get; set; }
         }
 
-        [UmbracoProperty("Title", Order = 0),
-                AltUmbracoProperty("Name", Order = 1),
-                MyCustomProcessor4(Order = 2),
-                MyCustomProcessor3(Order = 3)]
+        [UmbracoProperty("Title", Order = 0)]
+        [AltUmbracoProperty("Name", Order = 1)]
+        [MyCustomProcessor4(Order = 2)]
+        [MyCustomProcessor3(Order = 3)]
         public class MyCustomModel2
         {
             public MyCustomModel2(string name)
@@ -32,12 +32,12 @@
 
         public class MyModel1
         {
-            [UmbracoProperty("Title", Order = 0), 
-                AltUmbracoProperty("Name", Order = 1),
-                MyCustomProcessor2(Order = 2),
-                MyCustomProcessor3(Order = 3)]
+            [UmbracoProperty("Title", Order = 0)]
+            [AltUmbracoProperty("Name", Order = 1)]
+            [MyCustomProcessor2(Order = 2)]
+            [MyCustomProcessor3(Order = 3)]
             public MyCustomModel MyProperty { get; set; }
-        }   
+        }
 
         public class MyModel2
         {
