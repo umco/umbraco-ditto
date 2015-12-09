@@ -478,45 +478,14 @@ namespace Our.Umbraco.Ditto
             object instance,
             Action<DittoConversionHandlerContext> callback = null)
         {
-            // Trigger conversion handlers
-            var conversionCtx = new DittoConversionHandlerContext
-            {
-                Content = content,
-                ModelType = type,
-                Model = instance
-            };
 
-            // Check for class level DittoOnConvertingAttribute
-            foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
-            {
-                ((DittoConversionHandler)attr.HandlerType.GetInstance())
-                    .Run(conversionCtx, DittoConversionHandlerType.OnConverting);
-            }
-
-            // Check for globaly registered handlers
-            foreach (var handlerType in DittoConversionHandlerRegistry.Instance.GetRegisteredHandlerTypesFor(type))
-            {
-                ((DittoConversionHandler)handlerType.GetInstance())
-                    .Run(conversionCtx, DittoConversionHandlerType.OnConverting);
-            }
-
-            // Check for method level DittoOnConvertingAttribute
-            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(x => x.GetCustomAttribute<DittoOnConvertingAttribute>() != null))
-            {
-                var p = method.GetParameters();
-                if (p.Length == 1 && p[0].ParameterType == typeof(DittoConversionHandlerContext))
-                {
-                    method.Invoke(instance, new object[] { conversionCtx });
-                }
-            }
-
-            // Check for a callback function
-            if (callback != null)
-            {
-                callback(conversionCtx);
-            }
-        }
+            OnConvert<DittoOnConvertingAttribute>(
+                DittoConversionHandlerType.OnConverting,
+                content,
+                type,
+                instance,
+                callback);
+		}
 
         /// <summary>
         /// Fires off the various on converted events.
@@ -533,6 +502,31 @@ namespace Our.Umbraco.Ditto
             object instance,
             Action<DittoConversionHandlerContext> callback = null)
         {
+            OnConvert<DittoOnConvertedAttribute>(
+                DittoConversionHandlerType.OnConverted,
+                content,
+                type,
+                instance,
+                callback);
+        }
+
+        /// <summary>
+        /// Convenience method for calling converting/converter handlers.
+        /// </summary>
+        /// <typeparam name="TAttributeType">The type of the attribute type.</typeparam>
+        /// <param name="conversionType">Type of the conversion.</param>
+        /// <param name="content">The content.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="instance">The instance.</param>
+        /// <param name="callback">The callback.</param>
+        private static void OnConvert<TAttributeType>(
+            DittoConversionHandlerType conversionType,
+            IPublishedContent content,
+            Type type,
+            object instance,
+            Action<DittoConversionHandlerContext> callback = null)
+            where TAttributeType : Attribute 
+        {
             // Trigger conversion handlers
             var conversionCtx = new DittoConversionHandlerContext
             {
@@ -545,19 +539,19 @@ namespace Our.Umbraco.Ditto
             foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
             {
                 ((DittoConversionHandler)attr.HandlerType.GetInstance())
-                    .Run(conversionCtx, DittoConversionHandlerType.OnConverted);
+                    .Run(conversionCtx, conversionType);
             }
 
             // Check for globaly registered handlers
             foreach (var handlerType in DittoConversionHandlerRegistry.Instance.GetRegisteredHandlerTypesFor(type))
             {
                 ((DittoConversionHandler)handlerType.GetInstance())
-                    .Run(conversionCtx, DittoConversionHandlerType.OnConverted);
+                    .Run(conversionCtx, conversionType);
             }
 
             // Check for method level DittoOnConvertedAttribute
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(x => x.GetCustomAttribute<DittoOnConvertedAttribute>() != null))
+                .Where(x => x.GetCustomAttribute<TAttributeType>() != null))
             {
                 var p = method.GetParameters();
                 if (p.Length == 1 && p[0].ParameterType == typeof(DittoConversionHandlerContext))
