@@ -1,21 +1,22 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using global::Umbraco.Core.Models;
+﻿using System;
+using Umbraco.Core.Models;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
-    /// The current content value resolver.
+    /// The current content processor attribute.
+    /// Used for providing Ditto with the current <see cref="IPublishedContent"/> object from Umbraco.
     /// </summary>
-    public class CurrentContentAsValueResolver : DittoValueResolver<DittoValueResolverContext, CurrentContentAsAttribute>
+    public class CurrentContentAttribute : DittoProcessorAttribute
     {
         /// <summary>
-        /// Resolves the value.
-        /// Gets the current <see cref="IPublishedContent"/> from Umbraco.
+        /// Processes the value.
         /// </summary>
         /// <returns>
-        /// The <see cref="object"/> representing the raw value.
+        /// The <see cref="object" /> representing the processed value.
         /// </returns>
-        public override object ResolveValue()
+        /// <exception cref="System.NotImplementedException"></exception>
+        public override object ProcessValue()
         {
             // NOTE: [LK] In order to prevent an infinite loop / stack-overflow, we check if the
             // property's type matches the containing model's type, then we throw an exception.
@@ -27,7 +28,7 @@
                         this.Context.PropertyDescriptor.PropertyType.Name));
             }
 
-            return this.Content.As(this.Context.PropertyDescriptor.PropertyType);
+            return Value;
         }
     }
 }

@@ -1,12 +1,7 @@
 ﻿namespace Our.Umbraco.Ditto.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;
-    using global::Umbraco.Core;
-    using global::Umbraco.Web.Media.EmbedProviders.Settings;
 
     [TestFixture]
     public class GlobalValueResolverTests
@@ -28,27 +23,19 @@
             public int Value { get; set; }
         }
 
-        public class MyIntValueResolverAttr : DittoValueResolverAttribute
+        public class MyIntProcessorAttr : DittoProcessorAttribute
         {
-            public MyIntValueResolverAttr()
-                : base(typeof(MyIntValueResolver))
-            {
-            }
-
             public int AttrProp { get; set; }
-        }
 
-        public class MyIntValueResolver : DittoValueResolver<DittoValueResolverContext, MyIntValueResolverAttr>
-        {
-            public override object ResolveValue()
+            public override object ProcessValue()
             {
-                return new MyIntModel { Value = Attribute.AttrProp };
+                return new MyIntModel { Value = AttrProp };
             }
         }
 
-        public class MyStrValueResolver : DittoValueResolver
+        public class MyStrProcessorAttribute : DittoProcessorAttribute
         {
-            public override object ResolveValue()
+            public override object ProcessValue()
             {
                 return new MyStringModel { Value = "Test" };
             }
@@ -57,8 +44,9 @@
         [Test]
         public void Global_Value_Converter_Resolves()
         {
-            Ditto.RegisterValueResolver<MyStringModel, MyStrValueResolver>();
-            Ditto.RegisterValueResolverAttribute<MyIntModel, MyIntValueResolverAttr>(new MyIntValueResolverAttr { AttrProp = 5 });
+            Ditto.RegisterProcessorAttribute<MyStringModel, MyStrProcessorAttribute>();
+            Ditto.RegisterProcessorAttribute<MyIntModel, MyIntProcessorAttr>(new MyIntProcessorAttr { AttrProp = 2 });
+            Ditto.RegisterProcessorAttribute<MyIntModel, MyIntProcessorAttr>(new MyIntProcessorAttr { AttrProp = 5 });
 
             var content = new PublishedContentMock();
 

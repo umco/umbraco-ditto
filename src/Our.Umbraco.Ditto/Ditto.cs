@@ -1,12 +1,18 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// The public facade for non extension method Ditto actions
     /// </summary>
     public class Ditto
     {
+        /// <summary>
+        /// The ditto processor attribute targets
+        /// </summary>
+        public const AttributeTargets ProcessorAttributeTargets = AttributeTargets.Property | AttributeTargets.Class;
+
         /// <summary>
         /// Registers a global conversion handler.
         /// </summary>
@@ -19,37 +25,26 @@
         }
 
         /// <summary>
-        /// Registers a global value resolver.
+        /// Registers a global value resolver attribute.
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>
-        /// <typeparam name="TResolverType">The type of the value resolver.</typeparam>
-        public static void RegisterValueResolver<TObjectType, TResolverType>()
-            where TResolverType : DittoValueResolver
+        /// <typeparam name="TProcessorAttributeType">The type of the processor attribute type.</typeparam>
+        public static void RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>()
+            where TProcessorAttributeType : DittoProcessorAttribute, new()
         {
-            DittoValueResolverRegistry.Instance.RegisterResolver<TObjectType, TResolverType>();
+            DittoProcessorRegistry.Instance.RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>();
         }
 
         /// <summary>
         /// Registers a global value resolver attribute.
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>
-        /// <typeparam name="TResolverAttributeType">The type of the value resolver attribute.</typeparam>
-        public static void RegisterValueResolverAttribute<TObjectType, TResolverAttributeType>()
-            where TResolverAttributeType : DittoValueResolverAttribute, new()
-        {
-            DittoValueResolverRegistry.Instance.RegisterResolverAttribute<TObjectType, TResolverAttributeType>();
-        }
-
-        /// <summary>
-        /// Registers a global value resolver attribute.
-        /// </summary>
-        /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>
-        /// <typeparam name="TResolverAttributeType">The type of the value resolver attribute.</typeparam>
+        /// <typeparam name="TProcessorAttributeType">The type of the processor attribute type.</typeparam>
         /// <param name="instance">An instance of the value resolver attribute to use.</param>
-        public static void RegisterValueResolverAttribute<TObjectType, TResolverAttributeType>(TResolverAttributeType instance)
-            where TResolverAttributeType : DittoValueResolverAttribute
+        public static void RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>(TProcessorAttributeType instance)
+            where TProcessorAttributeType : DittoProcessorAttribute
         {
-            DittoValueResolverRegistry.Instance.RegisterResolverAttribute<TObjectType, TResolverAttributeType>(instance);
+            DittoProcessorRegistry.Instance.RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>(instance);
         }
 
         /// <summary>

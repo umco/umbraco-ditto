@@ -1,8 +1,8 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using global::Umbraco.Core.Models;
+﻿using System;
+using Umbraco.Core.Models;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Provides context for conversion events.
     /// </summary>

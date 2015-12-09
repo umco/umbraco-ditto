@@ -1,32 +1,31 @@
-﻿namespace Our.Umbraco.Ditto.Tests
+﻿using System;
+
+namespace Our.Umbraco.Ditto.Tests
 {
-    using System.Collections.Generic;
-    using System.Globalization;
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;
-    using global::Umbraco.Core;
-    using global::Umbraco.Web.Media.EmbedProviders.Settings;
 
     [TestFixture]
-    public class ValueResolverContextTests
+    public class ProcessorContextTests
     {
         public class MyValueResolverModel
         {
-            [DittoValueResolver(typeof(MyValueResolver))]
+            [MyProcessor]
             public string MyProperty { get; set; }
         }
 
-        public class MyValueResolver : DittoValueResolver<MyValueResolverContext>
+        [DittoProcessorMetaData(ContextType = typeof(MyProcessorContext))]
+        public class MyProcessorAttribute : DittoProcessorAttribute
         {
-            public override object ResolveValue()
+            public override object ProcessValue()
             {
-                return Context.MyContextProperty;
+                return ((MyProcessorContext)Context).MyContextProperty;
             }
         }
 
-        public class MyValueResolverContext : DittoValueResolverContext
+        public class MyProcessorContext : DittoProcessorContext
         {
-            public MyValueResolverContext()
+            public MyProcessorContext()
             {
                 MyContextProperty = "Default value";
             }
@@ -38,12 +37,12 @@
         public void ValueResolverContext_Resolves()
         {
             var content = new PublishedContentMock();
-            var context = new MyValueResolverContext
+            var context = new MyProcessorContext
             {
                 MyContextProperty = "Test"
             };
 
-            var model = content.As<MyValueResolverModel>(valueResolverContexts: new[] { context });
+            var model = content.As<MyValueResolverModel>(processorContexts: new[] { context });
 
             Assert.That(model.MyProperty, Is.EqualTo("Test"));
         }

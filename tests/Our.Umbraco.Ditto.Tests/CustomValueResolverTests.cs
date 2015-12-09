@@ -1,27 +1,31 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
+using Umbraco.Core.Models;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
-    public class CustomValueResolverTests
+    public class CustomProcessorTests
     {
         public class MyModel
         {
-            [DittoValueResolver(typeof(MyCustomValueResolver))]
+            [MyCustomProcessor]
             public string Name { get; set; }
         }
 
-        public class MyCustomValueResolver : DittoValueResolver
+        public class MyCustomProcessor : DittoProcessorAttribute
         {
-            public override object ResolveValue()
+            public override object ProcessValue()
             {
-                return (Content != null) ? Content.Name + " Test" : null;
+                var content = Value as IPublishedContent;
+                if (content == null) return null;
+
+                return content.Name + " Test";
             }
         }
 
         [Test]
-        public void Custom_ValueResolver_Resolves()
+        public void Custom_Processor_Processes()
         {
             var content = new PublishedContentMock()
             {

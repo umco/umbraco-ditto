@@ -1,20 +1,13 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
+﻿using System;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// The Umbraco properties attribute.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class UmbracoPropertiesAttribute : Attribute
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPropertiesAttribute"/> class.
-        /// </summary>
-        public UmbracoPropertiesAttribute()
-        {
-        }
-
         /// <summary>
         /// Gets or sets the prefix.
         /// </summary>

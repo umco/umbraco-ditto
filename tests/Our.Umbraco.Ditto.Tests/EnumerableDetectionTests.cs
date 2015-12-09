@@ -13,18 +13,17 @@
     {
         public class MyModel
         {
-            [TypeConverter(typeof(MyConverter))]
+            [MyProcessor]
             public Dictionary<string, string> MyProperty { get; set; }
+
+            public string EnumerableToSingle { get; set; }
+
+            public IEnumerable<string> SingleToEnumerable { get; set; } 
         }
 
-        public class MyConverter : TypeConverter
+        public class MyProcessorAttribute : DittoProcessorAttribute
         {
-            public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-            {
-                return true;
-            }
-
-            public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+            public override object ProcessValue()
             {
                 return new Dictionary<string, string>
                 {
@@ -37,15 +36,15 @@
         [Test]
         public void GenericDictionaryPropertyIsNotDetectedAsCastableEnumerable()
         {
-            var property = new PublishedContentPropertyMock
-            {
-                Alias = "myProperty",
-                Value = "myValue"
-            };
-
             var content = new PublishedContentMock
             {
-                Properties = new[] { property }
+                Properties = new[] { 
+                    new PublishedContentPropertyMock
+                    {
+                        Alias = "myProperty",
+                        Value = "myValue"
+                    }
+                }
             };
 
             var result = content.As<MyModel>();
@@ -53,6 +52,35 @@
             Assert.NotNull(result.MyProperty);
             Assert.True(result.MyProperty.Any());
             Assert.AreEqual(result.MyProperty["hello"], "world");
+        }
+
+        [Test]
+        public void EnumerablesCast()
+        {
+            var content = new PublishedContentMock
+            {
+                Properties = new[] { 
+                    new PublishedContentPropertyMock
+                    {
+                        Alias = "enumerableToSingle",
+                        Value = new[]{"myVal", "myOtherVal"}
+                    },
+                    new PublishedContentPropertyMock
+                    {
+                        Alias = "singleToEnumerable",
+                        Value = "myVal"
+                    }
+                }
+            };
+
+            var result = content.As<MyModel>();
+
+            Assert.NotNull(result.EnumerableToSingle);
+            Assert.AreEqual(result.EnumerableToSingle, "myVal");
+
+            Assert.NotNull(result.SingleToEnumerable);
+            Assert.IsTrue(result.SingleToEnumerable.Any());
+            Assert.AreEqual(result.SingleToEnumerable.First(), "myVal");
         }
     }
 }

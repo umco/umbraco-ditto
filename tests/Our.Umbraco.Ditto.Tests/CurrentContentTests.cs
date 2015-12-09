@@ -9,7 +9,7 @@
     {
         public class MyModel
         {
-            [CurrentContentAs]
+            [CurrentContent]
             public MyMetaDataModel MetaData1 { get; set; }
 
             public MyMetaDataModel MetaData2 { get; set; }
@@ -26,7 +26,7 @@
 
         public class MyCircularReferenceModel
         {
-            [CurrentContentAs]
+            [CurrentContent]
             public MyCircularReferenceModel MyCircularReferenceProperty { get; set; }
         }
 
