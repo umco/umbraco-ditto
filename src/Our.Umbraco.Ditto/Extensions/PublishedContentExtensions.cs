@@ -440,20 +440,27 @@ namespace Our.Umbraco.Ditto
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
             {
                 object currentValue = content;
-                var processorContextsList = processorContexts != null ? processorContexts.ToList() : new List<DittoProcessorContext>();
+
                 var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+
+                var processorContextsDict = processorContexts != null
+                    ? processorContexts
+                        .GroupBy(x => x.GetType())
+                        .Select(x => PopulateContext(x.First(), type, content, propertyDescriptor, culture))
+                        .ToDictionary(x => x.GetType(), x => x) 
+                    : new Dictionary<Type, DittoProcessorContext>();
 
                 foreach (var processorAttr in processorAttrs)
                 {
-                    // Create new context
-                    var context = processorContextsList.FirstOrDefault(x => x.GetType() == processorAttr.ContextType)
-                        ?? (DittoProcessorContext)processorAttr.ContextType.GetInstance();
+                    // Ensure the context type exists, and if not, create one and cache it
+                    if (!processorContextsDict.ContainsKey(processorAttr.ContextType))
+                    {
+                        var ctx = (DittoProcessorContext)processorAttr.ContextType.GetInstance();
+                        processorContextsDict.Add(processorAttr.ContextType, PopulateContext(ctx, type, content, propertyDescriptor, culture));
+                    }
 
-                    // Populate internal context properties
-                    context.TargetType = type;
-                    context.Content = content;
-                    context.PropertyDescriptor = propertyDescriptor;
-                    context.Culture = culture;
+                    // Get the right context type
+                    var context = processorContextsDict[processorAttr.ContextType];
 
                     // Process value
                     currentValue = processorAttr.ProcessValue(currentValue, context);
@@ -565,6 +572,29 @@ namespace Our.Umbraco.Ditto
             {
                 callback(conversionCtx);
             }
+        }
+
+        /// <summary>
+        /// Helper to populate the internal context members within a linq statement.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="content">The content.</param>
+        /// <param name="propertyDescriptor">The property descriptor.</param>
+        /// <param name="culture">The culture.</param>
+        /// <returns></returns>
+        private static DittoProcessorContext PopulateContext(DittoProcessorContext context,
+            Type type,
+            IPublishedContent content,
+            PropertyDescriptor propertyDescriptor,
+            CultureInfo culture)
+        {
+            context.TargetType = type;
+            context.Content = content;
+            context.PropertyDescriptor = propertyDescriptor;
+            context.Culture = culture;
+
+            return context;
         }
     }
 }
