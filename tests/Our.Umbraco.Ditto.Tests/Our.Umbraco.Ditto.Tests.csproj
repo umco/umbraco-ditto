@@ -225,6 +225,7 @@
     <Compile Include="GlobalValueResolverTests.cs" />
     <Compile Include="IgnoreAttributeTests.cs" />
     <Compile Include="ImageCropDataSetMappingTests.cs" />
+    <Compile Include="InheritedClassWithPrefixedPropertyTests.cs" />
     <Compile Include="JsonSerializationWithTypeConverterTests.cs" />
     <Compile Include="MockProcessorTests.cs" />
     <Compile Include="Models\ImageCropModels.cs" />

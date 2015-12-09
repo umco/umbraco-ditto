@@ -85,9 +85,9 @@ namespace Our.Umbraco.Ditto
             var altPropName = string.Empty;
 
             // Check for umbraco properties attribute on class
-            if (this.Context.PropertyDescriptor != null)
+            if (this.Context.ConversionType != null)
             {
-                var classAttr = this.Context.PropertyDescriptor.ComponentType
+                var classAttr = this.Context.ConversionType
                     .GetCustomAttribute<UmbracoPropertiesAttribute>();
                 if (classAttr != null)
                 {
