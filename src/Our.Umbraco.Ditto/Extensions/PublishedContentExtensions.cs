@@ -443,9 +443,9 @@ namespace Our.Umbraco.Ditto
 
                 var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
 
-                var processorContextsDict = processorContexts != null
+                var processorContextsLookup = processorContexts != null
                     ? processorContexts
-                        .GroupBy(x => x.GetType())
+                        .GroupBy(x => x.GetType()) // Ensure distinct types
                         .Select(x => PopulateContext(x.First(), type, content, propertyDescriptor, culture))
                         .ToDictionary(x => x.GetType(), x => x) 
                     : new Dictionary<Type, DittoProcessorContext>();
@@ -453,14 +453,14 @@ namespace Our.Umbraco.Ditto
                 foreach (var processorAttr in processorAttrs)
                 {
                     // Ensure the context type exists, and if not, create one and cache it
-                    if (!processorContextsDict.ContainsKey(processorAttr.ContextType))
+                    if (!processorContextsLookup.ContainsKey(processorAttr.ContextType))
                     {
                         var ctx = (DittoProcessorContext)processorAttr.ContextType.GetInstance();
-                        processorContextsDict.Add(processorAttr.ContextType, PopulateContext(ctx, type, content, propertyDescriptor, culture));
+                        processorContextsLookup.Add(processorAttr.ContextType, PopulateContext(ctx, type, content, propertyDescriptor, culture));
                     }
 
                     // Get the right context type
-                    var context = processorContextsDict[processorAttr.ContextType];
+                    var context = processorContextsLookup[processorAttr.ContextType];
 
                     // Process value
                     currentValue = processorAttr.ProcessValue(currentValue, context);
