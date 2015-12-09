@@ -86,7 +86,7 @@
     <Compile Include="ComponentModel\Attributes\DittoConversionHandlerAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertingAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertedAttribute.cs" />
-    <Compile Include="ComponentModel\Processors\TryConvertAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\TryConvertToAttribute.cs" />
     <Compile Include="ComponentModel\Processors\RecursiveDittoAttribute.cs" />
     <Compile Include="ComponentModel\Processors\CurrentContentAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoIgnoreAttribute.cs" />

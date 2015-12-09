@@ -5,7 +5,7 @@ using Umbraco.Core.Models;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// An enumerable ditto processor
+    /// A recursive Ditto processor
     /// </summary>
     internal class RecursiveDittoAttribute : DittoProcessorAttribute
     {

@@ -3,7 +3,7 @@
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// The alt Umbraco property processor attribute.
+    /// The alternative Umbraco property processor attribute.
     /// </summary>
     [AttributeUsage(Ditto.ProcessorAttributeTargets, AllowMultiple = true)]
     public class AltUmbracoPropertyAttribute : UmbracoPropertyAttribute
@@ -16,7 +16,8 @@ namespace Our.Umbraco.Ditto
         /// <param name="defaultValue">The default value.</param>
         public AltUmbracoPropertyAttribute(string propertyName, bool recursive = false, object defaultValue = null)
             : base(propertyName, null, recursive, defaultValue)
-        { }
+        {
+        }
 
         /// <summary>
         /// Processes the value.

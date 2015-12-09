@@ -65,11 +65,10 @@ namespace Our.Umbraco.Ditto
                 if (!string.IsNullOrWhiteSpace(s))
                 {
                     int n;
-                    var nodeIds = s
-                        .ToDelimitedList()
-                        .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
-                        .Where(x => x > 0)
-                        .ToArray();
+                    var nodeIds = s.ToDelimitedList()
+                            .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
+                            .Where(x => x > 0)
+                            .ToArray();
 
                     if (nodeIds.Any())
                     {

@@ -20,7 +20,7 @@ namespace Our.Umbraco.Ditto
         public string PropertyName { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the alterative property.
+        /// Gets or sets the name of the alternative property.
         /// </summary>
         /// <value>
         /// The name of the property.
@@ -47,7 +47,8 @@ namespace Our.Umbraco.Ditto
         /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.
         /// </summary>
         public UmbracoPropertyAttribute()
-        { }
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.

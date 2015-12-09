@@ -28,7 +28,8 @@ namespace Our.Umbraco.Ditto
         /// Prevents a default instance of the <see cref="DittoProcessorRegistry"/> class from being created.
         /// </summary>
         private DittoProcessorRegistry()
-        { }
+        {
+        }
 
         /// <summary>
         /// Gets the singleton instance.
@@ -71,7 +72,6 @@ namespace Our.Umbraco.Ditto
                 if (!Cache.ContainsKey(objType))
                 {
                     Cache.Add(objType, new List<DittoProcessorAttribute>());
-                    
                 }
 
                 Cache[objType].Add(instance);

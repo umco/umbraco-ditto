@@ -337,7 +337,6 @@ namespace Our.Umbraco.Ditto
                             new Lazy<object>(
                                 () =>
                                 {
-                                    // Get the value from Umbraco.
                                     return GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, processorContexts);
                                 }));
                     }
@@ -373,7 +372,7 @@ namespace Our.Umbraco.Ditto
                         // Set the value normally.
                         // ReSharper disable once PossibleMultipleEnumeration
                         object value = GetProcessedValue(content, culture, type, propertyInfo, instance, processorContexts);
-                        
+
                         propertyInfo.SetValue(instance, value, null);
                     }
                 }
@@ -413,7 +412,7 @@ namespace Our.Umbraco.Ditto
 
             if (!processorAttrs.Any())
             {
-                // Default to umbraco property attribute
+                // Default to Umbraco property attribute
                 processorAttrs.Add(new UmbracoPropertyAttribute());
             }
 
@@ -431,18 +430,18 @@ namespace Our.Umbraco.Ditto
             // Add any core processors onto the end
             processorAttrs.AddRange(new DittoProcessorAttribute[]
             {
-                new HtmlStringAttribute(), 
+                new HtmlStringAttribute(),
                 new EnumerableConverterAttribute(),
                 new RecursiveDittoAttribute(),
-                new TryConvertAttribute()
+                new TryConvertToAttribute()
             });
 
             // Time custom value-processor.
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
             {
                 object currentValue = content;
-                var processorContextsList = processorContexts != null? processorContexts.ToList() : new List<DittoProcessorContext>();
-                var propDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                var processorContextsList = processorContexts != null ? processorContexts.ToList() : new List<DittoProcessorContext>();
+                var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
 
                 foreach (var processorAttr in processorAttrs)
                 {
@@ -453,7 +452,7 @@ namespace Our.Umbraco.Ditto
                     // Populate internal context properties
                     context.TargetType = type;
                     context.Content = content;
-                    context.PropertyDescriptor = propDescriptor;
+                    context.PropertyDescriptor = propertyDescriptor;
                     context.Culture = culture;
 
                     // Process value
@@ -487,7 +486,7 @@ namespace Our.Umbraco.Ditto
                 Model = instance
             };
 
-            // Check for class level DittoOnConvertedAttributes
+            // Check for class level DittoOnConvertingAttribute
             foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
             {
                 ((DittoConversionHandler)attr.HandlerType.GetInstance())
@@ -501,7 +500,7 @@ namespace Our.Umbraco.Ditto
                     .Run(conversionCtx, DittoConversionHandlerType.OnConverting);
             }
 
-            // Check for method level DittoOnConvertedAttributes
+            // Check for method level DittoOnConvertingAttribute
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(x => x.GetCustomAttribute<DittoOnConvertingAttribute>() != null))
             {
@@ -542,7 +541,7 @@ namespace Our.Umbraco.Ditto
                 Model = instance
             };
 
-            // Check for class level DittoOnConvertedAttributes
+            // Check for class level DittoOnConvertedAttribute
             foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
             {
                 ((DittoConversionHandler)attr.HandlerType.GetInstance())
@@ -556,7 +555,7 @@ namespace Our.Umbraco.Ditto
                     .Run(conversionCtx, DittoConversionHandlerType.OnConverted);
             }
 
-            // Check for method level DittoOnConvertedAttributes
+            // Check for method level DittoOnConvertedAttribute
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(x => x.GetCustomAttribute<DittoOnConvertedAttribute>() != null))
             {

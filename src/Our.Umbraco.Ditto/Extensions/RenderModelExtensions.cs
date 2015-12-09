@@ -1,9 +1,9 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using System.Collections.Generic;
-    using global::Umbraco.Web.Models;
+﻿using System;
+using System.Collections.Generic;
+using Umbraco.Web.Models;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Encapsulates extension methods for <see cref="RenderModel"/>.
     /// </summary>
@@ -37,7 +37,7 @@
             Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
         {
-            if (model == null)
+            if (model == null || model.Content == null)
             {
                 return default(T);
             }

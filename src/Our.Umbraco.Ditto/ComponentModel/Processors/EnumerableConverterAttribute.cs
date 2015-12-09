@@ -5,7 +5,7 @@ using System.Linq;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// An enumerable ditto processor that converts values to/from enumerables based 
+    /// An enumerable Ditto processor that converts values to/from enumerables based 
     /// upon the properties target type
     /// NB: It won't try to cast the inner values, just convert the enumerables so this
     /// should ideally already have occured
@@ -29,7 +29,7 @@ namespace Our.Umbraco.Ditto
 
             if (Value != null)
             {
-                var valueIsEnumerableType = Value.GetType().IsEnumerableType() 
+                var valueIsEnumerableType = Value.GetType().IsEnumerableType()
                     && !Value.GetType().IsEnumerableOfKeyValueType()
                     && !(Value is string);
 

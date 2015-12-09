@@ -10,7 +10,7 @@ using Umbraco.Web.Security;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// A picker processor for handling the various types of umbaco pickers
+    /// A picker processor for handling the various types of Umbraco pickers
     /// </summary>
     public class UmbracoPickerAttribute : DittoProcessorAttribute
     {
@@ -65,8 +65,8 @@ namespace Our.Umbraco.Ditto
                 {
                     int n;
                     nodeIds = ((IEnumerable<string>)Value)
-                                  .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
-                                  .ToArray();
+                                .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
+                                .ToArray();
                 }
 
                 if (type.IsEnumerableOfType(typeof(int)))
@@ -84,11 +84,10 @@ namespace Our.Umbraco.Ditto
                     int n;
                     nodeIds = XmlHelper.CouldItBeXml(s)
                     ? s.GetXmlIds()
-                    : s
-                    .ToDelimitedList()
-                    .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
-                    .Where(x => x > 0)
-                    .ToArray();
+                    : s.ToDelimitedList()
+                        .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
+                        .Where(x => x > 0)
+                        .ToArray();
                 }
             }
 
@@ -104,8 +103,8 @@ namespace Our.Umbraco.Ditto
                 foreach (var nodeId in nodeIds)
                 {
                     var item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, umbracoContext.ContentCache.GetById)
-                         ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, umbracoContext.MediaCache.GetById)
-                         ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, membershipHelper.GetById);
+                            ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, umbracoContext.MediaCache.GetById)
+                            ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, membershipHelper.GetById);
 
                     if (item != null)
                     {
