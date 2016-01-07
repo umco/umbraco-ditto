@@ -424,7 +424,23 @@ namespace Our.Umbraco.Ditto
             processorAttrs.AddRange(DittoProcessorRegistry.Instance.GetRegisteredProcessorAttributesFor(propertyInfo.PropertyType));
 
             // Break apart any multi processor attributes into their constituant processors
-            processorAttrs = processorAttrs.SelectMany(x => (x is DittoMultiProcessorAttribute) ? ((DittoMultiProcessorAttribute)x).Attributes.ToArray() : new[] { x })
+            processorAttrs = processorAttrs.SelectMany(
+                x => {
+                    var multiAttr = x as DittoMultiProcessorAttribute;
+                    if (multiAttr != null)
+                    {
+                        var attrs = multiAttr.Attributes.ToArray();
+                        foreach (var attr in attrs)
+                        {
+                            // Copy caching properties (ignore cache key builde type as it's likely too specific?)
+                            attr.CacheBy = multiAttr.CacheBy;
+                            attr.CacheDuration = multiAttr.CacheDuration;
+                        }
+                        return attrs;
+                    }
+
+                    return new[] { x };
+                })
                 .ToList();
 
             // Add any core processors onto the end

@@ -86,6 +86,8 @@
     <Compile Include="ComponentModel\Attributes\DittoConversionHandlerAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertingAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertedAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\DittoProcessorCacheBy.cs" />
+    <Compile Include="ComponentModel\Processors\DittoProcessorCacheKeyBuilder.cs" />
     <Compile Include="ComponentModel\Processors\TryConvertToAttribute.cs" />
     <Compile Include="ComponentModel\Processors\RecursiveDittoAttribute.cs" />
     <Compile Include="ComponentModel\Processors\CurrentContentAttribute.cs" />

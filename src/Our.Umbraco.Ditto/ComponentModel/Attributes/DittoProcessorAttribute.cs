@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Web.Caching;
 using Umbraco.Core;
 using Umbraco.Web;
 using Umbraco.Web.Security;
@@ -54,6 +55,30 @@ namespace Our.Umbraco.Ditto
         public int Order { get; set; }
 
         /// <summary>
+        /// Gets or sets the type of the cache key builder.
+        /// </summary>
+        /// <value>
+        /// The type of the cache key builder.
+        /// </value>
+        public Type CacheKeyBuilderType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the properties to cache by.
+        /// </summary>
+        /// <value>
+        /// The cache by property flags.
+        /// </value>
+        public DittoProcessorCacheBy CacheBy { get; set; }
+
+        /// <summary>
+        /// Gets or sets the duration of the cache.
+        /// </summary>
+        /// <value>
+        /// The duration of the cache.
+        /// </value>
+        public int CacheDuration { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DittoProcessorAttribute"/> class.
         /// </summary>
         protected DittoProcessorAttribute()
@@ -66,6 +91,9 @@ namespace Our.Umbraco.Ditto
 
             ValueType = metaData.ValueType;
             ContextType = metaData.ContextType;
+
+            CacheBy = DittoProcessorCacheBy.ContentId | DittoProcessorCacheBy.PropertyName | DittoProcessorCacheBy.Culture;
+            CacheDuration = 0;
         }
 
         /// <summary>
@@ -105,6 +133,49 @@ namespace Our.Umbraco.Ditto
 
             Value = value;
             Context = context;
+
+            if (CacheDuration > 0)
+            {
+                var cacheKey = "Ditto_DittoProcessorAttribute_ProcessValue";
+
+                if (CacheKeyBuilderType != null)
+                {
+                    if (!typeof(DittoProcessorCacheKeyBuilder).IsAssignableFrom(CacheKeyBuilderType))
+                    {
+                        throw new ApplicationException("Expected a cache key builder of type " + typeof(DittoProcessorCacheKeyBuilder) + " but got " + CacheKeyBuilderType);
+                    }
+
+                    var builder = (DittoProcessorCacheKeyBuilder)this.CacheKeyBuilderType.GetInstance();
+                    if (builder != null)
+                    {
+                        cacheKey += builder.BuildCacheKey(this);
+                    }
+                }
+                else
+                {
+                    if ((CacheBy & DittoProcessorCacheBy.ContentId) == DittoProcessorCacheBy.ContentId)
+                    {
+                        cacheKey += "_" + context.Content.Id;
+                    }
+                    if ((CacheBy & DittoProcessorCacheBy.PropertyName) == DittoProcessorCacheBy.PropertyName)
+                    {
+                        cacheKey += "_" + context.PropertyDescriptor.Name;
+                    }
+                    if ((CacheBy & DittoProcessorCacheBy.TargetType) == DittoProcessorCacheBy.TargetType)
+                    {
+                        cacheKey += "_" + context.TargetType.AssemblyQualifiedName;
+                    }
+                    if ((CacheBy & DittoProcessorCacheBy.Culture) == DittoProcessorCacheBy.Culture)
+                    {
+                        cacheKey += "_" + context.Culture.LCID;
+                    }
+                }
+
+                return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(cacheKey, 
+                    this.ProcessValue, 
+                    priority:CacheItemPriority.NotRemovable, 
+                    timeout: new TimeSpan(0,0,0, CacheDuration));
+            }
 
             return this.ProcessValue();
         }
