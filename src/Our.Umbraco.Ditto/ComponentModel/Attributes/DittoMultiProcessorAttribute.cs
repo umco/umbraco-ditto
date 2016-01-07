@@ -7,6 +7,7 @@ namespace Our.Umbraco.Ditto
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
+    [DittoProcessorMetaData(ValueType = typeof(object), ContextType = typeof(DittoMultiProcessorContext))]
     public abstract class DittoMultiProcessorAttribute : DittoProcessorAttribute
     {
         /// <summary>
@@ -34,9 +35,19 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            // We don't actually implement anything here, it all happens in the 
-            // published content extension method, so we'll just return null here
-            return null;
+            var ctx = (DittoMultiProcessorContext)Context;
+
+            foreach (var processorAttr in Attributes)
+            {
+                // Get the right context type
+                var newCtx = ctx.ContextCache.GetOrCreateContext(processorAttr.ContextType);
+
+                // Process value
+                Value = processorAttr.ProcessValue(Value, newCtx);
+            }
+
+            return Value;
         }
     }
+    
 }
