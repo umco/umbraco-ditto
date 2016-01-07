@@ -92,7 +92,7 @@ namespace Our.Umbraco.Ditto
             ValueType = metaData.ValueType;
             ContextType = metaData.ContextType;
 
-            CacheBy = DittoProcessorCacheBy.ContentId | DittoProcessorCacheBy.PropertyName | DittoProcessorCacheBy.Culture;
+            CacheBy = Ditto.DefaultProcessorCacheBy;
             CacheDuration = 0;
         }
 
@@ -173,7 +173,7 @@ namespace Our.Umbraco.Ditto
 
                 return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(cacheKey, 
                     this.ProcessValue, 
-                    priority:CacheItemPriority.NotRemovable, 
+                    priority: CacheItemPriority.NotRemovable, 
                     timeout: new TimeSpan(0,0,0, CacheDuration));
             }
 
