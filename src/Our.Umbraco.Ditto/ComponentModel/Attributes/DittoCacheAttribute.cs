@@ -5,8 +5,7 @@ using Umbraco.Core;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// The Ditto ignore property attribute.
-    /// Used for specifying that Ditto should ignore this property during conversion.
+    /// Represents cache configuration data in order to tell Ditto how to cache this property/class
     /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false)]
     public class DittoCacheAttribute : Attribute
