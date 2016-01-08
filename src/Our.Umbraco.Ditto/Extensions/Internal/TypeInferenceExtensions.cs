@@ -1,10 +1,10 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using global::Umbraco.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using global::Umbraco.Core;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Extensions methods for <see cref="T:System.Type"/> for inferring type properties.
     /// Most of this code was adapted from the Entity Framework

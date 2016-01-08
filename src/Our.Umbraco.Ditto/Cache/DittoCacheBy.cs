@@ -3,10 +3,10 @@
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// 
+    /// The built in properties to cache by
     /// </summary>
     [Flags]
-    public enum DittoProcessorCacheBy
+    public enum DittoCacheBy
     {
         /// <summary>
         /// The content identifier
@@ -15,18 +15,24 @@ namespace Our.Umbraco.Ditto
         ContentId = 1,
 
         /// <summary>
+        /// The content version
+        /// </summary>
+        /// 
+        ContentVersion = 2,
+
+        /// <summary>
         /// The property name
         /// </summary>
-        PropertyName = 2,
+        PropertyName = 4,
 
         /// <summary>
         /// The target type
         /// </summary>
-        TargetType = 4,
+        TargetType = 8,
 
         /// <summary>
         /// The culture
         /// </summary>
-        Culture = 8
+        Culture = 16
     }
 }

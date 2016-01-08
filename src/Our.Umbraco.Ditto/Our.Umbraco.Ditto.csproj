@@ -81,15 +81,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache\DittoCacheContext.cs" />
+    <Compile Include="ComponentModel\Attributes\DittoCacheAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoProcessorMetaDataAttribute.cs" />
     <Compile Include="ComponentModel\Processors\AppSettingAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoConversionHandlerAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertingAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertedAttribute.cs" />
-    <Compile Include="ComponentModel\Processors\DittoProcessorCacheBy.cs" />
-    <Compile Include="ComponentModel\Processors\DittoProcessorCacheKeyBuilder.cs" />
-    <Compile Include="ComponentModel\Processors\DittoMultiProcessorContext.cs" />
-    <Compile Include="ComponentModel\Processors\DittoProcessorContextCache.cs" />
+    <Compile Include="Cache\DittoCacheBy.cs" />
+    <Compile Include="Cache\DittoDefaultCacheKeyBuilder.cs" />
+    <Compile Include="Cache\DittoCacheKeyBuilder.cs" />
+    <Compile Include="ComponentModel\Processors\Contexts\DittoMultiProcessorContext.cs" />
+    <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContextCache.cs" />
     <Compile Include="ComponentModel\Processors\TryConvertToAttribute.cs" />
     <Compile Include="ComponentModel\Processors\RecursiveDittoAttribute.cs" />
     <Compile Include="ComponentModel\Processors\CurrentContentAttribute.cs" />
@@ -111,7 +114,7 @@
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandlerContext.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandler.cs" />
     <Compile Include="ComponentModel\Processors\DittoProcessorRegistry.cs" />
-    <Compile Include="ComponentModel\Processors\DittoProcessorContext.cs" />
+    <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContext.cs" />
     <Compile Include="ComponentModel\Processors\UltimatePickerAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -119,6 +122,8 @@
     <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
     <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Internal\PropertyInfoExtensions.cs" />
+    <Compile Include="Extensions\Internal\MemberInfoExtensions.cs" />
+    <Compile Include="Extensions\Internal\TypeExtensions.cs" />
     <Compile Include="Extensions\Internal\StringExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInferenceExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />

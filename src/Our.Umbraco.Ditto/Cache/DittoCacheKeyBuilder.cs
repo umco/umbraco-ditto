@@ -3,13 +3,13 @@
     /// <summary>
     /// 
     /// </summary>
-    public abstract class DittoProcessorCacheKeyBuilder
+    public abstract class DittoCacheKeyBuilder
     {
         /// <summary>
         /// Builds the cache key.
         /// </summary>
-        /// <param name="attribute">The attribute.</param>
+        /// <param name="context">The context.</param>
         /// <returns></returns>
-        public abstract string BuildCacheKey(DittoProcessorAttribute attribute);
+        public abstract string BuildCacheKey(DittoCacheContext context);
     }
 }

@@ -16,7 +16,7 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// The default processor cache by flags
         /// </summary>
-        public static DittoProcessorCacheBy DefaultProcessorCacheBy = DittoProcessorCacheBy.ContentId | DittoProcessorCacheBy.PropertyName | DittoProcessorCacheBy.Culture;
+        public static DittoCacheBy DefaultCacheBy = DittoCacheBy.ContentId | DittoCacheBy.ContentVersion | DittoCacheBy.PropertyName | DittoCacheBy.Culture;
 
         /// <summary>
         /// Registers a global conversion handler.

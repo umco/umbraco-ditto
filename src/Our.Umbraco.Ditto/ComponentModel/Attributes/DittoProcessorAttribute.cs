@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Web.Caching;
 using Umbraco.Core;
 using Umbraco.Web;
 using Umbraco.Web.Security;
@@ -12,7 +11,7 @@ namespace Our.Umbraco.Ditto
     /// </summary>
     [AttributeUsage(Ditto.ProcessorAttributeTargets)]
     [DittoProcessorMetaData(ValueType = typeof(object), ContextType = typeof(DittoProcessorContext))]
-    public abstract class DittoProcessorAttribute : Attribute
+    public abstract class DittoProcessorAttribute : DittoCacheAttribute
     {
         /// <summary>
         /// Gets or sets the context.
@@ -55,30 +54,6 @@ namespace Our.Umbraco.Ditto
         public int Order { get; set; }
 
         /// <summary>
-        /// Gets or sets the type of the cache key builder.
-        /// </summary>
-        /// <value>
-        /// The type of the cache key builder.
-        /// </value>
-        public Type CacheKeyBuilderType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the properties to cache by.
-        /// </summary>
-        /// <value>
-        /// The cache by property flags.
-        /// </value>
-        public DittoProcessorCacheBy CacheBy { get; set; }
-
-        /// <summary>
-        /// Gets or sets the duration of the cache.
-        /// </summary>
-        /// <value>
-        /// The duration of the cache.
-        /// </value>
-        public int CacheDuration { get; set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DittoProcessorAttribute"/> class.
         /// </summary>
         protected DittoProcessorAttribute()
@@ -91,9 +66,6 @@ namespace Our.Umbraco.Ditto
 
             ValueType = metaData.ValueType;
             ContextType = metaData.ContextType;
-
-            CacheBy = Ditto.DefaultProcessorCacheBy;
-            CacheDuration = 0;
         }
 
         /// <summary>
@@ -134,25 +106,8 @@ namespace Our.Umbraco.Ditto
             Value = value;
             Context = context;
 
-            if (CacheDuration > 0)
-            {
-                var cacheKeyBuilderType = CacheKeyBuilderType ?? typeof(DittoDefaultProcessorCacheKeyBuilder);
-
-                if (!typeof(DittoProcessorCacheKeyBuilder).IsAssignableFrom(cacheKeyBuilderType))
-                {
-                    throw new ApplicationException("Expected a cache key builder of type " + typeof(DittoProcessorCacheKeyBuilder) + " but got " + CacheKeyBuilderType);
-                }
-
-                var builder = (DittoProcessorCacheKeyBuilder)cacheKeyBuilderType.GetInstance();
-                var cacheKey = builder.BuildCacheKey(this);
-
-                return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(cacheKey, 
-                    this.ProcessValue, 
-                    priority: CacheItemPriority.NotRemovable, 
-                    timeout: new TimeSpan(0,0,0, CacheDuration));
-            }
-
-            return this.ProcessValue();
+            var ctx = new DittoCacheContext (context.Content, context.TargetType, context.PropertyDescriptor, context.Culture);
+            return this.GetCacheItem(ctx, this.ProcessValue);
         }
 
         /// <summary>

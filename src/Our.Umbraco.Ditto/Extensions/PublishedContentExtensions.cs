@@ -195,7 +195,16 @@ namespace Our.Umbraco.Ditto
 
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
             {
-                return ConvertContent(content, type, culture, instance, processorContexts, onConverting, onConverted);
+                var cacheAttr = type.GetCustomAttributeExact<DittoCacheAttribute>(true);
+                if (cacheAttr != null)
+                {
+                    var ctx = new DittoCacheContext (content, type, culture);
+                    return cacheAttr.GetCacheItem(ctx, () => ConvertContent(content, type, culture, instance, processorContexts, onConverting, onConverted));
+                }
+                else
+                {
+                    return ConvertContent(content, type, culture, instance, processorContexts, onConverting, onConverted);
+                }
             }
         }
 
@@ -400,6 +409,44 @@ namespace Our.Umbraco.Ditto
             object instance,
             IEnumerable<DittoProcessorContext> processorContexts = null)
         {
+            // Time custom value-processor.
+            using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
+            {
+                // Get the target property description
+                var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+
+                // Check for cache attribute
+                var cacheAttribute = propertyInfo.GetCustomAttributeExact<DittoCacheAttribute>(true);
+                if (cacheAttribute != null)
+                {
+                    var ctx = new DittoCacheContext(content, targetType, propertyDescriptor, culture);
+                    return cacheAttribute.GetCacheItem(ctx, () => DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, processorContexts));
+                }
+                else
+                {
+                    return DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, processorContexts);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the processed value for the given type and property.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <param name="culture">The culture.</param>
+        /// <param name="targetType">Type of the target.</param>
+        /// <param name="propertyInfo">The property information.</param>
+        /// <param name="propertyDescriptor">The property descriptor.</param>
+        /// <param name="processorContexts">The processor contexts.</param>
+        /// <returns></returns>
+        private static object DoGetProcessedValue(
+            IPublishedContent content,
+            CultureInfo culture,
+            Type targetType,
+            PropertyInfo propertyInfo,
+            PropertyDescriptor propertyDescriptor,
+            IEnumerable<DittoProcessorContext> processorContexts = null)
+        {
             // Check the property for any explicit processor attributes
             var processorAttrs = propertyInfo.GetCustomAttributes<DittoProcessorAttribute>(true)
                 .OrderBy(x => x.Order)
@@ -412,7 +459,7 @@ namespace Our.Umbraco.Ditto
             }
 
             // Check for type registered processors
-            processorAttrs.AddRange(propertyInfo.PropertyType.GetCustomAttributes<DittoProcessorAttribute>(true)
+            processorAttrs.AddRange(CustomAttributeExtensions.GetCustomAttributes<DittoProcessorAttribute>(propertyInfo.PropertyType, true)
                 .OrderBy(x => x.Order));
 
             // Check for globally registered processors
@@ -427,36 +474,29 @@ namespace Our.Umbraco.Ditto
                 new TryConvertToAttribute()
             });
 
-            // Time custom value-processor.
-            using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
+            // Create holder for value as it's processed
+            object currentValue = content;
+
+            // Create a processor context cache
+            var processorContextsCache = new DittoProcessorContextCache(content, targetType, propertyDescriptor, culture);
+
+            // Add a multi processor context by default
+            processorContextsCache.AddContext(new DittoMultiProcessorContext { ContextCache = processorContextsCache });
+
+            // Add the passed in contexts
+            processorContextsCache.AddContexts(processorContexts);
+
+            // Process attributes
+            foreach (var processorAttr in processorAttrs)
             {
-                // Create holder for value as it's processed
-                object currentValue = content;
+                // Get the right context type
+                var ctx = processorContextsCache.GetOrCreateContext(processorAttr.ContextType);
 
-                // Get the target property description
-                var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-
-                // Create a processor context cache
-                var processorContextsCache = new DittoProcessorContextCache(content, targetType, propertyDescriptor, culture);
-
-                // Add a multi processor context by default
-                processorContextsCache.AddContext(new DittoMultiProcessorContext { ContextCache = processorContextsCache });
-
-                // Add the passed in contexts
-                processorContextsCache.AddContexts(processorContexts);
-
-                // Process attributes
-                foreach (var processorAttr in processorAttrs)
-                {
-                    // Get the right context type
-                    var ctx = processorContextsCache.GetOrCreateContext(processorAttr.ContextType);
-
-                    // Process value
-                    currentValue = processorAttr.ProcessValue(currentValue, ctx);
-                }
-
-                return currentValue;
+                // Process value
+                currentValue = processorAttr.ProcessValue(currentValue, ctx);
             }
+
+            return currentValue;
         }
 
         /// <summary>
