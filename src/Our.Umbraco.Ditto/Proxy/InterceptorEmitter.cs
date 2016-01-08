@@ -1,9 +1,9 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using System.Reflection;
-    using System.Reflection.Emit;
+﻿using System;
+using System.Reflection;
+using System.Reflection.Emit;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Emits the <see cref="IProxy"/> <see cref="IInterceptor"/> property on the dynamic proxy class.
     /// </summary>

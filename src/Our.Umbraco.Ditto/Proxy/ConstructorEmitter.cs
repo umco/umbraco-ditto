@@ -1,10 +1,10 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using System.Linq;
-    using System.Reflection;
-    using System.Reflection.Emit;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Provides methods for emitting constructors in proxy classes.
     /// </summary>

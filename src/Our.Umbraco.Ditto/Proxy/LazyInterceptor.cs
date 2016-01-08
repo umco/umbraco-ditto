@@ -1,9 +1,9 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Intercepts virtual properties in classes replacing them with lazily implemented versions.
     /// </summary>

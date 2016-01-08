@@ -1,15 +1,15 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Threading;
+
+using global::Umbraco.Core.Models;
+
+namespace Our.Umbraco.Ditto
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Reflection.Emit;
-    using System.Threading;
-
-    using global::Umbraco.Core.Models;
-
     /// <summary>
     /// The proxy factory for creating instances of proxy classes.
     /// </summary>

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using Umbraco.Core;
-using Umbraco.Core.Models;
 using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto

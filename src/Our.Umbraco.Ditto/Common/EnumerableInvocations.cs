@@ -1,14 +1,14 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Provides ways to return methods from <see cref="Enumerable"/> without knowing the type at runtime.
     /// Once a method is invoked for a given type then it is cached so that subsequent calls do not require
