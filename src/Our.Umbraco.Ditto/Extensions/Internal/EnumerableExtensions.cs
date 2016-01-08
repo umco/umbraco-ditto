@@ -1,7 +1,7 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Extensions methods for <see cref="T:System.Collections.Generic.IEnumerable{T}"/>.
     /// </summary>

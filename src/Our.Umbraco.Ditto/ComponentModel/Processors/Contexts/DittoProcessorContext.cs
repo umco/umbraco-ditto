@@ -41,5 +41,27 @@ namespace Our.Umbraco.Ditto
         /// The culture.
         /// </value>
         public CultureInfo Culture { get; internal set; }
+
+        /// <summary>
+        /// Populates the core context fields.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <param name="targetType">Type of the target.</param>
+        /// <param name="propertyDescriptor">The property descriptor.</param>
+        /// <param name="culture">The culture.</param>
+        /// <returns></returns>
+        internal DittoProcessorContext Populate(
+            IPublishedContent content, 
+            Type targetType,
+            PropertyDescriptor propertyDescriptor,
+            CultureInfo culture)
+        {
+            Content = content;
+            TargetType = targetType;
+            PropertyDescriptor = propertyDescriptor;
+            Culture = culture;
+
+            return this;
+        }
     }
 }

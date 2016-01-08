@@ -14,6 +14,11 @@ namespace Our.Umbraco.Ditto
         public const AttributeTargets ProcessorAttributeTargets = AttributeTargets.Property | AttributeTargets.Class;
 
         /// <summary>
+        /// The default processor cache by flags
+        /// </summary>
+        public static DittoCacheBy DefaultCacheBy = DittoCacheBy.ContentId | DittoCacheBy.ContentVersion | DittoCacheBy.PropertyName | DittoCacheBy.Culture;
+
+        /// <summary>
         /// Registers a global conversion handler.
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>

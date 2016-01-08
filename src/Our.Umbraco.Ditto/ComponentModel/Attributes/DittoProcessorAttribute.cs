@@ -11,7 +11,7 @@ namespace Our.Umbraco.Ditto
     /// </summary>
     [AttributeUsage(Ditto.ProcessorAttributeTargets)]
     [DittoProcessorMetaData(ValueType = typeof(object), ContextType = typeof(DittoProcessorContext))]
-    public abstract class DittoProcessorAttribute : Attribute
+    public abstract class DittoProcessorAttribute : DittoCacheAttribute
     {
         /// <summary>
         /// Gets or sets the context.
@@ -106,7 +106,8 @@ namespace Our.Umbraco.Ditto
             Value = value;
             Context = context;
 
-            return this.ProcessValue();
+            var ctx = new DittoCacheContext (context.Content, context.TargetType, context.PropertyDescriptor, context.Culture);
+            return this.GetCacheItem(ctx, this.ProcessValue);
         }
 
         /// <summary>
