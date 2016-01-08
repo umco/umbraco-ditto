@@ -136,40 +136,15 @@ namespace Our.Umbraco.Ditto
 
             if (CacheDuration > 0)
             {
-                var cacheKey = "Ditto_DittoProcessorAttribute_ProcessValue";
+                var cacheKeyBuilderType = CacheKeyBuilderType ?? typeof(DittoDefaultProcessorCacheKeyBuilder);
 
-                if (CacheKeyBuilderType != null)
+                if (!typeof(DittoProcessorCacheKeyBuilder).IsAssignableFrom(cacheKeyBuilderType))
                 {
-                    if (!typeof(DittoProcessorCacheKeyBuilder).IsAssignableFrom(CacheKeyBuilderType))
-                    {
-                        throw new ApplicationException("Expected a cache key builder of type " + typeof(DittoProcessorCacheKeyBuilder) + " but got " + CacheKeyBuilderType);
-                    }
+                    throw new ApplicationException("Expected a cache key builder of type " + typeof(DittoProcessorCacheKeyBuilder) + " but got " + CacheKeyBuilderType);
+                }
 
-                    var builder = (DittoProcessorCacheKeyBuilder)this.CacheKeyBuilderType.GetInstance();
-                    if (builder != null)
-                    {
-                        cacheKey += builder.BuildCacheKey(this);
-                    }
-                }
-                else
-                {
-                    if ((CacheBy & DittoProcessorCacheBy.ContentId) == DittoProcessorCacheBy.ContentId)
-                    {
-                        cacheKey += "_" + context.Content.Id;
-                    }
-                    if ((CacheBy & DittoProcessorCacheBy.PropertyName) == DittoProcessorCacheBy.PropertyName)
-                    {
-                        cacheKey += "_" + context.PropertyDescriptor.Name;
-                    }
-                    if ((CacheBy & DittoProcessorCacheBy.TargetType) == DittoProcessorCacheBy.TargetType)
-                    {
-                        cacheKey += "_" + context.TargetType.AssemblyQualifiedName;
-                    }
-                    if ((CacheBy & DittoProcessorCacheBy.Culture) == DittoProcessorCacheBy.Culture)
-                    {
-                        cacheKey += "_" + context.Culture.LCID;
-                    }
-                }
+                var builder = (DittoProcessorCacheKeyBuilder)cacheKeyBuilderType.GetInstance();
+                var cacheKey = builder.BuildCacheKey(this);
 
                 return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(cacheKey, 
                     this.ProcessValue, 
