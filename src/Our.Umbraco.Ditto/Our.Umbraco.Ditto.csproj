@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cache\DittoCacheContext.cs" />
+    <Compile Include="ComponentModel\Attributes\DittoCacheableAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoCacheAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoProcessorMetaDataAttribute.cs" />
     <Compile Include="ComponentModel\Processors\AppSettingAttribute.cs" />
@@ -122,8 +123,6 @@
     <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
     <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Internal\PropertyInfoExtensions.cs" />
-    <Compile Include="Extensions\Internal\MemberInfoExtensions.cs" />
-    <Compile Include="Extensions\Internal\TypeExtensions.cs" />
     <Compile Include="Extensions\Internal\StringExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInferenceExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />

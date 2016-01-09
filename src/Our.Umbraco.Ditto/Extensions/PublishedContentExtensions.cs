@@ -195,10 +195,10 @@ namespace Our.Umbraco.Ditto
 
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
             {
-                var cacheAttr = type.GetCustomAttributeExact<DittoCacheAttribute>(true);
+                var cacheAttr = type.GetCustomAttribute<DittoCacheAttribute>(true);
                 if (cacheAttr != null)
                 {
-                    var ctx = new DittoCacheContext (content, type, culture);
+                    var ctx = new DittoCacheContext(cacheAttr, content, type, culture);
                     return cacheAttr.GetCacheItem(ctx, () => ConvertContent(content, type, culture, instance, processorContexts, onConverting, onConverted));
                 }
                 else
@@ -416,11 +416,11 @@ namespace Our.Umbraco.Ditto
                 var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
 
                 // Check for cache attribute
-                var cacheAttribute = propertyInfo.GetCustomAttributeExact<DittoCacheAttribute>(true);
-                if (cacheAttribute != null)
+                var cacheAttr = propertyInfo.GetCustomAttribute<DittoCacheAttribute>(true);
+                if (cacheAttr != null)
                 {
-                    var ctx = new DittoCacheContext(content, targetType, propertyDescriptor, culture);
-                    return cacheAttribute.GetCacheItem(ctx, () => DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, processorContexts));
+                    var ctx = new DittoCacheContext(cacheAttr, content, targetType, propertyDescriptor, culture);
+                    return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, processorContexts));
                 }
                 else
                 {

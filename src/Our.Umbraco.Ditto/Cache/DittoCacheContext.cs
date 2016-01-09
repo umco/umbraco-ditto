@@ -52,32 +52,37 @@ namespace Our.Umbraco.Ditto
         /// <value>
         /// The attribute.
         /// </value>
-        public DittoCacheAttribute Attribute { get; internal set; }
+        public DittoCacheableAttribute Attribute { get; internal set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoCacheContext"/> class.
         /// </summary>
+        /// <param name="attribute">The attribute.</param>
         /// <param name="content">The content.</param>
         /// <param name="targetType">Type of the target.</param>
         /// <param name="culture">The culture.</param>
-        internal DittoCacheContext(IPublishedContent content,
+        internal DittoCacheContext(DittoCacheableAttribute attribute,
+            IPublishedContent content,
             Type targetType,
             CultureInfo culture)
-            : this(content, targetType, null, culture)
+            : this(attribute, content, targetType, null, culture)
         { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoCacheContext"/> class.
         /// </summary>
+        /// <param name="attribute">The attribute.</param>
         /// <param name="content">The content.</param>
         /// <param name="targetType">Type of the target.</param>
-        /// <param name="culture">The culture.</param>
         /// <param name="propertyDescriptor">The property descriptor.</param>
-        internal DittoCacheContext(IPublishedContent content,
+        /// <param name="culture">The culture.</param>
+        internal DittoCacheContext(DittoCacheableAttribute attribute, 
+            IPublishedContent content,
             Type targetType,
             PropertyDescriptor propertyDescriptor,
             CultureInfo culture)
         {
+            Attribute = attribute;
             Content = content;
             TargetType = targetType;
             Culture = culture;
