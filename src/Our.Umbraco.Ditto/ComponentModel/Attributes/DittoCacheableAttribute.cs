@@ -5,7 +5,7 @@ using Umbraco.Core;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// 
+    /// Represents a ditto attribute capable of caching
     /// </summary>
     public abstract class DittoCacheableAttribute : Attribute
     {
@@ -71,7 +71,7 @@ namespace Our.Umbraco.Ditto
             // Get and cache the result
             return (TOuputType)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(cacheKey,
                 () => reresher(),
-                priority: CacheItemPriority.NotRemovable,
+                priority: CacheItemPriority.NotRemovable, // Same as Umbraco macros
                 timeout: new TimeSpan(0, 0, 0, CacheDuration));
         }
     }
