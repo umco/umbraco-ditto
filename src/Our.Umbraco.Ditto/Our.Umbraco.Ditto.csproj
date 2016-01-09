@@ -82,7 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cache\DittoCacheContext.cs" />
+    <Compile Include="ComponentModel\Caching\DittoCacheContext.cs" />
     <Compile Include="ComponentModel\Attributes\DittoCacheableAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoCacheAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoProcessorMetaDataAttribute.cs" />
@@ -90,9 +90,9 @@
     <Compile Include="ComponentModel\Attributes\DittoConversionHandlerAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertingAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertedAttribute.cs" />
-    <Compile Include="Cache\DittoCacheBy.cs" />
-    <Compile Include="Cache\DittoDefaultCacheKeyBuilder.cs" />
-    <Compile Include="Cache\DittoCacheKeyBuilder.cs" />
+    <Compile Include="ComponentModel\Caching\DittoCacheBy.cs" />
+    <Compile Include="ComponentModel\Caching\DittoDefaultCacheKeyBuilder.cs" />
+    <Compile Include="ComponentModel\Caching\DittoCacheKeyBuilder.cs" />
     <Compile Include="ComponentModel\Processors\Contexts\DittoMultiProcessorContext.cs" />
     <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContextCache.cs" />
     <Compile Include="ComponentModel\Processors\TryConvertToAttribute.cs" />
