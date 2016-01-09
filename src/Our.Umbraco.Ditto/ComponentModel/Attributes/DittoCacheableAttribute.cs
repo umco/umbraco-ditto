@@ -64,9 +64,6 @@ namespace Our.Umbraco.Ditto
                 throw new ApplicationException("Expected a cache key builder of type " + typeof(DittoCacheKeyBuilder) + " but got " + CacheKeyBuilderType);
             }
 
-            // Store a reference to self in the context
-            cacheContext.Attribute = this;
-
             // Construct the cache key builder
             var builder = (DittoCacheKeyBuilder)cacheKeyBuilderType.GetInstance();
             var cacheKey = builder.BuildCacheKey(cacheContext);
