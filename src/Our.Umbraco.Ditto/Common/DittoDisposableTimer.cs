@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web;
 using global::Umbraco.Core;
 
 namespace Our.Umbraco.Ditto
@@ -12,7 +11,7 @@ namespace Our.Umbraco.Ditto
 
         public static new DisposableTimer DebugDuration<T>(string startMessage)
         {
-            if (HttpContext.Current != null && HttpContext.Current.IsDebuggingEnabled)
+            if (Ditto.IsDebuggingEnabled)
             {
                 return DisposableTimer.DebugDuration<T>(startMessage);
             }
