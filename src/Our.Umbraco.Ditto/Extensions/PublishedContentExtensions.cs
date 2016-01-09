@@ -183,16 +183,33 @@ namespace Our.Umbraco.Ditto
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
         {
+            // Ensure content
             if (content == null)
             {
                 return null;
             }
 
+            // Ensure instance is of target type
             if (instance != null && !type.IsInstanceOfType(instance))
             {
                 throw new ArgumentException(string.Format("The instance parameter does not implement Type '{0}'", type.Name), "instance");
             }
 
+            // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
+            if (culture == null)
+            {
+                if (UmbracoContext.Current != null && UmbracoContext.Current.PublishedContentRequest != null)
+                {
+                    culture = UmbracoContext.Current.PublishedContentRequest.Culture;
+                }
+                else
+                {
+                    // Fallback
+                    culture = CultureInfo.CurrentCulture;
+                }
+            }
+
+            // Convert
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
             {
                 var cacheAttr = type.GetCustomAttribute<DittoCacheAttribute>(true);
@@ -247,20 +264,6 @@ namespace Our.Umbraco.Ditto
             Action<DittoConversionHandlerContext> onConverting = null,
             Action<DittoConversionHandlerContext> onConverted = null)
         {
-            // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
-            if (culture == null)
-            {
-                if (UmbracoContext.Current != null && UmbracoContext.Current.PublishedContentRequest != null)
-                {
-                    culture = UmbracoContext.Current.PublishedContentRequest.Culture;
-                }
-                else
-                {
-                    // Fallback
-                    culture = CultureInfo.CurrentCulture;
-                }
-            }
-
             // Get the default constructor, parameters and create an instance of the type.
             // Try and return from the cache first. TryGetValue is faster than GetOrAdd.
             ParameterInfo[] constructorParams;
