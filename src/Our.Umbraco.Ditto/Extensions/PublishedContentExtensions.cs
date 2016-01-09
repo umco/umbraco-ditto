@@ -459,7 +459,7 @@ namespace Our.Umbraco.Ditto
             }
 
             // Check for type registered processors
-            processorAttrs.AddRange(CustomAttributeExtensions.GetCustomAttributes<DittoProcessorAttribute>(propertyInfo.PropertyType, true)
+            processorAttrs.AddRange(propertyInfo.PropertyType.GetCustomAttributes<DittoProcessorAttribute>(true)
                 .OrderBy(x => x.Order));
 
             // Check for globally registered processors
