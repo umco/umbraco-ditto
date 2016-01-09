@@ -1,13 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Web;
-using System.Web.Routing;
-using Moq;
-using Umbraco.Core;
+﻿using Umbraco.Core;
 using Umbraco.Core.Cache;
-using Umbraco.Web;
-using Umbraco.Web.Routing;
-using Umbraco.Web.Security;
 
 namespace Our.Umbraco.Ditto.Tests
 {
@@ -54,6 +46,7 @@ namespace Our.Umbraco.Ditto.Tests
                 new NullCacheProvider());
 
             var appCtx = new ApplicationContext(cacheHelper);
+
             ApplicationContext.EnsureContext(appCtx, true);
 
             var prop1 = new PublishedContentPropertyMock
