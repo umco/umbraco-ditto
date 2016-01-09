@@ -9,36 +9,29 @@ namespace Our.Umbraco.Ditto.Tests
     [TestFixture]
     public class CacheTests
     {
-        public class MyValueResolverModel
+        public class MyValueResolverModel1
         {
-            [UmbracoProperty(CacheDuration = 10)]
+            [UmbracoProperty(CacheDuration = 5)]
             public string MyProperty1 { get; set; }
 
-            //[MyProcessor(CacheDuration = 30)]
+            [DittoCache(CacheDuration = 5)]
             public string MyProperty2 { get; set; }
+
+            public string MyProperty3 { get; set; }
         }
 
-        [DittoProcessorMetaData(ContextType = typeof(MyProcessorContext))]
-        public class MyProcessorAttribute : DittoProcessorAttribute
+        [DittoCache(CacheDuration = 5)]
+        public class MyValueResolverModel2
         {
-            public override object ProcessValue()
-            {
-                return ((MyProcessorContext)Context).MyContextProperty;
-            }
-        }
+            public string MyProperty1 { get; set; }
 
-        public class MyProcessorContext : DittoProcessorContext
-        {
-            public MyProcessorContext()
-            {
-                MyContextProperty = "Default value";
-            }
+            public string MyProperty2 { get; set; }
 
-            public string MyContextProperty { get; set; }
+            public string MyProperty3 { get; set; }
         }
 
         [Test]
-        public void ProcessorCache_Caches()
+        public void Cache_Caches()
         {
             var cacheHelper = new CacheHelper(
                 new ObjectCacheRuntimeCacheProvider(),
@@ -49,27 +42,41 @@ namespace Our.Umbraco.Ditto.Tests
 
             ApplicationContext.EnsureContext(appCtx, true);
 
-            var prop1 = new PublishedContentPropertyMock
-            {
-                Alias = "myProperty1",
-                Value = "Test1"
-            };
+            var prop1 = new PublishedContentPropertyMock { Alias = "myProperty1", Value = "Test1" };
+            var prop2 = new PublishedContentPropertyMock { Alias = "myProperty2", Value = "Test1" };
+            var prop3 = new PublishedContentPropertyMock { Alias = "myProperty3", Value = "Test1" };
 
             var content = new PublishedContentMock
             {
                 Id = 1,
-                Properties = new[] { prop1 }
+                Properties = new[] { prop1, prop2, prop3 }
             };
 
-            var model = content.As<MyValueResolverModel>();
+            var model1 = content.As<MyValueResolverModel1>();
+            var model2 = content.As<MyValueResolverModel2>();
 
-            Assert.That(model.MyProperty1, Is.EqualTo("Test1"));
+            Assert.That(model1.MyProperty1, Is.EqualTo("Test1"));
+            Assert.That(model1.MyProperty2, Is.EqualTo("Test1"));
+            Assert.That(model1.MyProperty3, Is.EqualTo("Test1"));
+
+            Assert.That(model2.MyProperty1, Is.EqualTo("Test1"));
+            Assert.That(model2.MyProperty2, Is.EqualTo("Test1"));
+            Assert.That(model2.MyProperty3, Is.EqualTo("Test1"));
 
             prop1.Value = "Test2";
+            prop2.Value = "Test2";
+            prop3.Value = "Test2";
 
-            model = content.As<MyValueResolverModel>();
+            model1 = content.As<MyValueResolverModel1>();
+            model2 = content.As<MyValueResolverModel2>();
 
-            Assert.That(model.MyProperty1, Is.EqualTo("Test1"));
+            Assert.That(model1.MyProperty1, Is.EqualTo("Test1"));
+            Assert.That(model1.MyProperty2, Is.EqualTo("Test1"));
+            Assert.That(model1.MyProperty3, Is.EqualTo("Test2")); // This one doesn't cache
+
+            Assert.That(model2.MyProperty1, Is.EqualTo("Test1"));
+            Assert.That(model2.MyProperty2, Is.EqualTo("Test1"));
+            Assert.That(model2.MyProperty3, Is.EqualTo("Test1"));
         }
     }
 }
