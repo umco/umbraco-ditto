@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web;
 using System.Web.Caching;
 using Umbraco.Core;
 
