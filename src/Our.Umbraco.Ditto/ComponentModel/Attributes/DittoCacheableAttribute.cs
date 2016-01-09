@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using System.Web.Caching;
 using Umbraco.Core;
 
@@ -53,7 +54,7 @@ namespace Our.Umbraco.Ditto
         internal TOuputType GetCacheItem<TOuputType>(DittoCacheContext cacheContext, Func<TOuputType> reresher) 
         {
             // If no cache duration set, just run the refresher
-            if (CacheDuration == 0) return reresher();
+            if (CacheDuration == 0 || Ditto.IsDebuggingEnabled) return reresher();
 
             // Get the cache key builder type
             var cacheKeyBuilderType = CacheKeyBuilderType ?? typeof(DittoDefaultCacheKeyBuilder);
