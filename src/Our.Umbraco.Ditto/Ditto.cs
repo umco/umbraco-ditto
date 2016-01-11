@@ -33,6 +33,16 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
+        /// Registers the default processor type.
+        /// </summary>
+        /// <typeparam name="TProcessorAttributeType">The type of the processor attribute type.</typeparam>
+        public static void RegisterDefaultProcessorType<TProcessorAttributeType>()
+            where TProcessorAttributeType : DittoProcessorAttribute, new()
+        {
+            DittoProcessorRegistry.Instance.RegisterDefaultProcessorType<TProcessorAttributeType>();
+        }
+
+        /// <summary>
         /// Registers a global value resolver attribute.
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>
