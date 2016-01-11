@@ -79,6 +79,20 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
+        /// Gets the post-processor attributes.
+        /// </summary>
+        /// <returns>
+        /// Returns the post-processor attributes.
+        /// </returns>
+        public IEnumerable<DittoProcessorAttribute> GetPostProcessorAttributes()
+        {
+            yield return new HtmlStringAttribute();
+            yield return new EnumerableConverterAttribute();
+            yield return new RecursiveDittoAttribute();
+            yield return new TryConvertToAttribute();
+        }
+
+        /// <summary>
         /// Gets the registered processor attributes for the given object type.
         /// </summary>
         /// <param name="objectType">Type of the object.</param>

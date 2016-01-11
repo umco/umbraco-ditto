@@ -469,13 +469,7 @@ namespace Our.Umbraco.Ditto
             processorAttrs.AddRange(DittoProcessorRegistry.Instance.GetRegisteredProcessorAttributesFor(propertyInfo.PropertyType));
 
             // Add any core processors onto the end
-            processorAttrs.AddRange(new DittoProcessorAttribute[]
-            {
-                new HtmlStringAttribute(),
-                new EnumerableConverterAttribute(),
-                new RecursiveDittoAttribute(),
-                new TryConvertToAttribute()
-            });
+            processorAttrs.AddRange(DittoProcessorRegistry.Instance.GetPostProcessorAttributes());
 
             // Create holder for value as it's processed
             object currentValue = content;
