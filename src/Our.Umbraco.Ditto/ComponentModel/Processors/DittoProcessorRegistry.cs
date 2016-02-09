@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Registry for globally registered value resolvers.
+    /// Registry for globally registered processors.
     /// </summary>
     internal class DittoProcessorRegistry
     {
@@ -13,6 +14,11 @@ namespace Our.Umbraco.Ditto
         /// The cache for storing handler information.
         /// </summary>
         private static readonly Dictionary<Type, List<DittoProcessorAttribute>> Cache = new Dictionary<Type, List<DittoProcessorAttribute>>();
+
+        /// <summary>
+        /// The default processor type, (defaults to `UmbracoProperty`).
+        /// </summary>
+        private Type DefaultProcessorType = typeof(UmbracoPropertyAttribute);
 
         /// <summary>
         /// Static holder for singleton instance.
@@ -46,6 +52,16 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
+        /// Registeres the default processor attribute.
+        /// </summary>
+        /// <typeparam name="TProcessorAttributeType"></typeparam>
+        public void RegisterDefaultProcessorType<TProcessorAttributeType>()
+            where TProcessorAttributeType : DittoProcessorAttribute, new()
+        {
+            this.DefaultProcessorType = typeof(TProcessorAttributeType);
+        }
+
+        /// <summary>
         /// Registers the processor attribute.
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object type.</typeparam>
@@ -76,6 +92,24 @@ namespace Our.Umbraco.Ditto
 
                 Cache[objType].Add(instance);
             }
+        }
+
+        /// <summary>
+        /// Gets the default processor attribute type for the given object type.
+        /// </summary>
+        /// <param name="objectType">Type of the object.</param>
+        /// <returns>
+        /// Returns the default processor attribute type for the given object type.
+        /// </returns>
+        public Type GetDefaultProcessorType(Type objectType)
+        {
+            var attr = objectType.GetCustomAttribute<DittoDefaultProcessorAttribute>();
+            if (attr != null)
+            {
+                return attr.ProcessorType;
+            }
+
+            return this.DefaultProcessorType;
         }
 
         /// <summary>

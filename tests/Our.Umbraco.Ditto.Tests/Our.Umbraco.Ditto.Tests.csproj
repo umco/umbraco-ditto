@@ -220,6 +220,7 @@
     <Compile Include="CurrentContentTests.cs" />
     <Compile Include="CustomPublishedContentPropertyTests.cs" />
     <Compile Include="CustomValueResolverTests.cs" />
+    <Compile Include="DefaultProcessorTests.cs" />
     <Compile Include="EnumerableDetectionTests.cs" />
     <Compile Include="EnumerableTests.cs" />
     <Compile Include="ExistingObjectInstanceTests.cs" />

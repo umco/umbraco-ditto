@@ -324,6 +324,9 @@ namespace Our.Umbraco.Ditto
                 PropertyCache.TryAdd(type, nonVirtualProperties);
             }
 
+            // Gets the default processor for this conversion.
+            var defaultProcessorType = DittoProcessorRegistry.Instance.GetDefaultProcessorType(type);
+
             // A dictionary to store lazily invoked values.
             var lazyProperties = new Dictionary<string, Lazy<object>>();
 
@@ -345,7 +348,7 @@ namespace Our.Umbraco.Ditto
                         var deferredPropertyInfo = propertyInfo;
                         var localInstance = instance;
 
-                        lazyProperties.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, processorContexts)));
+                        lazyProperties.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, defaultProcessorType, processorContexts)));
                     }
                 }
 
@@ -378,7 +381,7 @@ namespace Our.Umbraco.Ditto
 
                         // Set the value normally.
                         // ReSharper disable once PossibleMultipleEnumeration
-                        var value = GetProcessedValue(content, culture, type, propertyInfo, instance, processorContexts);
+                        var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, processorContexts);
 
                         propertyInfo.SetValue(instance, value, null);
                     }
@@ -400,6 +403,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="targetType">The target type.</param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo" /> property info associated with the type.</param>
         /// <param name="instance">The instance to assign the value to.</param>
+        /// <param name="defaultProcessorType">The default processor type.</param>
         /// <param name="processorContexts">A collection of <see cref="DittoProcessorContext" /> entities to use whilst processing values.</param>
         /// <returns>
         /// The <see cref="object" /> representing the Umbraco value.
@@ -410,6 +414,7 @@ namespace Our.Umbraco.Ditto
             Type targetType,
             PropertyInfo propertyInfo,
             object instance,
+            Type defaultProcessorType,
             IEnumerable<DittoProcessorContext> processorContexts = null)
         {
             // Time custom value-processor.
@@ -423,11 +428,11 @@ namespace Our.Umbraco.Ditto
                 if (cacheAttr != null)
                 {
                     var ctx = new DittoCacheContext(cacheAttr, content, targetType, propertyDescriptor, culture);
-                    return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, processorContexts));
+                    return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, defaultProcessorType, processorContexts));
                 }
                 else
                 {
-                    return DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, processorContexts);
+                    return DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, defaultProcessorType, processorContexts);
                 }
             }
         }
@@ -440,6 +445,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="targetType">Type of the target.</param>
         /// <param name="propertyInfo">The property information.</param>
         /// <param name="propertyDescriptor">The property descriptor.</param>
+        /// <param name="defaultProcessorType">The default processor type.</param>
         /// <param name="processorContexts">The processor contexts.</param>
         /// <returns></returns>
         private static object DoGetProcessedValue(
@@ -448,6 +454,7 @@ namespace Our.Umbraco.Ditto
             Type targetType,
             PropertyInfo propertyInfo,
             PropertyDescriptor propertyDescriptor,
+            Type defaultProcessorType,
             IEnumerable<DittoProcessorContext> processorContexts = null)
         {
             // Check the property for any explicit processor attributes
@@ -457,8 +464,8 @@ namespace Our.Umbraco.Ditto
 
             if (!processorAttrs.Any())
             {
-                // Default to Umbraco property attribute
-                processorAttrs.Add(new UmbracoPropertyAttribute());
+                // Adds the default processor attribute
+                processorAttrs.Add((DittoProcessorAttribute)defaultProcessorType.GetInstance());
             }
 
             // Check for type registered processors
