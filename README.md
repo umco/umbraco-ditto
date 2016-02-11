@@ -52,6 +52,7 @@ Have a question?
 * Thanks to [Darren Ferguson](https://github.com/darrenferguson) for inspiration in his article "[Mapping Umbraco content to POCOs for strongly typed views](http://24days.in/umbraco/2013/mapping-content-to-pocos/)" on the [24 days in Umbraco](http://24days.in/umbraco/) advent calender.
 * Thanks to [Jeavon Leopold](https://github.com/Jeavon) for being a rockstar and adding AppVeyor support.
 * Thanks to [Hendy Racher](https://github.com/Hendy) for testing and contributions.
+* Thanks to [Jamie Pollock](https://github.com/jamiepollock) for continued support, feedback and encouragement.
 
 
 ## License
