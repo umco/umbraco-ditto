@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System.Collections.Generic;
+
+namespace Our.Umbraco.Ditto
 {
     /// <summary>
     /// Represents the default ditto cache key builder
@@ -12,34 +14,34 @@
         /// <returns>Returns the cache key.</returns>
         public override string BuildCacheKey(DittoCacheContext context)
         {
-            var cacheKey = "DittoCache";
+            var cacheKey = new List<object>() { "DittoCache" };
 
             if ((context.Attribute.CacheBy & DittoCacheBy.ContentId) == DittoCacheBy.ContentId)
             {
-                cacheKey += "_" + context.Content.Id;
+                cacheKey.Add(context.Content.Id);
             }
 
             if ((context.Attribute.CacheBy & DittoCacheBy.ContentVersion) == DittoCacheBy.ContentVersion)
             {
-                cacheKey += "_" + context.Content.Version;
+                cacheKey.Add(context.Content.Version);
             }
 
             if (context.PropertyDescriptor != null && (context.Attribute.CacheBy & DittoCacheBy.PropertyName) == DittoCacheBy.PropertyName)
             {
-                cacheKey += "_" + context.PropertyDescriptor.Name;
+                cacheKey.Add(context.PropertyDescriptor.Name);
             }
 
             if ((context.Attribute.CacheBy & DittoCacheBy.TargetType) == DittoCacheBy.TargetType)
             {
-                cacheKey += "_" + context.TargetType.AssemblyQualifiedName;
+                cacheKey.Add(context.TargetType.AssemblyQualifiedName);
             }
 
             if ((context.Attribute.CacheBy & DittoCacheBy.Culture) == DittoCacheBy.Culture)
             {
-                cacheKey += "_" + context.Culture.LCID;
+                cacheKey.Add(context.Culture.LCID);
             }
 
-            return cacheKey;
+            return string.Join("_", cacheKey);
         }
     }
 }
