@@ -24,7 +24,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="attributes">The attributes.</param>
         protected DittoMultiProcessorAttribute(IEnumerable<DittoProcessorAttribute> attributes)
         {
-            this.Attributes = new List<DittoProcessorAttribute>(attributes); 
+            this.Attributes = new List<DittoProcessorAttribute>(attributes);
         }
 
         /// <summary>
@@ -49,5 +49,5 @@ namespace Our.Umbraco.Ditto
             return Value;
         }
     }
-    
+
 }

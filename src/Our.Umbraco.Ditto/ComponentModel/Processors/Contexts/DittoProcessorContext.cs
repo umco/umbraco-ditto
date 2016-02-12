@@ -51,7 +51,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="culture">The culture.</param>
         /// <returns></returns>
         internal DittoProcessorContext Populate(
-            IPublishedContent content, 
+            IPublishedContent content,
             Type targetType,
             PropertyDescriptor propertyDescriptor,
             CultureInfo culture)

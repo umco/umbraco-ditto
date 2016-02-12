@@ -50,7 +50,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="reresher">The reresher.</param>
         /// <returns></returns>
         /// <exception cref="System.ApplicationException">Expected a cache key builder of type  + typeof(DittoProcessorCacheKeyBuilder) +  but got  + CacheKeyBuilderType</exception>
-        internal TOuputType GetCacheItem<TOuputType>(DittoCacheContext cacheContext, Func<TOuputType> reresher) 
+        internal TOuputType GetCacheItem<TOuputType>(DittoCacheContext cacheContext, Func<TOuputType> reresher)
         {
             // If no cache duration set, just run the refresher
             if (CacheDuration == 0 || Ditto.IsDebuggingEnabled) return reresher();

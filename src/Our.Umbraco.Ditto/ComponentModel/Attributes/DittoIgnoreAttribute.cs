@@ -8,6 +8,5 @@ namespace Our.Umbraco.Ditto
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class DittoIgnoreAttribute : Attribute
-    {
-    }
+    { }
 }

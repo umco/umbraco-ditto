@@ -7,10 +7,10 @@ using System.Web.Mvc;
 
 namespace Our.Umbraco.Ditto
 {    /// <summary>
-    /// Extensions methods for <see cref="T:System.Type"/> for creating instances of types faster than 
-    /// using reflection. Modified from the original class at.
-    /// <see href="http://geekswithblogs.net/mrsteve/archive/2012/02/19/a-fast-c-sharp-extension-method-using-expression-trees-create-instance-from-type-again.aspx"/>
-    /// </summary>
+     /// Extensions methods for <see cref="T:System.Type"/> for creating instances of types faster than 
+     /// using reflection. Modified from the original class at.
+     /// <see href="http://geekswithblogs.net/mrsteve/archive/2012/02/19/a-fast-c-sharp-extension-method-using-expression-trees-create-instance-from-type-again.aspx"/>
+     /// </summary>
     internal static class TypeInitializationExtensions
     {
         /// <summary>

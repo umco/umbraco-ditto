@@ -525,7 +525,7 @@ namespace Our.Umbraco.Ditto
                 type,
                 instance,
                 callback);
-		}
+        }
 
         /// <summary>
         /// Fires off the various on converted events.
@@ -565,7 +565,7 @@ namespace Our.Umbraco.Ditto
             Type type,
             object instance,
             Action<DittoConversionHandlerContext> callback = null)
-            where TAttributeType : Attribute 
+            where TAttributeType : Attribute
         {
             // Trigger conversion handlers
             var conversionCtx = new DittoConversionHandlerContext

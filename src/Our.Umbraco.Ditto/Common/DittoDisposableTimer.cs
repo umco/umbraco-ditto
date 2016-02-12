@@ -1,5 +1,5 @@
 ﻿using System;
-using global::Umbraco.Core;
+using Umbraco.Core;
 
 namespace Our.Umbraco.Ditto
 {

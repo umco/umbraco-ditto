@@ -10,7 +10,6 @@ namespace Our.Umbraco.Ditto
     /// </summary>
     public class DittoCacheContext
     {
-
         /// <summary>
         /// Gets the content.
         /// </summary>
@@ -18,7 +17,6 @@ namespace Our.Umbraco.Ditto
         /// The content.
         /// </value>
         public IPublishedContent Content { get; internal set; }
-
 
         /// <summary>
         /// Gets the type of the target.
@@ -28,7 +26,6 @@ namespace Our.Umbraco.Ditto
         /// </value>
         public Type TargetType { get; internal set; }
 
-
         /// <summary>
         /// Gets the property descriptor.
         /// </summary>
@@ -36,7 +33,6 @@ namespace Our.Umbraco.Ditto
         /// The property descriptor.
         /// </value>
         public PropertyDescriptor PropertyDescriptor { get; internal set; }
-
 
         /// <summary>
         /// Gets the culture.
@@ -76,7 +72,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="targetType">Type of the target.</param>
         /// <param name="propertyDescriptor">The property descriptor.</param>
         /// <param name="culture">The culture.</param>
-        internal DittoCacheContext(DittoCacheableAttribute attribute, 
+        internal DittoCacheContext(DittoCacheableAttribute attribute,
             IPublishedContent content,
             Type targetType,
             PropertyDescriptor propertyDescriptor,

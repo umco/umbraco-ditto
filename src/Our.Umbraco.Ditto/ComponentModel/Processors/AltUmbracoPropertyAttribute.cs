@@ -16,8 +16,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="defaultValue">The default value.</param>
         public AltUmbracoPropertyAttribute(string propertyName, bool recursive = false, object defaultValue = null)
             : base(propertyName, null, recursive, defaultValue)
-        {
-        }
+        { }
 
         /// <summary>
         /// Processes the value.

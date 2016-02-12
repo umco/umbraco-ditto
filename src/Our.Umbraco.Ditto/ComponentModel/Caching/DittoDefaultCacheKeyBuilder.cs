@@ -1,7 +1,7 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Representes the default ditto cache key builder
+    /// Represents the default ditto cache key builder
     /// </summary>
     public class DittoDefaultCacheKeyBuilder : DittoCacheKeyBuilder
     {
@@ -9,7 +9,7 @@
         /// Builds the cache key.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <returns></returns>
+        /// <returns>Returns the cache key.</returns>
         public override string BuildCacheKey(DittoCacheContext context)
         {
             var cacheKey = "DittoCache";

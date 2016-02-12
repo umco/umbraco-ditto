@@ -1,7 +1,7 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// 
+    /// Abstract class for the Ditto cache key builder
     /// </summary>
     public abstract class DittoCacheKeyBuilder
     {
