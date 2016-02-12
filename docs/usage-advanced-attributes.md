@@ -3,10 +3,14 @@
 To extend the mapping functionality, Ditto offers several attributes to decorate your POCO models:
 
 * [`UmbracoProperty`](#umbracoproperty)
+* [`AltUmbracoProperty`](#altumbracoproperty)
+* [`UmbracoProperties`](#umbracoproperties)
 * [`UmbracoDictionary`](#umbracodictionary)
-* [`AppSetting`](#appsetting)
-* [`DittoIgnore`](#dittoignore)
+* [`UmbracoPicker`](#umbracopicker)
 * [`CurrentContentAs`](#currentcontentas)
+* [`DittoIgnore`](#dittoignore)
+* [`AppSetting`](#appsetting)
+
 
 ---
 
@@ -26,6 +30,15 @@ public string Content { get; set; }
 Now Ditto will know to map the POCO's `Content` property to the DocumentType's "bodyText" property.
 
 
+## `AltUmbracoProperty`
+
+> // TODO: Add example
+> 
+
+## `UmbracoProperties`
+
+> // TODO: Add example
+
 
 ## `UmbracoDictionary`
 
@@ -39,31 +52,9 @@ public string ReadMoreLabel { get; set; }
 ```
 
 
-## `AppSetting`
+## `UmbracoPicker`
 
-This attribute can be used for when you would like to populate your POCO model property with a value from the `Web.config` `<appSettings>` section. By supplying the key name for the app-setting, the value will be populated.
-
-For example, if you wanted to display the Umbraco version number, you could do this:
-
-```csharp
-[AppSetting("umbracoConfigurationStatus")]
-public string UmbracoVersion { get; set; }
-```
-
-
-## `DittoIgnore`
-
-For situations where you would rather that Ditto did not attempt to map a DocumentType property with one of your POCO model properties, you can use the `DittoIgnore` attribute:
-
-```csharp
-[DittoIgnore]
-public string Image { get; set; }
-```
-
-When you map your content node, the ignored property (in this example, `Image`) will be set as the default value for that type (in this case that would be `null`).
-
-The `DittoIgnore` attribute is useful for when you want to construct more complex POCO models.
-
+> // TODO: Add example
 
 
 ## `CurrentContentAs`
@@ -101,3 +92,28 @@ var poco = Model.Content.As<MyModel>();
 <title>@poco.MetaData.MetaTitle</title>
 ```
 
+
+## `DittoIgnore`
+
+For situations where you would rather that Ditto did not attempt to map a DocumentType property with one of your POCO model properties, you can use the `DittoIgnore` attribute:
+
+```csharp
+[DittoIgnore]
+public string Image { get; set; }
+```
+
+When you map your content node, the ignored property (in this example, `Image`) will be set as the default value for that type (in this case that would be `null`).
+
+The `DittoIgnore` attribute is useful for when you want to construct more complex POCO models.
+
+
+## `AppSetting`
+
+This attribute can be used for when you would like to populate your POCO model property with a value from the `Web.config` `<appSettings>` section. By supplying the key name for the app-setting, the value will be populated.
+
+For example, if you wanted to display the Umbraco version number, you could do this:
+
+```csharp
+[AppSetting("umbracoConfigurationStatus")]
+public string UmbracoVersion { get; set; }
+```

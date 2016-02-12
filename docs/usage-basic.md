@@ -1,6 +1,10 @@
 ## Basic usage - `As<T>` extension method
 
-For basic use of Ditto, let's start with a standard DocumentType with a few properties: Title, BodyText and Image:
+For basic use of Ditto, let's start with a standard DocumentType with a few properties:
+
+* Title (_Textstring_)
+* BodyText (_Richtext editor_)
+* Image (_Upload_)
 
 ![Umbraco DocType properties](umbraco-doctype-properties.png)
 
@@ -17,7 +21,7 @@ public class MyTextModel
 }
 ```
 
-> Note, in this case **the property names should correspond with the DocumentType's property aliases.** (If you wish to name your properties differently, please [see the documentation about the `UmbracoProperty` attribute.](usage-advanced-attributes/#umbracoproperty))
+> Note: in this case **the property names should correspond with the DocumentType's property aliases.** (If you wish to name your properties differently, please [see the documentation about the `UmbracoProperty` attribute.](usage-advanced-attributes/#umbracoproperty))
 > 
 > The C# class name (`MyTextModel` in this example), does not need to match with the DocumentType alias.
 
@@ -35,9 +39,13 @@ Here is an example in the context of an MVC view:
 @{
 	var poco = Model.Content.As<MyTextModel>();
 }
+
 <h1>@poco.Title</h1>
+
 @poco.BodyText
+
 <p><img src="@poco.Image" alt="[image]" /></p>
+
 ```
 
 ### Video demonstrations

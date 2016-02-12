@@ -9,8 +9,7 @@ pages:
   - 'Usage':
     - 'Basic usage': 'usage-basic.md'
     - 'Advanced usage: Attributes': 'usage-advanced-attributes.md'
-    - 'Advanced usage: ValueResolvers': 'usage-advanced-valueresolvers.md'
-    - 'Advanced usage: TypeConverters': 'usage-advanced-typeconverters.md'
+    - 'Advanced usage: Processors': 'usage-advanced-processors.md'
     - 'Advanced usage: Conversion Handlers': 'usage-advanced-conversionhandlers.md'
     - 'Advanced usage: Lazy Loading': 'usage-advanced-lazyloading.md'
     - 'Advanced usage: Lists': 'usage-advanced-lists.md'
