@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto", "Our.Umbraco.Ditto\Our.Umbraco.Ditto.csproj", "{3A2482A4-AD19-4C26-A449-4287DA07AB16}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CF4E7DA-6359-479E-A64D-2023C743BA1C}"
@@ -39,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		..\docs\usage-basic.md = ..\docs\usage-basic.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto.PerformanceTests", "Our.Umbraco.Ditto.PerformanceTests\Our.Umbraco.Ditto.PerformanceTests.csproj", "{7409ADFA-56F9-4A18-9208-0EEBC696F46B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +57,10 @@ Global
 		{8F71EB63-C2E5-4391-8FFC-6EEF6BD9BD54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F71EB63-C2E5-4391-8FFC-6EEF6BD9BD54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F71EB63-C2E5-4391-8FFC-6EEF6BD9BD54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7409ADFA-56F9-4A18-9208-0EEBC696F46B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7409ADFA-56F9-4A18-9208-0EEBC696F46B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7409ADFA-56F9-4A18-9208-0EEBC696F46B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7409ADFA-56F9-4A18-9208-0EEBC696F46B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

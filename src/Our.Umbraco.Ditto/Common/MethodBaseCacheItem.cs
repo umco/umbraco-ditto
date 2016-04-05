@@ -15,14 +15,14 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Gets or sets the type.
         /// </summary>
-        public readonly Type Type;
+        public readonly object Type;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodBaseCacheItem"/> struct.
         /// </summary>
         /// <param name="methodBase">The method base.</param>
-        /// <param name="type">The type.</param>
-        public MethodBaseCacheItem(string methodBase, Type type)
+        /// <param name="type">The object type or property.</param>
+        public MethodBaseCacheItem(string methodBase, object type)
         {
             this.MethodBase = methodBase;
             this.Type = type;
