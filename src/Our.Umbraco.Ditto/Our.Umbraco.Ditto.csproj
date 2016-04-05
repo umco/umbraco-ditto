@@ -98,7 +98,7 @@
     <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContextCache.cs" />
     <Compile Include="ComponentModel\Processors\TryConvertToAttribute.cs" />
     <Compile Include="ComponentModel\Processors\RecursiveDittoAttribute.cs" />
-    <Compile Include="ComponentModel\Processors\CurrentContentAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\CurrentContentAsAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoIgnoreAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoMultiProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoProcessorAttribute.cs" />
