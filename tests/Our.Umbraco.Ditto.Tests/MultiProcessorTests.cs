@@ -18,9 +18,9 @@
         {
             public MyMultiProcessorAttribute()
                 : base(new DittoProcessorAttribute[] {
-                      new MyCustomProcessor1Attribute(), 
-                      new MyCustomProcessor2Attribute(), 
-                      new MyCustomProcessor3Attribute()         
+                      new MyCustomProcessor1Attribute(),
+                      new MyCustomProcessor2Attribute(),
+                      new MyCustomProcessor3Attribute()
                 })
             { }
         }

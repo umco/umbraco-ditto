@@ -21,7 +21,7 @@ namespace Our.Umbraco.Ditto
             if (Value != null && !Context.PropertyDescriptor.PropertyType.IsInstanceOfType(Value))
             {
                 // TODO: Maybe support enumerables?
-                using (DittoDisposableTimer.DebugDuration<object>(string.Format("TryConvertTo ({0}, {1})", Context.Content.Id, Context.PropertyDescriptor.Name)))
+                using (DittoDisposableTimer.DebugDuration<TryConvertToAttribute>(string.Format("TryConvertTo ({0}, {1})", Context.Content.Id, Context.PropertyDescriptor.Name)))
                 {
                     var convert = Value.TryConvertTo(Context.PropertyDescriptor.PropertyType);
                     if (convert.Success)

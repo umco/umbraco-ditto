@@ -40,7 +40,7 @@ namespace Our.Umbraco.Ditto
                 return EnumerableInvocations.Empty(targetType);
             }
 
-            // Single IPublishedContent 
+            // Single IPublishedContent
             IPublishedContent content = Value as IPublishedContent;
             if (content != null)
             {
@@ -50,7 +50,7 @@ namespace Our.Umbraco.Ditto
             // ReSharper disable once PossibleNullReferenceException
             var type = Value.GetType();
 
-            // Multiple IPublishedContent 
+            // Multiple IPublishedContent
             if (type.IsEnumerableOfType(typeof(IPublishedContent)))
             {
                 return ((IEnumerable<IPublishedContent>)Value).As(targetType, Context.Culture);
@@ -93,6 +93,7 @@ namespace Our.Umbraco.Ditto
 
             if (nodeIds.Any())
             {
+                // TODO: [LK] Need to find a way to unit-test this. (Consider moving to ProcessorContext?)
                 var umbracoContext = UmbracoContext.Current;
                 var membershipHelper = new MembershipHelper(umbracoContext);
                 var objectType = UmbracoObjectTypes.Unknown;
