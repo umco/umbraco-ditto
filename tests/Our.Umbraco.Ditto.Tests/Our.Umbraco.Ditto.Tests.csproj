@@ -211,6 +211,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="DictionaryValueTests.cs" />
     <Compile Include="CreateDateTests.cs" />
     <Compile Include="BasicMappingTests.cs" />
     <Compile Include="CaseSensitivityTests.cs" />

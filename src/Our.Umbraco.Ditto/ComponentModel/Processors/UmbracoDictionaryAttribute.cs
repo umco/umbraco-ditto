@@ -1,6 +1,4 @@
-﻿using System;
-using Umbraco.Core.Models;
-using Umbraco.Web;
+﻿using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto
 {
@@ -8,12 +6,19 @@ namespace Our.Umbraco.Ditto
     /// The Umbraco dictionary value processor attribute.
     /// Used for providing Umbraco with additional information about a dictionary item to aid property value processing.
     /// </summary>
+    [DittoProcessorMetaData(ContextType = typeof(UmbracoDictionaryProcessorContext), ValueType = typeof(IPublishedContent))]
     public class UmbracoDictionaryAttribute : DittoProcessorAttribute
     {
         /// <summary>
         /// Gets or sets the dictionary key.
         /// </summary>
         public string DictionaryKey { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoDictionaryAttribute" /> class.
+        /// </summary>
+        public UmbracoDictionaryAttribute()
+        { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoDictionaryAttribute" /> class.
@@ -33,21 +38,27 @@ namespace Our.Umbraco.Ditto
         /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
-            var dictionaryKey = DictionaryKey ?? (this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty);
+            var ctx = this.Context as UmbracoDictionaryProcessorContext;
+            if (ctx == null || ctx.GetDictionaryValue == null)
+            {
+                return null;
+            }
+
+            var dictionaryKey = DictionaryKey
+                ?? (ctx.PropertyDescriptor != null ? ctx.PropertyDescriptor.Name : string.Empty);
 
             if (string.IsNullOrWhiteSpace(dictionaryKey))
             {
                 return null;
             }
 
-            var content = Value as IPublishedContent;
+            var content = this.Value as IPublishedContent;
             if (content == null)
             {
                 return null;
             }
 
-            // HACK: [LK:2015-04-14] Resorting to using `UmbracoHelper`, as `CultureDictionaryFactoryResolver` isn't public in v6.2.x.
-            return new UmbracoHelper(UmbracoContext.Current, content).GetDictionaryValue(dictionaryKey);
+            return ctx.GetDictionaryValue(dictionaryKey);
         }
     }
 }
