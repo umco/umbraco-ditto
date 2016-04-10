@@ -17,8 +17,6 @@ using BenchmarkDotNet.Running;
 
 namespace Our.Umbraco.Ditto.PerformanceTests
 {
-
-
     public class Program
     {
         public class DittoPerformance

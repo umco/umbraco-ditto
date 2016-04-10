@@ -22,7 +22,8 @@ We also have a [MyGet package repository](https://www.myget.org/gallery/umbraco-
 
 If you prefer, you can compile Ditto yourself, you'll need:
 
-* Visual Studio 2012 (or above)
+* [Visual Studio 2012 (or above, including Community Editions)](https://www.visualstudio.com/downloads/)
+* Microsoft Build Tools 2013 (aka [MSBuild 12](https://www.microsoft.com/en-us/download/details.aspx?id=40760))
 
 To clone it locally run the following git commands:
 
