@@ -24,7 +24,7 @@ Once you have your type and a reference to Ditto, you can perform a mapping, usi
 var viewModel = Model.Content.As<MyViewModel>();
 ```
 
-For more detailed examples, please see the [Basic usage](usage) section, followed by [Advanced usage](usage).
+For more detailed examples, please see the [Basic usage](usage-basic) section, followed by [Advanced usage](usage-advanced-attributes).
 
 
 ## Where do I configure Ditto?
