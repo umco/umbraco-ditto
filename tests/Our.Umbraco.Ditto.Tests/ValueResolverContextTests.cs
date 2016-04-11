@@ -14,6 +14,9 @@
         {
             [DittoValueResolver(typeof(MyValueResolver))]
             public string MyProperty { get; set; }
+
+            [DittoValueResolver(typeof(MyValueResolver))]
+            public virtual string MyLazyProperty { get; set; }
         }
 
         public class MyValueResolver : DittoValueResolver<MyValueResolverContext>
@@ -46,6 +49,7 @@
             var model = content.As<MyValueResolverModel>(valueResolverContexts: new[] { context });
 
             Assert.That(model.MyProperty, Is.EqualTo("Test"));
+            Assert.That(model.MyLazyProperty, Is.EqualTo(model.MyProperty));
         }
 
         [Test]
@@ -56,6 +60,7 @@
             var model = content.As<MyValueResolverModel>();
 
             Assert.That(model.MyProperty, Is.EqualTo("Default value"));
+            Assert.That(model.MyLazyProperty, Is.EqualTo(model.MyProperty));
         }
     }
 }
