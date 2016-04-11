@@ -82,6 +82,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\CachedInvocations.cs" />
+    <Compile Include="Common\PropertyInfoInvocations.cs" />
     <Compile Include="ComponentModel\Attributes\DittoDefaultProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Caching\DittoCacheContext.cs" />
     <Compile Include="ComponentModel\Attributes\DittoCacheableAttribute.cs" />

@@ -120,7 +120,8 @@ namespace Our.Umbraco.Ditto
 
                 if (contentProperty != null)
                 {
-                    propertyValue = contentProperty.GetValue(content, null);
+                    // This is more than 2x as fast as propertyValue = contentProperty.GetValue(content, null);
+                    propertyValue = PropertyInfoInvocations.GetValue(contentProperty, content);
                 }
 
                 if (propertyValue == null)
@@ -137,7 +138,8 @@ namespace Our.Umbraco.Ditto
 
                 if (contentProperty != null)
                 {
-                    propertyValue = contentProperty.GetValue(content, null);
+                    // This is more than 2x as fast as propertyValue = contentProperty.GetValue(content, null);
+                    propertyValue = PropertyInfoInvocations.GetValue(contentProperty, content);
                 }
 
                 if (propertyValue == null)
