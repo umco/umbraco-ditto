@@ -9,23 +9,6 @@ namespace Our.Umbraco.Ditto.Tests
     [TestFixture]
     public class DictionaryValueTests
     {
-        private UmbracoDictionaryProcessorContext DictionaryContext;
-
-        [TestFixtureSetUp]
-        public void Init()
-        {
-            var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "hello", "world" },
-                { "foo", "bar" }
-            };
-
-            DictionaryContext = new UmbracoDictionaryProcessorContext
-            {
-                GetDictionaryValue = (x) => values[x]
-            };
-        }
-
         public class MyModel
         {
             [UmbracoDictionary("hello")]
@@ -35,12 +18,33 @@ namespace Our.Umbraco.Ditto.Tests
             public string Foo { get; set; }
         }
 
+        public class MockUmbracoDictionary : IUmbracoDictionary
+        {
+            private readonly Dictionary<string, string> Values;
+
+            public MockUmbracoDictionary()
+            {
+                Values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    { "hello", "world" },
+                    { "foo", "bar" }
+                };
+            }
+
+            public string GetValue(string key)
+            {
+                return Values[key];
+            }
+        }
+
         [Test]
         public void DictionaryValue_Returned()
         {
+            UmbracoDictionaryFactory.Set(new MockUmbracoDictionary());
+
             var content = new PublishedContentMock();
 
-            var model = content.As<MyModel>(processorContexts: new[] { DictionaryContext });
+            var model = content.As<MyModel>();
 
             Assert.That(model.MyProperty, Is.EqualTo("world"));
             Assert.That(model.Foo, Is.EqualTo("bar"));

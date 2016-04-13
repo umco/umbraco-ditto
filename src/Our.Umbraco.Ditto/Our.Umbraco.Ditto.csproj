@@ -98,7 +98,6 @@
     <Compile Include="ComponentModel\Caching\DittoCacheKeyBuilder.cs" />
     <Compile Include="ComponentModel\Processors\Contexts\DittoMultiProcessorContext.cs" />
     <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContextCache.cs" />
-    <Compile Include="ComponentModel\Processors\Contexts\UmbracoDictionaryProcessorContext.cs" />
     <Compile Include="ComponentModel\Processors\TryConvertToAttribute.cs" />
     <Compile Include="ComponentModel\Processors\RecursiveDittoAttribute.cs" />
     <Compile Include="ComponentModel\Processors\CurrentContentAsAttribute.cs" />

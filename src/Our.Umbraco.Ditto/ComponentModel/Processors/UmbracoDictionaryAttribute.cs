@@ -1,12 +1,74 @@
 ﻿using Umbraco.Core.Models;
+using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
+    /// An interface for an Umbraco dictionary.
+    /// </summary>
+    internal interface IUmbracoDictionary
+    {
+        /// <summary>
+        /// Gets the value from the dictionary.
+        /// </summary>
+        /// <param name="key">The dictionary key.</param>
+        /// <returns>Returns the value.</returns>
+        string GetValue(string key);
+    }
+
+    /// <summary>
+    /// An Umbraco dictionary.
+    /// </summary>
+    internal class UmbracoDictionary : IUmbracoDictionary
+    {
+        /// <summary>
+        /// Gets the value from the dictionary.
+        /// </summary>
+        /// <param name="key">The dictionary key.</param>
+        /// <returns>Returns the value.</returns>
+        public string GetValue(string key)
+        {
+            if (UmbracoContext.Current != null)
+            {
+                // HACK: [LK:2015-04-14] Resorting to using `UmbracoHelper`, as `CultureDictionaryFactoryResolver` isn't public in v6.2.x.
+                return new UmbracoHelper(UmbracoContext.Current).GetDictionaryValue(key);
+            }
+
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// A factory to get the Umbraco dictionary.
+    /// </summary>
+    internal class UmbracoDictionaryFactory
+    {
+        private static IUmbracoDictionary _dictionary;
+
+        /// <summary>
+        /// Gets the Umbraco dictionary implementation.
+        /// </summary>
+        /// <returns>Returns the Umbraco dictionary.</returns>
+        public static IUmbracoDictionary Get()
+        {
+            return _dictionary ?? (_dictionary = new UmbracoDictionary());
+        }
+
+        /// <summary>
+        /// Sets the Umbraco dictionary implementation.
+        /// </summary>
+        /// <param name="value"></param>
+        internal static void Set(IUmbracoDictionary value)
+        {
+            _dictionary = value;
+        }
+    }
+
+    /// <summary>
     /// The Umbraco dictionary value processor attribute.
     /// Used for providing Umbraco with additional information about a dictionary item to aid property value processing.
     /// </summary>
-    [DittoProcessorMetaData(ContextType = typeof(UmbracoDictionaryProcessorContext), ValueType = typeof(IPublishedContent))]
+    [DittoProcessorMetaData(ValueType = typeof(IPublishedContent))]
     public class UmbracoDictionaryAttribute : DittoProcessorAttribute
     {
         /// <summary>
@@ -38,14 +100,8 @@ namespace Our.Umbraco.Ditto
         /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
-            var ctx = this.Context as UmbracoDictionaryProcessorContext;
-            if (ctx == null || ctx.GetDictionaryValue == null)
-            {
-                return null;
-            }
-
             var dictionaryKey = DictionaryKey
-                ?? (ctx.PropertyDescriptor != null ? ctx.PropertyDescriptor.Name : string.Empty);
+                ?? (Context.PropertyDescriptor != null ? Context.PropertyDescriptor.Name : string.Empty);
 
             if (string.IsNullOrWhiteSpace(dictionaryKey))
             {
@@ -58,7 +114,13 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            return ctx.GetDictionaryValue(dictionaryKey);
+            var dictionary = UmbracoDictionaryFactory.Get();
+            if (dictionary == null)
+            {
+                return null;
+            }
+
+            return dictionary.GetValue(dictionaryKey);
         }
     }
 }
