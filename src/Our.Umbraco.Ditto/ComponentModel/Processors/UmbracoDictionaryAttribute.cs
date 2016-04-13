@@ -1,67 +1,22 @@
-﻿using Umbraco.Core.Models;
+﻿using System;
+using Umbraco.Core.Models;
 using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// An interface for an Umbraco dictionary.
-    /// </summary>
-    internal interface IUmbracoDictionary
-    {
-        /// <summary>
-        /// Gets the value from the dictionary.
-        /// </summary>
-        /// <param name="key">The dictionary key.</param>
-        /// <returns>Returns the value.</returns>
-        string GetValue(string key);
-    }
-
-    /// <summary>
     /// An Umbraco dictionary.
     /// </summary>
-    internal class UmbracoDictionary : IUmbracoDictionary
+    internal static class UmbracoDictionaryHelper
     {
         /// <summary>
-        /// Gets the value from the dictionary.
+        /// Gets the value from the Umbraco dictionary.
         /// </summary>
         /// <param name="key">The dictionary key.</param>
         /// <returns>Returns the value.</returns>
-        public string GetValue(string key)
-        {
-            if (UmbracoContext.Current != null)
-            {
-                // HACK: [LK:2015-04-14] Resorting to using `UmbracoHelper`, as `CultureDictionaryFactoryResolver` isn't public in v6.2.x.
-                return new UmbracoHelper(UmbracoContext.Current).GetDictionaryValue(key);
-            }
-
-            return null;
-        }
-    }
-
-    /// <summary>
-    /// A factory to get the Umbraco dictionary.
-    /// </summary>
-    internal class UmbracoDictionaryFactory
-    {
-        private static IUmbracoDictionary _dictionary;
-
-        /// <summary>
-        /// Gets the Umbraco dictionary implementation.
-        /// </summary>
-        /// <returns>Returns the Umbraco dictionary.</returns>
-        public static IUmbracoDictionary Get()
-        {
-            return _dictionary ?? (_dictionary = new UmbracoDictionary());
-        }
-
-        /// <summary>
-        /// Sets the Umbraco dictionary implementation.
-        /// </summary>
-        /// <param name="value"></param>
-        internal static void Set(IUmbracoDictionary value)
-        {
-            _dictionary = value;
-        }
+        internal static Func<string, string> GetValue = (key) => UmbracoContext.Current != null 
+            ? new UmbracoHelper(UmbracoContext.Current).GetDictionaryValue(key) 
+            : null;
     }
 
     /// <summary>
@@ -114,13 +69,7 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            var dictionary = UmbracoDictionaryFactory.Get();
-            if (dictionary == null)
-            {
-                return null;
-            }
-
-            return dictionary.GetValue(dictionaryKey);
+            return UmbracoDictionaryHelper.GetValue(dictionaryKey);
         }
     }
 }
