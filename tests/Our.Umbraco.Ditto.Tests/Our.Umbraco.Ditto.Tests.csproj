@@ -161,6 +161,7 @@
       <Private>True</Private>
       <HintPath>..\..\src\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="System.XML" />
     <Reference Include="TidyNet">
       <HintPath>..\..\src\packages\UmbracoCms.Core.6.2.5\lib\TidyNet.dll</HintPath>
     </Reference>
@@ -231,6 +232,9 @@
     <Compile Include="InheritedClassWithPrefixedPropertyTests.cs" />
     <Compile Include="JsonSerializationWithTypeConverterTests.cs" />
     <Compile Include="MockProcessorTests.cs" />
+    <Compile Include="Mocks\MockHttpContext.cs" />
+    <Compile Include="Mocks\MockPublishedContentCache.cs" />
+    <Compile Include="Mocks\MockPublishedMediaCache.cs" />
     <Compile Include="Models\ImageCropModels.cs" />
     <Compile Include="AppSettingsTests.cs" />
     <Compile Include="Mocks\PublishedContentMock.cs" />
@@ -245,6 +249,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingularityMappingTests.cs" />
     <Compile Include="TypeInferenceTests.cs" />
+    <Compile Include="UmbracoPickerProcessorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Our.Umbraco.Ditto\Our.Umbraco.Ditto.csproj">
