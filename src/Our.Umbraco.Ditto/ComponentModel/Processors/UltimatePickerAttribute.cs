@@ -77,7 +77,6 @@ namespace Our.Umbraco.Ditto
                         // ReSharper disable once LoopCanBeConvertedToQuery
                         foreach (var nodeId in nodeIds)
                         {
-                            // TODO: [LK] Need to find a way to unit-test this. (Consider moving to ProcessorContext?)
                             var item = UmbracoContext.Current.ContentCache.GetById(nodeId);
 
                             if (item != null)

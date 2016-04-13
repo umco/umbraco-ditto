@@ -93,7 +93,6 @@ namespace Our.Umbraco.Ditto
 
             if (nodeIds.Any())
             {
-                // TODO: [LK] Need to find a way to unit-test this. (Consider moving to ProcessorContext?)
                 var umbracoContext = UmbracoContext.Current;
                 var membershipHelper = new MembershipHelper(umbracoContext);
                 var objectType = UmbracoObjectTypes.Unknown;
