@@ -1,12 +1,29 @@
-﻿using Umbraco.Core.Models;
+﻿using System;
+using Umbraco.Core.Models;
+using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
+    /// An Umbraco dictionary.
+    /// </summary>
+    internal static class UmbracoDictionaryHelper
+    {
+        /// <summary>
+        /// Gets the value from the Umbraco dictionary.
+        /// </summary>
+        /// <param name="key">The dictionary key.</param>
+        /// <returns>Returns the value.</returns>
+        internal static Func<string, string> GetValue = (key) => UmbracoContext.Current != null 
+            ? new UmbracoHelper(UmbracoContext.Current).GetDictionaryValue(key) 
+            : null;
+    }
+
+    /// <summary>
     /// The Umbraco dictionary value processor attribute.
     /// Used for providing Umbraco with additional information about a dictionary item to aid property value processing.
     /// </summary>
-    [DittoProcessorMetaData(ContextType = typeof(UmbracoDictionaryProcessorContext), ValueType = typeof(IPublishedContent))]
+    [DittoProcessorMetaData(ValueType = typeof(IPublishedContent))]
     public class UmbracoDictionaryAttribute : DittoProcessorAttribute
     {
         /// <summary>
@@ -38,14 +55,8 @@ namespace Our.Umbraco.Ditto
         /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
-            var ctx = this.Context as UmbracoDictionaryProcessorContext;
-            if (ctx == null || ctx.GetDictionaryValue == null)
-            {
-                return null;
-            }
-
             var dictionaryKey = DictionaryKey
-                ?? (ctx.PropertyDescriptor != null ? ctx.PropertyDescriptor.Name : string.Empty);
+                ?? (Context.PropertyDescriptor != null ? Context.PropertyDescriptor.Name : string.Empty);
 
             if (string.IsNullOrWhiteSpace(dictionaryKey))
             {
@@ -58,7 +69,7 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            return ctx.GetDictionaryValue(dictionaryKey);
+            return UmbracoDictionaryHelper.GetValue(dictionaryKey);
         }
     }
 }
