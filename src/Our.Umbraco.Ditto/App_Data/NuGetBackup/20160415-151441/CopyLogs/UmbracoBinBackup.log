@@ -1,82 +1,0 @@
-
--------------------------------------------------------------------------------
-   ROBOCOPY     ::     Robust File Copy for Windows                              
--------------------------------------------------------------------------------
-
-  Started : 15 April 2016 15:14:41
-   Source : C:\Users\Matt\Work\Personal\Umbraco\Ditto\src\Our.Umbraco.Ditto\bin\
-     Dest : C:\Users\Matt\Work\Personal\Umbraco\Ditto\src\Our.Umbraco.Ditto\App_Data\NuGetBackup\20160415-151441\bin\
-
-    Files : *.*
-	    
-  Options : *.* /S /E /DCOPY:DA /COPY:DAT /R:1000000 /W:30 
-
-------------------------------------------------------------------------------
-
-	                  45	C:\Users\Matt\Work\Personal\Umbraco\Ditto\src\Our.Umbraco.Ditto\bin\
-	    New File  		  122880	businesslogic.dll  0%  100%  
-	    New File  		  118861	businesslogic.xml  0%  100%  
-	    New File  		  141824	ClientDependency.Core.dll  0%   92%  100%  
-	    New File  		  512000	cms.dll  0%   25%   51%   76%  100%  
-	    New File  		  326703	cms.xml  0%   40%   80%  100%  
-	    New File  		   51712	controls.dll  0%  100%  
-	    New File  		    9068	controls.xml  0%  100%  
-	    New File  		   86016	Examine.dll  0%  100%  
-	    New File  		   24576	interfaces.dll  0%  100%  
-	    New File  		   11197	interfaces.xml  0%  100%  
-	    New File  		  258048	log4net.dll  0%   50%  100%  
-	    New File  		   11264	Microsoft.ApplicationBlocks.Data.dll  0%  100%  
-	    New File  		   45416	Microsoft.Web.Infrastructure.dll  0%  100%  
-	    New File  		   23640	Microsoft.Web.Mvc.FixedDisplayModes.dll  0%  100%  
-	    New File  		  391680	Newtonsoft.Json.dll  0%   33%   66%  100%  
-	    New File  		  440219	Newtonsoft.Json.xml  0%   29%   59%   89%  100%  
-	    New File  		  168520	System.Net.Http.Formatting.dll  0%   77%  100%  
-	    New File  		  137872	System.Net.Http.Formatting.xml  0%   95%  100%  
-	    New File  		  138352	System.Web.Helpers.dll  0%   94%  100%  
-	    New File  		   74208	System.Web.Helpers.xml  0%  100%  
-	    New File  		  323168	System.Web.Http.dll  0%   40%   81%  100%  
-	    New File  		   73312	System.Web.Http.WebHost.dll  0%  100%  
-	    New File  		   10071	System.Web.Http.WebHost.xml  0%  100%  
-	    New File  		  379561	System.Web.Http.xml  0%   34%   69%  100%  
-	    New File  		  506976	System.Web.Mvc.dll  0%   25%   51%   77%  100%  
-	    New File  		  847872	System.Web.Mvc.xml  0%   30%   61%   92%  100%  
-	    New File  		  266888	System.Web.Razor.dll  0%   49%   98%  100%  
-	    New File  		  365160	System.Web.Razor.xml  0%   35%   71%  100%  
-	    New File  		   41048	System.Web.WebPages.Deployment.dll  0%  100%  
-	    New File  		    2812	System.Web.WebPages.Deployment.xml  0%  100%  
-	    New File  		  204400	System.Web.WebPages.dll  0%   64%  100%  
-	    New File  		   39536	System.Web.WebPages.Razor.dll  0%  100%  
-	    New File  		   17776	System.Web.WebPages.Razor.xml  0%  100%  
-	    New File  		  223301	System.Web.WebPages.xml  0%   58%  100%  
-	    New File  		  192512	TidyNet.dll  0%   68%  100%  
-	    New File  		   1.6 m	Umbraco.Core.dll  0%   15%   30%   45%   60%   75%   90%  100%  
-	    New File  		   1.2 m	Umbraco.Core.xml  0%   19%   39%   59%   79%   99%  100%  
-	    New File  		   38912	umbraco.DataLayer.dll  0%  100%  
-	    New File  		  115002	umbraco.DataLayer.xml  0%  100%  
-	    New File  		   1.6 m	umbraco.dll  0%   15%   30%   46%   61%   77%   92%  100%  
-	    New File  		   35840	umbraco.providers.dll  0%  100%  
-	    New File  		   51569	umbraco.providers.xml  0%  100%  
-	    New File  		   1.2 m	umbraco.xml  0%   20%   40%   60%   80%  100%  
-	    New File  		   78848	umbraco.XmlSerializers.dll  0%  100%  
-	    New File  		   34304	UmbracoExamine.dll  0%  100%  
-	  New Dir          3	C:\Users\Matt\Work\Personal\Umbraco\Ditto\src\Our.Umbraco.Ditto\bin\Debug\
-	    New File  		   63488	Our.Umbraco.Ditto.dll  0%  100%  
-	    New File  		  173568	Our.Umbraco.Ditto.pdb  0%   75%  100%  
-	    New File  		  102096	Our.Umbraco.Ditto.xml  0%  100%  
-	  New Dir          2	C:\Users\Matt\Work\Personal\Umbraco\Ditto\src\Our.Umbraco.Ditto\bin\Release\
-	    New File  		   52224	Our.Umbraco.Ditto.dll  0%  100%  
-	    New File  		  187904	Our.Umbraco.Ditto.pdb  0%   69%  100%  
-
-------------------------------------------------------------------------------
-
-               Total    Copied   Skipped  Mismatch    FAILED    Extras
-    Dirs :         3         2         1         0         0         0
-   Files :        50        50         0         0         0         0
-   Bytes :   12.95 m   12.95 m         0         0         0         0
-   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
-
-
-   Speed :            97720338 Bytes/sec.
-   Speed :            5591.602 MegaBytes/min.
-   Ended : 15 April 2016 15:14:41
-

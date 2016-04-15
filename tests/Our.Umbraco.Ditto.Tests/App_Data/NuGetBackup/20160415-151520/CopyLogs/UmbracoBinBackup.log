@@ -1,203 +1,0 @@
-
--------------------------------------------------------------------------------
-   ROBOCOPY     ::     Robust File Copy for Windows                              
--------------------------------------------------------------------------------
-
-  Started : 15 April 2016 15:15:20
-   Source : C:\Users\Matt\Work\Personal\Umbraco\Ditto\tests\Our.Umbraco.Ditto.Tests\bin\
-     Dest : C:\Users\Matt\Work\Personal\Umbraco\Ditto\tests\Our.Umbraco.Ditto.Tests\App_Data\NuGetBackup\20160415-151520\bin\
-
-    Files : *.*
-	    
-  Options : *.* /S /E /DCOPY:DA /COPY:DAT /R:1000000 /W:30 
-
-------------------------------------------------------------------------------
-
-	                   0	C:\Users\Matt\Work\Personal\Umbraco\Ditto\tests\Our.Umbraco.Ditto.Tests\bin\
-	  New Dir         85	C:\Users\Matt\Work\Personal\Umbraco\Ditto\tests\Our.Umbraco.Ditto.Tests\bin\Debug\
-	    New File  		  126976	businesslogic.dll  0%  100%  
-	    New File  		  133229	businesslogic.xml  0%   98%  100%  
-	    New File  		  143872	ClientDependency.Core.dll  0%   91%  100%  
-	    New File  		   23552	ClientDependency.Core.Mvc.dll  0%  100%  
-	    New File  		   85504	ClientDependency.Core.Mvc.pdb  0%  100%  
-	    New File  		  372224	ClientDependency.Core.pdb  0%   35%   70%  100%  
-	    New File  		  577536	cms.dll  0%   45%   90%  100%  
-	    New File  		  335413	cms.xml  0%   39%   78%  100%  
-	    New File  		   55296	controls.dll  0%  100%  
-	    New File  		    9068	controls.xml  0%  100%  
-	    New File  		  122880	CookComputing.XmlRpcV2.dll  0%  100%  
-	    New File  		   87040	Examine.dll  0%  100%  
-	    New File  		  222720	Examine.pdb  0%   58%  100%  
-	    New File  		  134656	HtmlAgilityPack.dll  0%   97%  100%  
-	    New File  		  271872	HtmlAgilityPack.pdb  0%   48%   96%  100%  
-	    New File  		  122991	HtmlAgilityPack.xml  0%  100%  
-	    New File  		  200704	ICSharpCode.SharpZipLib.dll  0%   65%  100%  
-	    New File  		   24576	interfaces.dll  0%  100%  
-	    New File  		   12102	interfaces.xml  0%  100%  
-	    New File  		  258048	log4net.dll  0%   50%  100%  
-	    New File  		  786432	Lucene.Net.dll  0%   33%   66%  100%  
-	    New File  		   1.5 m	Lucene.Net.xml  0%   16%   33%   49%   66%   82%   99%  100%  
-	    New File  		   11264	Microsoft.ApplicationBlocks.Data.dll  0%  100%  
-	    New File  		   71016	Microsoft.Web.Helpers.dll  0%  100%  
-	    New File  		   45416	Microsoft.Web.Infrastructure.dll  0%  100%  
-	    New File  		   23640	Microsoft.Web.Mvc.FixedDisplayModes.dll  0%  100%  
-	    New File  		  396288	MiniProfiler.dll  0%   33%   66%   99%  100%  
-	    New File  		  341504	MiniProfiler.pdb  0%   38%   76%  100%  
-	    New File  		  230981	MiniProfiler.xml  0%   56%  100%  
-	    New File  		  661504	Moq.dll  0%   39%   79%  100%  
-	    New File  		  314572	Moq.xml  0%   41%   83%  100%  
-	    New File  		  391680	MySql.Data.dll  0%   33%   66%  100%  
-	    New File  		  391680	Newtonsoft.Json.dll  0%   33%   66%  100%  
-	    New File  		  440219	Newtonsoft.Json.xml  0%   29%   59%   89%  100%  
-	    New File  		  151552	nunit.framework.dll  0%   86%  100%  
-	    New File  		  584600	nunit.framework.xml  0%   44%   89%  100%  
-	    New File  		   63488	Our.Umbraco.Ditto.dll  0%  100%  
-	    New File  		  173568	Our.Umbraco.Ditto.pdb  0%   75%  100%  
-	    New File  		  102096	Our.Umbraco.Ditto.xml  0%  100%  
-	    New File  		    4608	Our.Umbraco.uGoLive.47x.dll  0%  100%  
-	    New File  		   12288	Our.Umbraco.uGoLive.Checks.dll  0%  100%  
-	    New File  		   27136	Our.Umbraco.uGoLive.dll  0%  100%  
-	    New File  		   82944	SQLCE4Umbraco.dll  0%  100%  
-	    New File  		  470240	System.Data.SqlServerCe.dll  0%   27%   55%   83%  100%  
-	    New File  		  240352	System.Data.SqlServerCe.Entity.dll  0%   54%  100%  
-	    New File  		  168520	System.Net.Http.Formatting.dll  0%   77%  100%  
-	    New File  		  137872	System.Net.Http.Formatting.xml  0%   95%  100%  
-	    New File  		  138352	System.Web.Helpers.dll  0%   94%  100%  
-	    New File  		   74208	System.Web.Helpers.xml  0%  100%  
-	    New File  		  323168	System.Web.Http.dll  0%   40%   81%  100%  
-	    New File  		   73312	System.Web.Http.WebHost.dll  0%  100%  
-	    New File  		   10071	System.Web.Http.WebHost.xml  0%  100%  
-	    New File  		  379561	System.Web.Http.xml  0%   34%   69%  100%  
-	    New File  		  506976	System.Web.Mvc.dll  0%   25%   51%   77%  100%  
-	    New File  		  847872	System.Web.Mvc.xml  0%   30%   61%   92%  100%  
-	    New File  		  264792	System.Web.Razor.dll  0%   49%   98%  100%  
-	    New File  		  365160	System.Web.Razor.xml  0%   35%   71%  100%  
-	    New File  		   41048	System.Web.WebPages.Deployment.dll  0%  100%  
-	    New File  		    2812	System.Web.WebPages.Deployment.xml  0%  100%  
-	    New File  		  204400	System.Web.WebPages.dll  0%   64%  100%  
-	    New File  		   39536	System.Web.WebPages.Razor.dll  0%  100%  
-	    New File  		   17776	System.Web.WebPages.Razor.xml  0%  100%  
-	    New File  		  223301	System.Web.WebPages.xml  0%   58%  100%  
-	    New File  		  192512	TidyNet.dll  0%   68%  100%  
-	    New File  		   1.5 m	Umbraco.Core.dll  0%   16%   32%   48%   64%   80%   97%  100%  
-	    New File  		   1.1 m	Umbraco.Core.xml  0%   21%   42%   63%   84%  100%  
-	    New File  		  164352	umbraco.DataLayer.dll  0%   79%  100%  
-	    New File  		  123019	umbraco.DataLayer.xml  0%  100%  
-	    New File  		   1.5 m	umbraco.dll  0%   16%   32%   48%   65%   81%   97%  100%  
-	    New File  		  372736	umbraco.editorControls.dll  0%   35%   70%  100%  
-	    New File  		  170106	umbraco.editorControls.xml  0%   77%  100%  
-	    New File  		  125952	umbraco.MacroEngines.dll  0%  100%  
-	    New File  		    4017	umbraco.MacroEngines.xml  0%  100%  
-	    New File  		   24576	umbraco.macroRenderings.dll  0%  100%  
-	    New File  		    2118	umbraco.macroRenderings.xml  0%  100%  
-	    New File  		   37888	umbraco.providers.dll  0%  100%  
-	    New File  		   51453	umbraco.providers.xml  0%  100%  
-	    New File  		   60416	Umbraco.Tests.dll  0%  100%  
-	    New File  		     172	Umbraco.Tests.dll.config  0%  100%  
-	    New File  		  124416	Umbraco.Tests.pdb  0%  100%  
-	    New File  		   86016	Umbraco.Web.UI.dll  0%  100%  
-	    New File  		   1.2 m	umbraco.xml  0%   19%   39%   59%   79%   99%  100%  
-	    New File  		   49664	umbraco.XmlSerializers.dll  0%  100%  
-	    New File  		   36352	UmbracoExamine.dll  0%  100%  
-	    New File  		   22528	UrlRewritingNet.UrlRewriter.dll  0%  100%  
-	  New Dir         86	C:\Users\Matt\Work\Personal\Umbraco\Ditto\tests\Our.Umbraco.Ditto.Tests\bin\Release\
-	    New File  		  126976	businesslogic.dll  0%  100%  
-	    New File  		  133229	businesslogic.xml  0%   98%  100%  
-	    New File  		  143872	ClientDependency.Core.dll  0%   91%  100%  
-	    New File  		   23552	ClientDependency.Core.Mvc.dll  0%  100%  
-	    New File  		   85504	ClientDependency.Core.Mvc.pdb  0%  100%  
-	    New File  		  372224	ClientDependency.Core.pdb  0%   35%   70%  100%  
-	    New File  		  577536	cms.dll  0%   45%   90%  100%  
-	    New File  		  335413	cms.xml  0%   39%   78%  100%  
-	    New File  		   55296	controls.dll  0%  100%  
-	    New File  		    9068	controls.xml  0%  100%  
-	    New File  		  122880	CookComputing.XmlRpcV2.dll  0%  100%  
-	    New File  		   87040	Examine.dll  0%  100%  
-	    New File  		  222720	Examine.pdb  0%   58%  100%  
-	    New File  		  134656	HtmlAgilityPack.dll  0%   97%  100%  
-	    New File  		  271872	HtmlAgilityPack.pdb  0%   48%   96%  100%  
-	    New File  		  122991	HtmlAgilityPack.xml  0%  100%  
-	    New File  		  200704	ICSharpCode.SharpZipLib.dll  0%   65%  100%  
-	    New File  		   24576	interfaces.dll  0%  100%  
-	    New File  		   12102	interfaces.xml  0%  100%  
-	    New File  		  258048	log4net.dll  0%   50%  100%  
-	    New File  		  786432	Lucene.Net.dll  0%   33%   66%  100%  
-	    New File  		   1.5 m	Lucene.Net.xml  0%   16%   33%   49%   66%   82%   99%  100%  
-	    New File  		   11264	Microsoft.ApplicationBlocks.Data.dll  0%  100%  
-	    New File  		   71016	Microsoft.Web.Helpers.dll  0%  100%  
-	    New File  		   45416	Microsoft.Web.Infrastructure.dll  0%  100%  
-	    New File  		   23640	Microsoft.Web.Mvc.FixedDisplayModes.dll  0%  100%  
-	    New File  		  396288	MiniProfiler.dll  0%   33%   66%   99%  100%  
-	    New File  		  341504	MiniProfiler.pdb  0%   38%   76%  100%  
-	    New File  		  230981	MiniProfiler.xml  0%   56%  100%  
-	    New File  		  661504	Moq.dll  0%   39%   79%  100%  
-	    New File  		  314572	Moq.xml  0%   41%   83%  100%  
-	    New File  		  391680	MySql.Data.dll  0%   33%   66%  100%  
-	    New File  		  391680	Newtonsoft.Json.dll  0%   33%   66%  100%  
-	    New File  		  440219	Newtonsoft.Json.xml  0%   29%   59%   89%  100%  
-	    New File  		  151552	nunit.framework.dll  0%   86%  100%  
-	    New File  		  584600	nunit.framework.xml  0%   44%   89%  100%  
-	    New File  		   52224	Our.Umbraco.Ditto.dll  0%  100%  
-	    New File  		  187904	Our.Umbraco.Ditto.pdb  0%   69%  100%  
-	    New File  		   50688	Our.Umbraco.Ditto.Tests.dll  0%  100%  
-	    New File  		     172	Our.Umbraco.Ditto.Tests.dll.config  0%  100%  
-	    New File  		  118272	Our.Umbraco.Ditto.Tests.pdb  0%  100%  
-	    New File  		    4608	Our.Umbraco.uGoLive.47x.dll  0%  100%  
-	    New File  		   12288	Our.Umbraco.uGoLive.Checks.dll  0%  100%  
-	    New File  		   27136	Our.Umbraco.uGoLive.dll  0%  100%  
-	    New File  		   82944	SQLCE4Umbraco.dll  0%  100%  
-	    New File  		  470240	System.Data.SqlServerCe.dll  0%   27%   55%   83%  100%  
-	    New File  		  240352	System.Data.SqlServerCe.Entity.dll  0%   54%  100%  
-	    New File  		  168520	System.Net.Http.Formatting.dll  0%   77%  100%  
-	    New File  		  137872	System.Net.Http.Formatting.xml  0%   95%  100%  
-	    New File  		  138352	System.Web.Helpers.dll  0%   94%  100%  
-	    New File  		   74208	System.Web.Helpers.xml  0%  100%  
-	    New File  		  323168	System.Web.Http.dll  0%   40%   81%  100%  
-	    New File  		   73312	System.Web.Http.WebHost.dll  0%  100%  
-	    New File  		   10071	System.Web.Http.WebHost.xml  0%  100%  
-	    New File  		  379561	System.Web.Http.xml  0%   34%   69%  100%  
-	    New File  		  506976	System.Web.Mvc.dll  0%   25%   51%   77%  100%  
-	    New File  		  847872	System.Web.Mvc.xml  0%   30%   61%   92%  100%  
-	    New File  		  264792	System.Web.Razor.dll  0%   49%   98%  100%  
-	    New File  		  365160	System.Web.Razor.xml  0%   35%   71%  100%  
-	    New File  		   41048	System.Web.WebPages.Deployment.dll  0%  100%  
-	    New File  		    2812	System.Web.WebPages.Deployment.xml  0%  100%  
-	    New File  		  204400	System.Web.WebPages.dll  0%   64%  100%  
-	    New File  		   39536	System.Web.WebPages.Razor.dll  0%  100%  
-	    New File  		   17776	System.Web.WebPages.Razor.xml  0%  100%  
-	    New File  		  223301	System.Web.WebPages.xml  0%   58%  100%  
-	    New File  		  192512	TidyNet.dll  0%   68%  100%  
-	    New File  		   1.5 m	Umbraco.Core.dll  0%   16%   32%   48%   64%   80%   97%  100%  
-	    New File  		   1.1 m	Umbraco.Core.xml  0%   21%   42%   63%   84%  100%  
-	    New File  		  164352	umbraco.DataLayer.dll  0%   79%  100%  
-	    New File  		  123019	umbraco.DataLayer.xml  0%  100%  
-	    New File  		   1.5 m	umbraco.dll  0%   16%   32%   48%   65%   81%   97%  100%  
-	    New File  		  372736	umbraco.editorControls.dll  0%   35%   70%  100%  
-	    New File  		  170106	umbraco.editorControls.xml  0%   77%  100%  
-	    New File  		  125952	umbraco.MacroEngines.dll  0%  100%  
-	    New File  		    4017	umbraco.MacroEngines.xml  0%  100%  
-	    New File  		   24576	umbraco.macroRenderings.dll  0%  100%  
-	    New File  		    2118	umbraco.macroRenderings.xml  0%  100%  
-	    New File  		   37888	umbraco.providers.dll  0%  100%  
-	    New File  		   51453	umbraco.providers.xml  0%  100%  
-	    New File  		   1.9 m	Umbraco.Tests.dll  0%   12%   25%   38%   50%   63%   76%   89%  100%  
-	    New File  		   2.0 m	Umbraco.Tests.pdb  0%   24%   49%   74%   99%  100%  
-	    New File  		   86016	Umbraco.Web.UI.dll  0%  100%  
-	    New File  		   1.2 m	umbraco.xml  0%   19%   39%   59%   79%   99%  100%  
-	    New File  		   49664	umbraco.XmlSerializers.dll  0%  100%  
-	    New File  		   36352	UmbracoExamine.dll  0%  100%  
-	    New File  		   22528	UrlRewritingNet.UrlRewriter.dll  0%  100%  
-
-------------------------------------------------------------------------------
-
-               Total    Copied   Skipped  Mismatch    FAILED    Extras
-    Dirs :         3         2         1         0         0         0
-   Files :       171       171         0         0         0         0
-   Bytes :   46.17 m   46.17 m         0         0         0         0
-   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
-
-
-   Speed :            77090579 Bytes/sec.
-   Speed :            4411.158 MegaBytes/min.
-   Ended : 15 April 2016 15:15:21
-
