@@ -35,17 +35,17 @@
         {
             var metaTitle = new PublishedContentPropertyMock
             {
-                Alias = "metaTitle",
+                PropertyTypeAlias = "metaTitle",
                 Value = "This is the meta title"
             };
             var metaDescription = new PublishedContentPropertyMock
             {
-                Alias = "metaDescription",
+                PropertyTypeAlias = "metaDescription",
                 Value = "This is the meta description"
             };
             var metaKeywords = new PublishedContentPropertyMock
             {
-                Alias = "metaKeywords",
+                PropertyTypeAlias = "metaKeywords",
                 Value = "these,are,meta,keywords"
             };
 

@@ -24,17 +24,17 @@
         {
             var prop1 = new PublishedContentPropertyMock
             {
-                Alias = "siteName",
+                PropertyTypeAlias = "siteName",
                 Value = "Name"
             };
             var prop2 = new PublishedContentPropertyMock
             {
-                Alias = "siteDescription",
+                PropertyTypeAlias = "siteDescription",
                 Value = "Description"
             };
             var prop3 = new PublishedContentPropertyMock
             {
-                Alias = "fallback",
+                PropertyTypeAlias = "fallback",
                 Value = "Fallback"
             };
 
@@ -55,12 +55,12 @@
         {
             var prop1 = new PublishedContentPropertyMock
             {
-                Alias = "siteUnprefixedProp",
+                PropertyTypeAlias = "siteUnprefixedProp",
                 Value = "Site Unprefixed"
             };
             var prop2 = new PublishedContentPropertyMock
             {
-                Alias = "unprefixedProp",
+                PropertyTypeAlias = "unprefixedProp",
                 Value = "Unprefixed"
             };
 
@@ -85,7 +85,7 @@
                 {
                     new PublishedContentPropertyMock
                     {
-                        Alias = "siteDescription",
+                        PropertyTypeAlias = "siteDescription",
                         Value = "Description"
                     }
                 },

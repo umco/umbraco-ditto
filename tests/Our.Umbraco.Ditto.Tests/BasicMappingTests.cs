@@ -69,7 +69,7 @@
 
             var property = new PublishedContentPropertyMock
             {
-                Alias = "myProperty",
+                PropertyTypeAlias = "myProperty",
                 Value = value
             };
 
@@ -90,7 +90,7 @@
 
             var property = new PublishedContentPropertyMock
             {
-                Alias = "myProperty",
+                PropertyTypeAlias = "myProperty",
                 Value = value
             };
 
@@ -112,7 +112,7 @@
 
             var property = new PublishedContentPropertyMock
             {
-                Alias = "myProperty",
+                PropertyTypeAlias = "myProperty",
                 Value = value
             };
 

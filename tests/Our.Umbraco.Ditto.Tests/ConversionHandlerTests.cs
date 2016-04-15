@@ -73,12 +73,12 @@
                 {
                     new PublishedContentPropertyMock
                     {
-                        Alias = "prop1",
+                        PropertyTypeAlias = "prop1",
                         Value = "Test1"
                     },
                     new PublishedContentPropertyMock
                     {
-                        Alias = "prop2",
+                        PropertyTypeAlias = "prop2",
                         Value = "Test2"
                     }
                 }
@@ -100,12 +100,12 @@
                 {
                     new PublishedContentPropertyMock
                     {
-                        Alias = "prop1",
+                        PropertyTypeAlias = "prop1",
                         Value = "Test1"
                     },
                     new PublishedContentPropertyMock
                     {
-                        Alias = "prop2",
+                        PropertyTypeAlias = "prop2",
                         Value = "Test2"
                     }
                 }

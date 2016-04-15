@@ -19,14 +19,14 @@
             Id = 1234;
             Name = "Name";
             Children = Enumerable.Empty<IPublishedContent>();
-            Properties = new Collection<IPublishedContentProperty>();
+            Properties = new Collection<IPublishedProperty>();
         }
 
         public PublishedContentMock(
             int id,
             string name,
             IEnumerable<IPublishedContent> children,
-            ICollection<IPublishedContentProperty> properties)
+            ICollection<IPublishedProperty> properties)
         {
             Properties = properties;
             Id = id;
@@ -39,14 +39,14 @@
             throw new NotImplementedException();
         }
 
-        public IPublishedContentProperty GetProperty(string alias)
+        public IPublishedProperty GetProperty(string alias)
         {
             return GetProperty(alias, false);
         }
 
-        public IPublishedContentProperty GetProperty(string alias, bool recurse)
+        public IPublishedProperty GetProperty(string alias, bool recurse)
         {
-            var prop = Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
+            var prop = Properties.SingleOrDefault(p => p.PropertyTypeAlias.InvariantEquals(alias));
 
             if (prop == null && recurse && Parent != null)
             {
@@ -102,7 +102,7 @@
 
         public IEnumerable<IPublishedContent> Children { get; set; }
 
-        public ICollection<IPublishedContentProperty> Properties { get; set; }
+        public ICollection<IPublishedProperty> Properties { get; set; }
 
         public object this[string alias]
         {

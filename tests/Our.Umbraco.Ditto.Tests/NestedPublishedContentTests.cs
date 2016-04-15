@@ -32,7 +32,7 @@
                 {
                     new PublishedContentPropertyMock
                     {
-                        Alias = "myProperty",
+                        PropertyTypeAlias = "myProperty",
                         Value = value
                     }
                 }
@@ -44,7 +44,7 @@
                 {
                     new PublishedContentPropertyMock
                     {
-                        Alias = "myContent",
+                        PropertyTypeAlias = "myContent",
                         Value = content1
                     }
                 }
@@ -72,7 +72,7 @@
                     {
                         new PublishedContentPropertyMock
                         {
-                            Alias = "myProperty",
+                            PropertyTypeAlias = "myProperty",
                             Value = value
                         }
                     }
@@ -85,7 +85,7 @@
                 {
                     new PublishedContentPropertyMock
                     {
-                        Alias = "myContentList",
+                        PropertyTypeAlias = "myContentList",
                         Value = contentList
                     }
                 }

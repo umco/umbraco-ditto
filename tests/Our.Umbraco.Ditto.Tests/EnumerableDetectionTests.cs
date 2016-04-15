@@ -41,7 +41,7 @@
                 Properties = new[] { 
                     new PublishedContentPropertyMock
                     {
-                        Alias = "myProperty",
+                        PropertyTypeAlias = "myProperty",
                         Value = "myValue"
                     }
                 }
@@ -62,12 +62,12 @@
                 Properties = new[] { 
                     new PublishedContentPropertyMock
                     {
-                        Alias = "enumerableToSingle",
+                        PropertyTypeAlias = "enumerableToSingle",
                         Value = new[]{"myVal", "myOtherVal"}
                     },
                     new PublishedContentPropertyMock
                     {
-                        Alias = "singleToEnumerable",
+                        PropertyTypeAlias = "singleToEnumerable",
                         Value = "myVal"
                     }
                 }

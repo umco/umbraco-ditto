@@ -1,5 +1,8 @@
-﻿using Umbraco.Core;
+﻿using Moq;
+using Umbraco.Core;
 using Umbraco.Core.Cache;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Profiling;
 
 namespace Our.Umbraco.Ditto.Tests
 {
@@ -38,13 +41,14 @@ namespace Our.Umbraco.Ditto.Tests
                 new StaticCacheProvider(),
                 new NullCacheProvider());
 
-            var appCtx = new ApplicationContext(cacheHelper);
+            var logger = new ProfilingLogger(Mock.Of<ILogger>(), Mock.Of<IProfiler>());
+            var appCtx = new ApplicationContext(cacheHelper, logger);
 
             ApplicationContext.EnsureContext(appCtx, true);
 
-            var prop1 = new PublishedContentPropertyMock { Alias = "myProperty1", Value = "Test1" };
-            var prop2 = new PublishedContentPropertyMock { Alias = "myProperty2", Value = "Test1" };
-            var prop3 = new PublishedContentPropertyMock { Alias = "myProperty3", Value = "Test1" };
+            var prop1 = new PublishedContentPropertyMock { PropertyTypeAlias = "myProperty1", Value = "Test1" };
+            var prop2 = new PublishedContentPropertyMock { PropertyTypeAlias = "myProperty2", Value = "Test1" };
+            var prop3 = new PublishedContentPropertyMock { PropertyTypeAlias = "myProperty3", Value = "Test1" };
 
             var content = new PublishedContentMock
             {
