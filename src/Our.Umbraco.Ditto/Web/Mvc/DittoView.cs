@@ -26,14 +26,14 @@ namespace Our.Umbraco.Ditto
         /// <param name="viewData">The view data.</param>
         protected override void SetViewData(ViewDataDictionary viewData)
         {
-            // If model is already ditflo view model, use it
+            // If model is already ditto view model, use it
             if (viewData.Model is DittoViewModel<TViewModel>)
             {
                 base.SetViewData(viewData);
                 return;
             }
 
-            // Gather dit flow view model properties
+            // Gather ditto view model properties
             var model = viewData.Model;
             var processorContexts = new List<DittoProcessorContext>();
 
@@ -44,7 +44,7 @@ namespace Our.Umbraco.Ditto
                 processorContexts = transferModel.ProcessorContexts;
             }
 
-            // Check to see if we are a dit flo view model at least and copy processors
+            // Check to see if we are a ditto view model at least and copy processors
             var baseDittoViewModel = model as BaseDittoViewModel;
             if (baseDittoViewModel != null)
             {
