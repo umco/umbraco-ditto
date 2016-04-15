@@ -49,6 +49,8 @@ namespace Our.Umbraco.Ditto
     public class DittoViewModel<TViewModel> : BaseDittoViewModel
         where TViewModel : class
     {
+        private TViewModel _view;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoViewModel{TViewModel}"/> class.
         /// </summary>
@@ -67,9 +69,8 @@ namespace Our.Umbraco.Ditto
                 View = viewModel;
         }
 
-        private TViewModel _view;
         /// <summary>
-        /// Gets the view.
+        /// Gets the view model.
         /// </summary>
         /// <value>
         /// The view.
