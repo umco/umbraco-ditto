@@ -220,12 +220,12 @@
     <Compile Include="ConversionHandlerTests.cs" />
     <Compile Include="CurrentContentTests.cs" />
     <Compile Include="CustomPublishedContentPropertyTests.cs" />
-    <Compile Include="CustomValueResolverTests.cs" />
+    <Compile Include="CustomProcessorTests.cs" />
     <Compile Include="DefaultProcessorTests.cs" />
     <Compile Include="EnumerableDetectionTests.cs" />
     <Compile Include="EnumerableTests.cs" />
     <Compile Include="ExistingObjectInstanceTests.cs" />
-    <Compile Include="GlobalValueResolverTests.cs" />
+    <Compile Include="GlobalProcessorTests.cs" />
     <Compile Include="IgnoreAttributeTests.cs" />
     <Compile Include="ImageCropDataSetMappingTests.cs" />
     <Compile Include="InheritedClassWithPrefixedPropertyTests.cs" />
