@@ -9,6 +9,9 @@ namespace Our.Umbraco.Ditto
     /// </summary>
     public abstract class DittoController : SurfaceController, IRenderController
     {
+        /// <summary>
+        /// A field to store a list of Ditto processor contexts.
+        /// </summary>
         protected List<DittoProcessorContext> _processorContexts;
 
         /// <summary>
@@ -45,7 +48,9 @@ namespace Our.Umbraco.Ditto
         protected override ViewResult View(string viewName, string masterName, object model)
         {
             if (model == null)
+            {
                 model = CurrentPage;
+            }
 
             var transferModel = new DittoTransferModel(model, _processorContexts);
 
@@ -77,7 +82,9 @@ namespace Our.Umbraco.Ditto
         protected override PartialViewResult PartialView(string viewName, object model)
         {
             if (model == null)
+            {
                 model = CurrentPage;
+            }
 
             var transferModel = new DittoTransferModel(model, _processorContexts);
 

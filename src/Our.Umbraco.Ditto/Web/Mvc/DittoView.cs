@@ -57,7 +57,7 @@ namespace Our.Umbraco.Ditto
 
             // Process model
             var publishedContent = model as IPublishedContent;
-            if (publishedContent != null) 
+            if (publishedContent != null)
             {
                 content = publishedContent;
             }
