@@ -24,27 +24,16 @@ namespace Our.Umbraco.Ditto
         public override object ProcessValue()
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (Context == null || Context.PropertyDescriptor == null)
+            if (Context == null || Context.PropertyDescriptor == null || Value.IsNullOrEmptyString())
             {
                 return Enumerable.Empty<object>();
-            }
-
-            var propertyType = Context.PropertyDescriptor.PropertyType;
-            var isGenericType = propertyType.IsGenericType;
-            var targetType = isGenericType
-                                ? propertyType.GenericTypeArguments.First()
-                                : propertyType;
-
-            if (Value.IsNullOrEmptyString())
-            {
-                return EnumerableInvocations.Empty(targetType);
             }
 
             // Single IPublishedContent
             IPublishedContent content = Value as IPublishedContent;
             if (content != null)
             {
-                return content.As(targetType, Context.Culture);
+                return content;
             }
 
             // ReSharper disable once PossibleNullReferenceException
@@ -53,7 +42,7 @@ namespace Our.Umbraco.Ditto
             // Multiple IPublishedContent
             if (type.IsEnumerableOfType(typeof(IPublishedContent)))
             {
-                return ((IEnumerable<IPublishedContent>)Value).As(targetType, Context.Culture);
+                return ((IEnumerable<IPublishedContent>)Value);
             }
 
             int[] nodeIds = { };
@@ -112,7 +101,7 @@ namespace Our.Umbraco.Ditto
                     }
                 }
 
-                return multiPicker.As(targetType, Context.Culture);
+                return multiPicker;
             }
 
             return null;
