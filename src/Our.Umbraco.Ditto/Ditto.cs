@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Web;
 using System.Web.Configuration;
+using Umbraco.Core;
 
 namespace Our.Umbraco.Ditto
 {
@@ -89,7 +90,7 @@ namespace Our.Umbraco.Ditto
                     // Check for app setting first
                     if (!ConfigurationManager.AppSettings["Ditto:DebugEnabled"].IsNullOrWhiteSpace())
                     {
-                        return ConfigurationManager.AppSettings["Ditto:DebugEnabled"].ToLowerInvariant() == "true";
+                        return ConfigurationManager.AppSettings["Ditto:DebugEnabled"].InvariantEquals("true");
                     }
 
                     // Check the HTTP Context
