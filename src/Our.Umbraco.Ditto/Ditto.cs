@@ -86,6 +86,13 @@ namespace Our.Umbraco.Ditto
             {
                 try
                 {
+                    // Check for app setting first
+                    if (!ConfigurationManager.AppSettings["Ditto:DebugEnabled"].IsNullOrWhiteSpace())
+                    {
+                        return ConfigurationManager.AppSettings["Ditto:DebugEnabled"].ToLowerInvariant() == "true";
+                    }
+
+                    // Check the HTTP Context
                     if (HttpContext.Current != null)
                     {
                         return HttpContext.Current.IsDebuggingEnabled;
