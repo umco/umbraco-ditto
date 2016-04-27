@@ -1,9 +1,9 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Xml;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Extensions methods for <see cref="string"/>.
     /// </summary>

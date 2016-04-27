@@ -1,19 +1,17 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using System.Web;
-    using global::Umbraco.Core;
+﻿using System;
+using Umbraco.Core;
 
+namespace Our.Umbraco.Ditto
+{
     internal class DittoDisposableTimer : DisposableTimer
     {
         public DittoDisposableTimer(Action<long> callback)
             : base(callback)
-        {
-        }
+        { }
 
         public static new DisposableTimer DebugDuration<T>(string startMessage)
         {
-            if (HttpContext.Current != null && HttpContext.Current.IsDebuggingEnabled)
+            if (Ditto.IsDebuggingEnabled)
             {
                 return DisposableTimer.DebugDuration<T>(startMessage);
             }

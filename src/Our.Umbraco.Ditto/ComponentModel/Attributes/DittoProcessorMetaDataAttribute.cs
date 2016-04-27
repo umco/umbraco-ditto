@@ -1,0 +1,38 @@
+﻿using System;
+
+namespace Our.Umbraco.Ditto
+{
+    /// <summary>
+    /// Meta data attribute for a DittoProcessorAttribute to help validate
+    /// the passed in types
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class DittoProcessorMetaDataAttribute : Attribute
+    {
+        /// <summary>
+        /// Gets or sets the value type.
+        /// </summary>
+        /// <value>
+        /// The context.
+        /// </value>
+        public Type ValueType { get; set; }
+
+        /// <summary>
+        /// Gets the type of the context.
+        /// </summary>
+        /// <value>
+        /// The type of the context.
+        /// </value>
+        public Type ContextType { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoProcessorMetaDataAttribute"/> class.
+        /// </summary>
+        public DittoProcessorMetaDataAttribute()
+        {
+            ValueType = typeof(object);
+            ContextType = typeof(DittoProcessorContext);
+        }
+    }
+
+}

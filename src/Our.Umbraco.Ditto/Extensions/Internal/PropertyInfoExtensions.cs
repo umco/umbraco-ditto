@@ -1,8 +1,8 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using System.Reflection;
+﻿using System;
+using System.Reflection;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Extensions methods for <see cref="PropertyInfo"/>.
     /// </summary>

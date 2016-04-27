@@ -1,7 +1,7 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System.Reflection;
+﻿using System.Reflection;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// The IInterceptor interface provides methods for intercepting <see cref="MethodBase"/> implementations
     /// in proxy classes.

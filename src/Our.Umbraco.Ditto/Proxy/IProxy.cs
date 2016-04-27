@@ -1,7 +1,7 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System.Reflection;
+﻿using System.Reflection;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// The IProxy interface prides necessary properties to proxy base classes.
     /// </summary>

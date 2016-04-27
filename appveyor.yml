@@ -1,10 +1,13 @@
 # version format
-version: 0.8.4.{build}
+version: 0.9.0.{build}
 
 # UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
 init:
-  - set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=
+  - set UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
+
+cache:
+  - src\packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
 
 build_script:
 - build-appveyor.cmd
@@ -18,7 +21,7 @@ artifacts:
   - path: artifacts\*.zip
 
 deploy:
-     # MyGet Deployment for builds & releases
+    # MyGet (Ditto feed) Deployment for builds & releases
   - provider: NuGet
     server: https://www.myget.org/F/umbraco-ditto/
     symbol_server: https://nuget.symbolsource.org/MyGet/umbraco-ditto
@@ -28,7 +31,17 @@ deploy:
     on:
       branch: develop
 
-     # GitHub Deployment for releases
+    # MyGet (Umbraco Community feed) Deployment for builds & releases
+  - provider: NuGet
+    server: https://www.myget.org/F/umbraco-packages/
+    symbol_server: https://nuget.symbolsource.org/MyGet/umbraco-packages
+    api_key:
+      secure: Q1/4K8VSwr7BjwmKDTef8y5lOc7S+jK9ELuWy67y6OVRpjxmnF9M3Gfs1kT+ir8x
+    artifact: /.*\.nupkg/
+    on:
+      branch: develop
+
+    # GitHub Deployment for releases
   - provider: GitHub
     auth_token:
       secure: pEozEGTqJutQwOidJU6BTB+Ix0NV4vrUnomhfeqheVz4RNwfxjEYLoqR4XabhlPz
@@ -39,7 +52,7 @@ deploy:
       branch: master
       appveyor_repo_tag: true        # deploy on tag push only
 
-     # NuGet Deployment for releases
+    # NuGet Deployment for releases
   - provider: NuGet
     server: 
     api_key:

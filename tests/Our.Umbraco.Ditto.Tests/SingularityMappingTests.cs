@@ -11,7 +11,7 @@
     {
         public class MyModel
         {
-            [TypeConverter(typeof(DittoPickerConverter))]
+            [UmbracoPicker]
             public IPublishedContent MyProperty { get; set; }
         }
 

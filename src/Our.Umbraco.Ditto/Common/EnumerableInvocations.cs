@@ -1,27 +1,21 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Provides ways to return methods from <see cref="Enumerable"/> without knowing the type at runtime.
     /// Once a method is invoked for a given type then it is cached so that subsequent calls do not require
     /// any overhead compilation costs.
     /// </summary>
-    internal static class EnumerableInvocations
+    // ReSharper disable once ClassNeverInstantiated.Global
+    internal class EnumerableInvocations : CachedInvocations
     {
-        /// <summary>
-        /// The method cache for storing function implementations.
-        /// </summary>
-        private static readonly ConcurrentDictionary<MethodBaseCacheItem, Func<object, object>> Cache
-            = new ConcurrentDictionary<MethodBaseCacheItem, Func<object, object>>();
-
         /// <summary>
         /// The cast method.
         /// </summary>
@@ -61,10 +55,10 @@
             var key = GetMethodCacheKey(type);
 
             Func<object, object> f;
-            if (!Cache.TryGetValue(key, out f))
+            if (!FunctionCache.TryGetValue(key, out f))
             {
                 f = StaticMethodSingleParameter<object>(CastMethod.MakeGenericMethod(type));
-                Cache[key] = f;
+                FunctionCache[key] = f;
             }
 
             return f(value);
@@ -85,10 +79,10 @@
             var key = GetMethodCacheKey(type);
 
             Func<object, object> f;
-            if (!Cache.TryGetValue(key, out f))
+            if (!FunctionCache.TryGetValue(key, out f))
             {
                 f = StaticMethod<object>(EmptyMethod.MakeGenericMethod(type));
-                Cache[key] = f;
+                FunctionCache[key] = f;
             }
 
             return f(type);
@@ -109,10 +103,10 @@
             var key = GetMethodCacheKey(type);
 
             Func<object, object> f;
-            if (!Cache.TryGetValue(key, out f))
+            if (!FunctionCache.TryGetValue(key, out f))
             {
                 f = StaticMethodSingleParameter<object>(FirstOrDefaultMethod.MakeGenericMethod(type));
-                Cache[key] = f;
+                FunctionCache[key] = f;
             }
 
             return f(Cast(type, value));
@@ -167,23 +161,6 @@
             return Expression.Lambda<Func<T, object>>(
                    Expression.Convert(methodCall, typeof(object)),
                    argument).Compile();
-        }
-
-        /// <summary>
-        /// Returns a cache key for the given method and type.
-        /// </summary>
-        /// <param name="type">
-        /// The <see cref="Type"/> the key reflects.
-        /// </param>
-        /// <param name="memberName">
-        /// The method name. Generated at compile time.
-        /// </param>
-        /// <returns>
-        /// The <see cref="MethodBaseCacheItem"/> for the given method and type.
-        /// </returns>
-        private static MethodBaseCacheItem GetMethodCacheKey(Type type, [CallerMemberName] string memberName = null)
-        {
-            return new MethodBaseCacheItem(memberName, type);
         }
     }
 }
