@@ -10,6 +10,19 @@ using Umbraco.Web.Security;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
+    /// A helper for UmbracoPicker processor.
+    /// </summary>
+    internal static class UmbracoPickerHelper
+    {
+        /// <summary>
+        /// Gets the MembershipHelper for the UmbracoPicker processor.
+        /// </summary>
+        internal static Func<UmbracoContext, MembershipHelper> GetMembershipHelper = (ctx) => UmbracoContext.Current != null
+            ? new MembershipHelper(ctx)
+            : null;
+    }
+
+    /// <summary>
     /// A picker processor for handling the various types of Umbraco pickers
     /// </summary>
     public class UmbracoPickerAttribute : DittoProcessorAttribute
@@ -83,7 +96,7 @@ namespace Our.Umbraco.Ditto
             if (nodeIds.Any())
             {
                 var umbracoContext = UmbracoContext.Current;
-                var membershipHelper = new MembershipHelper(umbracoContext);
+                var membershipHelper = UmbracoPickerHelper.GetMembershipHelper(umbracoContext);
                 var objectType = UmbracoObjectTypes.Unknown;
                 var multiPicker = new List<IPublishedContent>();
 

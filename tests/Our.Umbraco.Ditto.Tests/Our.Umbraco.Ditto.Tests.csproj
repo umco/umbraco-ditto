@@ -37,6 +37,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="businesslogic">
+      <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\businesslogic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\..\src\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\..\src\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\..\src\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
     <Reference Include="MiniProfiler">
       <HintPath>..\..\src\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
@@ -51,7 +63,9 @@
       <HintPath>..\..\src\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
@@ -102,7 +116,6 @@
     <Compile Include="InheritedClassWithPrefixedPropertyTests.cs" />
     <Compile Include="JsonSerializationWithTypeConverterTests.cs" />
     <Compile Include="MockProcessorTests.cs" />
-    <Compile Include="Mocks\MockHttpContext.cs" />
     <Compile Include="Mocks\MockPublishedContentCache.cs" />
     <Compile Include="Mocks\MockPublishedMediaCache.cs" />
     <Compile Include="Models\ImageCropModels.cs" />
