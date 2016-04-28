@@ -69,7 +69,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Umbraco.Tests">
-      <HintPath>..\lib\Umbraco.Tests.6.2.5\Umbraco.Tests.dll</HintPath>
+      <HintPath>..\lib\Umbraco.Tests.7.3.2\Umbraco.Tests.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Choose>
