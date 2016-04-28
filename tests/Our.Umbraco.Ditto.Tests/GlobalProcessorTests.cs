@@ -4,9 +4,9 @@
     using Our.Umbraco.Ditto.Tests.Mocks;
 
     [TestFixture]
-    public class GlobalValueResolverTests
+    public class GlobalProcessorTests
     {
-        public class MyValueResolverModel
+        public class MyProcessorModel
         {
             public MyStringModel MyStrProperty { get; set; }
 
@@ -50,7 +50,7 @@
 
             var content = new PublishedContentMock();
 
-            var model = content.As<MyValueResolverModel>();
+            var model = content.As<MyProcessorModel>();
 
             Assert.That(model.MyStrProperty.Value, Is.EqualTo("Test"));
             Assert.That(model.MyIntProperty.Value, Is.EqualTo(5));

@@ -1,10 +1,8 @@
-﻿using System;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
 namespace Our.Umbraco.Ditto.Tests
 {
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
-
     [TestFixture]
     public class ProcessorContextTests
     {
@@ -12,6 +10,9 @@ namespace Our.Umbraco.Ditto.Tests
         {
             [MyProcessor]
             public string MyProperty { get; set; }
+
+            [MyProcessor]
+            public virtual string MyLazyProperty { get; set; }
         }
 
         [DittoProcessorMetaData(ContextType = typeof(MyProcessorContext))]
@@ -45,6 +46,7 @@ namespace Our.Umbraco.Ditto.Tests
             var model = content.As<MyValueResolverModel>(processorContexts: new[] { context });
 
             Assert.That(model.MyProperty, Is.EqualTo("Test"));
+            Assert.That(model.MyLazyProperty, Is.EqualTo(model.MyProperty));
         }
 
         [Test]
@@ -55,6 +57,7 @@ namespace Our.Umbraco.Ditto.Tests
             var model = content.As<MyValueResolverModel>();
 
             Assert.That(model.MyProperty, Is.EqualTo("Default value"));
+            Assert.That(model.MyLazyProperty, Is.EqualTo(model.MyProperty));
         }
     }
 }
