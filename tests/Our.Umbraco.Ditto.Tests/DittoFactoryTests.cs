@@ -61,24 +61,35 @@ namespace Our.Umbraco.Ditto.Tests
                 }
             };
 
+            var content3 = new PublishedContentMock
+            {
+                Name = "Content 3",
+                DocumentTypeAlias = "MyModel3",
+                Properties = new List<IPublishedContentProperty>
+                {
+                    new PublishedContentPropertyMock("MyProperty", "My Property 3", true)
+                }
+            };
+
 
             var content = new PublishedContentMock
             {
                 Properties = new List<IPublishedContentProperty>
                 {
-                    new PublishedContentPropertyMock("MyCollection", new [] { content1, content2  }, true),
+                    new PublishedContentPropertyMock("MyCollection", new [] { content1, content2, content3  }, true),
                     new PublishedContentPropertyMock("MyProp", content1, true)
                 }
             };
 
             var model = content.As<MyMainModel>();
 
-            Assert.That(model.MyCollection.Count(), Is.EqualTo(2));
+            Assert.That(model.MyCollection.Count(), Is.EqualTo(3));
 
             var items = model.MyCollection.ToList();
 
             Assert.That(items[0].GetType(), Is.EqualTo(typeof(MyModel1)));
             Assert.That(items[1].GetType(), Is.EqualTo(typeof(MyModel2)));
+            Assert.Null(items[2]);
 
             Assert.NotNull(model.MyProp);
             Assert.That(model.MyProp.GetType(), Is.EqualTo(typeof(MyModel1)));

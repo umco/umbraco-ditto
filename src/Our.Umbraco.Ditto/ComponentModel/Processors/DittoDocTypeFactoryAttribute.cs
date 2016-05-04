@@ -1,7 +1,7 @@
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Conveniense processor for resolving a type based on the contents Doc Type
+    /// Conveniense processor wrapper for resolving a type based on a content items Doc Type
     /// </summary>
     public class DittoDocTypeFactoryAttribute : DittoFactoryAttribute
     {
