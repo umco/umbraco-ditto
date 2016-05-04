@@ -27,6 +27,12 @@ namespace Our.Umbraco.Ditto.Tests
             public string MyProperty { get; set; }
         }
 
+        public class MyModel3Suffixed : IMyModel
+        {
+            public string Name { get; set; }
+            public string MyProperty { get; set; }
+        }
+
         public class MyMainModel
         {
             [UmbracoProperty(Order = 0)]
@@ -34,7 +40,7 @@ namespace Our.Umbraco.Ditto.Tests
             public IEnumerable<IMyModel> MyCollection { get; set; }
 
             [UmbracoProperty(Order = 0)]
-            [DittoDocTypeFactory(Order = 1)]
+            [DittoDocTypeFactory(Sufix = "Suffixed", Order = 1)]
             public IMyModel MyProp { get; set; } 
         }
 
@@ -77,7 +83,7 @@ namespace Our.Umbraco.Ditto.Tests
                 Properties = new List<IPublishedContentProperty>
                 {
                     new PublishedContentPropertyMock("MyCollection", new [] { content1, content2, content3  }, true),
-                    new PublishedContentPropertyMock("MyProp", content1, true)
+                    new PublishedContentPropertyMock("MyProp", content3, true)
                 }
             };
 
@@ -92,7 +98,7 @@ namespace Our.Umbraco.Ditto.Tests
             Assert.Null(items[2]);
 
             Assert.NotNull(model.MyProp);
-            Assert.That(model.MyProp.GetType(), Is.EqualTo(typeof(MyModel1)));
+            Assert.That(model.MyProp.GetType(), Is.EqualTo(typeof(MyModel3Suffixed)));
         }
     }
 }

@@ -100,8 +100,6 @@
     <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContextCache.cs" />
     <Compile Include="ComponentModel\Processors\DittoDocTypeFactoryAttribute.cs" />
     <Compile Include="ComponentModel\Processors\DittoFactoryAttribute.cs" />
-    <Compile Include="ComponentModel\Processors\FactoryTypeNameResolvers\DittoDocTypeFactoryTypeNameResolver.cs" />
-    <Compile Include="ComponentModel\Processors\FactoryTypeNameResolvers\DittoFactoryTypeNameResolver.cs" />
     <Compile Include="ComponentModel\Processors\TryConvertToAttribute.cs" />
     <Compile Include="ComponentModel\Processors\RecursiveDittoAttribute.cs" />
     <Compile Include="ComponentModel\Processors\CurrentContentAsAttribute.cs" />

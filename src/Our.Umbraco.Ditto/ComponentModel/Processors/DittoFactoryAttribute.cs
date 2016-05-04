@@ -9,23 +9,14 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// Factory processor for dynamically typing an items based on properties of the item itself 
     /// </summary>
-    public class DittoFactoryAttribute : DittoProcessorAttribute
+    public abstract class DittoFactoryAttribute : DittoProcessorAttribute
     {
-        private Type _factoryTypeNameResovlerType;
-
         /// <summary>
-        /// Instantiates an instance of DittoFactoryAttribute
+        /// Resoles a type name based upon the current content item
         /// </summary>
-        /// <param name="factoryTypeNameResovlerType"></param>
-        public DittoFactoryAttribute(Type factoryTypeNameResovlerType)
-        {
-            if (!typeof(DittoFactoryTypeNameResolver).IsAssignableFrom(factoryTypeNameResovlerType))
-            {
-                throw new ArgumentException("The factoryTypeNameResovler argument must implement DittoFactoryTypeNameResolver", "factoryTypeNameResovler");
-            }
-
-            _factoryTypeNameResovlerType = factoryTypeNameResovlerType;
-        }
+        /// <param name="currentContent"></param>
+        /// <returns></returns>
+        public abstract string ResolveTypeName(IPublishedContent currentContent);
 
         /// <summary>
         /// Processes the incoming value
@@ -37,6 +28,12 @@ namespace Our.Umbraco.Ditto
             var propTypeIsEnumerable = propType.IsEnumerableType();
             var baseType = propTypeIsEnumerable ? propType.GetEnumerableType() : propType;
 
+            // We have an enumerable processor that runs at the end of every conversion
+            // converting individual instances to IEnumerables and vica versa, so we
+            // won't worry about returning in the right way, rather we'll just ensure
+            // that the IPublishedContent's are converted to the right types
+            // and let the enumerable processor handle the rest
+
             // TODO: Validate the base type more?
 
             // Find the appropreate types
@@ -46,16 +43,13 @@ namespace Our.Umbraco.Ditto
             var generic = method.MakeGenericMethod(baseType);
             var types = (IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null });
 
-            // Resolve the type name
-            var typeNameResolver = (DittoFactoryTypeNameResolver)_factoryTypeNameResovlerType.GetInstance();
-
             // Check for IEnumerable<IPublishedContent> value
             var enumerableValue = Value as IEnumerable<IPublishedContent>;
             if (enumerableValue != null)
             {
                 var items = enumerableValue.Select(x =>
                 {
-                    var typeName = typeNameResolver.ResolveTypeName(Context, x);
+                    var typeName = ResolveTypeName(x);
                     var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
 
                     // QUESTION: Should we return null? throw an exception? or strip items if a model can't be found?
@@ -70,7 +64,7 @@ namespace Our.Umbraco.Ditto
             var ipublishedContentValue = Value as IPublishedContent;
             if (ipublishedContentValue != null)
             {
-                var typeName = typeNameResolver.ResolveTypeName(Context, ipublishedContentValue);
+                var typeName = ResolveTypeName(ipublishedContentValue);
                 var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
                 return type != null ? ipublishedContentValue.As(type) : null;
             }
