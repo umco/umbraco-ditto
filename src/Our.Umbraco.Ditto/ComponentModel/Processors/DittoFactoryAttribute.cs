@@ -51,7 +51,7 @@ namespace Our.Umbraco.Ditto
 
             // Check for IEnumerable<IPublishedContent> value
             var enumerableValue = Value as IEnumerable<IPublishedContent>;
-            if (enumerableValue != null && propTypeIsEnumerable)
+            if (enumerableValue != null)
             {
                 var items = enumerableValue.Select(x =>
                 {
@@ -68,7 +68,7 @@ namespace Our.Umbraco.Ditto
 
             // Check for IPublishedContent value
             var ipublishedContentValue = Value as IPublishedContent;
-            if (ipublishedContentValue != null && !propTypeIsEnumerable)
+            if (ipublishedContentValue != null)
             {
                 var typeName = typeNameResolver.ResolveTypeName(Context, ipublishedContentValue);
                 var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
