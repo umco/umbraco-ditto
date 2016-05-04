@@ -30,11 +30,11 @@ namespace Our.Umbraco.Ditto.Tests
         public class MyMainModel
         {
             [UmbracoProperty(Order = 0)]
-            [DittoDocTypeFactoryAttribute(Order = 1)]
+            [DittoDocTypeFactory(Order = 1)]
             public IEnumerable<IMyModel> MyCollection { get; set; }
 
             [UmbracoProperty(Order = 0)]
-            [DittoDocTypeFactoryAttribute(Order = 1)]
+            [DittoDocTypeFactory(Order = 1)]
             public IMyModel MyProp { get; set; } 
         }
 
