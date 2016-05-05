@@ -43,41 +43,34 @@
     <Reference Include="System.Web">
       <Private>False</Private>
     </Reference>
-    <Reference Include="interfaces">
-      <HintPath>..\packages\UmbracoCms.Core.6.2.5\lib\interfaces.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="MiniProfiler">
       <HintPath>..\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.30506.0\lib\net40\System.Web.Http.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.30506.0\lib\net40\System.Web.Mvc.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>False</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.dll</HintPath>
-    </Reference>
     <Reference Include="umbraco">
-      <HintPath>..\packages\UmbracoCms.Core.6.2.5\lib\umbraco.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Core.7.3.2\lib\umbraco.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Umbraco.Core">
-      <HintPath>..\packages\UmbracoCms.Core.6.2.5\lib\Umbraco.Core.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Core.7.3.2\lib\Umbraco.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -132,6 +125,9 @@
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />
     <Compile Include="Extensions\RenderModelExtensions.cs" />
     <Compile Include="Extensions\PublishedContentExtensions.cs" />
+    <Compile Include="Models\DittoTransferModel.cs" />
+    <Compile Include="Models\DittoViewModel.cs" />
+    <Compile Include="Models\IDittoViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="Proxy\ConstructorEmitter.cs" />
@@ -141,8 +137,11 @@
     <Compile Include="Proxy\PropertyEmitter.cs" />
     <Compile Include="Proxy\ProxyFactory.cs" />
     <Compile Include="Proxy\InterceptorEmitter.cs" />
+    <Compile Include="Web\Mvc\Controllers\DittoController.cs" />
+    <Compile Include="Web\Mvc\DittoView.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
@@ -153,6 +152,11 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

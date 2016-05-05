@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.XPath;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Xml;
 using Umbraco.Web;
 using Umbraco.Web.PublishedCache;
@@ -18,7 +19,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
             }
         }
 
-        public IPublishedContent CreateFragment(string contentTypeAlias, IDictionary<string, object> dataValues, bool isPreviewing, bool managed)
+        public IPublishedProperty CreateDetachedProperty(PublishedPropertyType propertyType, object value, bool isPreviewing)
         {
             throw new NotImplementedException();
         }

@@ -13,7 +13,7 @@ namespace Our.Umbraco.Ditto
         {
             if (Ditto.IsDebuggingEnabled)
             {
-                return DisposableTimer.DebugDuration<T>(startMessage);
+                return ApplicationContext.Current.ProfilingLogger.DebugDuration<T>(startMessage);
             }
 
             return new DittoDisposableTimer((x) => { });

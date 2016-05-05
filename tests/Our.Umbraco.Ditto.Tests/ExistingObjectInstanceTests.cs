@@ -42,7 +42,7 @@
         public void Existing_Base_Object_Mapped()
         {
             var propertyValue = "Foo Bar";
-            var property = new PublishedContentPropertyMock { Alias = "prop3", Value = propertyValue };
+            var property = new PublishedContentPropertyMock { PropertyTypeAlias = "prop3", Value = propertyValue };
             var content = new PublishedContentMock { Properties = new[] { property } };
 
             var value = "Hello world";
@@ -62,7 +62,7 @@
         public void Existing_Inherited_Object_Mapped()
         {
             var propertyValue = "Foo Bar";
-            var property = new PublishedContentPropertyMock { Alias = "prop3", Value = propertyValue };
+            var property = new PublishedContentPropertyMock { PropertyTypeAlias = "prop3", Value = propertyValue };
             var content = new PublishedContentMock { Properties = new[] { property } };
 
             var value = "Hello world";

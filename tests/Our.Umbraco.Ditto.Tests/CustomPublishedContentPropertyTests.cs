@@ -24,7 +24,7 @@
 
             var property = new PublishedContentPropertyMock
             {
-                Alias = "myProperty",
+                PropertyTypeAlias = "myProperty",
                 Value = propertyValue
             };
 

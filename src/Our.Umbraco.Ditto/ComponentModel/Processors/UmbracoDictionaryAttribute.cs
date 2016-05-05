@@ -12,10 +12,8 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Gets the value from the Umbraco dictionary.
         /// </summary>
-        /// <param name="key">The dictionary key.</param>
-        /// <returns>Returns the value.</returns>
-        internal static Func<string, string> GetValue = (key) => UmbracoContext.Current != null 
-            ? new UmbracoHelper(UmbracoContext.Current).GetDictionaryValue(key) 
+        internal static Func<string, string> GetValue = (key) => UmbracoContext.Current != null
+            ? new UmbracoHelper(UmbracoContext.Current).GetDictionaryValue(key)
             : null;
     }
 
