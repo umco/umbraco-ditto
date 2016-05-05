@@ -1,3 +1,8 @@
+title: Upgrading to v0.9.0
+permalink: /knowledgebase/upgrade-090/
+order: 10
+---
+
 ## Upgrading to v0.9.0
 
 With Ditto v0.9.0 the introduction of Processors has made an overall breaking change for developers who have built custom TypeConverters or ValueResolvers with previous Ditto versions. The intention of Processors are to combine the power and flexibility of both TypeConverters and ValueResolvers together.

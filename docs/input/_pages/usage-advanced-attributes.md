@@ -1,3 +1,8 @@
+title: Property attributes
+permalink: /knowledgebase/property-attributes/
+order: 2
+---
+
 # Advanced usage - Property attributes
 
 To extend the mapping functionality, Ditto offers several attributes to decorate your POCO models:

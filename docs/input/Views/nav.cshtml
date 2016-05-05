@@ -1,0 +1,35 @@
+@{
+	var nav = Documents
+		.FromPipeline("Pages")
+		.ContainsKey("title")
+		.ContainsKey("permalink")
+		.OrderBy(x => x.Get<int>("order", 99))
+		.ThenBy(x => x.String("title"));
+
+	var lookup = nav.ToLookup(x => x.String("permalink").Trim('/'));
+
+	var urls = nav
+		.Select(x => x.String("permalink").Trim('/'))
+		.Distinct()
+		.ToDictionary(x => x, x => x.Count(c => c == '/'));
+}
+<nav>
+	<ul>
+		@foreach(var level0 in urls.Where(x => x.Value == 0))
+		{
+			var page = lookup[level0.Key].First();
+
+			<li>
+				<a href=".@page.String("permalink")">@page.String("title")</a>
+				<ul>
+					@foreach(var level1 in urls.Where(x => x.Value == 1 && x.Key.StartsWith(level0.Key)))
+					{
+						var child = lookup[level1.Key].First();
+						
+						<li><a href=".@child.String("permalink")">@child.String("title")</a></li>
+					}
+				</ul>
+			</li>
+		}
+	</ul>
+</nav>

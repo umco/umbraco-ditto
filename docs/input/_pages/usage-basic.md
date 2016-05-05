@@ -1,3 +1,8 @@
+title: Basic usage
+permalink: /getting-started/basic-usage/
+order: 2
+---
+
 ## Basic usage - `As<T>` extension method
 
 For basic use of Ditto, let's start with a standard DocumentType with a few properties:
@@ -6,7 +11,7 @@ For basic use of Ditto, let's start with a standard DocumentType with a few prop
 * BodyText (_Richtext editor_)
 * Image (_Upload_)
 
-![Umbraco DocType properties](umbraco-doctype-properties.png)
+![Umbraco DocType properties](/assets/img/umbraco-doctype-properties.png)
 
 Using those properties as the structure of our view-model (POCO class), we can manually create a C# class:
 

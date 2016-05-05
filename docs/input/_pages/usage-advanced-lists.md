@@ -1,3 +1,8 @@
+title: Lists
+permalink: /knowledgebase/lists/
+order: 4
+---
+
 ## Lists (mapping collections of nodes)
 
 Ditto has the ability to map collections of any item that is stored as `IPublishedContent` within the published content cache. This is done my means of the built in [TypeConverters](usage-advanced-typeconverters/) that are included within the package.

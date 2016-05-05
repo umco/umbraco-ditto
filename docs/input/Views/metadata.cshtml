@@ -1,0 +1,27 @@
+@{
+	var siteName = "Ditto - the friendly view-model mapper for Umbraco";
+	var title = Model.ContainsKey("title") ? Model.String("title") + " | " + siteName : siteName;
+	var description = Model.String("Excerpt", "Ditto - the friendly view-model mapper for Umbraco");
+	var keywords = Model.ContainsKey("tags") ? string.Join(",", Model.Get<string[]>("tags")).ToLower() : "ditto,umbraco";
+	var css = Model.ContainsKey("css") ? Model.Get<string[]>("css") : null;
+}
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>@Html.Raw(title)</title>
+
+	<meta name="description" content="@description">
+	<meta name="keywords" content="@keywords">
+	<meta name="generator" content="Wyam">
+
+	<base href="/">
+	<link rel="canonical" href="https://leekelleher.github.io/umbraco-ditto@(Model.String("permalink", "/"))">
+
+	<link rel="stylesheet" href="./assets/css/prettify.css">
+@if(css != null)
+{
+	foreach(var item in css)
+	{
+	<link rel="stylesheet" href="@item">
+	}
+}

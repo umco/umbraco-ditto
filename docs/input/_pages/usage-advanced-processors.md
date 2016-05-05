@@ -1,3 +1,8 @@
+title: Processors
+permalink: /knowledgebase/processors/
+order: 1
+---
+
 ## Processors
 
 The key feature of Ditto is the ability to process a value (typically from an `IPublishedContent` property) and set it to the property of the target view-model. To do this we use a Processor (or a combination of Processors).

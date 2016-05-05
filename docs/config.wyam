@@ -1,0 +1,83 @@
+===
+
+using Wyam.Modules.Razor.Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
+
+public static class HtmlHelperExtensions
+{		
+	public static HtmlString Name(this IMetadata metadata)
+	{
+		string name = metadata.String("DisplayName");
+        return name == null 
+			? new HtmlString(string.Empty) 
+			: new HtmlString(System.Net.WebUtility.HtmlEncode(name.ToString()).ToString()
+				.Replace(".", "<wbr>.")
+				.Replace("(", "<wbr>(")
+				.Replace(")", ")<wbr>")
+				.Replace("&lt;", "<wbr>&lt;")
+				.Replace("&gt;", "&gt;<wbr>"));		
+	}
+	
+	public static HtmlString GetTypeLink(this IExecutionContext context, IMetadata metadata)
+	{
+		if(metadata.String("Kind") == "TypeParameter")
+		{
+			IDocument declaringType = metadata.Get<IDocument>("DeclaringType");
+			if(declaringType != null)
+			{			
+				return declaringType.ContainsKey("WritePath")
+					? new HtmlString($"<a href=\"{context.GetLink(declaringType.FilePath("WritePath"))}#typeparam-{metadata["Name"]}\">{metadata.Name()}</a>")
+					: metadata.Name();
+			}
+		} 
+		return metadata.ContainsKey("WritePath")
+			? new HtmlString($"<a href=\"{context.GetLink(metadata.FilePath("WritePath"))}\">{metadata.Name()}</a>")
+			: metadata.Name();
+	}
+}
+
+public class DocsTable
+{
+	public IList<IDocument> Docs { get; set; }
+	public string Title { get; set; }
+	public string Header { get; set; }
+	public bool HasSummary { get; set; }
+}
+
+---
+
+Pipelines.Add("Assets",
+	CopyFiles("_assets/**")
+		.To(x => x.Path.FullPath.Replace("input/_assets/", "output/"))
+);
+
+Pipelines.Add("Pages",
+	ReadFiles("index.md"),
+	Concat(
+		ReadFiles("_pages/**/*.md")
+	),
+	FrontMatter(Yaml()),
+	Markdown()
+		.EscapeAt(true),
+	Replace("<pre><code", "<pre class=\"prettyprint\"><code"),
+	Razor()
+		.WithViewStart("Views/_ViewStart.cshtml"),
+	WriteFiles("." + @doc.String("permalink") + "index.html")
+);
+
+Pipelines.Add("Code",
+	ReadProject("../../src/Our.Umbraco.Ditto/Our.Umbraco.Ditto.csproj")
+);
+
+Pipelines.Add("API",
+	Documents("Code"),
+	AnalyzeCSharp()
+		.WhereNamespaces(false, "Our.Umbraco.Ditto")
+		.WherePublic()
+		.WithCssClasses("pre", "prettyprint")
+		.WithWritePathPrefix("api"),
+	Meta("layout", "api"),
+	Razor()
+		.WithViewStart("Views/_ViewStart.cshtml"),
+	WriteFiles()
+);

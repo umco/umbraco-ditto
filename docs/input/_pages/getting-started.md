@@ -1,3 +1,8 @@
+title: Getting Started
+permalink: /getting-started/
+order: 1
+---
+
 ## What is Ditto?
 
 Ditto is a view-model mapper specifically designed to map `IPublishedContent` objects to a custom type. The goal is to easily enable the use of strongly-typed models within your MVC views.
@@ -24,7 +29,7 @@ Once you have your type and a reference to Ditto, you can perform a mapping, usi
 var viewModel = Model.Content.As<MyViewModel>();
 ```
 
-For more detailed examples, please see the [Basic usage](usage-basic) section, followed by [Advanced usage](usage-advanced-attributes).
+For more detailed examples, please see the [Basic usage](./basic-usage/) section, followed by [Advanced usage](usage-advanced-attributes).
 
 
 ## Where do I configure Ditto?

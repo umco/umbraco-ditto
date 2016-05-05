@@ -12,4 +12,6 @@ Thumbs.db
 *.list
 
 artifacts/
+docs/.wyam/
+docs/output/
 src/packages/
