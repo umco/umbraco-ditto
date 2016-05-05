@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
-using Our.Umbraco.Ditto.Tests.Mocks;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto.Tests
@@ -12,25 +12,21 @@ namespace Our.Umbraco.Ditto.Tests
         public interface IMyModel
         {
             string Name { get; set; }
-            string MyProperty { get; set; }
         }
 
         public class MyModel1 : IMyModel
         {
             public string Name { get; set; }
-            public string MyProperty { get; set; }
         }
 
         public class MyModel2 : IMyModel
         {
             public string Name { get; set; }
-            public string MyProperty { get; set; }
         }
 
         public class MyModel3Suffixed : IMyModel
         {
             public string Name { get; set; }
-            public string MyProperty { get; set; }
         }
 
         public class MyMainModel
@@ -40,8 +36,8 @@ namespace Our.Umbraco.Ditto.Tests
             public IEnumerable<IMyModel> MyCollection { get; set; }
 
             [UmbracoProperty(Order = 0)]
-            [DittoDocTypeFactory(Sufix = "Suffixed", Order = 1)]
-            public IMyModel MyProp { get; set; } 
+            [DittoDocTypeFactory(Suffix = "Suffixed", Order = 1)]
+            public IMyModel MyProperty { get; set; }
         }
 
         [Test]
@@ -50,31 +46,19 @@ namespace Our.Umbraco.Ditto.Tests
             var content1 = new PublishedContentMock
             {
                 Name = "Content 1",
-                DocumentTypeAlias = "MyModel1",
-                Properties = new List<IPublishedContentProperty>
-                {
-                    new PublishedContentPropertyMock("MyProperty", "My Property 1", true)
-                }
+                DocumentTypeAlias = "MyModel1"
             };
 
             var content2 = new PublishedContentMock
             {
                 Name = "Content 2",
-                DocumentTypeAlias = "MyModel2",
-                Properties = new List<IPublishedContentProperty>
-                {
-                    new PublishedContentPropertyMock("MyProperty", "My Property 2", true)
-                }
+                DocumentTypeAlias = "MyModel2"
             };
 
             var content3 = new PublishedContentMock
             {
                 Name = "Content 3",
-                DocumentTypeAlias = "MyModel3",
-                Properties = new List<IPublishedContentProperty>
-                {
-                    new PublishedContentPropertyMock("MyProperty", "My Property 3", true)
-                }
+                DocumentTypeAlias = "MyModel3"
             };
 
 
@@ -83,22 +67,23 @@ namespace Our.Umbraco.Ditto.Tests
                 Properties = new List<IPublishedContentProperty>
                 {
                     new PublishedContentPropertyMock("MyCollection", new [] { content1, content2, content3  }, true),
-                    new PublishedContentPropertyMock("MyProp", content3, true)
+                    new PublishedContentPropertyMock("MyProperty", content3, true)
                 }
             };
 
             var model = content.As<MyMainModel>();
 
-            Assert.That(model.MyCollection.Count(), Is.EqualTo(3));
+            Assert.That(model.MyCollection, Is.Not.Null);
 
             var items = model.MyCollection.ToList();
 
-            Assert.That(items[0].GetType(), Is.EqualTo(typeof(MyModel1)));
-            Assert.That(items[1].GetType(), Is.EqualTo(typeof(MyModel2)));
-            Assert.Null(items[2]);
+            Assert.That(items, Has.Count.EqualTo(3));
+            Assert.That(items[0], Is.TypeOf<MyModel1>());
+            Assert.That(items[1], Is.TypeOf<MyModel2>());
+            Assert.That(items[2], Is.Null);
 
-            Assert.NotNull(model.MyProp);
-            Assert.That(model.MyProp.GetType(), Is.EqualTo(typeof(MyModel3Suffixed)));
+            Assert.That(model.MyProperty, Is.Not.Null);
+            Assert.That(model.MyProperty, Is.TypeOf<MyModel3Suffixed>());
         }
     }
 }
