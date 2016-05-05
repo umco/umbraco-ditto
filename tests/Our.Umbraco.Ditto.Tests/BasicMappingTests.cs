@@ -1,10 +1,10 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using System;
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
-    using global::Umbraco.Core.Models;
+﻿using System;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
+using Umbraco.Core.Models;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
     public class BasicMappingTests
     {
@@ -67,15 +67,9 @@
         {
             var value = "myValue";
 
-            var property = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "myProperty",
-                Value = value
-            };
-
             var content = new PublishedContentMock
             {
-                Properties = new[] { property }
+                Properties = new[] { new PublishedContentPropertyMock("myProperty", value) }
             };
 
             var model = content.As<BasicModelWithStringProperty>();
@@ -88,15 +82,9 @@
         {
             var value = new PublishedContentMock();
 
-            var property = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "myProperty",
-                Value = value
-            };
-
             var content = new PublishedContentMock
             {
-                Properties = new[] { property }
+                Properties = new[] { new PublishedContentPropertyMock("myProperty", value) }
             };
 
             var model = content.As<BasicModelWithPublishedContentProperty>();
@@ -110,15 +98,9 @@
             // The source is an `IPublishedContent`, the target is a `string`, type mismatch exception
             var value = new PublishedContentMock();
 
-            var property = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "myProperty",
-                Value = value
-            };
-
             var content = new PublishedContentMock
             {
-                Properties = new[] { property }
+                Properties = new[] { new PublishedContentPropertyMock("myProperty", value) }
             };
 
             TestDelegate code = () =>

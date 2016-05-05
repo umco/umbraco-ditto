@@ -1,4 +1,6 @@
 ﻿using Moq;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
@@ -6,9 +8,6 @@ using Umbraco.Core.Profiling;
 
 namespace Our.Umbraco.Ditto.Tests
 {
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
-
     [TestFixture]
     public class CacheTests
     {
@@ -46,9 +45,9 @@ namespace Our.Umbraco.Ditto.Tests
 
             ApplicationContext.EnsureContext(appCtx, true);
 
-            var prop1 = new PublishedContentPropertyMock { PropertyTypeAlias = "myProperty1", Value = "Test1" };
-            var prop2 = new PublishedContentPropertyMock { PropertyTypeAlias = "myProperty2", Value = "Test1" };
-            var prop3 = new PublishedContentPropertyMock { PropertyTypeAlias = "myProperty3", Value = "Test1" };
+            var prop1 = new PublishedContentPropertyMock("myProperty1", "Test1");
+            var prop2 = new PublishedContentPropertyMock("myProperty2", "Test1");
+            var prop3 = new PublishedContentPropertyMock("myProperty3", "Test1");
 
             var content = new PublishedContentMock
             {

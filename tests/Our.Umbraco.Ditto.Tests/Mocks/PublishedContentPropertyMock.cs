@@ -1,19 +1,14 @@
-﻿namespace Our.Umbraco.Ditto.Tests.Mocks
-{
-    using global::Umbraco.Core.Models;
+﻿using System;
+using Umbraco.Core.Models;
 
-    public class PublishedContentPropertyMock : IPublishedProperty
+namespace Our.Umbraco.Ditto.Tests.Mocks
+{
     {
         public PublishedContentPropertyMock()
-        {
-            HasValue = true;
-            PropertyTypeAlias = "alias";
-            Value = null;
-        }
+        { }
 
-        public PublishedContentPropertyMock(string alias, object value, bool hasValue)
+        public PublishedContentPropertyMock(string alias, object value)
         {
-            HasValue = hasValue;
             PropertyTypeAlias = alias;
             Value = value;
         }

@@ -48,7 +48,7 @@
             // For this test, the value would have already been resolved by a PropertyValueConverter to its intended type.
             var value = new MyModel2("foo");
 
-            var property = new Mocks.PublishedContentPropertyMock("myProperty", value, true);
+            var property = new Mocks.PublishedContentPropertyMock("myProperty", value);
             var content = new Mocks.PublishedContentMock { Properties = new[] { property } };
 
             var model = content.As<MyModel3>();

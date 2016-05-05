@@ -1,11 +1,11 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
-    using global::Umbraco.Core.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
+using Umbraco.Core.Models;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
     public class NestedPublishedContentTests
     {
@@ -30,11 +30,7 @@
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock
-                    {
-                        PropertyTypeAlias = "myProperty",
-                        Value = value
-                    }
+                    new PublishedContentPropertyMock( "myProperty", value)
                 }
             };
 
@@ -42,11 +38,7 @@
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock
-                    {
-                        PropertyTypeAlias = "myContent",
-                        Value = content1
-                    }
+                    new PublishedContentPropertyMock("myContent", content1)
                 }
             };
 
@@ -70,11 +62,7 @@
                     Name = "Node " + i,
                     Properties = new[]
                     {
-                        new PublishedContentPropertyMock
-                        {
-                            PropertyTypeAlias = "myProperty",
-                            Value = value
-                        }
+                        new PublishedContentPropertyMock("myProperty", value)
                     }
                 });
             }
@@ -83,11 +71,7 @@
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock
-                    {
-                        PropertyTypeAlias = "myContentList",
-                        Value = contentList
-                    }
+                    new PublishedContentPropertyMock("myContentList", contentList)
                 }
             };
 

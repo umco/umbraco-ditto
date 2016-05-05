@@ -1,8 +1,8 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
     public class ExistingObjectInstanceTests
     {
@@ -42,8 +42,10 @@
         public void Existing_Base_Object_Mapped()
         {
             var propertyValue = "Foo Bar";
-            var property = new PublishedContentPropertyMock { PropertyTypeAlias = "prop3", Value = propertyValue };
-            var content = new PublishedContentMock { Properties = new[] { property } };
+            var content = new PublishedContentMock
+            {
+                Properties = new[] { new PublishedContentPropertyMock("prop3", propertyValue) }
+            };
 
             var value = "Hello world";
             var model = new MyInheritedModel()
@@ -62,8 +64,10 @@
         public void Existing_Inherited_Object_Mapped()
         {
             var propertyValue = "Foo Bar";
-            var property = new PublishedContentPropertyMock { PropertyTypeAlias = "prop3", Value = propertyValue };
-            var content = new PublishedContentMock { Properties = new[] { property } };
+            var content = new PublishedContentMock
+            {
+                Properties = new[] { new PublishedContentPropertyMock("prop3", propertyValue) }
+            };
 
             var value = "Hello world";
             var model = new MyInheritedModel()

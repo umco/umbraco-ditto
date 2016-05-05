@@ -21,7 +21,7 @@
 
             Assert.That(value, Is.Not.Null);
 
-            var property = new Mocks.PublishedContentPropertyMock("myProperty", value, true);
+            var property = new Mocks.PublishedContentPropertyMock("myProperty", value);
             var content = new Mocks.PublishedContentMock { Properties = new[] { property } };
 
             var model = content.As<MyModel>();

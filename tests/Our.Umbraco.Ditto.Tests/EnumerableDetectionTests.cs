@@ -1,13 +1,10 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Globalization;
-    using System.Linq;
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
     public class EnumerableDetectionTests
     {
@@ -18,7 +15,7 @@
 
             public string EnumerableToSingle { get; set; }
 
-            public IEnumerable<string> SingleToEnumerable { get; set; } 
+            public IEnumerable<string> SingleToEnumerable { get; set; }
         }
 
         public class MyProcessorAttribute : DittoProcessorAttribute
@@ -38,13 +35,7 @@
         {
             var content = new PublishedContentMock
             {
-                Properties = new[] { 
-                    new PublishedContentPropertyMock
-                    {
-                        PropertyTypeAlias = "myProperty",
-                        Value = "myValue"
-                    }
-                }
+                Properties = new[] { new PublishedContentPropertyMock("myProperty", "myValue") }
             };
 
             var result = content.As<MyModel>();
@@ -57,30 +48,25 @@
         [Test]
         public void EnumerablesCast()
         {
+            var propertyValue = "myVal";
+
             var content = new PublishedContentMock
             {
-                Properties = new[] { 
-                    new PublishedContentPropertyMock
-                    {
-                        PropertyTypeAlias = "enumerableToSingle",
-                        Value = new[]{"myVal", "myOtherVal"}
-                    },
-                    new PublishedContentPropertyMock
-                    {
-                        PropertyTypeAlias = "singleToEnumerable",
-                        Value = "myVal"
-                    }
+                Properties = new[]
+                {
+                    new PublishedContentPropertyMock("enumerableToSingle",new[] { propertyValue, "myOtherVal" }),
+                    new PublishedContentPropertyMock("singleToEnumerable", propertyValue)
                 }
             };
 
             var result = content.As<MyModel>();
 
             Assert.NotNull(result.EnumerableToSingle);
-            Assert.AreEqual(result.EnumerableToSingle, "myVal");
+            Assert.AreEqual(result.EnumerableToSingle, propertyValue);
 
             Assert.NotNull(result.SingleToEnumerable);
             Assert.IsTrue(result.SingleToEnumerable.Any());
-            Assert.AreEqual(result.SingleToEnumerable.First(), "myVal");
+            Assert.AreEqual(result.SingleToEnumerable.First(), propertyValue);
         }
     }
 }

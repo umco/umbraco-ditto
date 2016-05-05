@@ -1,13 +1,13 @@
-﻿namespace Our.Umbraco.Ditto.Tests.Mocks
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using global::Umbraco.Core;
-    using global::Umbraco.Core.Models;
-    using global::Umbraco.Core.Models.PublishedContent;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Umbraco.Core;
+using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
+namespace Our.Umbraco.Ditto.Tests.Mocks
+{
     /// <summary>
     /// This class will implement all the methods needed to mock the behavior of an IPublishedContent node.
     /// Add to the constructor as more data is needed.

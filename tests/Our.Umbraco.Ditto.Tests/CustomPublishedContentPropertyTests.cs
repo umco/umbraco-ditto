@@ -1,8 +1,8 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using Mocks;
-    using NUnit.Framework;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
     public class CustomPublishedContentPropertyTests
     {
@@ -22,15 +22,9 @@
             var propertyValue = "foo";
             var objectValue = "bar";
 
-            var property = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "myProperty",
-                Value = propertyValue
-            };
-
             var content = new CustomPublishedContentMock
             {
-                Properties = new[] { property },
+                Properties = new[] { new PublishedContentPropertyMock("myProperty", propertyValue) },
                 MyProperty = objectValue
             };
 

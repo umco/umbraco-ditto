@@ -1,8 +1,8 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
     public class PrefixedPropertyTests
     {
@@ -22,21 +22,9 @@
         [Test]
         public void Prefixed_Properties_Can_Resolve()
         {
-            var prop1 = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "siteName",
-                Value = "Name"
-            };
-            var prop2 = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "siteDescription",
-                Value = "Description"
-            };
-            var prop3 = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "fallback",
-                Value = "Fallback"
-            };
+            var prop1 = new PublishedContentPropertyMock("siteName", "Name");
+            var prop2 = new PublishedContentPropertyMock("siteDescription", "Description");
+            var prop3 = new PublishedContentPropertyMock("fallback", "Fallback");
 
             var content = new PublishedContentMock
             {
@@ -53,16 +41,8 @@
         [Test]
         public void Prefixed_Properties_Can_UmbracoPropertyAttribute_Override()
         {
-            var prop1 = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "siteUnprefixedProp",
-                Value = "Site Unprefixed"
-            };
-            var prop2 = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "unprefixedProp",
-                Value = "Unprefixed"
-            };
+            var prop1 = new PublishedContentPropertyMock("siteUnprefixedProp", "Site Unprefixed");
+            var prop2 = new PublishedContentPropertyMock("unprefixedProp", "Unprefixed");
 
             var content = new PublishedContentMock
             {
@@ -83,11 +63,7 @@
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock
-                    {
-                        PropertyTypeAlias = "siteDescription",
-                        Value = "Description"
-                    }
+                    new PublishedContentPropertyMock("siteDescription", "Description")
                 },
                 Children = new[]
                 {

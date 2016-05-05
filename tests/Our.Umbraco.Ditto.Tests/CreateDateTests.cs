@@ -44,8 +44,8 @@ namespace Our.Umbraco.Ditto.Tests
                 CreateDate = date,
                 Properties = new List<IPublishedProperty>
                 {
-                    new PublishedContentPropertyMock("pubDate", null, false),
-                    new PublishedContentPropertyMock("articleDate", otherDate, true)
+                    new PublishedContentPropertyMock("pubDate", null),
+                    new PublishedContentPropertyMock("articleDate", otherDate)
                 }
             };
 

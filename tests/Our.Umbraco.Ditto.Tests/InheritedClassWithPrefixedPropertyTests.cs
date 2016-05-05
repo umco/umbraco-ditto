@@ -19,7 +19,7 @@
         public void InheritedClassWithPrefixedProperty_Mapping()
         {
             var value = "foo bar";
-            var property = new Mocks.PublishedContentPropertyMock("inherited_myProperty", value, true);
+            var property = new Mocks.PublishedContentPropertyMock("inherited_myProperty", value);
             var content = new Mocks.PublishedContentMock() { Properties = new[] { property } };
 
             var model = content.As<InheritedModel>();

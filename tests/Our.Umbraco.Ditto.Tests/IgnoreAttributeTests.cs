@@ -22,7 +22,7 @@
             this.PropertyValue = "foo bar";
             this.PublishedContent = new Mocks.PublishedContentMock
             {
-                Properties = new[] { new Mocks.PublishedContentPropertyMock("myProperty", this.PropertyValue, true) }
+                Properties = new[] { new Mocks.PublishedContentPropertyMock("myProperty", this.PropertyValue) }
             };
         }
 

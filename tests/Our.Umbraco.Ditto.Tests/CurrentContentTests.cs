@@ -1,9 +1,9 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using System;
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
+﻿using System;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
     public class CurrentContentTests
     {
@@ -33,21 +33,9 @@
         [Test]
         public void CurrentContent_Property_Mapped()
         {
-            var metaTitle = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "metaTitle",
-                Value = "This is the meta title"
-            };
-            var metaDescription = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "metaDescription",
-                Value = "This is the meta description"
-            };
-            var metaKeywords = new PublishedContentPropertyMock
-            {
-                PropertyTypeAlias = "metaKeywords",
-                Value = "these,are,meta,keywords"
-            };
+            var metaTitle = new PublishedContentPropertyMock("metaTitle", "This is the meta title");
+            var metaDescription = new PublishedContentPropertyMock("metaDescription", "This is the meta description");
+            var metaKeywords = new PublishedContentPropertyMock("metaKeywords", "these,are,meta,keywords");
 
             var content = new PublishedContentMock
             {

@@ -1,9 +1,9 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
-    using global::Umbraco.Web;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
+using Umbraco.Web;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
     public class ConversionHandlerTests
     {
@@ -71,16 +71,8 @@
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock
-                    {
-                        PropertyTypeAlias = "prop1",
-                        Value = "Test1"
-                    },
-                    new PublishedContentPropertyMock
-                    {
-                        PropertyTypeAlias = "prop2",
-                        Value = "Test2"
-                    }
+                    new PublishedContentPropertyMock("prop1","Test1"),
+                    new PublishedContentPropertyMock("prop2","Test2")
                 }
             };
 
@@ -98,16 +90,8 @@
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock
-                    {
-                        PropertyTypeAlias = "prop1",
-                        Value = "Test1"
-                    },
-                    new PublishedContentPropertyMock
-                    {
-                        PropertyTypeAlias = "prop2",
-                        Value = "Test2"
-                    }
+                    new PublishedContentPropertyMock("prop1","Test1"),
+                    new PublishedContentPropertyMock("prop2","Test2")
                 }
             };
 

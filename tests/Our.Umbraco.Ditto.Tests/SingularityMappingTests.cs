@@ -1,11 +1,10 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using System.ComponentModel;
-    using System.Linq;
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
-    using global::Umbraco.Core.Models;
+﻿using System.Linq;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
+using Umbraco.Core.Models;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
     public class SingularityMappingTests
     {
@@ -21,15 +20,9 @@
             var mock = new PublishedContentMock();
             var items = Enumerable.Repeat<IPublishedContent>(mock, 3);
 
-            var property = new PublishedContentPropertyMock()
-            {
-                PropertyTypeAlias = "myProperty",
-                Value = items
-            };
-
             var content = new PublishedContentMock()
             {
-                Properties = new[] { property }
+                Properties = new[] { new PublishedContentPropertyMock("myProperty", items) }
             };
 
             var model = content.As<MyModel>();
