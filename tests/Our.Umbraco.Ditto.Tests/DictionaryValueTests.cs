@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
-using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Processors")]
     public class DictionaryValueTests
     {
         public class MyModel

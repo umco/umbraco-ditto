@@ -5,6 +5,7 @@ using Our.Umbraco.Ditto.Tests.Mocks;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Mapping"), Category("Processing")]
     public class CurrentContentTests
     {
         public class MyModel
@@ -30,24 +31,24 @@ namespace Our.Umbraco.Ditto.Tests
             public MyCircularReferenceModel MyCircularReferenceProperty { get; set; }
         }
 
-        [Test]
         public void CurrentContent_Property_Mapped()
         {
-            var metaTitle = new PublishedContentPropertyMock("metaTitle", "This is the meta title");
-            var metaDescription = new PublishedContentPropertyMock("metaDescription", "This is the meta description");
-            var metaKeywords = new PublishedContentPropertyMock("metaKeywords", "these,are,meta,keywords");
-
             var content = new PublishedContentMock
             {
-                Properties = new[] { metaTitle, metaDescription, metaKeywords }
+                Properties = new[]
+                {
+                    new PublishedContentPropertyMock("metaTitle", "This is the meta title"),
+                    new PublishedContentPropertyMock("metaDescription", "This is the meta description"),
+                    new PublishedContentPropertyMock("metaKeywords", "these,are,meta,keywords")
+                }
             };
 
             var model = content.As<MyModel>();
 
             Assert.That(model, Is.Not.Null);
-            Assert.That(model.MetaData1, Is.Not.Null, "We expect the property to be populated.");
+            Assert.That(model.MetaData1, Is.Not.Null);
             Assert.That(model.MetaData1, Is.TypeOf<MyMetaDataModel>());
-            Assert.That(model.MetaData2, Is.Null, "We expect the property not to be populated.");
+            Assert.That(model.MetaData2, Is.Null);
         }
 
         [Test]

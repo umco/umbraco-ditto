@@ -5,6 +5,7 @@ using Umbraco.Web;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("ConversionHandlers")]
     public class ConversionHandlerTests
     {
         #region Models

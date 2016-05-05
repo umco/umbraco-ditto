@@ -1,9 +1,10 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using global::Umbraco.Core.Models;
-    using NUnit.Framework;
+﻿using NUnit.Framework;
+using Umbraco.Core.Models;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("Processors")]
     public class IgnoreAttributeTests
     {
         public class MyModel

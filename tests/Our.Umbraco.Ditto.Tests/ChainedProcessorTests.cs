@@ -4,6 +4,7 @@
     using Our.Umbraco.Ditto.Tests.Mocks;
 
     [TestFixture]
+    [Category("Processors")]
     public class ChainedProcessorTests
     {
         public class MyCustomModel

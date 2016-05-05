@@ -1,9 +1,10 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("Processors")]
     public class MultiProcessorTests
     {
         public class MyModel
@@ -17,7 +18,8 @@
         public class MyMultiProcessorAttribute : DittoMultiProcessorAttribute
         {
             public MyMultiProcessorAttribute()
-                : base(new DittoProcessorAttribute[] {
+                : base(new DittoProcessorAttribute[]
+                {
                       new MyCustomProcessor1Attribute(),
                       new MyCustomProcessor2Attribute(),
                       new MyCustomProcessor3Attribute()
@@ -30,7 +32,9 @@
             public override object ProcessValue()
             {
                 if (Value is string)
+                {
                     return ((string)Value) + "Test1";
+                }
 
                 return null;
             }
@@ -41,7 +45,9 @@
             public override object ProcessValue()
             {
                 if (Value is string)
+                {
                     return ((string)Value) + "Test2";
+                }
 
                 return null;
             }
@@ -52,14 +58,16 @@
             public override object ProcessValue()
             {
                 if (Value is string)
+                {
                     return ((string)Value) + "Test3";
+                }
 
                 return null;
             }
         }
 
         [Test]
-        public void MultiProcessorTests_MultiProcessorProcesses()
+        public void MultiProcessor_Processes_Test()
         {
             // In this test, the `MyProperty` property gets a `string` value
             // via the `UmbracoProperty`. The `string` type/value is passed
@@ -69,10 +77,10 @@
             var content = new PublishedContentMock() { Name = "MyName" };
             var model = content.As<MyModel>();
 
-            Assert.IsNotNull(model);
-            Assert.IsInstanceOf<MyModel>(model);
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model, Is.InstanceOf<MyModel>());
 
-            Assert.IsNotNull(model.MyProperty);
+            Assert.That(model.MyProperty, Is.Not.Null);
             Assert.That(model.MyProperty, Is.EqualTo("MyNameTest1Test2Test3Test3"));
         }
     }

@@ -1,9 +1,11 @@
 ﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Processors")]
     public class DefaultProcessorTests
     {
         public class MyModel
@@ -33,19 +35,18 @@ namespace Our.Umbraco.Ditto.Tests
             }
         }
 
-        public IPublishedContent PublishedContent { get; set; }
+        private IPublishedContent Content;
 
         [TestFixtureSetUp]
         public void Init()
         {
-            var name = "MyName";
-            this.PublishedContent = new Mocks.PublishedContentMock { Name = name };
+            Content = new PublishedContentMock { Name = "MyName" };
         }
 
         [Test]
         public void Default_Processor_IsUsed()
         {
-            var model = this.PublishedContent.As<MyModel>();
+            var model = Content.As<MyModel>();
 
             Assert.That(model.Name, Is.EqualTo("MyName"));
         }
@@ -53,7 +54,7 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Default_Processor_ClassLevel_IsUsed()
         {
-            var model = this.PublishedContent.As<MyCustomModel>();
+            var model = Content.As<MyCustomModel>();
 
             Assert.That(model.Name, Is.EqualTo("MyCustomName"));
         }
@@ -63,11 +64,11 @@ namespace Our.Umbraco.Ditto.Tests
         {
             Ditto.RegisterDefaultProcessorType<MyGlobalProcessorAttribute>();
 
-            var model = this.PublishedContent.As<MyModel>();
+            var model = Content.As<MyModel>();
 
             Assert.That(model.Name, Is.EqualTo("MyGlobalName"));
 
-            // tidy-up after test, otherwise the new default processor will cause other tests to fail!
+            // Tidy-up after test, otherwise the new default processor will cause other tests to fail!
             Ditto.RegisterDefaultProcessorType<UmbracoPropertyAttribute>();
         }
     }

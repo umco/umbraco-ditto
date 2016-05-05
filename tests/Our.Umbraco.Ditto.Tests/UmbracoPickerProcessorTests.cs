@@ -18,6 +18,7 @@ using Umbraco.Web.Security;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Processors")]
     public class UmbracoPickerProcessorTests
     {
         public class MyModel<T>

@@ -7,6 +7,7 @@ using Umbraco.Core.Models;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Mapping")]
     public class NestedPublishedContentTests
     {
         public class MyModel
@@ -28,18 +29,12 @@ namespace Our.Umbraco.Ditto.Tests
 
             var content1 = new PublishedContentMock
             {
-                Properties = new[]
-                {
-                    new PublishedContentPropertyMock( "myProperty", value)
-                }
+                Properties = new[] { new PublishedContentPropertyMock("myProperty", value) }
             };
 
             var content2 = new PublishedContentMock
             {
-                Properties = new[]
-                {
-                    new PublishedContentPropertyMock("myContent", content1)
-                }
+                Properties = new[] { new PublishedContentPropertyMock("myContent", content1) }
             };
 
             var model = content2.As<MyModel>();
@@ -60,19 +55,13 @@ namespace Our.Umbraco.Ditto.Tests
                 {
                     Id = i,
                     Name = "Node " + i,
-                    Properties = new[]
-                    {
-                        new PublishedContentPropertyMock("myProperty", value)
-                    }
+                    Properties = new[] { new PublishedContentPropertyMock("myProperty", value) }
                 });
             }
 
             var content2 = new PublishedContentMock
             {
-                Properties = new[]
-                {
-                    new PublishedContentPropertyMock("myContentList", contentList)
-                }
+                Properties = new[] { new PublishedContentPropertyMock("myContentList", contentList) }
             };
 
             var model = content2.As<MyModel>();

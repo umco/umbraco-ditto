@@ -5,6 +5,7 @@
     using global::Umbraco.Core.Models;
 
     [TestFixture]
+    [Category("Type Casting")]
     public class CastableInterfaceTests
     {
         [Test]

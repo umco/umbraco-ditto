@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="Microsoft.Owin">
       <HintPath>..\..\src\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     </Reference>
     <Reference Include="MiniProfiler">
       <HintPath>..\..\src\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>

@@ -9,6 +9,7 @@ using Umbraco.Core.Profiling;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Caching"), Category("Performance"), Category("Processors")]
     public class CacheTests
     {
         public class MyValueResolverModel1

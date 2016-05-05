@@ -4,6 +4,7 @@ using Our.Umbraco.Ditto.Tests.Mocks;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Mapping")]
     public class ExistingObjectInstanceTests
     {
         public class MyBaseModel
@@ -16,7 +17,6 @@ namespace Our.Umbraco.Ditto.Tests
 
         public class MyInheritedModel : MyBaseModel
         {
-            [UmbracoProperty("prop3")]
             public string MyProperty3 { get; set; }
         }
 
@@ -44,7 +44,7 @@ namespace Our.Umbraco.Ditto.Tests
             var propertyValue = "Foo Bar";
             var content = new PublishedContentMock
             {
-                Properties = new[] { new PublishedContentPropertyMock("prop3", propertyValue) }
+                Properties = new[] { new PublishedContentPropertyMock("MyProperty3", propertyValue) }
             };
 
             var value = "Hello world";
@@ -66,7 +66,7 @@ namespace Our.Umbraco.Ditto.Tests
             var propertyValue = "Foo Bar";
             var content = new PublishedContentMock
             {
-                Properties = new[] { new PublishedContentPropertyMock("prop3", propertyValue) }
+                Properties = new[] { new PublishedContentPropertyMock("MyProperty3", propertyValue) }
             };
 
             var value = "Hello world";

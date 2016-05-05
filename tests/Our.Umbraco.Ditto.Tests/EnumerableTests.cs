@@ -6,6 +6,7 @@
     /// The enumerable tests.
     /// </summary>
     [TestFixture]
+    [Category("Collections")]
     public class EnumerableTests
     {
         /// <summary>

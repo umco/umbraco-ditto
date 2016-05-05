@@ -6,6 +6,7 @@ using Umbraco.Core.Models;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Mapping")]
     public class BasicMappingTests
     {
         public class BasicModel

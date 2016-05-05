@@ -6,6 +6,7 @@ using Our.Umbraco.Ditto.Tests.Mocks;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Collections"), Category("Processors")]
     public class EnumerableDetectionTests
     {
         public class MyModel
@@ -40,9 +41,9 @@ namespace Our.Umbraco.Ditto.Tests
 
             var result = content.As<MyModel>();
 
-            Assert.NotNull(result.MyProperty);
-            Assert.True(result.MyProperty.Any());
-            Assert.AreEqual(result.MyProperty["hello"], "world");
+            Assert.That(result.MyProperty, Is.Not.Null);
+            Assert.That(result.MyProperty.Any(), Is.True);
+            Assert.That(result.MyProperty["hello"], Is.EqualTo("world"));
         }
 
         [Test]
@@ -54,19 +55,19 @@ namespace Our.Umbraco.Ditto.Tests
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock("enumerableToSingle",new[] { propertyValue, "myOtherVal" }),
+                    new PublishedContentPropertyMock("enumerableToSingle", new[] { propertyValue, "myOtherVal" }),
                     new PublishedContentPropertyMock("singleToEnumerable", propertyValue)
                 }
             };
 
             var result = content.As<MyModel>();
 
-            Assert.NotNull(result.EnumerableToSingle);
-            Assert.AreEqual(result.EnumerableToSingle, propertyValue);
+            Assert.That(result.EnumerableToSingle, Is.Not.Null);
+            Assert.That(result.EnumerableToSingle, Is.EqualTo(propertyValue));
 
-            Assert.NotNull(result.SingleToEnumerable);
-            Assert.IsTrue(result.SingleToEnumerable.Any());
-            Assert.AreEqual(result.SingleToEnumerable.First(), propertyValue);
+            Assert.That(result.SingleToEnumerable, Is.Not.Null);
+            Assert.That(result.SingleToEnumerable.Any(), Is.True);
+            Assert.That(result.SingleToEnumerable.First(), Is.EqualTo(propertyValue));
         }
     }
 }

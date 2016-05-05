@@ -1,8 +1,10 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using NUnit.Framework;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("Processors")]
     public class InheritedClassWithPrefixedPropertyTests
     {
         public class BasicModel
@@ -12,15 +14,16 @@
 
         [UmbracoProperties(Prefix = "inherited_")]
         public class InheritedModel : BasicModel
-        {
-        }
+        { }
 
         [Test]
         public void InheritedClassWithPrefixedProperty_Mapping()
         {
             var value = "foo bar";
-            var property = new Mocks.PublishedContentPropertyMock("inherited_myProperty", value);
-            var content = new Mocks.PublishedContentMock() { Properties = new[] { property } };
+            var content = new PublishedContentMock()
+            {
+                Properties = new[] { new PublishedContentPropertyMock("inherited_myProperty", value) }
+            };
 
             var model = content.As<InheritedModel>();
 

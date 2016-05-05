@@ -1,17 +1,17 @@
-﻿namespace Our.Umbraco.Ditto.Tests
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using NUnit.Framework;
+using Umbraco.Core.Models;
+
+namespace Our.Umbraco.Ditto.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-
-    using NUnit.Framework;
-    using global::Umbraco.Core.Models;
-
     /// <summary>
     /// The type inference tests.
     /// </summary>
     [TestFixture]
+    [Category("Type Casting")]
     public class TypeInferenceTests
     {
         /// <summary>

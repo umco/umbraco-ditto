@@ -7,6 +7,7 @@ using Umbraco.Core.Models;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Processors")]
     public class CreateDateTests
     {
         public class MyModel
@@ -25,7 +26,6 @@ namespace Our.Umbraco.Ditto.Tests
         public void CreateDate_Returned()
         {
             var date = DateTime.Now;
-
             var content = new PublishedContentMock { CreateDate = date };
 
             var model = content.As<MyModel>();
@@ -52,8 +52,7 @@ namespace Our.Umbraco.Ditto.Tests
             var model = content.As<MyModel>();
 
             Assert.That(model.MyProperty2, Is.EqualTo(date));
-            Assert.That(model.MyProperty3, Is.EqualTo(otherDate));
-            Assert.That(model.MyProperty3, !Is.EqualTo(date));
+            Assert.That(model.MyProperty3, Is.EqualTo(otherDate).And.Not.EqualTo(date));
         }
     }
 }
