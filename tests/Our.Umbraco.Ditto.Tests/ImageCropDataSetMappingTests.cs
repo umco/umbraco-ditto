@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
-using Our.Umbraco.Ditto.Tests.Models;
 using Umbraco.Core.Models;
+using Umbraco.Web.Models;
 
 namespace Our.Umbraco.Ditto.Tests
 {

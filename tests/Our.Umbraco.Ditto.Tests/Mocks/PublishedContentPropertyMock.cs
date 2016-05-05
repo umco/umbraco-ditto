@@ -1,8 +1,8 @@
-﻿using System;
-using Umbraco.Core.Models;
+﻿using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto.Tests.Mocks
 {
+    public class PublishedContentPropertyMock : IPublishedProperty
     {
         public PublishedContentPropertyMock()
         { }
