@@ -41,8 +41,16 @@ namespace Our.Umbraco.Ditto.Tests
         public void Init()
         {
             if (!PublishedCachesResolver.HasCurrent)
+            {
+                var mockPublishedContentCache = new Mock<IPublishedContentCache>();
+
+                mockPublishedContentCache
+                    .Setup(x => x.GetById(It.IsAny<UmbracoContext>(), It.IsAny<bool>(), It.IsAny<int>()))
+                    .Returns<UmbracoContext, bool, int>((ctx, preview, id) => new MockPublishedContent { Id = id });
+
                 PublishedCachesResolver.Current =
-                    new PublishedCachesResolver(new PublishedCaches(new MockPublishedContentCache(), new MockPublishedMediaCache()));
+                    new PublishedCachesResolver(new PublishedCaches(mockPublishedContentCache.Object, new Mock<IPublishedMediaCache>().Object));
+            }
 
             UmbracoContext.EnsureContext(
                 httpContext: Mock.Of<HttpContextBase>(),
@@ -58,9 +66,7 @@ namespace Our.Umbraco.Ditto.Tests
 
             Content = new MockPublishedContent()
             {
-                Properties = new[]
-                {
-                    new MockPublishedContentProperty("myProperty", NodeId) }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", NodeId) }
             };
 
             UmbracoPickerHelper.GetMembershipHelper = (ctx) => new MembershipHelper(ctx, Mock.Of<MembershipProvider>(), Mock.Of<RoleProvider>());

@@ -116,8 +116,6 @@
     <Compile Include="InheritedClassWithPrefixedPropertyTests.cs" />
     <Compile Include="JsonSerializationWithTypeConverterTests.cs" />
     <Compile Include="MockProcessorTests.cs" />
-    <Compile Include="Mocks\MockPublishedContentCache.cs" />
-    <Compile Include="Mocks\MockPublishedMediaCache.cs" />
     <Compile Include="AppSettingsTests.cs" />
     <Compile Include="Mocks\MockPublishedContent.cs" />
     <Compile Include="Mocks\MockPublishedContentProperty.cs" />
