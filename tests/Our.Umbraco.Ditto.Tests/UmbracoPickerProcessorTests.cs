@@ -56,11 +56,11 @@ namespace Our.Umbraco.Ditto.Tests
 
             NodeId = 1234;
 
-            Content = new PublishedContentMock()
+            Content = new MockPublishedContent()
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock("myProperty", NodeId) }
+                    new MockPublishedContentProperty("myProperty", NodeId) }
             };
 
             UmbracoPickerHelper.GetMembershipHelper = (ctx) => new MembershipHelper(ctx, Mock.Of<MembershipProvider>(), Mock.Of<RoleProvider>());

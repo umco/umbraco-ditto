@@ -24,7 +24,7 @@ namespace Our.Umbraco.Ditto.Tests
         [TestCase(typeof(MyModel<string>), ExpectedException = typeof(InvalidOperationException))]
         public void PocoConstructor_Tests(Type modelType)
         {
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As(modelType);
 

@@ -2,12 +2,12 @@
 
 namespace Our.Umbraco.Ditto.Tests.Mocks
 {
-    public class PublishedContentPropertyMock : IPublishedProperty
+    public class MockPublishedContentProperty : IPublishedProperty
     {
-        public PublishedContentPropertyMock()
+        public MockPublishedContentProperty()
         { }
 
-        public PublishedContentPropertyMock(string alias, object value)
+        public MockPublishedContentProperty(string alias, object value)
         {
             PropertyTypeAlias = alias;
             Value = value;

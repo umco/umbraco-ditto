@@ -28,7 +28,7 @@ namespace Our.Umbraco.Ditto.Tests
         public void CaseSensitivePropertyName_Mapped()
         {
             var name = "MyCustomName";
-            var content = new PublishedContentMock { Name = name };
+            var content = new MockPublishedContent { Name = name };
 
             var model = content.As<MyModel>();
 

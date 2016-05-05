@@ -21,9 +21,9 @@ namespace Our.Umbraco.Ditto.Tests
         public void Init()
         {
             this.PropertyValue = "foo bar";
-            this.PublishedContent = new Mocks.PublishedContentMock
+            this.PublishedContent = new Mocks.MockPublishedContent
             {
-                Properties = new[] { new Mocks.PublishedContentPropertyMock("myProperty", this.PropertyValue) }
+                Properties = new[] { new Mocks.MockPublishedContentProperty("myProperty", this.PropertyValue) }
             };
         }
 

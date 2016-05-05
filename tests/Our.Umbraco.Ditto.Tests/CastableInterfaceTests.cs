@@ -11,7 +11,7 @@
         [Test]
         public void Castable_Interface_Can_Map()
         {
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Id = 123,
                 Name = "Test"

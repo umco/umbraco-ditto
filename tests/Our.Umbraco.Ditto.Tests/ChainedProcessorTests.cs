@@ -94,7 +94,7 @@
             // to the `MyCustomConverter` so to convert the `string` to a
             // `MyCustomModel` type/object.
 
-            var content = new PublishedContentMock() { Name = "MyName" };
+            var content = new MockPublishedContent() { Name = "MyName" };
             var model = content.As<MyModel1>();
 
             Assert.IsNotNull(model);
@@ -115,7 +115,7 @@
             // Since the value type is the same as the target property type,
             // the property value can be set.
 
-            var content = new PublishedContentMock() { Name = "MyName" };
+            var content = new MockPublishedContent() { Name = "MyName" };
             var model = content.As<MyModel2>();
 
             Assert.IsNotNull(model);
@@ -134,7 +134,7 @@
             // to the `MyCustomConverter` so to convert the `string` to a
             // `MyCustomModel` type/object.
 
-            var content = new PublishedContentMock() { Name = "MyName" };
+            var content = new MockPublishedContent() { Name = "MyName" };
             var model = content.As<MyModel3>();
 
             Assert.IsNotNull(model);

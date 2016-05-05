@@ -27,14 +27,14 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var value = "My Inner Property Value";
 
-            var content1 = new PublishedContentMock
+            var content1 = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("myProperty", value) }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
             };
 
-            var content2 = new PublishedContentMock
+            var content2 = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("myContent", content1) }
+                Properties = new[] { new MockPublishedContentProperty("myContent", content1) }
             };
 
             var model = content2.As<MyModel>();
@@ -51,17 +51,17 @@ namespace Our.Umbraco.Ditto.Tests
 
             for (var i = 0; i < 5; i++)
             {
-                contentList.Add(new PublishedContentMock
+                contentList.Add(new MockPublishedContent
                 {
                     Id = i,
                     Name = "Node " + i,
-                    Properties = new[] { new PublishedContentPropertyMock("myProperty", value) }
+                    Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
                 });
             }
 
-            var content2 = new PublishedContentMock
+            var content2 = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("myContentList", contentList) }
+                Properties = new[] { new MockPublishedContentProperty("myContentList", contentList) }
             };
 
             var model = content2.As<MyModel>();

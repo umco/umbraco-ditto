@@ -31,7 +31,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
 
         public IPublishedContent GetById(UmbracoContext umbracoContext, bool preview, int contentId)
         {
-            return new PublishedContentMock { Id = contentId };
+            return new MockPublishedContent { Id = contentId };
         }
 
         public IPublishedContent GetByRoute(UmbracoContext umbracoContext, bool preview, string route, bool? hideTopLevelNode = default(bool?))

@@ -18,12 +18,12 @@ namespace Our.Umbraco.Ditto.Tests
         public void Single_PublishedContent_Mapped_From_Collection()
         {
             // make a collection of content node objects
-            var items = Enumerable.Repeat<IPublishedContent>(new PublishedContentMock(), 3);
+            var items = Enumerable.Repeat<IPublishedContent>(new MockPublishedContent(), 3);
 
             // set the collection to a content node's property
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("myProperty", items) }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", items) }
             };
 
             // map the content node to our model

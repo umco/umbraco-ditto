@@ -33,7 +33,7 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void MockValue_Property_Resolved()
         {
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As<MyMockValueModel>();
 

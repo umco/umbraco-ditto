@@ -12,9 +12,9 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
     /// This class will implement all the methods needed to mock the behavior of an IPublishedContent node.
     /// Add to the constructor as more data is needed.
     /// </summary>
-    public class PublishedContentMock : IPublishedContent
+    public class MockPublishedContent : IPublishedContent
     {
-        public PublishedContentMock()
+        public MockPublishedContent()
         {
             Id = 1234;
             Name = "Name";
@@ -22,7 +22,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
             Properties = new Collection<IPublishedProperty>();
         }
 
-        public PublishedContentMock(
+        public MockPublishedContent(
             int id,
             string name,
             IEnumerable<IPublishedContent> children,

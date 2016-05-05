@@ -33,13 +33,13 @@ namespace Our.Umbraco.Ditto.Tests
 
         public void CurrentContent_Property_Mapped()
         {
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock("metaTitle", "This is the meta title"),
-                    new PublishedContentPropertyMock("metaDescription", "This is the meta description"),
-                    new PublishedContentPropertyMock("metaKeywords", "these,are,meta,keywords")
+                    new MockPublishedContentProperty("metaTitle", "This is the meta title"),
+                    new MockPublishedContentProperty("metaDescription", "This is the meta description"),
+                    new MockPublishedContentProperty("metaKeywords", "these,are,meta,keywords")
                 }
             };
 
@@ -54,7 +54,7 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void CurrentContent_InfineLoop_Check()
         {
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             TestDelegate code = () => { content.As<MyCircularReferenceModel>(); };
 

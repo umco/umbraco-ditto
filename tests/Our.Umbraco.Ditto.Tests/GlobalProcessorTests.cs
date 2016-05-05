@@ -49,7 +49,7 @@ namespace Our.Umbraco.Ditto.Tests
             Ditto.RegisterProcessorAttribute<MyIntModel, MyIntProcessorAttr>(new MyIntProcessorAttr { AttrProp = 2 });
             Ditto.RegisterProcessorAttribute<MyIntModel, MyIntProcessorAttr>(new MyIntProcessorAttr { AttrProp = 5 });
 
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As<MyProcessorModel>();
 

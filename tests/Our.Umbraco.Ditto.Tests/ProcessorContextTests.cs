@@ -39,7 +39,7 @@ namespace Our.Umbraco.Ditto.Tests
         public void ProcessorContext_Resolves()
         {
             var value = "Test";
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
             var context = new MyProcessorContext { MyContextProperty = value };
 
             var model = content.As<MyValueResolverModel>(processorContexts: new[] { context });
@@ -51,7 +51,7 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void ProcessorContext_Resolves_Without_Registered_Context()
         {
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As<MyValueResolverModel>();
 

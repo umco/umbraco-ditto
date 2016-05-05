@@ -27,7 +27,7 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Custom_Processor_Processes()
         {
-            var content = new PublishedContentMock() { Name = "MyName" };
+            var content = new MockPublishedContent() { Name = "MyName" };
 
             var model = content.As<MyModel>();
 

@@ -74,7 +74,7 @@ namespace Our.Umbraco.Ditto.Tests
             // to the `MyCustomConverter` so to convert the `string` to a
             // `MyCustomModel` type/object.
 
-            var content = new PublishedContentMock() { Name = "MyName" };
+            var content = new MockPublishedContent() { Name = "MyName" };
             var model = content.As<MyModel>();
 
             Assert.That(model, Is.Not.Null);

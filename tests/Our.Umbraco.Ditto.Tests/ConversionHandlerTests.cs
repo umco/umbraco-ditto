@@ -68,12 +68,12 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Conversion_Handlers_Can_Run()
         {
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock("prop1","Test1"),
-                    new PublishedContentPropertyMock("prop2","Test2")
+                    new MockPublishedContentProperty("prop1","Test1"),
+                    new MockPublishedContentProperty("prop2","Test2")
                 }
             };
 
@@ -87,12 +87,12 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Conversion_Handlers_Can_Run_Global()
         {
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock("prop1","Test1"),
-                    new PublishedContentPropertyMock("prop2","Test2")
+                    new MockPublishedContentProperty("prop1","Test1"),
+                    new MockPublishedContentProperty("prop2","Test2")
                 }
             };
 

@@ -23,7 +23,7 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Existing_Object_Mapped()
         {
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var value = "Hello world";
             var model = new MyBaseModel()
@@ -42,9 +42,9 @@ namespace Our.Umbraco.Ditto.Tests
         public void Existing_Base_Object_Mapped()
         {
             var propertyValue = "Foo Bar";
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("MyProperty3", propertyValue) }
+                Properties = new[] { new MockPublishedContentProperty("MyProperty3", propertyValue) }
             };
 
             var value = "Hello world";
@@ -64,9 +64,9 @@ namespace Our.Umbraco.Ditto.Tests
         public void Existing_Inherited_Object_Mapped()
         {
             var propertyValue = "Foo Bar";
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("MyProperty3", propertyValue) }
+                Properties = new[] { new MockPublishedContentProperty("MyProperty3", propertyValue) }
             };
 
             var value = "Hello world";

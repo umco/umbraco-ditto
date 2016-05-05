@@ -17,7 +17,7 @@ namespace Our.Umbraco.Ditto.Tests
         public void AppSetting_Property_Returned()
         {
             var value = "MyAppSettingValue";
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As<MyAppSettingsModel>();
 

@@ -20,9 +20,9 @@ namespace Our.Umbraco.Ditto.Tests
         public void InheritedClassWithPrefixedProperty_Mapping()
         {
             var value = "foo bar";
-            var content = new PublishedContentMock()
+            var content = new MockPublishedContent()
             {
-                Properties = new[] { new PublishedContentPropertyMock("inherited_myProperty", value) }
+                Properties = new[] { new MockPublishedContentProperty("inherited_myProperty", value) }
             };
 
             var model = content.As<InheritedModel>();

@@ -34,9 +34,9 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void GenericDictionaryPropertyIsNotDetectedAsCastableEnumerable()
         {
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("myProperty", "myValue") }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", "myValue") }
             };
 
             var result = content.As<MyModel>();
@@ -51,12 +51,12 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var propertyValue = "myVal";
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock("enumerableToSingle", new[] { propertyValue, "myOtherVal" }),
-                    new PublishedContentPropertyMock("singleToEnumerable", propertyValue)
+                    new MockPublishedContentProperty("enumerableToSingle", new[] { propertyValue, "myOtherVal" }),
+                    new MockPublishedContentProperty("singleToEnumerable", propertyValue)
                 }
             };
 

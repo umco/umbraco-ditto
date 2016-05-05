@@ -51,8 +51,8 @@ namespace Our.Umbraco.Ditto.Tests
 
             Assert.That(value, Is.Not.Null);
 
-            var property = new PublishedContentPropertyMock("myProperty", value);
-            var content = new PublishedContentMock { Properties = new[] { property } };
+            var property = new MockPublishedContentProperty("myProperty", value);
+            var content = new MockPublishedContent { Properties = new[] { property } };
 
             var model = content.As<MyModel>();
 

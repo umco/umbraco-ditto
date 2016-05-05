@@ -7,7 +7,7 @@ namespace Our.Umbraco.Ditto.Tests
     [Category("Mapping")]
     public class CustomPublishedContentPropertyTests
     {
-        public class CustomPublishedContentMock : PublishedContentMock
+        public class CustomPublishedContentMock : MockPublishedContent
         {
             public string MyProperty { get; set; }
         }
@@ -29,7 +29,7 @@ namespace Our.Umbraco.Ditto.Tests
 
             var content = new CustomPublishedContentMock
             {
-                Properties = new[] { new PublishedContentPropertyMock("myProperty", propertyValue) },
+                Properties = new[] { new MockPublishedContentProperty("myProperty", propertyValue) },
                 MyProperty = objectValue
             };
 

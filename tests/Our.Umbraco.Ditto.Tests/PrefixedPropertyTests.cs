@@ -27,13 +27,13 @@ namespace Our.Umbraco.Ditto.Tests
             var value2 = "Description";
             var value3 = "Fallback";
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock("siteName", value1),
-                    new PublishedContentPropertyMock("siteDescription", value2),
-                    new PublishedContentPropertyMock("fallback", value3)
+                    new MockPublishedContentProperty("siteName", value1),
+                    new MockPublishedContentProperty("siteDescription", value2),
+                    new MockPublishedContentProperty("fallback", value3)
                 }
             };
 
@@ -50,12 +50,12 @@ namespace Our.Umbraco.Ditto.Tests
             var value1 = "Site Unprefixed";
             var value2 = "Unprefixed";
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock("siteUnprefixedProp", value1),
-                    new PublishedContentPropertyMock("unprefixedProp", value2)
+                    new MockPublishedContentProperty("siteUnprefixedProp", value1),
+                    new MockPublishedContentProperty("unprefixedProp", value2)
                 }
             };
 
@@ -69,11 +69,11 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var value = "Description";
 
-            var childContent = new PublishedContentMock();
+            var childContent = new MockPublishedContent();
 
-            var parentContent = new PublishedContentMock
+            var parentContent = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("siteDescription", value) },
+                Properties = new[] { new MockPublishedContentProperty("siteDescription", value) },
                 Children = new[] { childContent }
             };
 

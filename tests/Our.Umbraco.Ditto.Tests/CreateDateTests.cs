@@ -26,7 +26,7 @@ namespace Our.Umbraco.Ditto.Tests
         public void CreateDate_Returned()
         {
             var date = DateTime.Now;
-            var content = new PublishedContentMock { CreateDate = date };
+            var content = new MockPublishedContent { CreateDate = date };
 
             var model = content.As<MyModel>();
 
@@ -39,13 +39,13 @@ namespace Our.Umbraco.Ditto.Tests
             var date = DateTime.Now;
             var otherDate = date.AddDays(2);
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 CreateDate = date,
                 Properties = new List<IPublishedProperty>
                 {
-                    new PublishedContentPropertyMock("pubDate", null),
-                    new PublishedContentPropertyMock("articleDate", otherDate)
+                    new MockPublishedContentProperty("pubDate", null),
+                    new MockPublishedContentProperty("articleDate", otherDate)
                 }
             };
 

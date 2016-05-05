@@ -34,7 +34,7 @@ namespace Our.Umbraco.Ditto.Tests
             Ditto.RegisterConversionHandler<MyModel, MyModelConversionHandler>();
             Ditto.RegisterConversionHandler<MyModel, MyModelConversionHandler2>();
 
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As<MyModel>();
 

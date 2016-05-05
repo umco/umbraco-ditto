@@ -37,7 +37,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var name = "MyCustomName";
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Name = name
             };
@@ -52,7 +52,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var id = 1234;
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Id = id
             };
@@ -68,9 +68,9 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var value = "myValue";
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("myProperty", value) }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
             };
 
             var model = content.As<BasicModelWithStringProperty>();
@@ -81,11 +81,11 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Basic_PublishedContent_Property_IsMapped()
         {
-            var value = new PublishedContentMock();
+            var value = new MockPublishedContent();
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("myProperty", value) }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
             };
 
             var model = content.As<BasicModelWithPublishedContentProperty>();
@@ -97,11 +97,11 @@ namespace Our.Umbraco.Ditto.Tests
         public void Basic_Property_To_String_Exception()
         {
             // The source is an `IPublishedContent`, the target is a `string`, type mismatch exception
-            var value = new PublishedContentMock();
+            var value = new MockPublishedContent();
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("myProperty", value) }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
             };
 
             TestDelegate code = () =>
@@ -118,7 +118,7 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Basic_Content_To_String_Exception()
         {
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             TestDelegate code = () =>
             {

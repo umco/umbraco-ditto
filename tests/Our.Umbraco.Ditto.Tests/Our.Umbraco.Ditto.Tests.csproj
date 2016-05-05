@@ -119,8 +119,8 @@
     <Compile Include="Mocks\MockPublishedContentCache.cs" />
     <Compile Include="Mocks\MockPublishedMediaCache.cs" />
     <Compile Include="AppSettingsTests.cs" />
-    <Compile Include="Mocks\PublishedContentMock.cs" />
-    <Compile Include="Mocks\PublishedContentPropertyMock.cs" />
+    <Compile Include="Mocks\MockPublishedContent.cs" />
+    <Compile Include="Mocks\MockPublishedContentProperty.cs" />
     <Compile Include="MultipleConversionHandlerTests.cs" />
     <Compile Include="MultiProcessorTests.cs" />
     <Compile Include="NestedPublishedContentTests.cs" />

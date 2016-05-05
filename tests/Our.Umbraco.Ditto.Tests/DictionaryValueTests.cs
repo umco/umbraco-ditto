@@ -32,7 +32,7 @@ namespace Our.Umbraco.Ditto.Tests
             UmbracoDictionaryHelper.GetValue = (key) => mockDict[key];
 
             // Create mock content
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             // Run conversion
             var model = content.As<MyModel>();

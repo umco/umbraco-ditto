@@ -40,7 +40,7 @@ namespace Our.Umbraco.Ditto.Tests
         [TestFixtureSetUp]
         public void Init()
         {
-            Content = new PublishedContentMock { Name = "MyName" };
+            Content = new MockPublishedContent { Name = "MyName" };
         }
 
         [Test]

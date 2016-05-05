@@ -28,9 +28,9 @@ namespace Our.Umbraco.Ditto.Tests
 
             Value = JsonConvert.DeserializeObject<ImageCropDataSet>(json);
 
-            Content = new PublishedContentMock
+            Content = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("myProperty", Value) }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", Value) }
             };
         }
 
