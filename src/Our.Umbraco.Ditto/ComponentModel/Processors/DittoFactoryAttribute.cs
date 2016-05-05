@@ -7,19 +7,19 @@ using Umbraco.Core.Models;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Factory processor for dynamically typing an items based on properties of the item itself 
+    /// Factory processor for dynamically typing items based on properties of the item itself.
     /// </summary>
     public abstract class DittoFactoryAttribute : DittoProcessorAttribute
     {
         /// <summary>
-        /// Resoles a type name based upon the current content item
+        /// Resolves a type name based upon the current content item.
         /// </summary>
         /// <param name="currentContent"></param>
         /// <returns></returns>
         public abstract string ResolveTypeName(IPublishedContent currentContent);
 
         /// <summary>
-        /// Processes the incoming value
+        /// Processes the incoming value.
         /// </summary>
         /// <returns></returns>
         public override object ProcessValue()
@@ -32,13 +32,13 @@ namespace Our.Umbraco.Ditto
             // converting individual instances to IEnumerables and vica versa, so we
             // won't worry about returning in the right way, rather we'll just ensure
             // that the IPublishedContent's are converted to the right types
-            // and let the enumerable processor handle the rest
+            // and let the enumerable processor handle the rest.
 
             // TODO: Validate the base type more?
 
             // Find the appropreate types
             // There is no non generic version of ResolveTypes so we have to
-            // call it via reflection
+            // call it via reflection.
             var method = typeof(PluginManager).GetMethod("ResolveTypes");
             var generic = method.MakeGenericMethod(baseType);
             var types = (IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null });
@@ -52,9 +52,7 @@ namespace Our.Umbraco.Ditto
                     var typeName = ResolveTypeName(x);
                     var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
 
-                    // QUESTION: Should we return null? throw an exception? or strip items if a model can't be found?
-
-                    return type != null ? x.As(type): null;
+                    return type != null ? x.As(type) : null;
                 });
 
                 return EnumerableInvocations.Cast(baseType, items);
