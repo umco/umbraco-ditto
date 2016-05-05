@@ -12,14 +12,14 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// A field to store a list of Ditto processor contexts.
         /// </summary>
-        protected List<DittoProcessorContext> _processorContexts;
+        private List<DittoProcessorContext> processorContexts;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoController"/> class.
         /// </summary>
         protected DittoController()
         {
-            _processorContexts = new List<DittoProcessorContext>();
+            processorContexts = new List<DittoProcessorContext>();
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Our.Umbraco.Ditto
                 model = CurrentPage;
             }
 
-            var transferModel = new DittoTransferModel(model, _processorContexts);
+            var transferModel = new DittoTransferModel(model, processorContexts);
 
             return base.View(viewName, masterName, transferModel);
         }
@@ -86,7 +86,7 @@ namespace Our.Umbraco.Ditto
                 model = CurrentPage;
             }
 
-            var transferModel = new DittoTransferModel(model, _processorContexts);
+            var transferModel = new DittoTransferModel(model, processorContexts);
 
             return base.PartialView(viewName, transferModel);
         }
@@ -99,7 +99,7 @@ namespace Our.Umbraco.Ditto
         protected virtual void RegisterProcessorContext<TContextType>(TContextType context)
             where TContextType : DittoProcessorContext
         {
-            _processorContexts.Add(context);
+            processorContexts.Add(context);
         }
     }
 }

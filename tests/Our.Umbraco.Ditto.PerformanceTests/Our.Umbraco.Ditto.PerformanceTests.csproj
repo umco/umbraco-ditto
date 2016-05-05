@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
-	<SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\src\</SolutionDir>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\src\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -64,7 +64,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-	<ProjectReference Include="..\..\src\Our.Umbraco.Ditto\Our.Umbraco.Ditto.csproj">
+    <ProjectReference Include="..\..\src\Our.Umbraco.Ditto\Our.Umbraco.Ditto.csproj">
       <Project>{3a2482a4-ad19-4c26-a449-4287da07ab16}</Project>
       <Name>Our.Umbraco.Ditto</Name>
     </ProjectReference>

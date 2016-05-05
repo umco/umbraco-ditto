@@ -49,7 +49,10 @@ namespace Our.Umbraco.Ditto
     public class DittoViewModel<TViewModel> : BaseDittoViewModel
         where TViewModel : class
     {
-        private TViewModel _view;
+        /// <summary>
+        /// The view-model type.
+        /// </summary>
+        private TViewModel view;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoViewModel{TViewModel}"/> class.
@@ -81,23 +84,24 @@ namespace Our.Umbraco.Ditto
         {
             get
             {
-                if (_view == null)
+                if (view == null)
                 {
                     if (Content is TViewModel)
                     {
-                        _view = Content as TViewModel;
+                        view = Content as TViewModel;
                     }
                     else
                     {
-                        _view = Content.As<TViewModel>(processorContexts: ProcessorContexts);
+                        view = Content.As<TViewModel>(processorContexts: ProcessorContexts);
                     }
                 }
 
-                return _view;
+                return view;
             }
+
             internal set
             {
-                _view = value;
+                view = value;
             }
         }
     }

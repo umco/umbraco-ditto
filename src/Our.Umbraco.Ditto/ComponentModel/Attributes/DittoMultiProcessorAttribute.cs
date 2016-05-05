@@ -11,14 +11,6 @@ namespace Our.Umbraco.Ditto
     public abstract class DittoMultiProcessorAttribute : DittoProcessorAttribute
     {
         /// <summary>
-        /// Gets or sets the attributes.
-        /// </summary>
-        /// <value>
-        /// The attributes.
-        /// </value>
-        public List<DittoProcessorAttribute> Attributes { get; set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DittoMultiProcessorAttribute" /> class.
         /// </summary>
         /// <param name="attributes">The attributes.</param>
@@ -26,6 +18,14 @@ namespace Our.Umbraco.Ditto
         {
             this.Attributes = new List<DittoProcessorAttribute>(attributes);
         }
+
+        /// <summary>
+        /// Gets or sets the attributes.
+        /// </summary>
+        /// <value>
+        /// The attributes.
+        /// </value>
+        public List<DittoProcessorAttribute> Attributes { get; set; }
 
         /// <summary>
         /// Processes the value.
@@ -49,5 +49,4 @@ namespace Our.Umbraco.Ditto
             return Value;
         }
     }
-
 }

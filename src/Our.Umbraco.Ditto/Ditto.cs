@@ -13,14 +13,47 @@ namespace Our.Umbraco.Ditto
     public class Ditto
     {
         /// <summary>
-        /// The ditto processor attribute targets
+        /// The Ditto processor attribute targets
         /// </summary>
         public const AttributeTargets ProcessorAttributeTargets = AttributeTargets.Property | AttributeTargets.Class;
 
         /// <summary>
         /// The default processor cache by flags
         /// </summary>
-        public static DittoCacheBy DefaultCacheBy = DittoCacheBy.ContentId | DittoCacheBy.ContentVersion | DittoCacheBy.PropertyName | DittoCacheBy.Culture;
+        public const DittoCacheBy DefaultCacheBy = DittoCacheBy.ContentId | DittoCacheBy.ContentVersion | DittoCacheBy.PropertyName | DittoCacheBy.Culture;
+
+        /// <summary>
+        /// Gets a value indicating whether application is running in debug mode.
+        /// </summary>
+        /// <value><c>true</c> if debug mode; otherwise, <c>false</c>.</value>
+        internal static bool IsDebuggingEnabled
+        {
+            get
+            {
+                try
+                {
+                    // Check for app setting first
+                    if (!ConfigurationManager.AppSettings["Ditto:DebugEnabled"].IsNullOrWhiteSpace())
+                    {
+                        return ConfigurationManager.AppSettings["Ditto:DebugEnabled"].InvariantEquals("true");
+                    }
+
+                    // Check the HTTP Context
+                    if (HttpContext.Current != null)
+                    {
+                        return HttpContext.Current.IsDebuggingEnabled;
+                    }
+
+                    // Go and get it from config directly
+                    var section = ConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
+                    return section != null && section.Debug;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
 
         /// <summary>
         /// Registers a global conversion handler.
@@ -75,39 +108,6 @@ namespace Our.Umbraco.Ditto
             where TConverterType : TypeConverter
         {
             TypeDescriptor.AddAttributes(typeof(TObjectType), new TypeConverterAttribute(typeof(TConverterType)));
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether application is running in debug mode.
-        /// </summary>
-        /// <value><c>true</c> if debug mode; otherwise, <c>false</c>.</value>
-        internal static bool IsDebuggingEnabled
-        {
-            get
-            {
-                try
-                {
-                    // Check for app setting first
-                    if (!ConfigurationManager.AppSettings["Ditto:DebugEnabled"].IsNullOrWhiteSpace())
-                    {
-                        return ConfigurationManager.AppSettings["Ditto:DebugEnabled"].InvariantEquals("true");
-                    }
-
-                    // Check the HTTP Context
-                    if (HttpContext.Current != null)
-                    {
-                        return HttpContext.Current.IsDebuggingEnabled;
-                    }
-
-                    // Go and get it from config directly
-                    var section = ConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
-                    return section != null && section.Debug;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
         }
     }
 }

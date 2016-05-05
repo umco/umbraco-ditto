@@ -11,13 +11,11 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// The content identifier
         /// </summary>
-        /// 
         ContentId = 1,
 
         /// <summary>
         /// The content version
         /// </summary>
-        /// 
         ContentVersion = 2,
 
         /// <summary>

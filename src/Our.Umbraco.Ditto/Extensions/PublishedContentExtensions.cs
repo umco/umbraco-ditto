@@ -448,7 +448,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="propertyDescriptor">The property descriptor.</param>
         /// <param name="defaultProcessorType">The default processor type.</param>
         /// <param name="processorContexts">The processor contexts.</param>
-        /// <returns></returns>
+        /// <returns>Returns the processed value.</returns>
         private static object DoGetProcessedValue(
             IPublishedContent content,
             CultureInfo culture,
@@ -519,7 +519,6 @@ namespace Our.Umbraco.Ditto
             object instance,
             Action<DittoConversionHandlerContext> callback = null)
         {
-
             OnConvert<DittoOnConvertingAttribute>(
                 DittoConversionHandlerType.OnConverting,
                 content,

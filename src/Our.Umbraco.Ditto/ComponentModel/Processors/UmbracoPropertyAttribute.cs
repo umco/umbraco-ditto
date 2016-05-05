@@ -10,6 +10,32 @@ namespace Our.Umbraco.Ditto
     public class UmbracoPropertyAttribute : DittoProcessorAttribute
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.
+        /// </summary>
+        public UmbracoPropertyAttribute()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <param name="altPropertyName">Name of the alternative property.</param>
+        /// <param name="recursive">If set to <c>true</c>, a recursive lookup is performed.</param>
+        /// <param name="defaultValue">The default value.</param>
+        public UmbracoPropertyAttribute(
+            string propertyName,
+            string altPropertyName = null,
+            bool recursive = false,
+            object defaultValue = null)
+        {
+            this.PropertyName = propertyName;
+            this.AltPropertyName = altPropertyName;
+            this.Recursive = recursive;
+            this.DefaultValue = defaultValue;
+        }
+
+        /// <summary>
         /// Gets or sets the name of the property.
         /// </summary>
         /// <value>
@@ -42,38 +68,11 @@ namespace Our.Umbraco.Ditto
         public object DefaultValue { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.
-        /// </summary>
-        public UmbracoPropertyAttribute()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPropertyAttribute"/> class.
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <param name="altPropertyName">Name of the alternative property.</param>
-        /// <param name="recursive">if set to <c>true</c> recurse.</param>
-        /// <param name="defaultValue">The default value.</param>
-        public UmbracoPropertyAttribute(
-            string propertyName,
-            string altPropertyName = null,
-            bool recursive = false,
-            object defaultValue = null)
-        {
-            this.PropertyName = propertyName;
-            this.AltPropertyName = altPropertyName;
-            this.Recursive = recursive;
-            this.DefaultValue = defaultValue;
-        }
-
-        /// <summary>
         /// Processes the value.
         /// </summary>
         /// <returns>
         /// The <see cref="object" /> representing the processed value.
         /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
             var defaultValue = DefaultValue;

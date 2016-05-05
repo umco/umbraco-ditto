@@ -49,7 +49,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="targetType">Type of the target.</param>
         /// <param name="propertyDescriptor">The property descriptor.</param>
         /// <param name="culture">The culture.</param>
-        /// <returns></returns>
+        /// <returns>Returns the Ditto processors context.</returns>
         internal DittoProcessorContext Populate(
             IPublishedContent content,
             Type targetType,

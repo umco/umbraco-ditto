@@ -16,11 +16,6 @@ namespace Our.Umbraco.Ditto
         private static readonly Dictionary<Type, List<DittoProcessorAttribute>> Cache = new Dictionary<Type, List<DittoProcessorAttribute>>();
 
         /// <summary>
-        /// The default processor type, (defaults to `UmbracoProperty`).
-        /// </summary>
-        private Type DefaultProcessorType = typeof(UmbracoPropertyAttribute);
-
-        /// <summary>
         /// Static holder for singleton instance.
         /// </summary>
         private static readonly Lazy<DittoProcessorRegistry> InternalInstance = new Lazy<DittoProcessorRegistry>(() => new DittoProcessorRegistry());
@@ -29,6 +24,11 @@ namespace Our.Umbraco.Ditto
         /// The lock object to make Cache access thread safe
         /// </summary>
         private static readonly object CacheLock = new object();
+
+        /// <summary>
+        /// The default processor type, (defaults to `UmbracoProperty`).
+        /// </summary>
+        private Type defaultProcessorType = typeof(UmbracoPropertyAttribute);
 
         /// <summary>
         /// Prevents a default instance of the <see cref="DittoProcessorRegistry"/> class from being created.
@@ -52,13 +52,13 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Registeres the default processor attribute.
+        /// Registers the default processor attribute.
         /// </summary>
-        /// <typeparam name="TProcessorAttributeType"></typeparam>
+        /// <typeparam name="TProcessorAttributeType">The processor attribute type.</typeparam>
         public void RegisterDefaultProcessorType<TProcessorAttributeType>()
             where TProcessorAttributeType : DittoProcessorAttribute, new()
         {
-            this.DefaultProcessorType = typeof(TProcessorAttributeType);
+            this.defaultProcessorType = typeof(TProcessorAttributeType);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Our.Umbraco.Ditto
                 return attr.ProcessorType;
             }
 
-            return this.DefaultProcessorType;
+            return this.defaultProcessorType;
         }
 
         /// <summary>

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 namespace Our.Umbraco.Ditto
 {
-    using System.Collections.Concurrent;
-    using System.Runtime.CompilerServices;
-
+    /// <summary>
+    /// Internal methods for cached invocations.
+    /// </summary>
     internal class CachedInvocations
     {
         /// <summary>

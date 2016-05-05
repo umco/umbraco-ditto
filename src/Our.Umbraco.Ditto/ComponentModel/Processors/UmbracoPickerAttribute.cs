@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using Umbraco.Core;
@@ -9,20 +10,7 @@ using Umbraco.Web.Security;
 
 namespace Our.Umbraco.Ditto
 {
-    /// <summary>
-    /// A helper for UmbracoPicker processor.
-    /// </summary>
-    internal static class UmbracoPickerHelper
-    {
         /// <summary>
-        /// Gets the MembershipHelper for the UmbracoPicker processor.
-        /// </summary>
-        internal static Func<UmbracoContext, MembershipHelper> GetMembershipHelper = (ctx) => UmbracoContext.Current != null
-            ? new MembershipHelper(ctx)
-            : null;
-    }
-
-    /// <summary>
     /// A picker processor for handling the various types of Umbraco pickers
     /// </summary>
     public class UmbracoPickerAttribute : DittoProcessorAttribute
@@ -33,7 +21,6 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="object" /> representing the processed value.
         /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
@@ -55,7 +42,7 @@ namespace Our.Umbraco.Ditto
             // Multiple IPublishedContent
             if (type.IsEnumerableOfType(typeof(IPublishedContent)))
             {
-                return ((IEnumerable<IPublishedContent>)Value);
+                return (IEnumerable<IPublishedContent>)Value;
             }
 
             int[] nodeIds = { };
@@ -150,5 +137,19 @@ namespace Our.Umbraco.Ditto
 
             return content;
         }
+    }
+
+    /// <summary>
+    /// A helper for UmbracoPicker processor.
+    /// </summary>
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed.")]
+    internal static class UmbracoPickerHelper
+    {
+        /// <summary>
+        /// Gets the MembershipHelper for the UmbracoPicker processor.
+        /// </summary>
+        internal static Func<UmbracoContext, MembershipHelper> GetMembershipHelper = (ctx) => UmbracoContext.Current != null
+            ? new MembershipHelper(ctx)
+            : null;
     }
 }

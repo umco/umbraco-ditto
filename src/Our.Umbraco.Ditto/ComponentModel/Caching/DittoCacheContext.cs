@@ -11,6 +11,43 @@ namespace Our.Umbraco.Ditto
     public class DittoCacheContext
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="DittoCacheContext"/> class.
+        /// </summary>
+        /// <param name="attribute">The attribute.</param>
+        /// <param name="content">The content.</param>
+        /// <param name="targetType">Type of the target.</param>
+        /// <param name="culture">The culture.</param>
+        internal DittoCacheContext(
+            DittoCacheableAttribute attribute,
+            IPublishedContent content,
+            Type targetType,
+            CultureInfo culture)
+            : this(attribute, content, targetType, null, culture)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoCacheContext"/> class.
+        /// </summary>
+        /// <param name="attribute">The attribute.</param>
+        /// <param name="content">The content.</param>
+        /// <param name="targetType">Type of the target.</param>
+        /// <param name="propertyDescriptor">The property descriptor.</param>
+        /// <param name="culture">The culture.</param>
+        internal DittoCacheContext(
+            DittoCacheableAttribute attribute,
+            IPublishedContent content,
+            Type targetType,
+            PropertyDescriptor propertyDescriptor,
+            CultureInfo culture)
+        {
+            Attribute = attribute;
+            Content = content;
+            TargetType = targetType;
+            Culture = culture;
+            PropertyDescriptor = propertyDescriptor;
+        }
+
+        /// <summary>
         /// Gets the content.
         /// </summary>
         /// <value>
@@ -49,40 +86,5 @@ namespace Our.Umbraco.Ditto
         /// The attribute.
         /// </value>
         public DittoCacheableAttribute Attribute { get; internal set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DittoCacheContext"/> class.
-        /// </summary>
-        /// <param name="attribute">The attribute.</param>
-        /// <param name="content">The content.</param>
-        /// <param name="targetType">Type of the target.</param>
-        /// <param name="culture">The culture.</param>
-        internal DittoCacheContext(DittoCacheableAttribute attribute,
-            IPublishedContent content,
-            Type targetType,
-            CultureInfo culture)
-            : this(attribute, content, targetType, null, culture)
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DittoCacheContext"/> class.
-        /// </summary>
-        /// <param name="attribute">The attribute.</param>
-        /// <param name="content">The content.</param>
-        /// <param name="targetType">Type of the target.</param>
-        /// <param name="propertyDescriptor">The property descriptor.</param>
-        /// <param name="culture">The culture.</param>
-        internal DittoCacheContext(DittoCacheableAttribute attribute,
-            IPublishedContent content,
-            Type targetType,
-            PropertyDescriptor propertyDescriptor,
-            CultureInfo culture)
-        {
-            Attribute = attribute;
-            Content = content;
-            TargetType = targetType;
-            Culture = culture;
-            PropertyDescriptor = propertyDescriptor;
-        }
     }
 }

@@ -10,6 +10,15 @@ namespace Our.Umbraco.Ditto
     public abstract class DittoCacheableAttribute : Attribute
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="DittoCacheableAttribute"/> class.
+        /// </summary>
+        protected DittoCacheableAttribute()
+        {
+            CacheBy = Ditto.DefaultCacheBy;
+            CacheDuration = 0;
+        }
+
+        /// <summary>
         /// Gets or sets the type of the cache key builder.
         /// </summary>
         /// <value>
@@ -34,26 +43,20 @@ namespace Our.Umbraco.Ditto
         public int CacheDuration { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DittoCacheableAttribute"/> class.
-        /// </summary>
-        protected DittoCacheableAttribute()
-        {
-            CacheBy = Ditto.DefaultCacheBy;
-            CacheDuration = 0;
-        }
-
-        /// <summary>
         /// Gets the cache item.
         /// </summary>
-        /// <typeparam name="TOuputType">The type of the ouput type.</typeparam>
+        /// <typeparam name="TOuputType">The type of the output type.</typeparam>
         /// <param name="cacheContext">The cache context.</param>
         /// <param name="refresher">The refresher.</param>
-        /// <returns></returns>
+        /// <returns>Returns the output type.</returns>
         /// <exception cref="System.ApplicationException">Expected a cache key builder of type  + typeof(DittoProcessorCacheKeyBuilder) +  but got  + CacheKeyBuilderType</exception>
         internal TOuputType GetCacheItem<TOuputType>(DittoCacheContext cacheContext, Func<TOuputType> refresher)
         {
             // If no cache duration set, just run the refresher
-            if (CacheDuration == 0 || Ditto.IsDebuggingEnabled) return refresher();
+            if (CacheDuration == 0 || Ditto.IsDebuggingEnabled)
+            {
+                return refresher();
+            }
 
             // Get the cache key builder type
             var cacheKeyBuilderType = CacheKeyBuilderType ?? typeof(DittoDefaultCacheKeyBuilder);
@@ -69,7 +72,8 @@ namespace Our.Umbraco.Ditto
             var cacheKey = builder.BuildCacheKey(cacheContext);
 
             // Get and cache the result
-            return (TOuputType)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(cacheKey,
+            return (TOuputType)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
+                cacheKey,
                 () => refresher(),
                 priority: CacheItemPriority.NotRemovable, // Same as Umbraco macros
                 timeout: new TimeSpan(0, 0, 0, CacheDuration));

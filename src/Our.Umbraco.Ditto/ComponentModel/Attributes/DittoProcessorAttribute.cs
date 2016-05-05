@@ -14,46 +14,6 @@ namespace Our.Umbraco.Ditto
     public abstract class DittoProcessorAttribute : DittoCacheableAttribute
     {
         /// <summary>
-        /// Gets or sets the context.
-        /// </summary>
-        /// <value>
-        /// The context.
-        /// </value>
-        public object Value { get; internal set; }
-
-        /// <summary>
-        /// Gets or sets the type of the value.
-        /// </summary>
-        /// <value>
-        /// The type of the value.
-        /// </value>
-        internal Type ValueType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the context.
-        /// </summary>
-        /// <value>
-        /// The context.
-        /// </value>
-        public DittoProcessorContext Context { get; internal set; }
-
-        /// <summary>
-        /// Gets or sets the type of the context.
-        /// </summary>
-        /// <value>
-        /// The type of the value.
-        /// </value>
-        internal Type ContextType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the order.
-        /// </summary>
-        /// <value>
-        /// The order.
-        /// </value>
-        public int Order { get; set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DittoProcessorAttribute"/> class.
         /// </summary>
         protected DittoProcessorAttribute()
@@ -67,6 +27,46 @@ namespace Our.Umbraco.Ditto
             ValueType = metaData.ValueType;
             ContextType = metaData.ContextType;
         }
+
+        /// <summary>
+        /// Gets the context.
+        /// </summary>
+        /// <value>
+        /// The context.
+        /// </value>
+        public object Value { get; internal set; }
+
+        /// <summary>
+        /// Gets the context.
+        /// </summary>
+        /// <value>
+        /// The context.
+        /// </value>
+        public DittoProcessorContext Context { get; internal set; }
+
+        /// <summary>
+        /// Gets or sets the order.
+        /// </summary>
+        /// <value>
+        /// The order.
+        /// </value>
+        public int Order { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the value.
+        /// </summary>
+        /// <value>
+        /// The type of the value.
+        /// </value>
+        internal Type ValueType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the context.
+        /// </summary>
+        /// <value>
+        /// The type of the value.
+        /// </value>
+        internal Type ContextType { get; set; }
 
         /// <summary>
         /// Processes the value.

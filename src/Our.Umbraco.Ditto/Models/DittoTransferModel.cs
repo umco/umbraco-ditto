@@ -3,7 +3,7 @@
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Temporary model for transfering values from a controller to the view
+    /// Temporary model for transferring values from a controller to the view
     /// </summary>
     internal class DittoTransferModel
     {
