@@ -6,7 +6,7 @@
 	var css = Model.ContainsKey("css") ? Model.Get<string[]>("css") : null;
 }
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 	<title>@Html.Raw(title)</title>
 
@@ -17,6 +17,8 @@
 	<base href="/">
 	<link rel="canonical" href="https://leekelleher.github.io/umbraco-ditto@(Model.String("permalink", "/"))">
 
+	<link href="http://fonts.googleapis.com/css?family=Raleway:700,300" rel="stylesheet" type="text/css">
+  	<link rel="stylesheet" href="./assets/css/style.css">
 	<link rel="stylesheet" href="./assets/css/prettify.css">
 @if(css != null)
 {

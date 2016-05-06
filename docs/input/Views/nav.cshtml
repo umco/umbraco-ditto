@@ -13,23 +13,19 @@
 		.Distinct()
 		.ToDictionary(x => x, x => x.Count(c => c == '/'));
 }
-<nav>
-	<ul>
-		@foreach(var level0 in urls.Where(x => x.Value == 0))
-		{
-			var page = lookup[level0.Key].First();
+<ul class="docs-nav" id="menu-left">
+	@foreach(var level0 in urls.Where(x => x.Value == 0))
+	{
+		var page = lookup[level0.Key].First();
 
-			<li>
-				<a href=".@page.String("permalink")">@page.String("title")</a>
-				<ul>
-					@foreach(var level1 in urls.Where(x => x.Value == 1 && x.Key.StartsWith(level0.Key)))
-					{
-						var child = lookup[level1.Key].First();
-						
-						<li><a href=".@child.String("permalink")">@child.String("title")</a></li>
-					}
-				</ul>
-			</li>
+		<li>
+			<a href=".@page.String("permalink")"><strong>@page.String("title")</strong></a>
+		</li>
+		@foreach(var level1 in urls.Where(x => x.Value == 1 && x.Key.StartsWith(level0.Key)))
+		{
+			var child = lookup[level1.Key].First();
+			
+			<li><a href=".@child.String("permalink")">@child.String("title")</a></li>
 		}
-	</ul>
-</nav>
+	}
+</ul>

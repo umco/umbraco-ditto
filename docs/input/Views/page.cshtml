@@ -1,10 +1,5 @@
 @{Layout = @"Views\_layout.cshtml";}
 
-<div>
-	<article>
-		<header>
-			<h1>@Html.Raw(Model.String("title"))</h1>
-		</header>
-		@RenderBody()
-	</article>
-</div>
+<article>
+	@RenderBody()
+</article>
