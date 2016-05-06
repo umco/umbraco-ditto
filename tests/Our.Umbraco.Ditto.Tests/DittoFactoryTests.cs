@@ -7,6 +7,7 @@ using Umbraco.Core.Models;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Processors")]
     public class DittoFactoryTests
     {
         public interface IMyModel
@@ -43,31 +44,16 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Factory_Resolves()
         {
-            var content1 = new PublishedContentMock
-            {
-                Name = "Content 1",
-                DocumentTypeAlias = "MyModel1"
-            };
+            var content1 = new MockPublishedContent { Name = "Content 1", DocumentTypeAlias = "MyModel1" };
+            var content2 = new MockPublishedContent { Name = "Content 2", DocumentTypeAlias = "MyModel2" };
+            var content3 = new MockPublishedContent { Name = "Content 3", DocumentTypeAlias = "MyModel3" };
 
-            var content2 = new PublishedContentMock
+            var content = new MockPublishedContent
             {
-                Name = "Content 2",
-                DocumentTypeAlias = "MyModel2"
-            };
-
-            var content3 = new PublishedContentMock
-            {
-                Name = "Content 3",
-                DocumentTypeAlias = "MyModel3"
-            };
-
-
-            var content = new PublishedContentMock
-            {
-                Properties = new List<IPublishedContentProperty>
+                Properties = new List<IPublishedProperty>
                 {
-                    new PublishedContentPropertyMock("MyCollection", new [] { content1, content2, content3  }, true),
-                    new PublishedContentPropertyMock("MyProperty", content3, true)
+                    new MockPublishedContentProperty("MyCollection", new [] { content1, content2, content3  }),
+                    new MockPublishedContentProperty("MyProperty", content3)
                 }
             };
 
