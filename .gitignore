@@ -8,6 +8,8 @@ _ReSharper.*
 *.orig
 Thumbs.db
 .DS_Store
+*.hash
+*.list
 
 artifacts/
 src/packages/

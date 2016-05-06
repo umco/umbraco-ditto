@@ -96,6 +96,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="DittoFactoryTests.cs" />
     <Compile Include="DictionaryValueTests.cs" />
     <Compile Include="CreateDateTests.cs" />
     <Compile Include="BasicMappingTests.cs" />
