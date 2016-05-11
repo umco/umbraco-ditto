@@ -1,7 +1,17 @@
-title: Lists
-permalink: /knowledgebase/lists/
-order: 4
+title: Advanced Topics
 ---
+
+## <a name="lazy-loading" title="Lazy Loading"></a>Lazy Loading
+
+> // TODO: Add examples of marking properties with `virtual`
+
+---------------------------------------------------------------------------------------
+
+## <a name="factories" title="Factories"></a>Factories
+
+> // TODO: Add examples of ditto factories
+
+---------------------------------------------------------------------------------------
 
 ## Lists (mapping collections of nodes)
 
@@ -33,3 +43,4 @@ If you are referencing multiple types you might want to list the property as fol
     }
 
 You can then filter the items in the collection by document typ alias and convert them using individual calls to `As<T>`. 
+

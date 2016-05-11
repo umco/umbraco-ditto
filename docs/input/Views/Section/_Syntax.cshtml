@@ -7,12 +7,11 @@
 		syntax = syntax.Replace("(", "(\r\n\t").Replace(", ", ",\r\n\t");
 	}
 }
-
-<br><br>
 <u>@Model.String("SpecificKind")</u>
+
 
 @if(!string.IsNullOrWhiteSpace(syntax))
 {
-	<h1>Syntax</h1>
+	<h3>Syntax</h3>
 	<pre class="prettyprint"><code class="language-csharp">@syntax</code></pre>
 }

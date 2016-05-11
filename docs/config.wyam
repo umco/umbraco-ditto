@@ -2,9 +2,66 @@
 
 using Wyam.Modules.Razor.Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
+using System.Text.RegularExpressions;
+using AngleSharp.Dom;
+using AngleSharp.Dom.Html;
+using AngleSharp.Parser.Html;
+using IDocument = Wyam.Common.Documents.IDocument;
 
-public static class HtmlHelperExtensions
-{		
+public static class Helpers {
+
+	public static Regex OrderPattern = new Regex(@"^([0-9]+)-", RegexOptions.Compiled);
+
+	public static bool GetContentVisibility(IDocument doc) {
+		return OrderPattern.Match(doc.Source.Directory.Name).Success;
+	}
+
+	public static int GetContentOrder(IDocument doc) {
+		var match = OrderPattern.Match(doc.Source.Directory.Name);
+		return match.Success ? int.Parse(match.Groups[1].Value) : 0;
+	}
+
+	public static string GetContentLayout(IDocument doc) {
+		return doc.Get<string>("WriteFileName", "_Layout");
+	}
+
+	public static int GetContentDepth(IDocument doc) {
+		return GetContentPermalink(doc).Split('/').Length - 2;
+	}
+
+	public static string GetContentPermalink(IDocument doc) {
+		return "/" + string.Join("/", doc.String("RelativeFileDir")
+			.EnsureTrailingSlash()
+			.Replace("Content/", "")
+			.Split('/')
+			.Select(x => OrderPattern.Replace(x, "").ToLowerInvariant())			
+			.ToArray())
+			.Replace("//", "/");
+	}
+
+	public static IDictionary<string, string> GetContentAnchors(IDocument doc)
+	{
+		var parser = new HtmlParser();
+		IHtmlDocument htmlDocument = null;
+
+		using (var stream = doc.GetStream())
+        {
+            htmlDocument = parser.Parse(stream);
+        }
+
+        if(htmlDocument != null)
+        {
+        	var anchors = htmlDocument.QuerySelectorAll("a[name]");
+        	return anchors.ToDictionary(k => k.GetAttribute("name"), v => v.GetAttribute("title"));
+        }
+
+		return new Dictionary<string, string>();
+	}
+
+	public static string EnsureTrailingSlash(this string input) {
+		return input.Trim('/') + "/";
+	}
+
 	public static HtmlString Name(this IMetadata metadata)
 	{
 		string name = metadata.String("DisplayName");
@@ -47,36 +104,35 @@ public class DocsTable
 ---
 
 Pipelines.Add("Assets",
-	CopyFiles("_assets/**")
-		.To(x => x.Path.FullPath.Replace("input/_assets/", "output/"))
+	CopyFiles("Assets/**/*")
+		.To(x => x.Path.FullPath.Replace("input/Assets/", "output/"))
 );
 
-Pipelines.Add("Pages",
-	ReadFiles("index.md"),
-	Concat(
-		ReadFiles("_pages/**/*.md")
-	),
+Pipelines.Add("Content",
+	ReadFiles("Content/**/*.md"),
 	FrontMatter(Yaml()),
 	Markdown()
 		.EscapeAt(true),
 	Replace("<pre><code", "<pre class=\"prettyprint\"><code"),
+	Meta("layout", 		Helpers.GetContentLayout(@doc)),
+	Meta("order", 		Helpers.GetContentOrder(@doc)),
+	Meta("depth", 		Helpers.GetContentDepth(@doc)),
+	Meta("visible", 	Helpers.GetContentVisibility(@doc)),
+	Meta("permalink", 	Helpers.GetContentPermalink(@doc)),
+	Meta("anchors",		Helpers.GetContentAnchors(@doc)),
 	Razor()
 		.WithViewStart("Views/_ViewStart.cshtml"),
 	WriteFiles("." + @doc.String("permalink") + "index.html")
 );
 
-Pipelines.Add("Code",
-	ReadProject("../../src/Our.Umbraco.Ditto/Our.Umbraco.Ditto.csproj")
-);
-
 Pipelines.Add("API",
-	Documents("Code"),
+	ReadProject("../../src/Our.Umbraco.Ditto/Our.Umbraco.Ditto.csproj"),
 	AnalyzeCSharp()
 		.WhereNamespaces(false, "Our.Umbraco.Ditto")
 		.WherePublic()
 		.WithCssClasses("pre", "prettyprint")
 		.WithWritePathPrefix("api"),
-	Meta("layout", "api"),
+	Meta("layout", "Api"),
 	Razor()
 		.WithViewStart("Views/_ViewStart.cshtml"),
 	WriteFiles()

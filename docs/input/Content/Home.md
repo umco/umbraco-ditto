@@ -1,5 +1,4 @@
-permalink: /
-layout: page
+title: User Documentation
 ---
 	
 Ditto is a lightweight view-model mapper for Umbraco. It offers a simple solution to the problem of using **strongly-typed models in your MVC views**.

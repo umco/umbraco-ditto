@@ -1,6 +1,4 @@
 title: API
-permalink: /api/
-order: 3
 ---
 
 Welcome to the API Reference documentation.
