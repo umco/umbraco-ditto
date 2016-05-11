@@ -10,13 +10,13 @@
 	{
 		var isActive = itm.String("permalink") == Model.String("permalink");
 		<li>
-			<a href=".@itm.String("permalink")" class="@(isActive ? "active" : "")"><strong>@itm.String("title")</strong></a>
+			<a href="@itm.String("permalink")" class="@(isActive ? "active" : "")"><strong>@itm.String("title")</strong></a>
 		</li>
 		if(isActive)
 		{
 			foreach(var anchor in itm.Get<IDictionary<string, string>>("anchors")) 
 			{
-				<li><a href="@itm.String("permalink")#@anchor.Key">@anchor.Value</a></li>
+				<li><a href="#@anchor.Key">@anchor.Value</a></li>
 			}
 		}
 	}
