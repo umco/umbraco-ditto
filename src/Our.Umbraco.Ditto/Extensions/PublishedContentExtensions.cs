@@ -501,7 +501,9 @@ namespace Our.Umbraco.Ditto
                 currentValue = processorAttr.ProcessValue(currentValue, ctx);
             }
 
-            return currentValue;
+            return (currentValue == null && propertyInfo.PropertyType.IsValueType)
+                ? propertyInfo.PropertyType.GetInstance() // Set to default instance of value type
+                : currentValue;
         }
 
         /// <summary>

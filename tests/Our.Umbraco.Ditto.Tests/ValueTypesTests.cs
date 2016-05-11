@@ -12,6 +12,8 @@ namespace Our.Umbraco.Ditto.Tests
             public bool Boolean { get; set; }
 
             public int Integer { get; set; }
+
+            public int? NullableInteger { get; set; }
         }
 
         [Test]
@@ -34,7 +36,6 @@ namespace Our.Umbraco.Ditto.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(NullReferenceException))]
         public void ValueTypes_With_DefaultValue()
         {
             var content = new PublishedContentMock();
@@ -44,6 +45,7 @@ namespace Our.Umbraco.Ditto.Tests
             Assert.That(model, Is.Not.Null);
             Assert.That(model.Boolean, Is.TypeOf<bool>());
             Assert.That(model.Integer, Is.TypeOf<int>());
+            Assert.That(model.NullableInteger, Is.Null);
         }
     }
 }
