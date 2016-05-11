@@ -247,6 +247,7 @@
     <Compile Include="CacheTests.cs" />
     <Compile Include="ProcessorContextTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValueTypesTests.cs" />
     <Compile Include="SingularityMappingTests.cs" />
     <Compile Include="TypeInferenceTests.cs" />
     <Compile Include="UmbracoPickerProcessorTests.cs" />
