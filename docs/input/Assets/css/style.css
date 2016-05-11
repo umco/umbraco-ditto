@@ -457,3 +457,7 @@ input:focus {
 
 }
 
+
+pre.prettyprint {
+    line-height: 1;
+}
