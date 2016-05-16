@@ -9,7 +9,7 @@ namespace Our.Umbraco.Ditto.Tests
         public class MyModel
         {
             [UmbracoProperty("myProperty")]
-            public string MyProperty1 { get; }
+            public string MyProperty1 { get { return null; } }
 
             [UmbracoProperty("myProperty")]
             public string MyProperty2 { get; set; }
