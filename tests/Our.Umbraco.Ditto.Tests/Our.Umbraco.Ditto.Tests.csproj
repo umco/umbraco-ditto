@@ -230,6 +230,7 @@
     <Compile Include="IgnoreAttributeTests.cs" />
     <Compile Include="ImageCropDataSetMappingTests.cs" />
     <Compile Include="InheritedClassWithPrefixedPropertyTests.cs" />
+    <Compile Include="InternalSetterTests.cs" />
     <Compile Include="JsonSerializationWithTypeConverterTests.cs" />
     <Compile Include="MockProcessorTests.cs" />
     <Compile Include="Mocks\MockHttpContext.cs" />
