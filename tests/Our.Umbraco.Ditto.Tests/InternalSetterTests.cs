@@ -9,13 +9,22 @@ namespace Our.Umbraco.Ditto.Tests
         public class MyModel
         {
             [UmbracoProperty("myProperty")]
-            public string MyProperty1 { get { return null; } }
+            public string PropertyOmittedSetter { get { return null; } }
 
             [UmbracoProperty("myProperty")]
-            public string MyProperty2 { get; set; }
+            public string PropertyPublicSetter { get; set; }
 
             [UmbracoProperty("myProperty")]
-            public string MyProperty3 { get; internal set; }
+            public string PropertyInternalSetter { get; internal set; }
+
+            [UmbracoProperty("myProperty")]
+            public virtual string PropertyVirtualOmittedSetter { get { return null; } }
+
+            [UmbracoProperty("myProperty")]
+            public virtual string PropertyVirtualPublicSetter { get; set; }
+
+            [UmbracoProperty("myProperty")]
+            public virtual string PropertyVirtualInternalSetter { get; internal set; }
         }
 
         [Test]
@@ -29,9 +38,12 @@ namespace Our.Umbraco.Ditto.Tests
 
             var model = content.As<MyModel>();
 
-            Assert.That(model.MyProperty1, Is.Null);
-            Assert.That(model.MyProperty2, Is.EqualTo(value));
-            Assert.That(model.MyProperty3, Is.EqualTo(value));
+            Assert.That(model.PropertyOmittedSetter, Is.Null);
+            Assert.That(model.PropertyPublicSetter, Is.EqualTo(value));
+            Assert.That(model.PropertyInternalSetter, Is.EqualTo(value));
+            Assert.That(model.PropertyVirtualOmittedSetter, Is.Null);
+            Assert.That(model.PropertyVirtualPublicSetter, Is.EqualTo(value));
+            Assert.That(model.PropertyVirtualInternalSetter, Is.EqualTo(value));
         }
     }
 }
