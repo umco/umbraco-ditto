@@ -38,7 +38,20 @@ The rest of your old TypeConverter logic should remain the same.
 
 * If your custom TypeConverter class name has a "Converter" suffix, consider removing this (or consider changing it to have a "Processor" suffix). This makes no change in how Ditto uses the class, it is purely for cosmetic and conventional reasons.
 
+#### Renamed core converters
 
+As changing a TypeConverter to a Processor makes it an Attribute, it means the syntax for adding it on your model has also changed so below is a list of old core TypeConverters and their new Processor alternatives:
+
+| Old 														 | New              |
+| ---------------------------------------------------------- | ---------------- |
+| [TypeConverter(typeof(DittoPickerConverter))] 			 | [Enum]           |
+| [TypeConverter(typeof(DittoUltimatePicker))] 				 | [UltimatePicker] |
+| [TypeConverter(typeof(DittoPickerConverter))]				 | [UmbracoPicker]  |
+| [TypeConverter(typeof(DittoContentPickerConverter))]		 | [UmbracoPicker]  |
+| [TypeConverter(typeof(DittoMediaPickerConverter))]		 | [UmbracoPicker]  |
+| [TypeConverter(typeof(DittoMemberPickerConverter))]		 | [UmbracoPicker]  |
+| [TypeConverter(typeof(DittoMultipleMediaPickerConverter))] | [UmbracoPicker]  |
+| [TypeConverter(typeof(DittoHtmlStringConverter))]		     | [HtmlString]     |
 
 
 ### ValueResolvers
