@@ -34,13 +34,27 @@ The rest of your old TypeConverter logic should remain the same.
 > If you do encounter any major issues in refactoring a TypeConverter, please do let us know. We would like these notes to cover as much as they can.
 
 
+As changing a `TypeConverter` to a `Processor` makes it an `Attribute` in it's own right, it means the syntax for adding it on your model has also changed, so where you would have had:
+
+```csharp
+[TypeConverter(typeof(MyConverter))]
+public MyType MyProperty { get; set; }
+```
+
+this has how changed to:
+
+```csharp
+[MyProcessor]
+public MyType MyProperty { get; set; }
+```
+
 #### Cosmetic changes
 
 * If your custom TypeConverter class name has a "Converter" suffix, consider removing this (or consider changing it to have a "Processor" suffix). This makes no change in how Ditto uses the class, it is purely for cosmetic and conventional reasons.
 
 #### Renamed core converters
 
-As changing a TypeConverter to a Processor makes it an Attribute, it means the syntax for adding it on your model has also changed so below is a list of old core TypeConverters and their new Processor alternatives:
+Below is a list of old core TypeConverters and their new Processor alternatives:
 
 | Old 														 | New              |
 | ---------------------------------------------------------- | ---------------- |
