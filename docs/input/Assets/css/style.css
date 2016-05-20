@@ -464,3 +464,14 @@ pre.prettyprint.prettyprint {
     margin-right: 0;
     width: 100%;
 }
+
+
+
+/* Gitter Sidecar - Custom Styles */
+.gitter-open-chat-button {
+    background-color: #c33;
+}
+.gitter-open-chat-button:hover {
+    background-color: #7a1f1f;
+	text-decoration: none;
+}
