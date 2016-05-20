@@ -11,5 +11,6 @@ Thumbs.db
 *.hash
 *.list
 
+.wyam/
 artifacts/
 src/packages/
