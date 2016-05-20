@@ -46,7 +46,7 @@ cd umbraco-ditto
 
 ---------------------------------------------------------------------------------------
 
-## <a name="upgrade-09" title="Umbraco to 0.9"></a>Umbraco to 0.9
+## <a name="upgrade-090" title="Umbraco to 0.9.0"></a>Umbraco to 0.9.0
 
 With Ditto v0.9.0 the introduction of Processors has made an overall breaking change for developers who have built custom TypeConverters or ValueResolvers with previous Ditto versions. The intention of Processors are to combine the power and flexibility of both TypeConverters and ValueResolvers together.
 
