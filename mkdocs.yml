@@ -13,3 +13,4 @@ pages:
     - 'Advanced usage: Conversion Handlers': 'usage-advanced-conversionhandlers.md'
     - 'Advanced usage: Lazy Loading': 'usage-advanced-lazyloading.md'
     - 'Advanced usage: Lists': 'usage-advanced-lists.md'
+  - 'Upgrading to v0.9.0': 'upgrade-090.md'

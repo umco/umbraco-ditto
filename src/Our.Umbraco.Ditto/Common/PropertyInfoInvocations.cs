@@ -30,7 +30,7 @@
                 FunctionCache[key] = a;
             }
 
-           return a(instance);
+            return a(instance);
         }
 
         /// <summary>
@@ -50,7 +50,10 @@
                 ActionCache[key] = a;
             }
 
-            a(instance, value);
+            if (a != null)
+            {
+                a(instance, value);
+            }
         }
 
         /// <summary>
@@ -89,7 +92,7 @@
             var obj = Expression.Parameter(typeof(object), "o");
             var value = Expression.Parameter(typeof(object));
 
-            if (method.DeclaringType != null)
+            if (method != null && method.DeclaringType != null)
             {
                 Expression<Action<object, object>> expr =
                     Expression.Lambda<Action<object, object>>(
