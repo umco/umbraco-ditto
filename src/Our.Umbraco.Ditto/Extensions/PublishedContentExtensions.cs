@@ -315,7 +315,7 @@ namespace Our.Umbraco.Ditto
             if (virtualProperties == null && nonVirtualProperties == null)
             {
                 var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(x => x.CanWrite).ToArray();
+                    .Where(x => x.CanWrite && x.GetSetMethod() != null).ToArray();
 
                 // Split out the properties.
                 virtualProperties = properties.Where(p => p.IsVirtualAndOverridable()).ToArray();
@@ -501,7 +501,9 @@ namespace Our.Umbraco.Ditto
                 currentValue = processorAttr.ProcessValue(currentValue, ctx);
             }
 
-            return currentValue;
+            return (currentValue == null && propertyInfo.PropertyType.IsValueType)
+                ? propertyInfo.PropertyType.GetInstance() // Set to default instance of value type
+                : currentValue;
         }
 
         /// <summary>
