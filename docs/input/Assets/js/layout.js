@@ -42,6 +42,4 @@ $(document).ready(function () {
             }
         });
     });
-
-    prettyPrint();
 });

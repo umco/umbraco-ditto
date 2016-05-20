@@ -9,7 +9,7 @@ For basic use of Ditto, let's start with a standard DocumentType with a few prop
 * BodyText (_Richtext editor_)
 * Image (_Upload_)
 
-![Umbraco DocType properties](/assets/img/umbraco-doctype-properties.png)
+![Umbraco DocType properties](/img/umbraco-doctype-properties.png)
 
 Using those properties as the structure of our view-model (POCO class), we can manually create a C# class:
 

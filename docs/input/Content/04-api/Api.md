@@ -1,8 +1,8 @@
 title: API
 ---
 
-Welcome to the API Reference documentation.
+## API Reference Documentation
 
-This details Ditto's public API, comprising of a single flat namespace:
+This section details Ditto's public API, comprising of a single flat namespace:
 
 * [Our.Umbraco.Ditto](/api/Our.Umbraco.Ditto/)
