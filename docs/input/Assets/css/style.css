@@ -493,3 +493,24 @@ pre.prettyprint.prettyprint {
 .badge:hover {
     opacity: 1;
 }
+
+
+table {
+    border: solid 1px #ccc;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table th, table td {
+    text-align: left;
+    padding: 0.5em 1em;
+    border: solid 1px #ccc;
+}
+
+table th {
+    background: #ddd;
+}
+
+table tr:nth-child(even) td {
+    background: #f5f5f5;
+}
