@@ -11,7 +11,6 @@ Thumbs.db
 *.hash
 *.list
 
-.wyam/
 artifacts/
 docs/.wyam/
 docs/output/

@@ -1,4 +1,8 @@
-===
+#n Wyam.Modules.CodeAnalysis -p
+#n Wyam.Modules.Html -p
+#n Wyam.Modules.Markdown -p
+#n Wyam.Modules.Razor -p
+#n Wyam.Modules.Yaml -p
 
 using Wyam.Modules.Razor.Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
