@@ -104,17 +104,48 @@ public MyType MyProperty { get; set; }
 
 Below is a list of old core TypeConverters and their new Processor alternatives:
 
-| Old                                                          | New                |
-| ------------------------------------------------------------ | ------------------ |
-| `[TypeConverter(typeof(DittoPickerConverter))]`              | `[Enum]`           |
-| `[TypeConverter(typeof(DittoUltimatePicker))]`               | `[UltimatePicker]` |
-| `[TypeConverter(typeof(DittoPickerConverter))]`              | `[UmbracoPicker]`  |
-| `[TypeConverter(typeof(DittoContentPickerConverter))]`       | `[UmbracoPicker]`  |
-| `[TypeConverter(typeof(DittoMediaPickerConverter))]`         | `[UmbracoPicker]`  |
-| `[TypeConverter(typeof(DittoMemberPickerConverter))]`        | `[UmbracoPicker]`  |
-| `[TypeConverter(typeof(DittoMultipleMediaPickerConverter))]` | `[UmbracoPicker]`  |
-| `[TypeConverter(typeof(DittoHtmlStringConverter))]`          | `[HtmlString]`     |
-
+<table>
+	<thead>
+		<tr>
+			<th>Old</th>
+			<th>New</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>[TypeConverter(typeof(DittoPickerConverter))]</code></td>
+			<td><code>[Enum]</code></td>
+		</tr>
+		<tr>
+			<td><code>[TypeConverter(typeof(DittoUltimatePicker))]</code></td>
+			<td><code>[UltimatePicker]</code></td>
+		</tr>
+		<tr>
+			<td><code>[TypeConverter(typeof(DittoPickerConverter))]</code></td>
+			<td><code>[UmbracoPicker]</code></td>
+		</tr>
+		<tr>
+			<td><code>[TypeConverter(typeof(DittoContentPickerConverter))]</code></td>
+			<td><code>[UmbracoPicker]</code></td>
+		</tr>
+		<tr>
+			<td><code>[TypeConverter(typeof(DittoMediaPickerConverter))]</code></td>
+			<td><code>[UmbracoPicker]</code></td>
+		</tr>
+		<tr>
+			<td><code>[TypeConverter(typeof(DittoMemberPickerConverter))]</code></td>
+			<td><code>[UmbracoPicker]</code></td>
+		</tr>
+		<tr>
+			<td><code>[TypeConverter(typeof(DittoMultipleMediaPickerConverter))]</code></td>
+			<td><code>[UmbracoPicker]</code></td>
+		</tr>
+		<tr>
+			<td><code>[TypeConverter(typeof(DittoHtmlStringConverter))]</code></td>
+			<td><code>[HtmlString]</code></td>
+		</tr>
+	</tbody>
+</table>
 
 ---
 
