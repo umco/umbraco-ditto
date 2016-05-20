@@ -167,11 +167,13 @@ header h2.docs-header {
 footer {
     text-align: center;
     padding: 1.5em 0;
+    background: #222; 
+    color: #fff;
 }
 
 footer p {
     margin: 0;
-    color: #999;
+    color: #fff;
 }
 
 
@@ -226,6 +228,13 @@ nav a:active {
 
 nav ul.toplinks {
     padding: 20px 0 0 0;
+}
+
+nav ul.toplinks img {
+    width: 30px;
+    vertical-align: middle;
+    margin-right: 4px;
+    margin-top: -1px;
 }
 
 nav #menu {
@@ -462,16 +471,25 @@ pre.prettyprint.prettyprint {
     line-height: 1;
     margin-left: 0;
     margin-right: 0;
-    width: 100%;
 }
 
-
-
-/* Gitter Sidecar - Custom Styles */
-.gitter-open-chat-button {
-    background-color: #c33;
+.badges 
+{
+    background: #c33;
+    padding: 1.5em 0;
 }
-.gitter-open-chat-button:hover {
-    background-color: #7a1f1f;
-	text-decoration: none;
+
+.badges p {
+    margin: 0;
+}
+
+.badge {
+    display: inline-block;
+    width: 50px;
+    margin: 0 4px;
+    opacity: .9;
+}
+
+.badge:hover {
+    opacity: 1;
 }
