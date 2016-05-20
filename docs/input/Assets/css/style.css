@@ -458,6 +458,9 @@ input:focus {
 }
 
 
-pre.prettyprint {
+pre.prettyprint.prettyprint {
     line-height: 1;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
 }
