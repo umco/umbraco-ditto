@@ -4,7 +4,7 @@ using Our.Umbraco.Ditto.Tests.Mocks;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
-    public class InternalSetterTests
+    public class SetMethodTests
     {
         public class MyModel
         {
@@ -28,7 +28,7 @@ namespace Our.Umbraco.Ditto.Tests
         }
 
         [Test]
-        public void InternalSetter_Test()
+        public void SetMethod_Test()
         {
             var value = "foo";
             var content = new PublishedContentMock
@@ -40,10 +40,10 @@ namespace Our.Umbraco.Ditto.Tests
 
             Assert.That(model.PropertyOmittedSetter, Is.Null);
             Assert.That(model.PropertyPublicSetter, Is.EqualTo(value));
-            Assert.That(model.PropertyInternalSetter, Is.EqualTo(value));
+            Assert.That(model.PropertyInternalSetter, Is.Null);
             Assert.That(model.PropertyVirtualOmittedSetter, Is.Null);
             Assert.That(model.PropertyVirtualPublicSetter, Is.EqualTo(value));
-            Assert.That(model.PropertyVirtualInternalSetter, Is.EqualTo(value));
+            Assert.That(model.PropertyVirtualInternalSetter, Is.Null);
         }
     }
 }
