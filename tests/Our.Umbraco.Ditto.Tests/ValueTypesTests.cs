@@ -19,12 +19,12 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void ValueTypes_With_Value()
         {
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock("boolean", true, true),
-                    new PublishedContentPropertyMock("integer", 1234, true)
+                    new MockPublishedContentProperty("boolean", true),
+                    new MockPublishedContentProperty("integer", 1234)
                 }
             };
 
@@ -38,7 +38,7 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void ValueTypes_With_DefaultValue()
         {
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As<MyModel>();
 
