@@ -14,8 +14,8 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         public DittoProcessorMetaDataAttribute()
         {
-            ValueType = typeof(object);
-            ContextType = typeof(DittoProcessorContext);
+            this.ValueType = typeof(object);
+            this.ContextType = typeof(DittoProcessorContext);
         }
 
         /// <summary>

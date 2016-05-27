@@ -35,18 +35,18 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            var ctx = (DittoMultiProcessorContext)Context;
+            var ctx = (DittoMultiProcessorContext)this.Context;
 
-            foreach (var processorAttr in Attributes)
+            foreach (var processorAttr in this.Attributes)
             {
                 // Get the right context type
                 var newCtx = ctx.ContextCache.GetOrCreateContext(processorAttr.ContextType);
 
                 // Process value
-                Value = processorAttr.ProcessValue(Value, newCtx);
+                this.Value = processorAttr.ProcessValue(this.Value, newCtx);
             }
 
-            return Value;
+            return this.Value;
         }
     }
 }

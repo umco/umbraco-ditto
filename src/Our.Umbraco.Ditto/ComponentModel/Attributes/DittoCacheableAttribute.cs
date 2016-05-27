@@ -14,8 +14,8 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         protected DittoCacheableAttribute()
         {
-            CacheBy = Ditto.DefaultCacheBy;
-            CacheDuration = 0;
+            this.CacheBy = Ditto.DefaultCacheBy;
+            this.CacheDuration = 0;
         }
 
         /// <summary>
@@ -53,18 +53,18 @@ namespace Our.Umbraco.Ditto
         internal TOuputType GetCacheItem<TOuputType>(DittoCacheContext cacheContext, Func<TOuputType> refresher)
         {
             // If no cache duration set, just run the refresher
-            if (CacheDuration == 0 || Ditto.IsDebuggingEnabled)
+            if (this.CacheDuration == 0 || Ditto.IsDebuggingEnabled)
             {
                 return refresher();
             }
 
             // Get the cache key builder type
-            var cacheKeyBuilderType = CacheKeyBuilderType ?? typeof(DittoDefaultCacheKeyBuilder);
+            var cacheKeyBuilderType = this.CacheKeyBuilderType ?? typeof(DittoDefaultCacheKeyBuilder);
 
             // Check the cache key builder type
             if (!typeof(DittoCacheKeyBuilder).IsAssignableFrom(cacheKeyBuilderType))
             {
-                throw new ApplicationException("Expected a cache key builder of type " + typeof(DittoCacheKeyBuilder) + " but got " + CacheKeyBuilderType);
+                throw new ApplicationException("Expected a cache key builder of type " + typeof(DittoCacheKeyBuilder) + " but got " + this.CacheKeyBuilderType);
             }
 
             // Construct the cache key builder
@@ -73,10 +73,10 @@ namespace Our.Umbraco.Ditto
 
             // Get and cache the result
             return (TOuputType)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
-                cacheKey,
-                () => refresher(),
+                cacheKey, 
+                () => refresher(), 
                 priority: CacheItemPriority.NotRemovable, // Same as Umbraco macros
-                timeout: new TimeSpan(0, 0, 0, CacheDuration));
+                timeout: new TimeSpan(0, 0, 0, this.CacheDuration));
         }
     }
 }

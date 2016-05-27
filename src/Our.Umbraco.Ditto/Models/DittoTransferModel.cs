@@ -13,8 +13,8 @@ namespace Our.Umbraco.Ditto
         /// <param name="model">The model.</param>
         public DittoTransferModel(object model)
         {
-            Model = model;
-            ProcessorContexts = new List<DittoProcessorContext>();
+            this.Model = model;
+            this.ProcessorContexts = new List<DittoProcessorContext>();
         }
 
         /// <summary>
@@ -24,8 +24,8 @@ namespace Our.Umbraco.Ditto
         /// <param name="processorContexts">The processor contexts.</param>
         public DittoTransferModel(object model, IEnumerable<DittoProcessorContext> processorContexts)
         {
-            Model = model;
-            ProcessorContexts = new List<DittoProcessorContext>(processorContexts);
+            this.Model = model;
+            this.ProcessorContexts = new List<DittoProcessorContext>(processorContexts);
         }
 
         /// <summary>

@@ -20,25 +20,25 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            object result = Value;
+            object result = this.Value;
 
-            var propertyIsEnumerableType = Context.PropertyDescriptor.PropertyType.IsEnumerableType()
-                && !Context.PropertyDescriptor.PropertyType.IsEnumerableOfKeyValueType()
-                && !(Context.PropertyDescriptor.PropertyType == typeof(string));
+            var propertyIsEnumerableType = this.Context.PropertyDescriptor.PropertyType.IsEnumerableType()
+                && !this.Context.PropertyDescriptor.PropertyType.IsEnumerableOfKeyValueType()
+                && !(this.Context.PropertyDescriptor.PropertyType == typeof(string));
 
-            if (Value != null)
+            if (this.Value != null)
             {
-                var valueIsEnumerableType = Value.GetType().IsEnumerableType()
-                    && !Value.GetType().IsEnumerableOfKeyValueType()
-                    && !(Value is string);
+                var valueIsEnumerableType = this.Value.GetType().IsEnumerableType()
+                    && !this.Value.GetType().IsEnumerableOfKeyValueType()
+                    && !(this.Value is string);
 
                 if (propertyIsEnumerableType)
                 {
                     if (!valueIsEnumerableType)
                     {
                         // Property is enumerable, but value isn't, so make enumerable
-                        var arr = Array.CreateInstance(Value.GetType(), 1);
-                        arr.SetValue(Value, 0);
+                        var arr = Array.CreateInstance(this.Value.GetType(), 1);
+                        arr.SetValue(this.Value, 0);
                         result = arr;
                     }
                 }
@@ -47,7 +47,7 @@ namespace Our.Umbraco.Ditto
                     if (valueIsEnumerableType)
                     {
                         // Property is not enumerable, but value is, so grab first item
-                        var enumerator = ((IEnumerable)Value).GetEnumerator();
+                        var enumerator = ((IEnumerable)this.Value).GetEnumerator();
                         result = enumerator.MoveNext() ? enumerator.Current : null;
                     }
                 }
@@ -57,7 +57,7 @@ namespace Our.Umbraco.Ditto
                 if (propertyIsEnumerableType)
                 {
                     // Value is null, but property is enumerable, so return empty enumerable
-                    result = EnumerableInvocations.Empty(Context.PropertyDescriptor.PropertyType.GenericTypeArguments.First());
+                    result = EnumerableInvocations.Empty(this.Context.PropertyDescriptor.PropertyType.GenericTypeArguments.First());
                 }
             }
 

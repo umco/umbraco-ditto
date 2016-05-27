@@ -14,17 +14,19 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Resolves a type name based upon the current content item.
         /// </summary>
-        /// <param name="currentContent"></param>
-        /// <returns></returns>
+        /// <param name="currentContent">The current published content.</param>
+        /// <returns>The name.</returns>
         public abstract string ResolveTypeName(IPublishedContent currentContent);
 
         /// <summary>
-        /// Processes the incoming value.
+        /// Processes the value.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// The <see cref="object" /> representing the processed value.
+        /// </returns>
         public override object ProcessValue()
         {
-            var propType = Context.PropertyDescriptor.PropertyType;
+            var propType = this.Context.PropertyDescriptor.PropertyType;
             var propTypeIsEnumerable = propType.IsEnumerableType();
             var baseType = propTypeIsEnumerable ? propType.GetEnumerableType() : propType;
 
@@ -44,12 +46,12 @@ namespace Our.Umbraco.Ditto
             var types = (IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null });
 
             // Check for IEnumerable<IPublishedContent> value
-            var enumerableValue = Value as IEnumerable<IPublishedContent>;
+            var enumerableValue = this.Value as IEnumerable<IPublishedContent>;
             if (enumerableValue != null)
             {
                 var items = enumerableValue.Select(x =>
                 {
-                    var typeName = ResolveTypeName(x);
+                    var typeName = this.ResolveTypeName(x);
                     var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
 
                     return type != null ? x.As(type) : null;
@@ -59,10 +61,10 @@ namespace Our.Umbraco.Ditto
             }
 
             // Check for IPublishedContent value
-            var ipublishedContentValue = Value as IPublishedContent;
+            var ipublishedContentValue = this.Value as IPublishedContent;
             if (ipublishedContentValue != null)
             {
-                var typeName = ResolveTypeName(ipublishedContentValue);
+                var typeName = this.ResolveTypeName(ipublishedContentValue);
                 var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
                 return type != null ? ipublishedContentValue.As(type) : null;
             }

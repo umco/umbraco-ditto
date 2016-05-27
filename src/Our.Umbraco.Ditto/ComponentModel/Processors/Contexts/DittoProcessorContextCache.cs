@@ -45,9 +45,9 @@ namespace Our.Umbraco.Ditto
         /// <param name="propertyDescriptor">The property descriptor.</param>
         /// <param name="culture">The culture.</param>
         public DittoProcessorContextCache(
-            IPublishedContent content,
-            Type targetType,
-            PropertyDescriptor propertyDescriptor,
+            IPublishedContent content, 
+            Type targetType, 
+            PropertyDescriptor propertyDescriptor, 
             CultureInfo culture)
         {
             this.content = content;
@@ -67,14 +67,14 @@ namespace Our.Umbraco.Ditto
         /// <param name="culture">The culture.</param>
         /// <param name="contexts">The contexts.</param>
         public DittoProcessorContextCache(
-            IPublishedContent content,
-            Type targetType,
-            PropertyDescriptor propertyDescriptor,
-            CultureInfo culture,
+            IPublishedContent content, 
+            Type targetType, 
+            PropertyDescriptor propertyDescriptor, 
+            CultureInfo culture, 
             IEnumerable<DittoProcessorContext> contexts)
             : this(content, targetType, propertyDescriptor, culture)
         {
-            AddContexts(contexts);
+            this.AddContexts(contexts);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="context">The context.</param>
         public void AddContext(DittoProcessorContext context)
         {
-            this.lookup.AddOrUpdate(context.GetType(), context.Populate(content, targetType, propertyDescriptor, culture), (type, ctx) => ctx); // Don't override if already exists
+            this.lookup.AddOrUpdate(context.GetType(), context.Populate(this.content, this.targetType, this.propertyDescriptor, this.culture), (type, ctx) => ctx); // Don't override if already exists
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Our.Umbraco.Ditto
         public DittoProcessorContext GetOrCreateContext(Type contexType)
         {
             return this.lookup.GetOrAdd(
-                contexType,
+                contexType, 
                 type => ((DittoProcessorContext)contexType.GetInstance())
                     .Populate(this.content, this.targetType, this.propertyDescriptor, this.culture));
         }

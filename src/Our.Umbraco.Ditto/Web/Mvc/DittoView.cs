@@ -52,8 +52,8 @@ namespace Our.Umbraco.Ditto
             }
 
             // Get current content / culture
-            var content = UmbracoContext.PublishedContentRequest.PublishedContent;
-            var culture = UmbracoContext.PublishedContentRequest.Culture;
+            var content = this.UmbracoContext.PublishedContentRequest.PublishedContent;
+            var culture = this.UmbracoContext.PublishedContentRequest.Culture;
 
             // Process model
             var publishedContent = model as IPublishedContent;
@@ -77,9 +77,9 @@ namespace Our.Umbraco.Ditto
             {
                 Model =
                     new DittoViewModel<TViewModel>(
-                    content,
-                    culture,
-                    processorContexts,
+                    content, 
+                    culture, 
+                    processorContexts, 
                     typedModel)
             };
 

@@ -24,9 +24,9 @@ namespace Our.Umbraco.Ditto
         /// <param name="recursive">If set to <c>true</c>, a recursive lookup is performed.</param>
         /// <param name="defaultValue">The default value.</param>
         public UmbracoPropertyAttribute(
-            string propertyName,
-            string altPropertyName = null,
-            bool recursive = false,
+            string propertyName, 
+            string altPropertyName = null, 
+            bool recursive = false, 
             object defaultValue = null)
         {
             this.PropertyName = propertyName;
@@ -75,9 +75,9 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            var defaultValue = DefaultValue;
+            var defaultValue = this.DefaultValue;
 
-            var recursive = Recursive;
+            var recursive = this.Recursive;
             var propName = this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty;
             var altPropName = string.Empty;
 
@@ -100,8 +100,8 @@ namespace Our.Umbraco.Ditto
                 }
             }
 
-            var umbracoPropertyName = PropertyName ?? propName;
-            var altUmbracoPropertyName = AltPropertyName ?? altPropName;
+            var umbracoPropertyName = this.PropertyName ?? propName;
+            var altUmbracoPropertyName = this.AltPropertyName ?? altPropName;
 
             var content = this.Context.Content;
             if (content == null)

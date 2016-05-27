@@ -17,12 +17,12 @@ namespace Our.Umbraco.Ditto
         /// <param name="culture">The culture.</param>
         /// <param name="processorContexts">The processor contexts.</param>
         protected BaseDittoViewModel(
-            IPublishedContent content,
-            CultureInfo culture = null,
+            IPublishedContent content, 
+            CultureInfo culture = null, 
             IEnumerable<DittoProcessorContext> processorContexts = null)
             : base(content, culture)
         {
-            ProcessorContexts = processorContexts ?? new List<DittoProcessorContext>();
+            this.ProcessorContexts = processorContexts ?? new List<DittoProcessorContext>();
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Our.Umbraco.Ditto
         /// <value>
         /// The current page.
         /// </value>
-        public IPublishedContent CurrentPage { get { return Content; } }
+        public IPublishedContent CurrentPage { get { return this.Content; } }
 
         /// <summary>
         /// Gets or sets the processor contexts.
@@ -62,15 +62,15 @@ namespace Our.Umbraco.Ditto
         /// <param name="processorContexts">The processor contexts.</param>
         /// <param name="viewModel">The view model.</param>
         public DittoViewModel(
-            IPublishedContent content,
-            CultureInfo culture = null,
-            IEnumerable<DittoProcessorContext> processorContexts = null,
+            IPublishedContent content, 
+            CultureInfo culture = null, 
+            IEnumerable<DittoProcessorContext> processorContexts = null, 
             TViewModel viewModel = null)
             : base(content, culture, processorContexts)
         {
             if (viewModel != null)
             {
-                View = viewModel;
+                this.View = viewModel;
             }
         }
 
@@ -84,24 +84,24 @@ namespace Our.Umbraco.Ditto
         {
             get
             {
-                if (view == null)
+                if (this.view == null)
                 {
-                    if (Content is TViewModel)
+                    if (this.Content is TViewModel)
                     {
-                        view = Content as TViewModel;
+                        this.view = this.Content as TViewModel;
                     }
                     else
                     {
-                        view = Content.As<TViewModel>(processorContexts: ProcessorContexts);
+                        this.view = this.Content.As<TViewModel>(processorContexts: this.ProcessorContexts);
                     }
                 }
 
-                return view;
+                return this.view;
             }
 
             internal set
             {
-                view = value;
+                this.view = value;
             }
         }
     }
@@ -118,8 +118,8 @@ namespace Our.Umbraco.Ditto
         /// <param name="culture">The culture.</param>
         /// <param name="processorContexts">The processor contexts.</param>
         protected DittoViewModel(
-            IPublishedContent content,
-            CultureInfo culture = null,
+            IPublishedContent content, 
+            CultureInfo culture = null, 
             IEnumerable<DittoProcessorContext> processorContexts = null)
             : base(content, culture, processorContexts)
         { }

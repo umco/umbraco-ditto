@@ -8,23 +8,23 @@ namespace Our.Umbraco.Ditto
     public class DittoDocTypeFactoryAttribute : DittoFactoryAttribute
     {
         /// <summary>
-        /// A prefix string to prepend onto the resolved type name.
+        /// Gets or sets a prefix string to prepend onto the resolved type name.
         /// </summary>
         public string Prefix { get; set; }
 
         /// <summary>
-        /// A suffix string to append onto the resolved type name.
+        /// Gets or sets a  suffix string to append onto the resolved type name.
         /// </summary>
         public string Suffix { get; set; }
 
         /// <summary>
         /// Fetches the type name from the current content item's Doc Type alias.
         /// </summary>
-        /// <param name="currentContent"></param>
-        /// <returns></returns>
+        /// <param name="currentContent">The current published content.</param>
+        /// <returns>The name.</returns>
         public override string ResolveTypeName(IPublishedContent currentContent)
         {
-            return string.Concat(Prefix, currentContent.DocumentTypeAlias, Suffix);
+            return string.Concat(this.Prefix, currentContent.DocumentTypeAlias, this.Suffix);
         }
     }
 }

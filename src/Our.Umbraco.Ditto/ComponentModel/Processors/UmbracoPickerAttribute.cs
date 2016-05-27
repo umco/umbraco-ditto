@@ -24,25 +24,25 @@ namespace Our.Umbraco.Ditto
         public override object ProcessValue()
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (Context == null || Context.PropertyDescriptor == null || Value.IsNullOrEmptyString())
+            if (this.Context == null || this.Context.PropertyDescriptor == null || this.Value.IsNullOrEmptyString())
             {
                 return Enumerable.Empty<object>();
             }
 
             // Single IPublishedContent
-            IPublishedContent content = Value as IPublishedContent;
+            IPublishedContent content = this.Value as IPublishedContent;
             if (content != null)
             {
                 return content;
             }
 
             // ReSharper disable once PossibleNullReferenceException
-            var type = Value.GetType();
+            var type = this.Value.GetType();
 
             // Multiple IPublishedContent
             if (type.IsEnumerableOfType(typeof(IPublishedContent)))
             {
-                return (IEnumerable<IPublishedContent>)Value;
+                return (IEnumerable<IPublishedContent>)this.Value;
             }
 
             int[] nodeIds = { };
@@ -53,28 +53,28 @@ namespace Our.Umbraco.Ditto
                 if (type.IsEnumerableOfType(typeof(string)))
                 {
                     int n;
-                    nodeIds = ((IEnumerable<string>)Value)
-                                .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
+                    nodeIds = ((IEnumerable<string>)this.Value)
+                                .Select(x => int.TryParse(x, NumberStyles.Any, this.Context.Culture, out n) ? n : -1)
                                 .ToArray();
                 }
 
                 if (type.IsEnumerableOfType(typeof(int)))
                 {
-                    nodeIds = ((IEnumerable<int>)Value).ToArray();
+                    nodeIds = ((IEnumerable<int>)this.Value).ToArray();
                 }
             }
 
             // Now csv strings.
             if (!nodeIds.Any())
             {
-                var s = Value as string ?? Value.ToString();
+                var s = this.Value as string ?? this.Value.ToString();
                 if (!string.IsNullOrWhiteSpace(s))
                 {
                     int n;
                     nodeIds = XmlHelper.CouldItBeXml(s)
                     ? s.GetXmlIds()
                     : s.ToDelimitedList()
-                        .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
+                        .Select(x => int.TryParse(x, NumberStyles.Any, this.Context.Culture, out n) ? n : -1)
                         .Where(x => x > 0)
                         .ToArray();
                 }

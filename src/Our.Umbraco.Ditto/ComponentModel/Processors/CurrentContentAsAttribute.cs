@@ -27,7 +27,7 @@ namespace Our.Umbraco.Ditto
                         this.Context.PropertyDescriptor.PropertyType.Name));
             }
 
-            return Value;
+            return this.Value;
         }
     }
 }

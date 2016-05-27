@@ -19,7 +19,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         protected DittoController()
         {
-            processorContexts = new List<DittoProcessorContext>();
+            this.processorContexts = new List<DittoProcessorContext>();
         }
 
         /// <summary>
@@ -31,9 +31,9 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         protected virtual ActionResult CurrentView(object model = null)
         {
-            var viewName = ControllerContext.RouteData.Values["action"].ToString();
+            var viewName = this.ControllerContext.RouteData.Values["action"].ToString();
 
-            return View(viewName, null, model);
+            return this.View(viewName, null, model);
         }
 
         /// <summary>
@@ -49,10 +49,10 @@ namespace Our.Umbraco.Ditto
         {
             if (model == null)
             {
-                model = CurrentPage;
+                model = this.CurrentPage;
             }
 
-            var transferModel = new DittoTransferModel(model, processorContexts);
+            var transferModel = new DittoTransferModel(model, this.processorContexts);
 
             return base.View(viewName, masterName, transferModel);
         }
@@ -66,9 +66,9 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         protected virtual PartialViewResult CurrentPartialView(object model = null)
         {
-            var viewName = ControllerContext.RouteData.Values["action"].ToString();
+            var viewName = this.ControllerContext.RouteData.Values["action"].ToString();
 
-            return PartialView(viewName, model);
+            return this.PartialView(viewName, model);
         }
 
         /// <summary>
@@ -83,10 +83,10 @@ namespace Our.Umbraco.Ditto
         {
             if (model == null)
             {
-                model = CurrentPage;
+                model = this.CurrentPage;
             }
 
-            var transferModel = new DittoTransferModel(model, processorContexts);
+            var transferModel = new DittoTransferModel(model, this.processorContexts);
 
             return base.PartialView(viewName, transferModel);
         }
@@ -99,7 +99,7 @@ namespace Our.Umbraco.Ditto
         protected virtual void RegisterProcessorContext<TContextType>(TContextType context)
             where TContextType : DittoProcessorContext
         {
-            processorContexts.Add(context);
+            this.processorContexts.Add(context);
         }
     }
 }
