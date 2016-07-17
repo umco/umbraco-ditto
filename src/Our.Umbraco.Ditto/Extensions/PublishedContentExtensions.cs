@@ -466,7 +466,7 @@ namespace Our.Umbraco.Ditto
             if (!processorAttrs.Any())
             {
                 // Adds the default processor attribute
-                processorAttrs.Insert(0, (DittoProcessorAttribute)defaultProcessorType.GetInstance());
+                processorAttrs.Add((DittoProcessorAttribute)defaultProcessorType.GetInstance());
             }
 
             // Check for type registered processors
