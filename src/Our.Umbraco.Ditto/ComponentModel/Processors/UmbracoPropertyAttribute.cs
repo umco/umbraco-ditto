@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Umbraco.Core;
+using Umbraco.Core.Models;
 using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
@@ -103,7 +104,7 @@ namespace Our.Umbraco.Ditto
             var umbracoPropertyName = this.PropertyName ?? propName;
             var altUmbracoPropertyName = this.AltPropertyName ?? altPropName;
 
-            var content = this.Context.Content;
+            var content = this.Value as IPublishedContent;
             if (content == null)
             {
                 return defaultValue;
