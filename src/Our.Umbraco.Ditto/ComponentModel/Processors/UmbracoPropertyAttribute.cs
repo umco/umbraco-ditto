@@ -136,7 +136,7 @@ namespace Our.Umbraco.Ditto
             {
                 var contentProperty = contentType.GetProperty(altUmbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
 
-                if (contentProperty != null)
+                if (contentProperty != null && contentProperty.IsMappable())
                 {
                     // This is more than 2x as fast as propertyValue = contentProperty.GetValue(content, null);
                     propertyValue = PropertyInfoInvocations.GetValue(contentProperty, content);
