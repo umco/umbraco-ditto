@@ -142,7 +142,7 @@ namespace Our.Umbraco.Ditto
                     propertyValue = PropertyInfoInvocations.GetValue(contentProperty, content);
                 }
 
-                if (propertyValue == null)
+                if (propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
                 {
                     propertyValue = content.GetPropertyValue(altUmbracoPropertyName, recursive);
                 }
