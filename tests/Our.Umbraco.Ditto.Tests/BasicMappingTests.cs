@@ -32,6 +32,11 @@ namespace Our.Umbraco.Ditto.Tests
             public IPublishedContent MyProperty { get; set; }
         }
 
+        public class BasicModelWithItemProperty
+        {
+            public string Item { get; set; }
+        }
+
         [Test]
         public void Basic_Name_IsMapped()
         {
@@ -91,6 +96,21 @@ namespace Our.Umbraco.Ditto.Tests
             var model = content.As<BasicModelWithPublishedContentProperty>();
 
             Assert.That(model.MyProperty, Is.EqualTo(value));
+        }
+
+        [Test]
+        public void Basic_Content_Item_Property_IsMapped()
+        {
+            var value = "myValue";
+
+            var content = new MockPublishedContent
+            {
+                Properties = new[] { new MockPublishedContentProperty("item", value) }
+            };
+
+            var model = content.As<BasicModelWithItemProperty>();
+
+            Assert.That(model.Item, Is.EqualTo(value));
         }
 
         [Test]
