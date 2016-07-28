@@ -471,7 +471,18 @@ namespace Our.Umbraco.Ditto
 
             // Check for type registered processors
             processorAttrs.AddRange(propertyInfo.PropertyType.GetCustomAttributes<DittoProcessorAttribute>(true)
-                .OrderBy(x => x.Order));
+                    .OrderBy(x => x.Order));
+
+            // Check any type arguments in generic enumerable types.
+            // This should return false against typeof(string) etc also.
+            var propertyType = propertyInfo.PropertyType;
+            var typeInfo = propertyType.GetTypeInfo();
+            if (propertyType.IsCastableEnumerableType())
+            {
+                processorAttrs.AddRange(typeInfo.GenericTypeArguments.First().GetCustomAttributes<DittoProcessorAttribute>(true)
+                    .OrderBy(x => x.Order)
+                    .ToList());
+            }
 
             // Check for globally registered processors
             processorAttrs.AddRange(DittoProcessorRegistry.Instance.GetRegisteredProcessorAttributesFor(propertyInfo.PropertyType));
