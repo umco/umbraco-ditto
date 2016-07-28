@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -109,43 +110,20 @@ namespace Our.Umbraco.Ditto
             {
                 return defaultValue;
             }
-
-            var contentType = content.GetType();
+            
             object propertyValue = null;
 
             // Try fetching the value.
             if (!umbracoPropertyName.IsNullOrWhiteSpace())
             {
-                var contentProperty = contentType.GetProperty(umbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
-
-                if (contentProperty != null && contentProperty.IsMappable())
-                {
-                    // This is more than 2x as fast as propertyValue = contentProperty.GetValue(content, null);
-                    propertyValue = PropertyInfoInvocations.GetValue(contentProperty, content);
-                }
-
-                if (propertyValue == null)
-                {
-                    propertyValue = content.GetPropertyValue(umbracoPropertyName, recursive);
-                }
+                propertyValue = GetPropertyValue(content, umbracoPropertyName, recursive);
             }
 
             // Try fetching the alt value.
             if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
                 && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
             {
-                var contentProperty = contentType.GetProperty(altUmbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
-
-                if (contentProperty != null && contentProperty.IsMappable())
-                {
-                    // This is more than 2x as fast as propertyValue = contentProperty.GetValue(content, null);
-                    propertyValue = PropertyInfoInvocations.GetValue(contentProperty, content);
-                }
-
-                if (propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
-                {
-                    propertyValue = content.GetPropertyValue(altUmbracoPropertyName, recursive);
-                }
+                propertyValue = GetPropertyValue(content, altUmbracoPropertyName, recursive);
             }
 
             // Try setting the default value.
@@ -156,6 +134,55 @@ namespace Our.Umbraco.Ditto
             }
 
             return propertyValue;
+        }
+
+        /// <summary>
+        /// Gets a property value from the given content object
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="umbracoPropertyName"></param>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
+        private object GetPropertyValue(IPublishedContent content, string umbracoPropertyName, bool recursive)
+        {
+            var propertyValue = GetOwnPropertyValue(content, umbracoPropertyName);
+
+            if (propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+            {
+                propertyValue = GetUmbracoPropertyValue(content, umbracoPropertyName, recursive);
+            }
+
+            return propertyValue;
+        }
+
+        /// <summary>
+        /// Gets a property value from the given content objects own defined properties
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="umbracoPropertyName"></param>
+        /// <returns></returns>
+        private object GetOwnPropertyValue(IPublishedContent content, string umbracoPropertyName)
+        {
+            var contentProperty = content.GetType().GetProperty(umbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
+            if (contentProperty != null && contentProperty.IsMappable())
+            {
+                // This is more than 2x as fast as propertyValue = contentProperty.GetValue(content, null);
+                return PropertyInfoInvocations.GetValue(contentProperty, content);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets a property value from the given content objects umbraco properties collection
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="umbracoPropertyName"></param>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
+        private object GetUmbracoPropertyValue(IPublishedContent content, string umbracoPropertyName, bool recursive)
+        {
+            return content.GetPropertyValue(umbracoPropertyName, recursive);
         }
     }
 }
