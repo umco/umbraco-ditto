@@ -36,5 +36,27 @@ namespace Our.Umbraco.Ditto
             var method = source.GetGetMethod();
             return method.IsVirtual && !method.IsFinal;
         }
+
+        /// <summary>
+        /// Checks to see if a model property is mappable by Ditto
+        /// </summary>
+        /// <param name="source">
+        /// The source <see cref="PropertyInfo"/>.
+        /// </param>
+        /// <returns>
+        /// True if the <see cref="PropertyInfo"/> is mappable; otherwise, false.
+        /// </returns>
+        public static bool IsMappable(this PropertyInfo source)
+        {
+            // Make sure source is readable
+            if (!source.CanRead) return false;
+
+            // Check to make sure the get method has no parameters
+            var hasParams = source.GetIndexParameters().GetLength(0) > 0;
+            if (hasParams) return false;
+
+            // All checks have passed so allow it to be mapped
+            return true;
+        }
     }
 }
