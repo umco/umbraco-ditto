@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Moq;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Core.ObjectResolution;
+using Umbraco.Core.PropertyEditors;
 
 namespace Our.Umbraco.Ditto.Tests.Mocks
 {
@@ -58,7 +62,31 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
 
         public IEnumerable<IPublishedContent> ContentSet { get; set; }
 
-        public PublishedContentType ContentType { get; set; }
+        private PublishedContentType _contentType;
+        public PublishedContentType ContentType
+        {
+            get
+            {
+                if (_contentType != null) return _contentType;
+
+                // PublishedPropertyType initializes and looks up value resolvers
+                // so we need to populate a resolver base before we instantiate them
+                if (!ResolverBase<PropertyValueConvertersResolver>.HasCurrent) { 
+                    ResolverBase<PropertyValueConvertersResolver>.Current =
+                        new PropertyValueConvertersResolver(
+                            new Mock<IServiceProvider>().Object,
+                            new Mock<ILogger>().Object,
+                            Enumerable.Empty<Type>())
+                        { CanResolveBeforeFrozen = true };
+                }
+
+                return new PublishedContentType("Dummy", this.Properties.Select(x => new PublishedPropertyType(x.PropertyTypeAlias, "Dummy")));
+            }
+            set
+            {
+                _contentType = value;
+            }
+        }
 
         public int Id { get; set; }
 
