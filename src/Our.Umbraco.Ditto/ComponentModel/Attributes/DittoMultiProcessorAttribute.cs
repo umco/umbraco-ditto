@@ -6,7 +6,7 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// Represents a multi-ditto processor capable of wrapping multiple attributes into a single attribute definition
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(Ditto.ProcessorAttributeTargets, AllowMultiple = true, Inherited = false)]
     [DittoProcessorMetaData(ValueType = typeof(object), ContextType = typeof(DittoMultiProcessorContext))]
     public abstract class DittoMultiProcessorAttribute : DittoProcessorAttribute
     {
