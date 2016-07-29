@@ -25,7 +25,7 @@ namespace Our.Umbraco.Ditto.Tests
         }
 
         [Test]
-        public void PropertySource_Instance_Then_Umbraco_Maps()
+        public void PropertySource_Properties_Map()
         {
             var instanceName = "Instance Name";
             var instanceUrl = "/instance/url";
