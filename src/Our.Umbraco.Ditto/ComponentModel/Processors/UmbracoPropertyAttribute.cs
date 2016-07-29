@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -163,9 +165,17 @@ namespace Our.Umbraco.Ditto
         /// <returns></returns>
         private object GetOwnPropertyValue(IPublishedContent content, string umbracoPropertyName)
         {
-            var contentProperty = content.GetType().GetProperty(umbracoPropertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static);
+            var contentType = content.GetType();
+            var contentProperty = contentType.GetProperty(umbracoPropertyName, Ditto.MappablePropertiesBindingFlags);
             if (contentProperty != null && contentProperty.IsMappable())
             {
+                if (Ditto.IsDebuggingEnabled && Ditto.IPublishedContentProperties.Any(x => x.Name == contentProperty.Name)
+                    && content.HasProperty(umbracoPropertyName))
+                {
+                    // Property is an IPublishedContent property and an umbraco property exists so warn the user
+                    LogHelper.Warn<UmbracoPropertyAttribute>("The property "+ umbracoPropertyName + " being mapped from content type " + contentType.Name + " hides an umbraco defined property of the same name.");
+                }
+
                 // This is more than 2x as fast as propertyValue = contentProperty.GetValue(content, null);
                 return PropertyInfoInvocations.GetValue(contentProperty, content);
             }

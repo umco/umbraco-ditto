@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Configuration;
 using Umbraco.Core;
+using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto
 {
@@ -21,6 +26,18 @@ namespace Our.Umbraco.Ditto
         /// The default processor cache by flags
         /// </summary>
         public const DittoCacheBy DefaultCacheBy = DittoCacheBy.ContentId | DittoCacheBy.ContentVersion | DittoCacheBy.PropertyName | DittoCacheBy.Culture;
+
+        /// <summary>
+        /// The property bindings for mappable properties
+        /// </summary>
+        internal const BindingFlags MappablePropertiesBindingFlags = BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static;
+
+        /// <summary>
+        /// A list of mappable properties defined on the IPublishedContent interface
+        /// </summary>
+        internal static readonly IEnumerable<PropertyInfo> IPublishedContentProperties = typeof(IPublishedContent).GetProperties(MappablePropertiesBindingFlags)
+            .Where(x => x.IsMappable())
+            .ToList();
 
         /// <summary>
         /// Gets a value indicating whether application is running in debug mode.

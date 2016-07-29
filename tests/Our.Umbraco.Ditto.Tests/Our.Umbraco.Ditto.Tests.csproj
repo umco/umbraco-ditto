@@ -115,6 +115,7 @@
     <Compile Include="IgnoreAttributeTests.cs" />
     <Compile Include="ImageCropDataSetMappingTests.cs" />
     <Compile Include="InheritedClassWithPrefixedPropertyTests.cs" />
+    <Compile Include="Mocks\MockLogger.cs" />
     <Compile Include="SetMethodTests.cs" />
     <Compile Include="JsonSerializationWithTypeConverterTests.cs" />
     <Compile Include="MockProcessorTests.cs" />
