@@ -71,6 +71,9 @@ namespace Our.Umbraco.Ditto.Tests
             Assert.AreEqual(custonName, model.Name);
             Assert.IsNull(model.Url);
             Assert.AreEqual(custonProp, model.Custom);
+
+            // Reset
+            Ditto.DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
         }
 
         [Test]
@@ -128,7 +131,8 @@ namespace Our.Umbraco.Ditto.Tests
             Assert.NotNull(logMessages);
             Assert.That(logMessages.Any(x => x.Message.Contains("hides an instance property")));
 
-            // Turn debugging back off (can effect other tests if left enabled)
+            // Reset
+            Ditto.DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
             ConfigurationManager.AppSettings["Ditto:DebugEnabled"] = "false";
         }
     }
