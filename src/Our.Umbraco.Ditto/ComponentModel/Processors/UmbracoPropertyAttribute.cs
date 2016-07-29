@@ -18,6 +18,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         public UmbracoPropertyAttribute()
         {
+            PropertySource = Ditto.DefaultPropertySource;
         }
 
         /// <summary>
@@ -37,6 +38,8 @@ namespace Our.Umbraco.Ditto
             this.AltPropertyName = altPropertyName;
             this.Recursive = recursive;
             this.DefaultValue = defaultValue;
+
+            PropertySource = Ditto.DefaultPropertySource;
         }
 
         /// <summary>
@@ -70,6 +73,11 @@ namespace Our.Umbraco.Ditto
         /// The default value.
         /// </value>
         public object DefaultValue { get; set; }
+
+        /// <summary>
+        /// Gets or sets the property source from which to map values from
+        /// </summary>
+        public PropertySource PropertySource { get; set; }
 
         /// <summary>
         /// Processes the value.
@@ -147,33 +155,47 @@ namespace Our.Umbraco.Ditto
         /// <returns></returns>
         private object GetPropertyValue(IPublishedContent content, string umbracoPropertyName, bool recursive)
         {
-            var propertyValue = GetOwnPropertyValue(content, umbracoPropertyName);
+            object propertyValue = null;
 
-            if (propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+            if (PropertySource == PropertySource.InstanceProperties || PropertySource == PropertySource.InstanceThenUmbracoProperties)
+            {
+                propertyValue = GetClassPropertyValue(content, umbracoPropertyName);
+            }
+
+            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+                && (PropertySource != PropertySource.InstanceProperties))
             {
                 propertyValue = GetUmbracoPropertyValue(content, umbracoPropertyName, recursive);
+            }
+
+            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+                && PropertySource == PropertySource.UmbracoThenInstanceProperties)
+            {
+                propertyValue = GetClassPropertyValue(content, umbracoPropertyName);
             }
 
             return propertyValue;
         }
 
         /// <summary>
-        /// Gets a property value from the given content objects own defined properties
+        /// Gets a property value from the given content objects class properties
         /// </summary>
         /// <param name="content"></param>
         /// <param name="umbracoPropertyName"></param>
         /// <returns></returns>
-        private object GetOwnPropertyValue(IPublishedContent content, string umbracoPropertyName)
+        private object GetClassPropertyValue(IPublishedContent content, string umbracoPropertyName)
         {
             var contentType = content.GetType();
             var contentProperty = contentType.GetProperty(umbracoPropertyName, Ditto.MappablePropertiesBindingFlags);
             if (contentProperty != null && contentProperty.IsMappable())
             {
-                if (Ditto.IsDebuggingEnabled && Ditto.IPublishedContentProperties.Any(x => x.Name == contentProperty.Name)
+                if (Ditto.IsDebuggingEnabled 
+                    && PropertySource == PropertySource.InstanceThenUmbracoProperties 
+                    && Ditto.IPublishedContentProperties.Any(x => x.Name.InvariantEquals(umbracoPropertyName))
                     && content.HasProperty(umbracoPropertyName))
                 {
                     // Property is an IPublishedContent property and an umbraco property exists so warn the user
-                    LogHelper.Warn<UmbracoPropertyAttribute>("The property "+ umbracoPropertyName + " being mapped from content type " + contentType.Name + " hides an umbraco defined property of the same name.");
+                    LogHelper.Warn<UmbracoPropertyAttribute>("The property "+ umbracoPropertyName + " being mapped from content type " + contentType.Name + "'s instance properties hides a property in the umbraco properties collection of the same name. It is recommended that you avoid using umbraco property aliases that conflict with IPublishedContent instance property names, but if you can't avoid this and you require access to the hidden property you can use the PropertySource parameter of the processors attribute to override the order in which properties are checked.");
                 }
 
                 // This is more than 2x as fast as propertyValue = contentProperty.GetValue(content, null);
@@ -192,7 +214,42 @@ namespace Our.Umbraco.Ditto
         /// <returns></returns>
         private object GetUmbracoPropertyValue(IPublishedContent content, string umbracoPropertyName, bool recursive)
         {
+            if (Ditto.IsDebuggingEnabled
+                && PropertySource == PropertySource.UmbracoThenInstanceProperties
+                && Ditto.IPublishedContentProperties.Any(x => x.Name.InvariantEquals(umbracoPropertyName))
+                && content.HasProperty(umbracoPropertyName))
+            {
+                // Property is an IPublishedContent property and an umbraco property exists so warn the user
+                LogHelper.Warn<UmbracoPropertyAttribute>("The property " + umbracoPropertyName + " being mapped from the umbraco properties collection hides an instance property of the same name on content type " + content.GetType().Name + ". It is recommended that you avoid using umbraco property aliases that conflict with IPublishedContent instance property names, but if you can't avoid this and you require access to the hidden property you can use the PropertySource parameter of the processors attribute to override the order in which properties are checked.");
+            }
+
             return content.GetPropertyValue(umbracoPropertyName, recursive);
         }
+    }
+
+    /// <summary>
+    /// Defines the source from which the <see cref="UmbracoPropertyAttribute"/> should map values from
+    /// </summary>
+    public enum PropertySource
+    {
+        /// <summary>
+        /// Properties declared on the content instance only
+        /// </summary>
+        InstanceProperties,
+
+        /// <summary>
+        /// Properties declared in the umbraco properties collection only
+        /// </summary>
+        UmbracoProperties,
+
+        /// <summary>
+        /// Properties declared on the content instance, followed by properties in the umbraco properties collection if no value is found
+        /// </summary>
+        InstanceThenUmbracoProperties,
+
+        /// <summary>
+        /// Properties declared in the umbraco properties collection, followed by the content instance properties if no value is found
+        /// </summary>
+        UmbracoThenInstanceProperties
     }
 }

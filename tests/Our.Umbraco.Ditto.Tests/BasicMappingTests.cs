@@ -43,11 +43,6 @@ namespace Our.Umbraco.Ditto.Tests
             public string Item { get; set; }
         }
 
-        public class BasicModelWithChildrenProperty
-        {
-            public string Children { get; set; }
-        }
-
         [Test]
         public void Basic_Name_IsMapped()
         {
@@ -122,42 +117,6 @@ namespace Our.Umbraco.Ditto.Tests
             var model = content.As<BasicModelWithItemProperty>();
 
             Assert.That(model.Item, Is.EqualTo(value));
-        }
-
-        [Test]
-        public void Basic_Content_Reserved_Property_Warns()
-        {
-            ConfigurationManager.AppSettings["Ditto:DebugEnabled"] = "true";
-
-            // Create a mock logger
-            var mockLogger = new MockLogger();
-            if (ResolverBase<LoggerResolver>.HasCurrent)
-            {
-                ResolverBase<LoggerResolver>.Current.SetLogger(mockLogger);
-            }
-            else
-            {
-                ResolverBase<LoggerResolver>.Current = new LoggerResolver(mockLogger) { CanResolveBeforeFrozen = true };
-            }
-
-            // Create a hidden mapping
-            var value = "myValue";
-            var content = new MockPublishedContent
-            {
-                Properties = new[] { new MockPublishedContentProperty("children", value) }
-            };
-
-            // Perform the conversion
-            var model = content.As<BasicModelWithChildrenProperty>();
-
-            // Ensure a warning message was logged
-            var logMessages = mockLogger.GetLogMessages().Where(x => x.MessageType == LogMessageType.Warn && x.CallingType == typeof(UmbracoPropertyAttribute));
-
-            // Turn debugging back off (can effect other tests if left enabled)
-            ConfigurationManager.AppSettings["Ditto:DebugEnabled"] = "false";
-
-            Assert.NotNull(logMessages);
-            Assert.That(logMessages.Any(x => x.Message.Contains("hides")));
         }
 
         [Test]

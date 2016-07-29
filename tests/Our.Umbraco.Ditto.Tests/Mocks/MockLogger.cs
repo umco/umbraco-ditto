@@ -53,6 +53,11 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
         {
             return this.logMessages;
         }
+
+        public void ClearLogMessages()
+        {
+            this.logMessages.Clear();
+        }
     }
 
     internal class LogMessage

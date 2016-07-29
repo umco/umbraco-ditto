@@ -25,7 +25,12 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// The default processor cache by flags
         /// </summary>
-        public const DittoCacheBy DefaultCacheBy = DittoCacheBy.ContentId | DittoCacheBy.ContentVersion | DittoCacheBy.PropertyName | DittoCacheBy.Culture;
+        public static DittoCacheBy DefaultCacheBy = DittoCacheBy.ContentId | DittoCacheBy.ContentVersion | DittoCacheBy.PropertyName | DittoCacheBy.Culture;
+
+        /// <summary>
+        /// The default source for umbraco property mappings
+        /// </summary>
+        public static PropertySource DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
 
         /// <summary>
         /// The property bindings for mappable properties
