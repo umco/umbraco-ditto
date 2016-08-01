@@ -24,6 +24,17 @@ namespace Our.Umbraco.Ditto.Tests
             public string Custom { get; set; }
         }
 
+        [UmbracoProperties(PropertySource = PropertySource.UmbracoThenInstanceProperties)]
+        public class BasicModelProperty2
+        {
+            public string Name { get; set; }
+
+            [UmbracoProperty(PropertySource = PropertySource.InstanceThenUmbracoProperties)]
+            public string Url { get; set; }
+
+            public string Custom { get; set; }
+        }
+
         [Test]
         public void PropertySource_Properties_Map()
         {
@@ -74,6 +85,33 @@ namespace Our.Umbraco.Ditto.Tests
 
             // Reset
             Ditto.DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
+        }
+
+        [Test]
+        public void PropertySource_Attributed_Properties_Map()
+        {
+            var instanceName = "Instance Name";
+            var instanceUrl = "/instance/url";
+            var custonName = "Custom Name";
+            var custonProp = "Custom Prop";
+
+            // Create a hidden mapping
+            var content = new MockPublishedContent
+            {
+                Name = instanceName,
+                Url = instanceUrl,
+                Properties = new[]
+                {
+                    new MockPublishedContentProperty("name", custonName),
+                    new MockPublishedContentProperty("custom", custonProp)
+                }
+            };
+
+            var model = content.As<BasicModelProperty2>();
+
+            Assert.AreEqual(custonName, model.Name);
+            Assert.AreEqual(instanceUrl, model.Url);
+            Assert.AreEqual(custonProp, model.Custom);
         }
 
         [Test]
