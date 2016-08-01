@@ -22,9 +22,9 @@ namespace Our.Umbraco.Ditto
         /// <typeparam name="T">The type of the calling class.</typeparam>
         /// <param name="startMessage">The starting message for the profiler.</param>
         /// <returns>Returns an instance of the disposable timer.</returns>
-        public static new DisposableTimer DebugDuration<T>(string startMessage)
+        public new static DisposableTimer DebugDuration<T>(string startMessage)
         {
-            if (Ditto.IsDebuggingEnabled)
+            if (Ditto.IsDebuggingEnabled && ApplicationContext.Current != null && ApplicationContext.Current.ProfilingLogger != null)
             {
                 return ApplicationContext.Current.ProfilingLogger.DebugDuration<T>(startMessage);
             }
