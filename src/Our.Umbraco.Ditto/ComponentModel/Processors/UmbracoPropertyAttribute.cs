@@ -109,6 +109,16 @@ namespace Our.Umbraco.Ditto
 
                     // Apply global recursive setting
                     recursive |= classAttr.Recursive;
+
+                    // Apply property source only if it's different from the default,
+                    // and the current value is the default. We only do it this
+                    // way because if they change it at the property level, we 
+                    // want that to take precedence over the class level.
+                    if (classAttr.PropertySource != Ditto.DefaultPropertySource
+                        && PropertySource == Ditto.DefaultPropertySource)
+                    {
+                        PropertySource = classAttr.PropertySource;
+                    }
                 }
             }
 
