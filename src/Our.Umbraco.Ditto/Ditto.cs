@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -20,7 +19,7 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// The Ditto processor attribute targets
         /// </summary>
-        public const AttributeTargets ProcessorAttributeTargets = AttributeTargets.Property | AttributeTargets.Class;
+        public const AttributeTargets ProcessorAttributeTargets = AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Enum;
 
         /// <summary>
         /// The default processor cache by flags
