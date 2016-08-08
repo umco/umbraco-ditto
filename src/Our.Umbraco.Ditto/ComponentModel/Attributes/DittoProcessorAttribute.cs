@@ -34,7 +34,7 @@ namespace Our.Umbraco.Ditto
         /// <value>
         /// The context.
         /// </value>
-        public object Value { get; internal set; }
+        public object Value { get; protected set; }
 
         /// <summary>
         /// Gets the context.
@@ -42,7 +42,7 @@ namespace Our.Umbraco.Ditto
         /// <value>
         /// The context.
         /// </value>
-        public DittoProcessorContext Context { get; internal set; }
+        public DittoProcessorContext Context { get; protected set; }
 
         /// <summary>
         /// Gets or sets the order.
