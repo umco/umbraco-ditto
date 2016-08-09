@@ -10,8 +10,22 @@ namespace Our.Umbraco.Ditto
     /// NB: It won't try to cast the inner values, just convert an enumerable so this
     /// should ideally already have occurred
     /// </summary>
-    internal class EnumerableConverterAttribute : DittoProcessorAttribute
+    public class EnumerableConverterAttribute : DittoProcessorAttribute
     {
+        /// <summary>
+        /// Direction of the enumerable conversion
+        /// </summary>
+        public EnumerableConvertionDirection Direction { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EnumerableConverterAttribute" /> class.
+        /// </summary>
+        public EnumerableConverterAttribute()
+        {
+            // Default to automatic 
+            Direction = EnumerableConvertionDirection.Automatic;
+        }
+
         /// <summary>
         /// Processes the value.
         /// </summary>
@@ -22,9 +36,11 @@ namespace Our.Umbraco.Ditto
         {
             object result = this.Value;
 
-            var propertyIsEnumerableType = this.Context.PropertyDescriptor.PropertyType.IsEnumerableType()
-                && !this.Context.PropertyDescriptor.PropertyType.IsEnumerableOfKeyValueType()
-                && !(this.Context.PropertyDescriptor.PropertyType == typeof(string));
+            var propertyIsEnumerableType = Direction == EnumerableConvertionDirection.Automatic 
+                ? this.Context.PropertyDescriptor.PropertyType.IsEnumerableType()
+                    && !this.Context.PropertyDescriptor.PropertyType.IsEnumerableOfKeyValueType()
+                    && !(this.Context.PropertyDescriptor.PropertyType == typeof(string))
+                : Direction == EnumerableConvertionDirection.ToEnumerable;
 
             if (this.Value != null)
             {
@@ -63,5 +79,26 @@ namespace Our.Umbraco.Ditto
 
             return result;
         }
+    }
+
+    /// <summary>
+    /// Determines the direction of the numerable conversion
+    /// </summary>
+    public enum EnumerableConvertionDirection
+    {
+        /// <summary>
+        /// Automatically convert the value based on the target property type
+        /// </summary>
+        Automatic,
+
+        /// <summary>
+        /// Convert to enumerable
+        /// </summary>
+        ToEnumerable,
+
+        /// <summary>
+        /// Convert from enumerable
+        /// </summary>
+        FromEnumerable
     }
 }
