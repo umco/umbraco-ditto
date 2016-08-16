@@ -9,6 +9,7 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// Factory processor for dynamically typing items based on properties of the item itself.
     /// </summary>
+    [AttributeUsage(Ditto.ProcessorAttributeTargets | AttributeTargets.Interface, AllowMultiple = true)]
     public abstract class DittoFactoryAttribute : DittoProcessorAttribute
     {
         /// <summary>
