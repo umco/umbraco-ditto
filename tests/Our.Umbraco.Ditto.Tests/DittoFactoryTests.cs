@@ -10,10 +10,22 @@ namespace Our.Umbraco.Ditto.Tests
     [Category("Processors")]
     public class DittoFactoryTests
     {
+        #region Interfaces
+
         public interface IMyModel
         {
             string Name { get; set; }
         }
+
+        [DittoDocTypeFactory]
+        public interface IMyModel2
+        {
+            string Name { get; set; }
+        }
+
+        #endregion
+
+        #region IMyModel Instances
 
         public class MyModel1 : IMyModel
         {
@@ -30,6 +42,22 @@ namespace Our.Umbraco.Ditto.Tests
             public string Name { get; set; }
         }
 
+        #endregion
+
+        #region IMyModel2 Instances
+
+        public class MyModel4 : IMyModel2
+        {
+            public string Name { get; set; }
+        }
+
+        public class MyModel5 : IMyModel2
+        {
+            public string Name { get; set; }
+        }
+
+        #endregion
+
         public class MyMainModel
         {
             [UmbracoProperty(Order = 0)]
@@ -39,6 +67,10 @@ namespace Our.Umbraco.Ditto.Tests
             [UmbracoProperty(Order = 0)]
             [DittoDocTypeFactory(Suffix = "Suffixed", Order = 1)]
             public IMyModel MyProperty { get; set; }
+
+            public IEnumerable<IMyModel2> MyCollection2 { get; set; }
+
+            public IMyModel2 MyProperty2 { get; set; }
         }
 
         [Test]
@@ -47,13 +79,17 @@ namespace Our.Umbraco.Ditto.Tests
             var content1 = new MockPublishedContent { Name = "Content 1", DocumentTypeAlias = "MyModel1" };
             var content2 = new MockPublishedContent { Name = "Content 2", DocumentTypeAlias = "MyModel2" };
             var content3 = new MockPublishedContent { Name = "Content 3", DocumentTypeAlias = "MyModel3" };
+            var content4 = new MockPublishedContent { Name = "Content 4", DocumentTypeAlias = "MyModel4" };
+            var content5 = new MockPublishedContent { Name = "Content 5", DocumentTypeAlias = "MyModel5" };
 
             var content = new MockPublishedContent
             {
                 Properties = new List<IPublishedProperty>
                 {
                     new MockPublishedContentProperty("MyCollection", new [] { content1, content2, content3  }),
-                    new MockPublishedContentProperty("MyProperty", content3)
+                    new MockPublishedContentProperty("MyProperty", content3),
+                    new MockPublishedContentProperty("MyCollection2", new [] { content4, content5  }),
+                    new MockPublishedContentProperty("MyProperty2", content4)
                 }
             };
 
@@ -70,6 +106,16 @@ namespace Our.Umbraco.Ditto.Tests
 
             Assert.That(model.MyProperty, Is.Not.Null);
             Assert.That(model.MyProperty, Is.TypeOf<MyModel3Suffixed>());
+
+            var items2 = model.MyCollection2.ToList();
+
+            Assert.That(items2, Has.Count.EqualTo(2));
+            Assert.That(items2[0], Is.TypeOf<MyModel4>());
+            Assert.That(items2[1], Is.TypeOf<MyModel5>());
+
+            Assert.That(model.MyProperty2, Is.Not.Null);
+            Assert.That(model.MyProperty2, Is.TypeOf<MyModel4>());
+            Assert.That(model.MyProperty2.Name, Is.EqualTo(content4.Name));
         }
     }
 }
