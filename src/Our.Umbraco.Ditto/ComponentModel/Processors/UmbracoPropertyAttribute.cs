@@ -29,9 +29,9 @@ namespace Our.Umbraco.Ditto
         /// <param name="recursive">If set to <c>true</c>, a recursive lookup is performed.</param>
         /// <param name="defaultValue">The default value.</param>
         public UmbracoPropertyAttribute(
-            string propertyName, 
-            string altPropertyName = null, 
-            bool recursive = false, 
+            string propertyName,
+            string altPropertyName = null,
+            bool recursive = false,
             object defaultValue = null)
         {
             this.PropertyName = propertyName;
@@ -130,7 +130,7 @@ namespace Our.Umbraco.Ditto
             {
                 return defaultValue;
             }
-            
+
             object propertyValue = null;
 
             // Try fetching the value.
@@ -199,13 +199,13 @@ namespace Our.Umbraco.Ditto
             var contentProperty = contentType.GetProperty(umbracoPropertyName, Ditto.MappablePropertiesBindingFlags);
             if (contentProperty != null && contentProperty.IsMappable())
             {
-                if (Ditto.IsDebuggingEnabled 
-                    && PropertySource == PropertySource.InstanceThenUmbracoProperties 
+                if (Ditto.IsDebuggingEnabled
+                    && PropertySource == PropertySource.InstanceThenUmbracoProperties
                     && Ditto.IPublishedContentProperties.Any(x => x.Name.InvariantEquals(umbracoPropertyName))
                     && content.HasProperty(umbracoPropertyName))
                 {
                     // Property is an IPublishedContent property and an umbraco property exists so warn the user
-                    LogHelper.Warn<UmbracoPropertyAttribute>("The property "+ umbracoPropertyName + " being mapped from content type " + contentType.Name + "'s instance properties hides a property in the umbraco properties collection of the same name. It is recommended that you avoid using umbraco property aliases that conflict with IPublishedContent instance property names, but if you can't avoid this and you require access to the hidden property you can use the PropertySource parameter of the processors attribute to override the order in which properties are checked.");
+                    LogHelper.Warn<UmbracoPropertyAttribute>("The property " + umbracoPropertyName + " being mapped from content type " + contentType.Name + "'s instance properties hides a property in the umbraco properties collection of the same name. It is recommended that you avoid using umbraco property aliases that conflict with IPublishedContent instance property names, but if you can't avoid this and you require access to the hidden property you can use the PropertySource parameter of the processors attribute to override the order in which properties are checked.");
                 }
 
                 // This is more than 2x as fast as propertyValue = contentProperty.GetValue(content, null);

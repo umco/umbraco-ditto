@@ -53,6 +53,11 @@ namespace Our.Umbraco.Ditto
             {
                 try
                 {
+                    //
+                    // TODO: [LK:2016-08-12] Consider setting the value to a private field,
+                    // so that we don't need to access the config objects for subsequent checks.
+                    //
+
                     // Check for app setting first
                     if (!ConfigurationManager.AppSettings["Ditto:DebugEnabled"].IsNullOrWhiteSpace())
                     {

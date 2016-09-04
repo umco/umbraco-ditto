@@ -1,12 +1,8 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Linq;
-using System.Web;
-using Moq;
 using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core.Logging;
-using Umbraco.Core.Models;
 using Umbraco.Core.ObjectResolution;
 
 namespace Our.Umbraco.Ditto.Tests
@@ -40,8 +36,8 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var instanceName = "Instance Name";
             var instanceUrl = "/instance/url";
-            var custonName = "Custom Name";
-            var custonProp = "Custom Prop";
+            var customName = "Custom Name";
+            var customProp = "Custom Prop";
 
             // Create a hidden mapping
             var content = new MockPublishedContent
@@ -50,8 +46,8 @@ namespace Our.Umbraco.Ditto.Tests
                 Url = instanceUrl,
                 Properties = new[]
                 {
-                    new MockPublishedContentProperty("name", custonName),
-                    new MockPublishedContentProperty("custom", custonProp)
+                    new MockPublishedContentProperty("name", customName),
+                    new MockPublishedContentProperty("custom", customProp)
                 }
             };
 
@@ -60,14 +56,14 @@ namespace Our.Umbraco.Ditto.Tests
             var model = content.As<BasicModelProperty>();
             Assert.AreEqual(instanceName, model.Name);
             Assert.AreEqual(instanceUrl, model.Url);
-            Assert.AreEqual(custonProp, model.Custom);
+            Assert.AreEqual(customProp, model.Custom);
 
             Ditto.DefaultPropertySource = PropertySource.UmbracoThenInstanceProperties;
 
             model = content.As<BasicModelProperty>();
-            Assert.AreEqual(custonName, model.Name);
+            Assert.AreEqual(customName, model.Name);
             Assert.AreEqual(instanceUrl, model.Url);
-            Assert.AreEqual(custonProp, model.Custom);
+            Assert.AreEqual(customProp, model.Custom);
 
             Ditto.DefaultPropertySource = PropertySource.InstanceProperties;
 
@@ -79,9 +75,9 @@ namespace Our.Umbraco.Ditto.Tests
             Ditto.DefaultPropertySource = PropertySource.UmbracoProperties;
 
             model = content.As<BasicModelProperty>();
-            Assert.AreEqual(custonName, model.Name);
+            Assert.AreEqual(customName, model.Name);
             Assert.IsNull(model.Url);
-            Assert.AreEqual(custonProp, model.Custom);
+            Assert.AreEqual(customProp, model.Custom);
 
             // Reset
             Ditto.DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
@@ -92,8 +88,8 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var instanceName = "Instance Name";
             var instanceUrl = "/instance/url";
-            var custonName = "Custom Name";
-            var custonProp = "Custom Prop";
+            var customName = "Custom Name";
+            var customProp = "Custom Prop";
 
             // Create a hidden mapping
             var content = new MockPublishedContent
@@ -102,16 +98,16 @@ namespace Our.Umbraco.Ditto.Tests
                 Url = instanceUrl,
                 Properties = new[]
                 {
-                    new MockPublishedContentProperty("name", custonName),
-                    new MockPublishedContentProperty("custom", custonProp)
+                    new MockPublishedContentProperty("name", customName),
+                    new MockPublishedContentProperty("custom", customProp)
                 }
             };
 
             var model = content.As<BasicModelProperty2>();
 
-            Assert.AreEqual(custonName, model.Name);
+            Assert.AreEqual(customName, model.Name);
             Assert.AreEqual(instanceUrl, model.Url);
-            Assert.AreEqual(custonProp, model.Custom);
+            Assert.AreEqual(customProp, model.Custom);
         }
 
         [Test]
@@ -121,6 +117,10 @@ namespace Our.Umbraco.Ditto.Tests
 
             // Create a mock logger
             var mockLogger = new MockLogger();
+            //
+            // TODO: [LK:2016-08-12] Could we initalize this in an `SetUpFixture` method?
+            // Then it could apply across all unit-tests.
+            //
             if (ResolverBase<LoggerResolver>.HasCurrent)
             {
                 ResolverBase<LoggerResolver>.Current.SetLogger(mockLogger);
@@ -133,8 +133,8 @@ namespace Our.Umbraco.Ditto.Tests
             // Create a hidden mapping
             var instanceName = "Instance Name";
             var instanceUrl = "/instance/url";
-            var custonName = "Custom Name";
-            var custonProp = "Custom Prop";
+            var customName = "Custom Name";
+            var customProp = "Custom Prop";
 
             var content = new MockPublishedContent
             {
@@ -142,8 +142,8 @@ namespace Our.Umbraco.Ditto.Tests
                 Url = instanceUrl,
                 Properties = new[]
                 {
-                    new MockPublishedContentProperty("name", custonName),
-                    new MockPublishedContentProperty("custom", custonProp)
+                    new MockPublishedContentProperty("name", customName),
+                    new MockPublishedContentProperty("custom", customProp)
                 }
             };
 

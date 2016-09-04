@@ -67,11 +67,18 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
         {
             get
             {
-                if (_contentType != null) return _contentType;
+                if (_contentType != null)
+                    return _contentType;
+
+                //
+                // TODO: [LK:2016-08-12] Could we initalize this in an `SetUpFixture` method?
+                // Then it could apply across all unit-tests.
+                //
 
                 // PublishedPropertyType initializes and looks up value resolvers
                 // so we need to populate a resolver base before we instantiate them
-                if (!ResolverBase<PropertyValueConvertersResolver>.HasCurrent) { 
+                if (!ResolverBase<PropertyValueConvertersResolver>.HasCurrent)
+                {
                     ResolverBase<PropertyValueConvertersResolver>.Current =
                         new PropertyValueConvertersResolver(
                             new Mock<IServiceProvider>().Object,
@@ -80,7 +87,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
                         { CanResolveBeforeFrozen = true };
                 }
 
-                return new PublishedContentType("Dummy", this.Properties.Select(x => new PublishedPropertyType(x.PropertyTypeAlias, "Dummy")));
+                return new PublishedContentType("MockContentType", this.Properties.Select(x => new PublishedPropertyType(x.PropertyTypeAlias, "MockPropertyType")));
             }
             set
             {

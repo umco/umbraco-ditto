@@ -12,7 +12,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
         public MockLogger()
         {
             this.logMessages = new List<LogMessage>();
-        } 
+        }
 
         public void Error(Type callingType, string message, Exception exception)
         {
@@ -68,7 +68,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
 
         public string Message { get; set; }
 
-        public Exception Exception { get; set; } 
+        public Exception Exception { get; set; }
     }
 
     internal enum LogMessageType
