@@ -14,3 +14,4 @@ Thumbs.db
 .wyam/
 artifacts/
 src/packages/
+docs/
