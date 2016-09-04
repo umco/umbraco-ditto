@@ -14,17 +14,19 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoMultiProcessorAttribute" /> class.
         /// </summary>
-        /// <param name="attributes">The attributes.</param>
-        protected DittoMultiProcessorAttribute(IEnumerable<DittoProcessorAttribute> attributes)
+        protected DittoMultiProcessorAttribute()
         {
-            this.Attributes = new List<DittoProcessorAttribute>(attributes);
+            this.Attributes = new List<DittoProcessorAttribute>();
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoMultiProcessorAttribute" /> class.
         /// </summary>
-        protected DittoMultiProcessorAttribute() : this(Enumerable.Empty<DittoProcessorAttribute>())
+        /// <param name="attributes">The attributes.</param>
+        protected DittoMultiProcessorAttribute(IEnumerable<DittoProcessorAttribute> attributes)
+            : this()
         {
+            this.Attributes.AddRange(attributes);
         }
 
         /// <summary>
@@ -33,7 +35,7 @@ namespace Our.Umbraco.Ditto
         /// <value>
         /// The attributes.
         /// </value>
-        public List<DittoProcessorAttribute> Attributes { get; set; }
+        protected List<DittoProcessorAttribute> Attributes { get; set; }
 
         /// <summary>
         /// Processes the value.
