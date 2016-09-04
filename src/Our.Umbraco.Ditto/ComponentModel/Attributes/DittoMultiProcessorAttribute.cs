@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Our.Umbraco.Ditto
 {
@@ -17,6 +18,13 @@ namespace Our.Umbraco.Ditto
         protected DittoMultiProcessorAttribute(IEnumerable<DittoProcessorAttribute> attributes)
         {
             this.Attributes = new List<DittoProcessorAttribute>(attributes);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoMultiProcessorAttribute" /> class.
+        /// </summary>
+        protected DittoMultiProcessorAttribute() : this(Enumerable.Empty<DittoProcessorAttribute>())
+        {
         }
 
         /// <summary>
