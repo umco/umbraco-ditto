@@ -19,7 +19,7 @@ There is absolutely zero intention of generating Document-Types from your view-m
 ## Documentation and notes
 
 > Ditto has been developed against **Umbraco v7.3.2** and will support that version and above.
-> Support for earlier versions of Umbraco (v6.2.5 and above) please use Ditto version v0.8.4.
+> Support for earlier versions of Umbraco (v6.2.5 and above) please use Ditto version v0.9.0.
 
 Ditto can be installed from either Our Umbraco or NuGet package repositories, or build manually from the source-code.
 
