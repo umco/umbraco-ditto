@@ -15,7 +15,6 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="object" /> representing the processed value.
         /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
             // NOTE: [LK] In order to prevent an infinite loop / stack-overflow, we check if the
@@ -28,7 +27,7 @@ namespace Our.Umbraco.Ditto
                         this.Context.PropertyDescriptor.PropertyType.Name));
             }
 
-            return Value;
+            return this.Context.Content;
         }
     }
 }

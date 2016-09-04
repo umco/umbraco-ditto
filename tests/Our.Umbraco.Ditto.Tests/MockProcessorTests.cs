@@ -1,13 +1,11 @@
-﻿namespace Our.Umbraco.Ditto.Tests
+﻿using System;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
+
+namespace Our.Umbraco.Ditto.Tests
 {
-    using System;
-    using System.ComponentModel;
-    using System.Globalization;
-
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
-
     [TestFixture]
+    [Category("Processors")]
     public class MockProcessorTests
     {
         [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
@@ -17,7 +15,7 @@
 
             public MockProcessorAttribute(object rawValue)
             {
-                this.RawValue = rawValue;
+                RawValue = rawValue;
             }
 
             public override object ProcessValue()
@@ -35,7 +33,7 @@
         [Test]
         public void MockValue_Property_Resolved()
         {
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As<MyMockValueModel>();
 

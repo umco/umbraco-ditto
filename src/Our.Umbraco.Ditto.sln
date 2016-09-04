@@ -17,7 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Package", "Build Pack
 		..\appveyor.yml = ..\appveyor.yml
 		..\build-appveyor.cmd = ..\build-appveyor.cmd
 		..\build.cmd = ..\build.cmd
-		..\build\Ditto.proj = ..\build\Ditto.proj
 		..\build\package.nuspec = ..\build\package.nuspec
 		..\build\package.proj = ..\build\package.proj
 		..\build\package.xml = ..\build\package.xml
@@ -43,7 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		..\docs\usage-basic.md = ..\docs\usage-basic.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto.PerformanceTests", "Our.Umbraco.Ditto.PerformanceTests\Our.Umbraco.Ditto.PerformanceTests.csproj", "{7409ADFA-56F9-4A18-9208-0EEBC696F46B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.Ditto.PerformanceTests", "..\tests\Our.Umbraco.Ditto.PerformanceTests\Our.Umbraco.Ditto.PerformanceTests.csproj", "{7409ADFA-56F9-4A18-9208-0EEBC696F46B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

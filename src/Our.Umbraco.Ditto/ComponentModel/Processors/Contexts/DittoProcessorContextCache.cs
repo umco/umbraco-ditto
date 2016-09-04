@@ -44,9 +44,10 @@ namespace Our.Umbraco.Ditto
         /// <param name="targetType">Type of the target.</param>
         /// <param name="propertyDescriptor">The property descriptor.</param>
         /// <param name="culture">The culture.</param>
-        public DittoProcessorContextCache(IPublishedContent content,
-            Type targetType,
-            PropertyDescriptor propertyDescriptor,
+        public DittoProcessorContextCache(
+            IPublishedContent content, 
+            Type targetType, 
+            PropertyDescriptor propertyDescriptor, 
             CultureInfo culture)
         {
             this.content = content;
@@ -65,14 +66,15 @@ namespace Our.Umbraco.Ditto
         /// <param name="propertyDescriptor">The property descriptor.</param>
         /// <param name="culture">The culture.</param>
         /// <param name="contexts">The contexts.</param>
-        public DittoProcessorContextCache(IPublishedContent content,
-            Type targetType,
-            PropertyDescriptor propertyDescriptor,
-            CultureInfo culture,
+        public DittoProcessorContextCache(
+            IPublishedContent content, 
+            Type targetType, 
+            PropertyDescriptor propertyDescriptor, 
+            CultureInfo culture, 
             IEnumerable<DittoProcessorContext> contexts)
             : this(content, targetType, propertyDescriptor, culture)
         {
-            AddContexts(contexts);
+            this.AddContexts(contexts);
         }
 
         /// <summary>
@@ -81,7 +83,10 @@ namespace Our.Umbraco.Ditto
         /// <param name="contexts">The contexts.</param>
         public void AddContexts(IEnumerable<DittoProcessorContext> contexts)
         {
-            if (contexts == null) return;
+            if (contexts == null)
+            {
+                return;
+            }
 
             foreach (var ctx in contexts)
             {
@@ -95,17 +100,18 @@ namespace Our.Umbraco.Ditto
         /// <param name="context">The context.</param>
         public void AddContext(DittoProcessorContext context)
         {
-            this.lookup.AddOrUpdate(context.GetType(), context.Populate(content, targetType, propertyDescriptor, culture), (type, ctx) => ctx); // Don't override if already exists
+            this.lookup.AddOrUpdate(context.GetType(), context.Populate(this.content, this.targetType, this.propertyDescriptor, this.culture), (type, ctx) => ctx); // Don't override if already exists
         }
 
         /// <summary>
-        /// Gets the or create.
+        /// Gets or creates the processor context.
         /// </summary>
-        /// <param name="contexType">Type of the contex.</param>
-        /// <returns></returns>
+        /// <param name="contexType">Type of the context.</param>
+        /// <returns>Returns the Ditto processor context.</returns>
         public DittoProcessorContext GetOrCreateContext(Type contexType)
         {
-            return this.lookup.GetOrAdd(contexType,
+            return this.lookup.GetOrAdd(
+                contexType, 
                 type => ((DittoProcessorContext)contexType.GetInstance())
                     .Populate(this.content, this.targetType, this.propertyDescriptor, this.culture));
         }

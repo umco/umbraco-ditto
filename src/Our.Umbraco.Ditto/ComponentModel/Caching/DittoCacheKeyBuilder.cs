@@ -9,7 +9,7 @@
         /// Builds the cache key.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <returns></returns>
+        /// <returns>Returns a string representing the cache key.</returns>
         public abstract string BuildCacheKey(DittoCacheContext context);
     }
 }

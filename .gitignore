@@ -6,9 +6,12 @@ _ReSharper.*
 *.userprefs
 *.cache
 *.orig
-*.hash
 Thumbs.db
 .DS_Store
+*.hash
+*.list
 
+.wyam/
 artifacts/
 src/packages/
+docs/

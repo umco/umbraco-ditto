@@ -1,9 +1,10 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using global::Umbraco.Core.Models;
-    using NUnit.Framework;
+﻿using NUnit.Framework;
+using Umbraco.Core.Models;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("Processors")]
     public class IgnoreAttributeTests
     {
         public class MyModel
@@ -20,9 +21,9 @@
         public void Init()
         {
             this.PropertyValue = "foo bar";
-            this.PublishedContent = new Mocks.PublishedContentMock
+            this.PublishedContent = new Mocks.MockPublishedContent
             {
-                Properties = new[] { new Mocks.PublishedContentPropertyMock("myProperty", this.PropertyValue, true) }
+                Properties = new[] { new Mocks.MockPublishedContentProperty("myProperty", this.PropertyValue) }
             };
         }
 

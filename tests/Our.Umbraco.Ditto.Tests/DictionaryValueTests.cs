@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
-using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Processors")]
     public class DictionaryValueTests
     {
         public class MyModel
@@ -32,7 +32,7 @@ namespace Our.Umbraco.Ditto.Tests
             UmbracoDictionaryHelper.GetValue = (key) => mockDict[key];
 
             // Create mock content
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             // Run conversion
             var model = content.As<MyModel>();

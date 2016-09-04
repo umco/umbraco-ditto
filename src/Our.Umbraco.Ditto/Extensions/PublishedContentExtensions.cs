@@ -10,6 +10,8 @@ using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
 {
+    using System.Collections;
+
     /// <summary>
     /// Encapsulates extension methods for <see cref="IPublishedContent"/>.
     /// </summary>
@@ -448,7 +450,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="propertyDescriptor">The property descriptor.</param>
         /// <param name="defaultProcessorType">The default processor type.</param>
         /// <param name="processorContexts">The processor contexts.</param>
-        /// <returns></returns>
+        /// <returns>Returns the processed value.</returns>
         private static object DoGetProcessedValue(
             IPublishedContent content,
             CultureInfo culture,
@@ -469,9 +471,26 @@ namespace Our.Umbraco.Ditto
                 processorAttrs.Add((DittoProcessorAttribute)defaultProcessorType.GetInstance());
             }
 
+            var propertyType = propertyInfo.PropertyType;
+
             // Check for type registered processors
-            processorAttrs.AddRange(propertyInfo.PropertyType.GetCustomAttributes<DittoProcessorAttribute>(true)
-                .OrderBy(x => x.Order));
+            processorAttrs.AddRange(propertyType.GetCustomAttributes<DittoProcessorAttribute>(true)
+                    .OrderBy(x => x.Order));
+
+            // Check any type arguments in generic enumerable types.
+            // This should return false against typeof(string) etc also.
+            var typeInfo = propertyType.GetTypeInfo();
+            bool isEnumerable = false;
+            Type typeArg = null;
+            if (propertyType.IsCastableEnumerableType())
+            {
+                typeArg = typeInfo.GenericTypeArguments.First();
+                processorAttrs.AddRange(typeInfo.GenericTypeArguments.First().GetCustomAttributes<DittoProcessorAttribute>(true)
+                    .OrderBy(x => x.Order)
+                    .ToList());
+
+                isEnumerable = true;
+            }
 
             // Check for globally registered processors
             processorAttrs.AddRange(DittoProcessorRegistry.Instance.GetRegisteredProcessorAttributesFor(propertyInfo.PropertyType));
@@ -501,7 +520,23 @@ namespace Our.Umbraco.Ditto
                 currentValue = processorAttr.ProcessValue(currentValue, ctx);
             }
 
-            return (currentValue == null && propertyInfo.PropertyType.IsValueType)
+            // The following has to happen after all the processors. 
+            if (isEnumerable && currentValue != null && currentValue.Equals(Enumerable.Empty<object>()))
+            {
+                if (propertyType.IsInterface)
+                {
+                    // You cannot set an enumerable of type from an empty object array.
+                    currentValue = EnumerableInvocations.Cast(typeArg, (IEnumerable)currentValue);
+                }
+                else
+                {
+                    // This should allow the casting back of IEnumerable<T> to an empty List<T> Collection<T> etc.
+                    // I cant think of any that don't have an empty constructor
+                    currentValue = propertyType.GetInstance();
+                }
+            }
+
+            return (currentValue == null && propertyType.IsValueType)
                 ? propertyInfo.PropertyType.GetInstance() // Set to default instance of value type
                 : currentValue;
         }
@@ -521,7 +556,6 @@ namespace Our.Umbraco.Ditto
             object instance,
             Action<DittoConversionHandlerContext> callback = null)
         {
-
             OnConvert<DittoOnConvertingAttribute>(
                 DittoConversionHandlerType.OnConverting,
                 content,

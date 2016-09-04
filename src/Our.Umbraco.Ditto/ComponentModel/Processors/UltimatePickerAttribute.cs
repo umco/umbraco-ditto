@@ -10,6 +10,7 @@ namespace Our.Umbraco.Ditto
 {
     /// <summary>
     /// Provides a unified way of converting ultimate picker properties to strong typed collections.
+    /// TODO: [JMJS] Do we need this anymore since we are not supporting Umbraco 6?
     /// </summary>
     public class UltimatePickerAttribute : DittoProcessorAttribute
     {
@@ -22,19 +23,19 @@ namespace Our.Umbraco.Ditto
         public override object ProcessValue()
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (Context == null || Context.PropertyDescriptor == null)
+            if (this.Context == null || this.Context.PropertyDescriptor == null)
             {
                 // There's no way to determine the type here.
                 return null;
             }
 
-            var propertyType = Context.PropertyDescriptor.PropertyType;
+            var propertyType = this.Context.PropertyDescriptor.PropertyType;
             var isGenericType = propertyType.IsGenericType;
             var targetType = isGenericType
                                 ? propertyType.GenericTypeArguments.First()
                                 : propertyType;
 
-            if (Value.IsNullOrEmptyString())
+            if (this.Value.IsNullOrEmptyString())
             {
                 if (isGenericType)
                 {
@@ -45,28 +46,28 @@ namespace Our.Umbraco.Ditto
             }
 
             // If a single item is selected, this comes back as an int, not a string.
-            if (Value is int)
+            if (this.Value is int)
             {
-                var id = (int)Value;
+                var id = (int)this.Value;
 
                 // CheckBoxList, ListBox
                 if (targetType != null)
                 {
-                    return this.ConvertContentFromInt(id, targetType, Context.Culture).YieldSingleItem();
+                    return this.ConvertContentFromInt(id, targetType, this.Context.Culture).YieldSingleItem();
                 }
 
                 // AutoComplete, DropDownList, RadioButton
-                return this.ConvertContentFromInt(id, propertyType, Context.Culture);
+                return this.ConvertContentFromInt(id, propertyType, this.Context.Culture);
             }
 
-            if (Value != null)
+            if (this.Value != null)
             {
-                string s = Value as string ?? Value.ToString();
+                string s = this.Value as string ?? this.Value.ToString();
                 if (!string.IsNullOrWhiteSpace(s))
                 {
                     int n;
                     var nodeIds = s.ToDelimitedList()
-                            .Select(x => int.TryParse(x, NumberStyles.Any, Context.Culture, out n) ? n : -1)
+                            .Select(x => int.TryParse(x, NumberStyles.Any, this.Context.Culture, out n) ? n : -1)
                             .Where(x => x > 0)
                             .ToArray();
 
@@ -88,11 +89,11 @@ namespace Our.Umbraco.Ditto
                         // CheckBoxList, ListBox
                         if (isGenericType)
                         {
-                            return ultimatePicker.As(targetType, Context.Culture);
+                            return ultimatePicker.As(targetType, this.Context.Culture);
                         }
 
                         // AutoComplete, DropDownList, RadioButton
-                        return ultimatePicker.As(targetType, Context.Culture).FirstOrDefault();
+                        return ultimatePicker.As(targetType, this.Context.Culture).FirstOrDefault();
                     }
                 }
             }

@@ -19,7 +19,7 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Gets the type of the processor.
+        /// Gets or sets the type of the processor.
         /// </summary>
         /// <value>
         /// The type of the processor.

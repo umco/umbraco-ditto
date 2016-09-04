@@ -1,7 +1,7 @@
 ﻿namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Represents the context for a DitoMultiProcessorAttribute
+    /// Represents the context for a DittoMultiProcessorAttribute
     /// </summary>
     internal class DittoMultiProcessorContext : DittoProcessorContext
     {

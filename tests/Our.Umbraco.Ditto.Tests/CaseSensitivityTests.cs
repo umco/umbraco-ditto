@@ -1,9 +1,10 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("Processors")]
     public class CaseSensitivityTests
     {
         public class MyModel
@@ -27,11 +28,7 @@
         public void CaseSensitivePropertyName_Mapped()
         {
             var name = "MyCustomName";
-
-            var content = new PublishedContentMock
-            {
-                Name = name
-            };
+            var content = new MockPublishedContent { Name = name };
 
             var model = content.As<MyModel>();
 

@@ -4,6 +4,7 @@ using Our.Umbraco.Ditto.Tests.Mocks;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Processors")]
     public class ProcessorContextTests
     {
         public class MyValueResolverModel
@@ -37,22 +38,20 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void ProcessorContext_Resolves()
         {
-            var content = new PublishedContentMock();
-            var context = new MyProcessorContext
-            {
-                MyContextProperty = "Test"
-            };
+            var value = "Test";
+            var content = new MockPublishedContent();
+            var context = new MyProcessorContext { MyContextProperty = value };
 
             var model = content.As<MyValueResolverModel>(processorContexts: new[] { context });
 
-            Assert.That(model.MyProperty, Is.EqualTo("Test"));
+            Assert.That(model.MyProperty, Is.EqualTo(value));
             Assert.That(model.MyLazyProperty, Is.EqualTo(model.MyProperty));
         }
 
         [Test]
         public void ProcessorContext_Resolves_Without_Registered_Context()
         {
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As<MyValueResolverModel>();
 

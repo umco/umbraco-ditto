@@ -1,10 +1,11 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
-    using global::Umbraco.Web;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
+using Umbraco.Web;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("ConversionHandlers")]
     public class ConversionHandlerTests
     {
         #region Models
@@ -67,20 +68,12 @@
         [Test]
         public void Conversion_Handlers_Can_Run()
         {
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock
-                    {
-                        Alias = "prop1",
-                        Value = "Test1"
-                    },
-                    new PublishedContentPropertyMock
-                    {
-                        Alias = "prop2",
-                        Value = "Test2"
-                    }
+                    new MockPublishedContentProperty("prop1","Test1"),
+                    new MockPublishedContentProperty("prop2","Test2")
                 }
             };
 
@@ -94,20 +87,12 @@
         [Test]
         public void Conversion_Handlers_Can_Run_Global()
         {
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Properties = new[]
                 {
-                    new PublishedContentPropertyMock
-                    {
-                        Alias = "prop1",
-                        Value = "Test1"
-                    },
-                    new PublishedContentPropertyMock
-                    {
-                        Alias = "prop2",
-                        Value = "Test2"
-                    }
+                    new MockPublishedContentProperty("prop1","Test1"),
+                    new MockPublishedContentProperty("prop2","Test2")
                 }
             };
 

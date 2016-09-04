@@ -13,17 +13,16 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="object" /> representing the processed value.
         /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
-            var result = Value;
+            var result = this.Value;
 
-            if (Value != null && !Context.PropertyDescriptor.PropertyType.IsInstanceOfType(Value))
+            if (this.Value != null && !this.Context.PropertyDescriptor.PropertyType.IsInstanceOfType(this.Value))
             {
                 // TODO: Maybe support enumerables?
-                using (DittoDisposableTimer.DebugDuration<TryConvertToAttribute>(string.Format("TryConvertTo ({0}, {1})", Context.Content.Id, Context.PropertyDescriptor.Name)))
+                using (DittoDisposableTimer.DebugDuration<TryConvertToAttribute>(string.Format("TryConvertTo ({0}, {1})", this.Context.Content.Id, this.Context.PropertyDescriptor.Name)))
                 {
-                    var convert = Value.TryConvertTo(Context.PropertyDescriptor.PropertyType);
+                    var convert = this.Value.TryConvertTo(this.Context.PropertyDescriptor.PropertyType);
                     if (convert.Success)
                     {
                         result = convert.Result;

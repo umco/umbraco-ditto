@@ -5,12 +5,13 @@
     using global::Umbraco.Core.Models;
 
     [TestFixture]
+    [Category("Type Casting")]
     public class CastableInterfaceTests
     {
         [Test]
         public void Castable_Interface_Can_Map()
         {
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Id = 123,
                 Name = "Test"

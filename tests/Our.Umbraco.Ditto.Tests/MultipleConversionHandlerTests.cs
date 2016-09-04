@@ -1,9 +1,10 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("ConversionHandlers")]
     public class MultipleConversionHandlerTests
     {
         public class MyModel
@@ -33,7 +34,7 @@
             Ditto.RegisterConversionHandler<MyModel, MyModelConversionHandler>();
             Ditto.RegisterConversionHandler<MyModel, MyModelConversionHandler2>();
 
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As<MyModel>();
 

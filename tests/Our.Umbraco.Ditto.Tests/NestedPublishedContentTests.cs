@@ -1,12 +1,13 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
-    using global::Umbraco.Core.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
+using Umbraco.Core.Models;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("Mapping")]
     public class NestedPublishedContentTests
     {
         public class MyModel
@@ -26,28 +27,14 @@
         {
             var value = "My Inner Property Value";
 
-            var content1 = new PublishedContentMock
+            var content1 = new MockPublishedContent
             {
-                Properties = new[]
-                {
-                    new PublishedContentPropertyMock
-                    {
-                        Alias = "myProperty",
-                        Value = value
-                    }
-                }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
             };
 
-            var content2 = new PublishedContentMock
+            var content2 = new MockPublishedContent
             {
-                Properties = new[]
-                {
-                    new PublishedContentPropertyMock
-                    {
-                        Alias = "myContent",
-                        Value = content1
-                    }
-                }
+                Properties = new[] { new MockPublishedContentProperty("myContent", content1) }
             };
 
             var model = content2.As<MyModel>();
@@ -64,31 +51,17 @@
 
             for (var i = 0; i < 5; i++)
             {
-                contentList.Add(new PublishedContentMock
+                contentList.Add(new MockPublishedContent
                 {
                     Id = i,
                     Name = "Node " + i,
-                    Properties = new[]
-                    {
-                        new PublishedContentPropertyMock
-                        {
-                            Alias = "myProperty",
-                            Value = value
-                        }
-                    }
+                    Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
                 });
             }
 
-            var content2 = new PublishedContentMock
+            var content2 = new MockPublishedContent
             {
-                Properties = new[]
-                {
-                    new PublishedContentPropertyMock
-                    {
-                        Alias = "myContentList",
-                        Value = contentList
-                    }
-                }
+                Properties = new[] { new MockPublishedContentProperty("myContentList", contentList) }
             };
 
             var model = content2.As<MyModel>();

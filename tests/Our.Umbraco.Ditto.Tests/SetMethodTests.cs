@@ -31,9 +31,9 @@ namespace Our.Umbraco.Ditto.Tests
         public void SetMethod_Test()
         {
             var value = "foo";
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
-                Properties = new[] { new PublishedContentPropertyMock("myProperty", value, true) }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
             };
 
             var model = content.As<MyModel>();

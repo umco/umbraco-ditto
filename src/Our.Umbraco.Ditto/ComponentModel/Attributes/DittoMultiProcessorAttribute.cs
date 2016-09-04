@@ -1,31 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
     /// Represents a multi-ditto processor capable of wrapping multiple attributes into a single attribute definition
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(Ditto.ProcessorAttributeTargets, AllowMultiple = true, Inherited = false)]
     [DittoProcessorMetaData(ValueType = typeof(object), ContextType = typeof(DittoMultiProcessorContext))]
     public abstract class DittoMultiProcessorAttribute : DittoProcessorAttribute
     {
         /// <summary>
-        /// Gets or sets the attributes.
+        /// Initializes a new instance of the <see cref="DittoMultiProcessorAttribute" /> class.
         /// </summary>
-        /// <value>
-        /// The attributes.
-        /// </value>
-        public List<DittoProcessorAttribute> Attributes { get; set; }
+        protected DittoMultiProcessorAttribute()
+        {
+            this.Attributes = new List<DittoProcessorAttribute>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoMultiProcessorAttribute" /> class.
         /// </summary>
         /// <param name="attributes">The attributes.</param>
         protected DittoMultiProcessorAttribute(IEnumerable<DittoProcessorAttribute> attributes)
+            : this()
         {
-            this.Attributes = new List<DittoProcessorAttribute>(attributes);
+            this.Attributes.AddRange(attributes);
         }
+
+        /// <summary>
+        /// Gets or sets the attributes.
+        /// </summary>
+        /// <value>
+        /// The attributes.
+        /// </value>
+        protected List<DittoProcessorAttribute> Attributes { get; set; }
 
         /// <summary>
         /// Processes the value.
@@ -35,19 +45,18 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            var ctx = (DittoMultiProcessorContext)Context;
+            var ctx = (DittoMultiProcessorContext)this.Context;
 
-            foreach (var processorAttr in Attributes)
+            foreach (var processorAttr in this.Attributes)
             {
                 // Get the right context type
                 var newCtx = ctx.ContextCache.GetOrCreateContext(processorAttr.ContextType);
 
                 // Process value
-                Value = processorAttr.ProcessValue(Value, newCtx);
+                this.Value = processorAttr.ProcessValue(this.Value, newCtx);
             }
 
-            return Value;
+            return this.Value;
         }
     }
-
 }

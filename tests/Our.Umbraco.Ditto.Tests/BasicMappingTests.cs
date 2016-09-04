@@ -1,11 +1,18 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using System;
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
-    using global::Umbraco.Core.Models;
+﻿using System;
+using System.Configuration;
+using System.Linq;
+using System.Web;
+using Moq;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Models;
+using Umbraco.Core.ObjectResolution;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("Mapping")]
     public class BasicMappingTests
     {
         public class BasicModel
@@ -31,12 +38,17 @@
             public IPublishedContent MyProperty { get; set; }
         }
 
+        public class BasicModelWithItemProperty
+        {
+            public string Item { get; set; }
+        }
+
         [Test]
         public void Basic_Name_IsMapped()
         {
             var name = "MyCustomName";
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Name = name
             };
@@ -51,7 +63,7 @@
         {
             var id = 1234;
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Id = id
             };
@@ -67,15 +79,9 @@
         {
             var value = "myValue";
 
-            var property = new PublishedContentPropertyMock
+            var content = new MockPublishedContent
             {
-                Alias = "myProperty",
-                Value = value
-            };
-
-            var content = new PublishedContentMock
-            {
-                Properties = new[] { property }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
             };
 
             var model = content.As<BasicModelWithStringProperty>();
@@ -86,17 +92,11 @@
         [Test]
         public void Basic_PublishedContent_Property_IsMapped()
         {
-            var value = new PublishedContentMock();
+            var value = new MockPublishedContent();
 
-            var property = new PublishedContentPropertyMock
+            var content = new MockPublishedContent
             {
-                Alias = "myProperty",
-                Value = value
-            };
-
-            var content = new PublishedContentMock
-            {
-                Properties = new[] { property }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
             };
 
             var model = content.As<BasicModelWithPublishedContentProperty>();
@@ -105,20 +105,29 @@
         }
 
         [Test]
+        public void Basic_Content_Item_Property_IsMapped()
+        {
+            var value = "myValue";
+
+            var content = new MockPublishedContent
+            {
+                Properties = new[] { new MockPublishedContentProperty("item", value) }
+            };
+
+            var model = content.As<BasicModelWithItemProperty>();
+
+            Assert.That(model.Item, Is.EqualTo(value));
+        }
+
+        [Test]
         public void Basic_Property_To_String_Exception()
         {
             // The source is an `IPublishedContent`, the target is a `string`, type mismatch exception
-            var value = new PublishedContentMock();
+            var value = new MockPublishedContent();
 
-            var property = new PublishedContentPropertyMock
+            var content = new MockPublishedContent
             {
-                Alias = "myProperty",
-                Value = value
-            };
-
-            var content = new PublishedContentMock
-            {
-                Properties = new[] { property }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
             };
 
             TestDelegate code = () =>
@@ -135,7 +144,7 @@
         [Test]
         public void Basic_Content_To_String_Exception()
         {
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             TestDelegate code = () =>
             {

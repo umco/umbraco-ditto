@@ -15,26 +15,25 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="object" /> representing the processed value.
         /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public override object ProcessValue()
         {
-            var result = Value;
+            var result = this.Value;
 
             // If we aren't already the right type, try recursing if the type is IPublishedContent
-            if (Value != null && !Context.PropertyDescriptor.PropertyType.IsInstanceOfType(Value))
+            if (this.Value != null && !this.Context.PropertyDescriptor.PropertyType.IsInstanceOfType(this.Value))
             {
-                if (Value is IPublishedContent && Context.PropertyDescriptor.PropertyType.IsClass)
+                if (this.Value is IPublishedContent && this.Context.PropertyDescriptor.PropertyType.IsClass)
                 {
                     // If the property value is an IPublishedContent, then we can use Ditto to map to the target type.
-                    result = ((IPublishedContent)Value).As(Context.PropertyDescriptor.PropertyType);
+                    result = ((IPublishedContent)this.Value).As(this.Context.PropertyDescriptor.PropertyType);
                 }
-                else if (Value != null && Value.GetType().IsEnumerableOfType(typeof(IPublishedContent))
-                    && Context.PropertyDescriptor.PropertyType.IsEnumerable()
-                    && Context.PropertyDescriptor.PropertyType.GetEnumerableType() != null
-                    && Context.PropertyDescriptor.PropertyType.GetEnumerableType().IsClass)
+                else if (this.Value != null && this.Value.GetType().IsEnumerableOfType(typeof(IPublishedContent))
+                    && this.Context.PropertyDescriptor.PropertyType.IsEnumerable()
+                    && this.Context.PropertyDescriptor.PropertyType.GetEnumerableType() != null
+                    && this.Context.PropertyDescriptor.PropertyType.GetEnumerableType().IsClass)
                 {
                     // If the property value is IEnumerable<IPublishedContent>, then we can use Ditto to map to the target type.
-                    result = ((IEnumerable<IPublishedContent>)Value).As(Context.PropertyDescriptor.PropertyType.GetEnumerableType());
+                    result = ((IEnumerable<IPublishedContent>)this.Value).As(this.Context.PropertyDescriptor.PropertyType.GetEnumerableType());
                 }
             }
 

@@ -1,12 +1,14 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using System;
-    using System.ComponentModel;
-    using System.Globalization;
-    using Newtonsoft.Json.Linq;
-    using NUnit.Framework;
+﻿using System;
+using System.ComponentModel;
+using System.Globalization;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [NUnit.Framework.Category("Type Casting")]
     public class JsonSerializationWithTypeConverterTests
     {
         public class MyModel
@@ -49,8 +51,8 @@
 
             Assert.That(value, Is.Not.Null);
 
-            var property = new Mocks.PublishedContentPropertyMock("myProperty", value, true);
-            var content = new Mocks.PublishedContentMock { Properties = new[] { property } };
+            var property = new MockPublishedContentProperty("myProperty", value);
+            var content = new MockPublishedContent { Properties = new[] { property } };
 
             var model = content.As<MyModel>();
 

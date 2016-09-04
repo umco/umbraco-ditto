@@ -17,7 +17,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="type">The type.</param>
         /// <param name="typeArgument">The generic type argument.</param>
         /// <returns>
-        /// True if the type is an enumerable of the given argument type otherwise; false.
+        /// True if the type is an enumerable of the given argument type; otherwise, false.
         /// </returns>
         public static bool IsEnumerableOfType(this Type type, Type typeArgument)
         {
@@ -29,7 +29,7 @@ namespace Our.Umbraco.Ditto
         /// Determines whether the specified type is a collection type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns>True if the type is a collection type otherwise; false.</returns>
+        /// <returns>True if the type is a collection type; otherwise, false.</returns>
         public static bool IsCollectionType(this Type type)
         {
             return type.TryGetElementType(typeof(ICollection<>)) != null;
@@ -39,7 +39,7 @@ namespace Our.Umbraco.Ditto
         /// Determines whether the specified type is an enumerable type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns>True if the type is an enumerable type otherwise; false.</returns>
+        /// <returns>True if the type is an enumerable type; otherwise, false.</returns>
         public static bool IsEnumerableType(this Type type)
         {
             return type.TryGetElementType(typeof(IEnumerable<>)) != null;
@@ -56,7 +56,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="type">The type.</param>
         /// <returns>
         /// True if the type is an enumerable type with the generic parameter of a key/value 
-        /// pair otherwise; false.</returns>
+        /// pair; otherwise, false.</returns>
         public static bool IsEnumerableOfKeyValueType(this Type type)
         {
             return type.TryGetElementType(typeof(IDictionary<,>)) != null ||
@@ -73,11 +73,11 @@ namespace Our.Umbraco.Ditto
         /// </remarks>
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns>True if the type is a cast-safe, enumerable type otherwise; false.</returns>
+        /// <returns>True if the type is a cast-safe, enumerable type; otherwise, false.</returns>
         public static bool IsCastableEnumerableType(this Type type)
         {
             // String, though enumerable have no generic arguments.
-            // Types with more than one generic argument cnnot be cast. 
+            // Types with more than one generic argument cannot be cast. 
             // Dictionary, though enumerable, requires linq to convert and shouldn't be attempted anyway.
             return type.IsEnumerableType() && type.GenericTypeArguments.Any()
                     && type.GenericTypeArguments.Length == 1

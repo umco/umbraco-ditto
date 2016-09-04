@@ -1,9 +1,12 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using System;
-    using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
+using Umbraco.Core.Models;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("Mapping")]
     public class PocoConstructorTests
     {
         public class MyModel
@@ -11,54 +14,22 @@
             public MyModel() { }
         }
 
-        public class MyModel2
+        public class MyModel<T>
         {
-            public MyModel2(string arg) { }
+            public MyModel(T arg) { }
         }
 
-        public class MyModel3
+        [TestCase(typeof(MyModel))]
+        [TestCase(typeof(MyModel<IPublishedContent>))]
+        [TestCase(typeof(MyModel<string>), ExpectedException = typeof(InvalidOperationException))]
+        public void PocoConstructor_Tests(Type modelType)
         {
-            public MyModel2 MyProperty { get; set; }
-        }
+            var content = new MockPublishedContent();
 
-        [Test]
-        public void PocoConstructorEmptyTest()
-        {
-            var content = new Mocks.PublishedContentMock();
-
-            var model = content.As<MyModel>();
+            var model = content.As(modelType);
 
             Assert.That(model, Is.Not.Null);
-            Assert.That(model, Is.InstanceOf<MyModel>());
-        }
-
-        [Test]
-        public void PocoConstructorParameterTest()
-        {
-            var content = new Mocks.PublishedContentMock();
-
-            TestDelegate code = () => { var model = content.As<MyModel2>(); };
-
-            Assert.Throws<InvalidOperationException>(code);
-        }
-
-        [Test]
-        public void PocoConstructorParameterOnPropertyTest()
-        {
-            // For this test, the value would have already been resolved by a PropertyValueConverter to its intended type.
-            var value = new MyModel2("foo");
-
-            var property = new Mocks.PublishedContentPropertyMock("myProperty", value, true);
-            var content = new Mocks.PublishedContentMock { Properties = new[] { property } };
-
-            var model = content.As<MyModel3>();
-
-            Assert.That(model, Is.Not.Null);
-            Assert.That(model, Is.InstanceOf<MyModel3>());
-
-            Assert.That(model.MyProperty, Is.Not.Null);
-            Assert.That(model.MyProperty, Is.InstanceOf<MyModel2>());
-            Assert.That(model.MyProperty, Is.EqualTo(value));
+            Assert.That(model, Is.InstanceOf(modelType));
         }
     }
 }

@@ -4,6 +4,7 @@ using Our.Umbraco.Ditto.Tests.Mocks;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Processors")]
     public class AppSettingsTests
     {
         public class MyAppSettingsModel
@@ -16,8 +17,7 @@ namespace Our.Umbraco.Ditto.Tests
         public void AppSetting_Property_Returned()
         {
             var value = "MyAppSettingValue";
-
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As<MyAppSettingsModel>();
 

@@ -10,6 +10,15 @@ namespace Our.Umbraco.Ditto
     public class DittoProcessorMetaDataAttribute : Attribute
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="DittoProcessorMetaDataAttribute"/> class.
+        /// </summary>
+        public DittoProcessorMetaDataAttribute()
+        {
+            this.ValueType = typeof(object);
+            this.ContextType = typeof(DittoProcessorContext);
+        }
+
+        /// <summary>
         /// Gets or sets the value type.
         /// </summary>
         /// <value>
@@ -18,21 +27,11 @@ namespace Our.Umbraco.Ditto
         public Type ValueType { get; set; }
 
         /// <summary>
-        /// Gets the type of the context.
+        /// Gets or sets the type of the context.
         /// </summary>
         /// <value>
         /// The type of the context.
         /// </value>
         public Type ContextType { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DittoProcessorMetaDataAttribute"/> class.
-        /// </summary>
-        public DittoProcessorMetaDataAttribute()
-        {
-            ValueType = typeof(object);
-            ContextType = typeof(DittoProcessorContext);
-        }
     }
-
 }

@@ -6,7 +6,7 @@
 
     /// <summary>
     /// Provides a way to set a properties value using delegates. 
-    /// This is much faster than <see cref="M:PropertyInfo.SetValue"/> as it avois the normal overheads of reflection.
+    /// This is much faster than <see cref="M:PropertyInfo.SetValue"/> as it avoids the normal overheads of reflection.
     /// Once a method is invoked for a given type then it is cached so that subsequent calls do not require
     /// any overhead compilation costs.
     /// </summary>

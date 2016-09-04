@@ -1,17 +1,17 @@
-﻿namespace Our.Umbraco.Ditto.Tests
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using NUnit.Framework;
+using Umbraco.Core.Models;
+
+namespace Our.Umbraco.Ditto.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-
-    using NUnit.Framework;
-    using global::Umbraco.Core.Models;
-
     /// <summary>
     /// The type inference tests.
     /// </summary>
     [TestFixture]
+    [Category("Type Casting")]
     public class TypeInferenceTests
     {
         /// <summary>
@@ -122,7 +122,7 @@
         [TestCase(typeof(string), typeof(string), false)]
         [TestCase(typeof(string), typeof(char), true)]
         [TestCase(typeof(Dictionary<string, string>), typeof(KeyValuePair<string, string>), true)]
-        [TestCase(typeof(IEnumerable<Mocks.PublishedContentMock>), typeof(IPublishedContent), true, TestName = "TestIsEnumerableOfType: Derived IPublishedContent")]
+        [TestCase(typeof(IEnumerable<Mocks.MockPublishedContent>), typeof(IPublishedContent), true, TestName = "TestIsEnumerableOfType: Derived IPublishedContent")]
         public void TestIsEnumerableOfType(Type input, Type argumentType, bool expected)
         {
             Assert.AreEqual(input.IsEnumerableOfType(argumentType), expected);

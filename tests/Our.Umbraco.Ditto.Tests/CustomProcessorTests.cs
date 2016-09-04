@@ -5,6 +5,7 @@ using Umbraco.Core.Models;
 namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
+    [Category("Processors")]
     public class CustomProcessorTests
     {
         public class MyModel
@@ -18,7 +19,6 @@ namespace Our.Umbraco.Ditto.Tests
             public override object ProcessValue()
             {
                 var content = Value as IPublishedContent;
-                if (content == null) return null;
 
                 return content.Name + " Test";
             }
@@ -27,10 +27,7 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Custom_Processor_Processes()
         {
-            var content = new PublishedContentMock()
-            {
-                Name = "MyName"
-            };
+            var content = new MockPublishedContent() { Name = "MyName" };
 
             var model = content.As<MyModel>();
 

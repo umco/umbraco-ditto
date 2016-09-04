@@ -1,12 +1,15 @@
-﻿using Umbraco.Core;
+﻿using Moq;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
+using Umbraco.Core;
 using Umbraco.Core.Cache;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Profiling;
 
 namespace Our.Umbraco.Ditto.Tests
 {
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
-
     [TestFixture]
+    [Category("Caching"), Category("Performance"), Category("Processors")]
     public class CacheTests
     {
         public class MyValueResolverModel1
@@ -38,15 +41,16 @@ namespace Our.Umbraco.Ditto.Tests
                 new StaticCacheProvider(),
                 new NullCacheProvider());
 
-            var appCtx = new ApplicationContext(cacheHelper);
+            var logger = new ProfilingLogger(Mock.Of<ILogger>(), Mock.Of<IProfiler>());
+            var appCtx = new ApplicationContext(cacheHelper, logger);
 
             ApplicationContext.EnsureContext(appCtx, true);
 
-            var prop1 = new PublishedContentPropertyMock { Alias = "myProperty1", Value = "Test1" };
-            var prop2 = new PublishedContentPropertyMock { Alias = "myProperty2", Value = "Test1" };
-            var prop3 = new PublishedContentPropertyMock { Alias = "myProperty3", Value = "Test1" };
+            var prop1 = new MockPublishedContentProperty("myProperty1", "Test1");
+            var prop2 = new MockPublishedContentProperty("myProperty2", "Test1");
+            var prop3 = new MockPublishedContentProperty("myProperty3", "Test1");
 
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
                 Id = 1,
                 Properties = new[] { prop1, prop2, prop3 }

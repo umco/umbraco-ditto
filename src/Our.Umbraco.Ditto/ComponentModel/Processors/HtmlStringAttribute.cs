@@ -17,16 +17,16 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            if (typeof(IHtmlString).IsAssignableFrom(Context.PropertyDescriptor.PropertyType))
+            if (typeof(IHtmlString).IsAssignableFrom(this.Context.PropertyDescriptor.PropertyType))
             {
-                if (Value.IsNullOrEmptyString())
+                if (this.Value.IsNullOrEmptyString())
                 {
                     return null;
                 }
 
-                if (Value is string)
+                if (this.Value is string)
                 {
-                    var text = Value.ToString();
+                    var text = this.Value.ToString();
 
                     if (!string.IsNullOrWhiteSpace(text))
                     {
@@ -36,9 +36,9 @@ namespace Our.Umbraco.Ditto
                     return new HtmlString(text);
                 }
 
-                if (Value is HtmlString)
+                if (this.Value is HtmlString)
                 {
-                    var html = Value.ToString();
+                    var html = this.Value.ToString();
 
                     if (!string.IsNullOrWhiteSpace(html))
                     {
@@ -48,13 +48,13 @@ namespace Our.Umbraco.Ditto
                     return new HtmlString(html);
                 }
 
-                if (Value is DynamicXml)
+                if (this.Value is DynamicXml)
                 {
-                    return ((DynamicXml)Value).ToHtml();
+                    return ((DynamicXml)this.Value).ToHtml();
                 }
             }
 
-            return Value;
+            return this.Value;
         }
     }
 }

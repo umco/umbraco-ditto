@@ -1,14 +1,12 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Globalization;
-    using System.Linq;
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("Collections"), Category("Processors")]
     public class EnumerableDetectionTests
     {
         public class MyModel
@@ -18,7 +16,7 @@
 
             public string EnumerableToSingle { get; set; }
 
-            public IEnumerable<string> SingleToEnumerable { get; set; } 
+            public IEnumerable<string> SingleToEnumerable { get; set; }
         }
 
         public class MyProcessorAttribute : DittoProcessorAttribute
@@ -36,51 +34,40 @@
         [Test]
         public void GenericDictionaryPropertyIsNotDetectedAsCastableEnumerable()
         {
-            var content = new PublishedContentMock
+            var content = new MockPublishedContent
             {
-                Properties = new[] { 
-                    new PublishedContentPropertyMock
-                    {
-                        Alias = "myProperty",
-                        Value = "myValue"
-                    }
-                }
+                Properties = new[] { new MockPublishedContentProperty("myProperty", "myValue") }
             };
 
             var result = content.As<MyModel>();
 
-            Assert.NotNull(result.MyProperty);
-            Assert.True(result.MyProperty.Any());
-            Assert.AreEqual(result.MyProperty["hello"], "world");
+            Assert.That(result.MyProperty, Is.Not.Null);
+            Assert.That(result.MyProperty.Any(), Is.True);
+            Assert.That(result.MyProperty["hello"], Is.EqualTo("world"));
         }
 
         [Test]
         public void EnumerablesCast()
         {
-            var content = new PublishedContentMock
+            var propertyValue = "myVal";
+
+            var content = new MockPublishedContent
             {
-                Properties = new[] { 
-                    new PublishedContentPropertyMock
-                    {
-                        Alias = "enumerableToSingle",
-                        Value = new[]{"myVal", "myOtherVal"}
-                    },
-                    new PublishedContentPropertyMock
-                    {
-                        Alias = "singleToEnumerable",
-                        Value = "myVal"
-                    }
+                Properties = new[]
+                {
+                    new MockPublishedContentProperty("enumerableToSingle", new[] { propertyValue, "myOtherVal" }),
+                    new MockPublishedContentProperty("singleToEnumerable", propertyValue)
                 }
             };
 
             var result = content.As<MyModel>();
 
-            Assert.NotNull(result.EnumerableToSingle);
-            Assert.AreEqual(result.EnumerableToSingle, "myVal");
+            Assert.That(result.EnumerableToSingle, Is.Not.Null);
+            Assert.That(result.EnumerableToSingle, Is.EqualTo(propertyValue));
 
-            Assert.NotNull(result.SingleToEnumerable);
-            Assert.IsTrue(result.SingleToEnumerable.Any());
-            Assert.AreEqual(result.SingleToEnumerable.First(), "myVal");
+            Assert.That(result.SingleToEnumerable, Is.Not.Null);
+            Assert.That(result.SingleToEnumerable.Any(), Is.True);
+            Assert.That(result.SingleToEnumerable.First(), Is.EqualTo(propertyValue));
         }
     }
 }

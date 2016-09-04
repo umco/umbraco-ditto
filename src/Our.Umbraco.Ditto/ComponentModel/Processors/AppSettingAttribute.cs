@@ -10,11 +10,6 @@ namespace Our.Umbraco.Ditto
     public class AppSettingAttribute : DittoProcessorAttribute
     {
         /// <summary>
-        /// Gets or sets the app setting key.
-        /// </summary>
-        public string AppSettingKey { get; protected set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="AppSettingAttribute" /> class.
         /// </summary>
         /// <param name="appSettingKey">The app setting key in the web.config</param>
@@ -24,6 +19,11 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
+        /// Gets or sets the app setting key.
+        /// </summary>
+        public string AppSettingKey { get; protected set; }
+
+        /// <summary>
         /// Processes the value.
         /// </summary>
         /// <returns>
@@ -31,7 +31,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            var appSettingKey = AppSettingKey ?? (this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty);
+            var appSettingKey = this.AppSettingKey ?? (this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty);
 
             if (string.IsNullOrWhiteSpace(appSettingKey))
             {

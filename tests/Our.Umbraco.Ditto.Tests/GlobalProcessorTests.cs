@@ -1,9 +1,10 @@
-﻿namespace Our.Umbraco.Ditto.Tests
-{
-    using NUnit.Framework;
-    using Our.Umbraco.Ditto.Tests.Mocks;
+﻿using NUnit.Framework;
+using Our.Umbraco.Ditto.Tests.Mocks;
 
+namespace Our.Umbraco.Ditto.Tests
+{
     [TestFixture]
+    [Category("Processors")]
     public class GlobalProcessorTests
     {
         public class MyProcessorModel
@@ -48,7 +49,7 @@
             Ditto.RegisterProcessorAttribute<MyIntModel, MyIntProcessorAttr>(new MyIntProcessorAttr { AttrProp = 2 });
             Ditto.RegisterProcessorAttribute<MyIntModel, MyIntProcessorAttr>(new MyIntProcessorAttr { AttrProp = 5 });
 
-            var content = new PublishedContentMock();
+            var content = new MockPublishedContent();
 
             var model = content.As<MyProcessorModel>();
 

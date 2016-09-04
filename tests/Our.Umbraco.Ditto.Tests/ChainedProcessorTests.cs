@@ -4,6 +4,7 @@
     using Our.Umbraco.Ditto.Tests.Mocks;
 
     [TestFixture]
+    [Category("Processors")]
     public class ChainedProcessorTests
     {
         public class MyCustomModel
@@ -50,6 +51,13 @@
             public MyCustomModel2 MyProperty { get; set; }
         }
 
+        public class MyModel4
+        {
+            [UmbracoProperty("myProp", Order = 0)]
+            [UmbracoProperty("myInnerProp", Order = 1)]
+            public string MyProperty { get; set; }
+        }
+
         public class MyCustomProcessorAttribute : DittoProcessorAttribute
         {
             public override object ProcessValue()
@@ -93,7 +101,7 @@
             // to the `MyCustomConverter` so to convert the `string` to a
             // `MyCustomModel` type/object.
 
-            var content = new PublishedContentMock() { Name = "MyName" };
+            var content = new MockPublishedContent() { Name = "MyName" };
             var model = content.As<MyModel1>();
 
             Assert.IsNotNull(model);
@@ -114,7 +122,7 @@
             // Since the value type is the same as the target property type,
             // the property value can be set.
 
-            var content = new PublishedContentMock() { Name = "MyName" };
+            var content = new MockPublishedContent() { Name = "MyName" };
             var model = content.As<MyModel2>();
 
             Assert.IsNotNull(model);
@@ -133,7 +141,7 @@
             // to the `MyCustomConverter` so to convert the `string` to a
             // `MyCustomModel` type/object.
 
-            var content = new PublishedContentMock() { Name = "MyName" };
+            var content = new MockPublishedContent() { Name = "MyName" };
             var model = content.As<MyModel3>();
 
             Assert.IsNotNull(model);
@@ -142,6 +150,38 @@
             Assert.IsNotNull(model.MyProperty);
             Assert.IsInstanceOf<MyCustomModel2>(model.MyProperty);
             Assert.That(model.MyProperty.Name, Is.EqualTo("MyCustomName"));
+        }
+
+        [Test]
+        public void ChanedProcessor_MultiUmbracoPropertyProcessors()
+        {
+            // In this test, we are checking that we can chain multiple
+            // UmbracoPropertyAttributes. To test we have the first property
+            // returning an IPublishedContent for the initial property alias
+            // allowing the second UmbracoPropertyAttribute able to run on
+            // the inner model.
+
+            var content = new MockPublishedContent()
+            {
+                Name = "MyName",
+                Properties = new [] {
+                    new MockPublishedContentProperty("myProp", new MockPublishedContent
+                    {
+                        Name = "MyInnerName",
+                        Properties = new[]
+                        {
+                            new MockPublishedContentProperty("myInnerProp", "Test"),            
+                        }
+                    })
+                }
+            };
+
+            var model = content.As<MyModel4>();
+
+            Assert.IsNotNull(model);
+            Assert.IsInstanceOf<MyModel4>(model);
+            Assert.IsNotNull(model.MyProperty);
+            Assert.AreEqual(model.MyProperty, "Test");
         }
     }
 }
