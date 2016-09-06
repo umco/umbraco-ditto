@@ -1,0 +1,17 @@
+@{
+	string syntax = Model.String("Syntax");
+	
+	if (!syntax.Contains("()") && syntax.Contains(",") &&
+		(Model.String("SpecificKind") == "Method" || Model.String("SpecificKind") == "Constructor"))
+	{
+		syntax = syntax.Replace("(", "(\r\n\t").Replace(", ", ",\r\n\t");
+	}
+}
+<u>@Model.String("SpecificKind")</u>
+
+
+@if(!string.IsNullOrWhiteSpace(syntax))
+{
+	<h3>Syntax</h3>
+	<pre class="prettyprint"><code class="language-csharp">@syntax</code></pre>
+}

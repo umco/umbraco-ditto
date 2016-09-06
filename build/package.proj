@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Package" ToolsVersion="4.0">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="BuildDocs" ToolsVersion="4.0">
 
 	<!-- IMPORTS -->
 	<PropertyGroup>
@@ -76,6 +76,8 @@
 		<BuildNuGetDir>$(BuildDir)\_nuget</BuildNuGetDir>
 		<ArtifactsDir>$(RootDir)\artifacts</ArtifactsDir>
 		<ProjectDir>$(RootDir)\src\Our.Umbraco.Ditto</ProjectDir>
+		<DocsDir>$(RootDir)\docs</DocsDir>
+		<DocsOutputDir>$(DocsDir)\output</DocsOutputDir>
 	</PropertyGroup>
 
 	<!-- TARGETS -->
@@ -196,7 +198,20 @@
 			Symbols="true" />
 
 		<RemoveDir Directories="$(BuildDir)" Condition="Exists('$(BuildDir)')" />
+	</Target>
 
+	<Target Name="BuildDocs" DependsOnTargets="Package">
+	
+		<Exec WorkingDirectory="$(DocsDir)" Command="wyam-build.cmd" Condition="$(APPVEYOR_REPO_TAG) == 'true'" />
+		
+		<ItemGroup>
+			<DocsOutputFiles Include="$(DocsOutputDir)\**\*.*" />
+		</ItemGroup>
+		
+		<Zip Files="@(DocsOutputFiles)" WorkingDirectory="$(DocsOutputDir)"
+			ZipFileName="$(ArtifactsDir)\Ditto_Documentation_$(ProductVersion).zip"
+			Condition="$(APPVEYOR_REPO_TAG) == 'true' And Exists('$(DocsOutputDir)')" />
+			
 	</Target>
 
 </Project>

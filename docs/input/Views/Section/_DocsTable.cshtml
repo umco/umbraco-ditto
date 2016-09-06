@@ -1,0 +1,32 @@
+@{
+	DocsTable docsTable = ViewData["DocsTable"] as DocsTable;
+	if(docsTable != null && docsTable.Docs != null && docsTable.Docs.Count > 0)
+	{
+		<article>
+			<h3>@docsTable.Title</h3>
+			<table>
+				<thead>
+					<tr>
+						<th>@docsTable.Header</th>
+						@if(docsTable.HasSummary)
+						{
+							<th>Summary</th>
+						}
+					</tr>
+				</thead>
+				<tbody>
+					@foreach(IDocument doc in docsTable.Docs)
+					{
+						<tr>
+							<td>@Context.GetTypeLink(doc)</td>
+							@if(docsTable.HasSummary)
+							{
+								<td>@Html.Raw(doc["Summary"])</td>
+							}
+						</tr>
+					}
+				</tbody>
+			</table>
+		</article>
+	}
+}

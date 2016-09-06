@@ -1,0 +1,23 @@
+@{
+	var nav = Documents
+		.FromPipeline("Content")
+		.Where(x => x.Get<int>("depth", -1) == 1)
+		.OrderBy(x => x.Get<int>("order", 99))
+		.ThenBy(x => x.String("title"));
+}
+<ul class="docs-nav" id="menu-left">
+	@foreach(var itm in nav)
+	{
+		var isActive = itm.String("permalink") == Model.String("permalink");
+		<li>
+			<a href="@itm.String("permalink")" class="@(isActive ? "active" : "")"><strong>@itm.String("title")</strong></a>
+		</li>
+		if(isActive)
+		{
+			foreach(var anchor in itm.Get<IDictionary<string, string>>("anchors")) 
+			{
+				<li><a href="#@anchor.Key">@anchor.Value</a></li>
+			}
+		}
+	}
+</ul>

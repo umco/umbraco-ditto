@@ -1,0 +1,24 @@
+@{
+	Layout = @"Views\_Layout.cshtml";
+	
+	IDocument containingType = Model.Get<IDocument>("ContainingType");
+	string containingTypeString = string.Empty;
+	while(containingType != null)
+	{
+		containingTypeString = containingTypeString + containingType.String("DisplayName") + ".";
+		containingType = containingType.Get<IDocument>("ContainingType");
+	}
+	ViewData["Title"] = "API - " + containingTypeString + Model["DisplayName"] + " " + Model["SpecificKind"];
+
+	containingType = Model.Get<IDocument>("ContainingType");
+	while(containingType != null)
+	{
+		<h4>@Context.GetTypeLink(containingType).</h4>
+		containingType = containingType.Get<IDocument>("ContainingType");
+	}
+}
+
+<h2>@Model.Name() <small>@Model["SpecificKind"]</small></h2>
+<hr />
+@RenderBody()  @* Empty, but needs to be here *@
+@Html.Partial("Kind\\_" + Model.String("Kind"))

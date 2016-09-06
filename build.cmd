@@ -1,4 +1,4 @@
-ECHO off
+ECHO OFF
 
 SET /P APPVEYOR_BUILD_NUMBER=Please enter a build number (e.g. 134):
 SET /P PACKAGE_VERISON=Please enter your package version (e.g. 1.0.5):
