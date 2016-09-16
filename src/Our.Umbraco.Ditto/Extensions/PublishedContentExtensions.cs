@@ -357,6 +357,7 @@ namespace Our.Umbraco.Ditto
                             var deferredPropertyInfo = propertyInfo;
                             var localInstance = instance;
 
+                            // ReSharper disable once PossibleMultipleEnumeration
                             lazyProperties.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, defaultProcessorType, processorContexts)));
                         }
                     }
