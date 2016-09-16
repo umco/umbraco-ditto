@@ -334,7 +334,7 @@ namespace Our.Umbraco.Ditto
                     var lazyAttr = propertyInfo.GetCustomAttribute<DittoLazyAttribute>();
                     if (lazyAttr != null)
                     { 
-                        // Configure lazy property
+                        // Configure lazy properties
                         using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Lazy Property ({1} {0})", propertyInfo.Name, content.Id)))
                         {
                             if (!propertyInfo.IsVirtualAndOverridable())
