@@ -326,20 +326,31 @@ namespace Our.Umbraco.Ditto
             // A dictionary to store lazily invoked values.
             var lazyProperties = new Dictionary<string, Lazy<object>>();
 
+            // See if the type is marked as lazy
+            var typeLazyAttr = type.GetCustomAttribute<DittoLazyAttribute>();
+
             // Process all the properties.
             if (properties.Any())
             {
                 foreach (var propertyInfo in properties)
                 {
-                    var lazyAttr = propertyInfo.GetCustomAttribute<DittoLazyAttribute>();
-                    if (lazyAttr != null)
+                    var propLazyAttr = propertyInfo.GetCustomAttribute<DittoLazyAttribute>();
+                    if (propLazyAttr != null || (typeLazyAttr != null && propertyInfo.IsVirtualAndOverridable()))
                     { 
                         // Configure lazy properties
                         using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Lazy Property ({1} {0})", propertyInfo.Name, content.Id)))
                         {
+                            // Ensure it's a virtual property (Only relevant to property level lazy loads)
                             if (!propertyInfo.IsVirtualAndOverridable())
                             {
                                 throw new ApplicationException("Lazy property '" + propertyInfo.Name + "' of type '"+ type.AssemblyQualifiedName +"' must be declared virtual in order to be lazy loadable.");
+                            }
+
+                            // Check for the ignore attribute (Only relevant to class level lazy loads).
+                            var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
+                            if (ignoreAttr != null)
+                            {
+                                continue;
                             }
 
                             // Create a Lazy<object> to deferr returning our value.
