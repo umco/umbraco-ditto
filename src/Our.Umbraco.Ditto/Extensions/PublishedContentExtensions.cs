@@ -335,7 +335,7 @@ namespace Our.Umbraco.Ditto
                 foreach (var propertyInfo in properties)
                 {
                     var propLazyAttr = propertyInfo.GetCustomAttribute<DittoLazyAttribute>();
-                    if (propLazyAttr != null || ((typeLazyAttr != null || Ditto.LazyLoad == LazyLoad.AllVirtuals) && propertyInfo.IsVirtualAndOverridable()))
+                    if (propLazyAttr != null || ((typeLazyAttr != null || Ditto.LazyLoadStrategy == LazyLoad.AllVirtuals) && propertyInfo.IsVirtualAndOverridable()))
                     { 
                         // Configure lazy properties
                         using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Lazy Property ({1} {0})", propertyInfo.Name, content.Id)))

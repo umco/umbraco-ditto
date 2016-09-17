@@ -34,7 +34,7 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// The default lazy load strategy
         /// </summary>
-        public static LazyLoad LazyLoad = LazyLoad.AttributedVirtuals;
+        public static LazyLoad LazyLoadStrategy = LazyLoad.AttributedVirtuals;
 
         /// <summary>
         /// The property bindings for mappable properties
