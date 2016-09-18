@@ -332,54 +332,31 @@ namespace Our.Umbraco.Ditto
             // Process all the properties.
             if (properties.Any())
             {
-                foreach (var propertyInfo in properties)
+                // process lazy load properties first
+                foreach (var propertyInfo in properties.Where(x => x.ShouldAttemptLazyLoad()))
                 {
-                    var propLazyAttr = propertyInfo.GetCustomAttribute<DittoLazyAttribute>();
-                    if (propLazyAttr != null || ((typeLazyAttr != null || Ditto.LazyLoadStrategy == LazyLoad.AllVirtuals) && propertyInfo.IsVirtualAndOverridable()))
-                    { 
-                        // Configure lazy properties
-                        using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Lazy Property ({1} {0})", propertyInfo.Name, content.Id)))
-                        {
-                            // Ensure it's a virtual property (Only relevant to property level lazy loads)
-                            if (!propertyInfo.IsVirtualAndOverridable())
-                            {
-                                throw new ApplicationException("Lazy property '" + propertyInfo.Name + "' of type '"+ type.AssemblyQualifiedName +"' must be declared virtual in order to be lazy loadable.");
-                            }
-
-                            // Check for the ignore attribute (Only relevant to class level lazy loads).
-                            var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
-                            if (ignoreAttr != null)
-                            {
-                                continue;
-                            }
-
-                            // Create a Lazy<object> to deferr returning our value.
-                            var deferredPropertyInfo = propertyInfo;
-                            var localInstance = instance;
-
-                            // ReSharper disable once PossibleMultipleEnumeration
-                            lazyProperties.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, defaultProcessorType, processorContexts)));
-                        }
-                    }
-                    else
+                    // Configure lazy properties
+                    using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Lazy Property ({1} {0})", propertyInfo.Name, content.Id)))
                     {
-                        // Configure non lazy properties
-                        using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
+                        // Ensure it's a virtual property (Only relevant to property level lazy loads)
+                        if (!propertyInfo.IsVirtualAndOverridable())
                         {
-                            // Check for the ignore attribute.
-                            var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
-                            if (ignoreAttr != null)
-                            {
-                                continue;
-                            }
-
-                            // Set the value normally.
-                            // ReSharper disable once PossibleMultipleEnumeration
-                            var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, processorContexts);
-
-                            // This is 2x as fast as propertyInfo.SetValue(instance, value, null);
-                            PropertyInfoInvocations.SetValue(propertyInfo, instance, value);
+                            throw new InvalidOperationException("Lazy property '" + propertyInfo.Name + "' of type '"+ type.AssemblyQualifiedName +"' must be declared virtual in order to be lazy loadable.");
                         }
+
+                        // Check for the ignore attribute (Only relevant to class level lazy loads).
+                        var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
+                        if (ignoreAttr != null)
+                        {
+                            continue;
+                        }
+
+                        // Create a Lazy<object> to deferr returning our value.
+                        var deferredPropertyInfo = propertyInfo;
+                        var localInstance = instance;
+
+                        // ReSharper disable once PossibleMultipleEnumeration
+                        lazyProperties.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, defaultProcessorType, processorContexts)));
                     }
                 }
 
@@ -392,6 +369,28 @@ namespace Our.Umbraco.Ditto
                     instance = hasParameter
                         ? factory.CreateProxy(type, interceptor, content)
                         : factory.CreateProxy(type, interceptor);
+                }
+
+                // Process any non lazy properties next
+                foreach (var propertyInfo in properties.Where(x => !x.ShouldAttemptLazyLoad()))
+                {
+                    // Configure non lazy properties
+                    using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
+                    {
+                        // Check for the ignore attribute.
+                        var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
+                        if (ignoreAttr != null)
+                        {
+                            continue;
+                        }
+
+                        // Set the value normally.
+                        // ReSharper disable once PossibleMultipleEnumeration
+                        var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, processorContexts);
+
+                        // This is 2x as fast as propertyInfo.SetValue(instance, value, null);
+                        PropertyInfoInvocations.SetValue(propertyInfo, instance, value);
+                    }
                 }
             }
 

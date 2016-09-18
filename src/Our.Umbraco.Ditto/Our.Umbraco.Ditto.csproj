@@ -120,6 +120,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Ditto.cs" />
+    <Compile Include="Extensions\Internal\MemberInfoExtensions.cs" />
     <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
     <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Internal\PropertyInfoExtensions.cs" />
