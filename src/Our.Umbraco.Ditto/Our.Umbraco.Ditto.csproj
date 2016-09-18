@@ -128,6 +128,7 @@
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />
     <Compile Include="Extensions\RenderModelExtensions.cs" />
     <Compile Include="Extensions\PublishedContentExtensions.cs" />
+    <Compile Include="LazyLoad.cs" />
     <Compile Include="Models\DittoTransferModel.cs" />
     <Compile Include="Models\DittoViewModel.cs" />
     <Compile Include="Models\IDittoViewModel.cs" />
