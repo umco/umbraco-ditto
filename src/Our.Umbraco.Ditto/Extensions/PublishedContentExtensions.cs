@@ -345,8 +345,7 @@ namespace Our.Umbraco.Ditto
                         }
 
                         // Check for the ignore attribute (Only relevant to class level lazy loads).
-                        var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
-                        if (ignoreAttr != null)
+                        if (propertyInfo.HasCustomAttribute<DittoIgnoreAttribute>())
                         {
                             continue;
                         }
@@ -378,8 +377,7 @@ namespace Our.Umbraco.Ditto
                     using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
                     {
                         // Check for the ignore attribute.
-                        var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
-                        if (ignoreAttr != null)
+                        if (propertyInfo.HasCustomAttribute<DittoIgnoreAttribute>())
                         {
                             continue;
                         }
