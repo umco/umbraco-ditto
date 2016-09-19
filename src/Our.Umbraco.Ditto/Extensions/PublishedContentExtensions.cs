@@ -326,9 +326,6 @@ namespace Our.Umbraco.Ditto
             // A dictionary to store lazily invoked values.
             var lazyProperties = new Dictionary<string, Lazy<object>>();
 
-            // See if the type is marked as lazy
-            var typeLazyAttr = type.GetCustomAttribute<DittoLazyAttribute>();
-
             // Process all the properties.
             if (properties.Any())
             {
