@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Our.Umbraco.Ditto.ComponentModel.Attributes;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -22,12 +23,6 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         private static readonly ConcurrentDictionary<Type, ParameterInfo[]> ConstructorCache
             = new ConcurrentDictionary<Type, ParameterInfo[]>();
-
-        /// <summary>
-        /// The cache for storing type property information.
-        /// </summary>
-        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> VirtualPropertyCache
-            = new ConcurrentDictionary<Type, PropertyInfo[]>();
 
         /// <summary>
         /// The cache for storing type property information.
@@ -310,20 +305,15 @@ namespace Our.Umbraco.Ditto
             }
 
             // Collect all the properties of the given type and loop through writable ones.
-            PropertyInfo[] virtualProperties;
-            PropertyInfo[] nonVirtualProperties;
-            VirtualPropertyCache.TryGetValue(type, out virtualProperties);
-            PropertyCache.TryGetValue(type, out nonVirtualProperties);
-            if (virtualProperties == null && nonVirtualProperties == null)
+            PropertyInfo[] properties;
+            PropertyCache.TryGetValue(type, out properties);
+
+            if (properties == null)
             {
-                var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(x => x.CanWrite && x.GetSetMethod() != null).ToArray();
 
-                // Split out the properties.
-                virtualProperties = properties.Where(p => p.IsVirtualAndOverridable()).ToArray();
-                nonVirtualProperties = properties.Except(virtualProperties).ToArray();
-                VirtualPropertyCache.TryAdd(type, virtualProperties);
-                PropertyCache.TryAdd(type, nonVirtualProperties);
+                PropertyCache.TryAdd(type, properties);
             }
 
             // Gets the default processor for this conversion.
@@ -332,28 +322,35 @@ namespace Our.Umbraco.Ditto
             // A dictionary to store lazily invoked values.
             var lazyProperties = new Dictionary<string, Lazy<object>>();
 
-            // If there are any virtual properties we want to lazily invoke them.
-            if (virtualProperties != null && virtualProperties.Any())
+            // process lazy load properties first
+            foreach (var propertyInfo in properties.Where(x => x.ShouldAttemptLazyLoad()))
             {
-                foreach (var propertyInfo in virtualProperties)
+                // Configure lazy properties
+                using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Lazy Property ({1} {0})", propertyInfo.Name, content.Id)))
                 {
-                    using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Virtual Property ({1} {0})", propertyInfo.Name, content.Id)))
+                    // Ensure it's a virtual property (Only relevant to property level lazy loads)
+                    if (!propertyInfo.IsVirtualAndOverridable())
                     {
-                        // Check for the ignore attribute.
-                        var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
-                        if (ignoreAttr != null)
-                        {
-                            continue;
-                        }
-
-                        // Create a Lazy<object> to deferr returning our value.
-                        var deferredPropertyInfo = propertyInfo;
-                        var localInstance = instance;
-
-                        lazyProperties.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, defaultProcessorType, processorContexts)));
+                        throw new InvalidOperationException("Lazy property '" + propertyInfo.Name + "' of type '"+ type.AssemblyQualifiedName +"' must be declared virtual in order to be lazy loadable.");
                     }
-                }
 
+                    // Check for the ignore attribute (Only relevant to class level lazy loads).
+                    if (propertyInfo.HasCustomAttribute<DittoIgnoreAttribute>())
+                    {
+                        continue;
+                    }
+
+                    // Create a Lazy<object> to deferr returning our value.
+                    var deferredPropertyInfo = propertyInfo;
+                    var localInstance = instance;
+
+                    // ReSharper disable once PossibleMultipleEnumeration
+                    lazyProperties.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, defaultProcessorType, processorContexts)));
+                }
+            }
+
+            if (lazyProperties.Any())
+            {
                 // Create a proxy instance to replace our object.
                 var interceptor = new LazyInterceptor(instance, lazyProperties);
                 var factory = new ProxyFactory();
@@ -367,27 +364,24 @@ namespace Our.Umbraco.Ditto
             // so fire the on converting event handlers
             OnConverting(content, type, instance, onConverting);
 
-            // Now loop through and convert non-virtual properties.
-            if (nonVirtualProperties != null && nonVirtualProperties.Any())
+            // Process any non lazy properties next
+            foreach (var propertyInfo in properties.Where(x => !x.ShouldAttemptLazyLoad()))
             {
-                foreach (var propertyInfo in nonVirtualProperties)
+                // Configure non lazy properties
+                using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
                 {
-                    using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
+                    // Check for the ignore attribute.
+                    if (propertyInfo.HasCustomAttribute<DittoIgnoreAttribute>())
                     {
-                        // Check for the ignore attribute.
-                        var ignoreAttr = propertyInfo.GetCustomAttribute<DittoIgnoreAttribute>();
-                        if (ignoreAttr != null)
-                        {
-                            continue;
-                        }
-
-                        // Set the value normally.
-                        // ReSharper disable once PossibleMultipleEnumeration
-                        var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, processorContexts);
-
-                        // This is 2x as fast as propertyInfo.SetValue(instance, value, null);
-                        PropertyInfoInvocations.SetValue(propertyInfo, instance, value);
+                        continue;
                     }
+
+                    // Set the value normally.
+                    // ReSharper disable once PossibleMultipleEnumeration
+                    var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, processorContexts);
+
+                    // This is 2x as fast as propertyInfo.SetValue(instance, value, null);
+                    PropertyInfoInvocations.SetValue(propertyInfo, instance, value);
                 }
             }
 
