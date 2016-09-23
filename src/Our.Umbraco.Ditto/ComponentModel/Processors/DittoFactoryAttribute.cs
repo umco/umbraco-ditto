@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Our.Umbraco.Ditto.Extensions.Internal;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 
@@ -42,9 +43,29 @@ namespace Our.Umbraco.Ditto
             // Find the appropreate types
             // There is no non generic version of ResolveTypes so we have to
             // call it via reflection.
-            var method = typeof(PluginManager).GetMethod("ResolveTypes");
-            var generic = method.MakeGenericMethod(baseType);
-            var types = (IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null });
+            Type[] types;
+
+            // Workaround for http://issues.umbraco.org/issue/U4-9011
+            if (baseType.Assembly.IsAppCodeAssembly())
+            {
+                // This logic is taken from the core type finder so it should be performing
+                // the same checks, it's just that these results don't get cached :(
+                types = baseType.Assembly
+                    .GetTypes()
+                    .Where(t => baseType.IsAssignableFrom(t) 
+                        && t.IsClass 
+                        && !t.IsAbstract 
+                        && !t.IsSealed 
+                        && !t.IsNestedPrivate
+                        && t.GetCustomAttribute<HideFromTypeFinderAttribute>(true) == null)
+                         .ToArray();
+            }
+            else
+            {
+                var method = typeof(PluginManager).GetMethod("ResolveTypes");
+                var generic = method.MakeGenericMethod(baseType);
+                types = ((IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null })).ToArray();
+            }
 
             // Check for IEnumerable<IPublishedContent> value
             var enumerableValue = this.Value as IEnumerable<IPublishedContent>;
