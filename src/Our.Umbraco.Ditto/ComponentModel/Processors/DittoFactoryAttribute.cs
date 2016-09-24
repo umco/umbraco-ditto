@@ -16,14 +16,14 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Gets or sets the list of allowed types
         /// </summary>
-        protected List<Type> AllowedTypes { get; set; }
+        public Type[] AllowedTypes { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoFactoryAttribute"/> class.
         /// </summary>
         protected DittoFactoryAttribute()
         {
-            AllowedTypes = new List<Type>();
+            AllowedTypes = null;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Our.Umbraco.Ditto
         protected DittoFactoryAttribute(Type[] allowedTypes)
             : this()
         {
-            AllowedTypes.AddRange(allowedTypes);
+            AllowedTypes = allowedTypes;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Our.Umbraco.Ditto
             // otherwise attempt to search through loaded assemblies
             IEnumerable<Type> types;
 
-            if (AllowedTypes != null && AllowedTypes.Count > 0)
+            if (AllowedTypes != null && AllowedTypes.Length > 0)
             {
                 types = AllowedTypes;
             }

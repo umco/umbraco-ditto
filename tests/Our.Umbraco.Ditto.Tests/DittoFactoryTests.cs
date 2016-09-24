@@ -71,7 +71,7 @@ namespace Our.Umbraco.Ditto.Tests
             public IEnumerable<IMyModel2> MyCollection2 { get; set; }
 
             [UmbracoProperty(Order = 0)]
-            [DittoDocTypeFactory(new[] { typeof(MyModel1) }, Order = 1)]
+            [DittoDocTypeFactory(AllowedTypes = new [] { typeof(MyModel1) }, Order = 1)]
             public IEnumerable<IMyModel> MyCollection3 { get; set; }
 
             public IMyModel2 MyProperty2 { get; set; }
