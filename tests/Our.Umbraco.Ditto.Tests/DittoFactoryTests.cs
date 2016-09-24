@@ -70,6 +70,10 @@ namespace Our.Umbraco.Ditto.Tests
 
             public IEnumerable<IMyModel2> MyCollection2 { get; set; }
 
+            [UmbracoProperty(Order = 0)]
+            [DittoDocTypeFactory(new[] { typeof(MyModel1) }, Order = 1)]
+            public IEnumerable<IMyModel> MyCollection3 { get; set; }
+
             public IMyModel2 MyProperty2 { get; set; }
         }
 
@@ -89,7 +93,8 @@ namespace Our.Umbraco.Ditto.Tests
                     new MockPublishedContentProperty("MyCollection", new [] { content1, content2, content3  }),
                     new MockPublishedContentProperty("MyProperty", content3),
                     new MockPublishedContentProperty("MyCollection2", new [] { content4, content5  }),
-                    new MockPublishedContentProperty("MyProperty2", content4)
+                    new MockPublishedContentProperty("MyProperty2", content4),
+                    new MockPublishedContentProperty("MyCollection3", new [] { content1, content2, content3  })
                 }
             };
 
@@ -116,6 +121,13 @@ namespace Our.Umbraco.Ditto.Tests
             Assert.That(model.MyProperty2, Is.Not.Null);
             Assert.That(model.MyProperty2, Is.TypeOf<MyModel4>());
             Assert.That(model.MyProperty2.Name, Is.EqualTo(content4.Name));
+
+            var items3 = model.MyCollection3.ToList();
+
+            Assert.That(items3, Has.Count.EqualTo(3));
+            Assert.That(items3[0], Is.TypeOf<MyModel1>());
+            Assert.That(items3[1], Is.Null);
+            Assert.That(items3[2], Is.Null);
         }
     }
 }

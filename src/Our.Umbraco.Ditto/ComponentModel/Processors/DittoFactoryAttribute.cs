@@ -14,6 +14,29 @@ namespace Our.Umbraco.Ditto
     public abstract class DittoFactoryAttribute : DittoProcessorAttribute
     {
         /// <summary>
+        /// Gets or sets the list of allowed types
+        /// </summary>
+        protected List<Type> AllowedTypes { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoFactoryAttribute"/> class.
+        /// </summary>
+        protected DittoFactoryAttribute()
+        {
+            AllowedTypes = new List<Type>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoFactoryAttribute"/> class.
+        /// </summary>
+        /// <param name="allowedTypes">List of allowed types</param>
+        protected DittoFactoryAttribute(Type[] allowedTypes)
+            : this()
+        {
+            AllowedTypes.AddRange(allowedTypes);
+        }
+
+        /// <summary>
         /// Resolves a type name based upon the current content item.
         /// </summary>
         /// <param name="currentContent">The current published content.</param>
@@ -40,31 +63,41 @@ namespace Our.Umbraco.Ditto
 
             // TODO: Validate the base type more?
 
-            // Find the appropreate types
-            // There is no non generic version of ResolveTypes so we have to
-            // call it via reflection.
-            Type[] types;
+            // Get the list of types to search through
+            // If we have explicitly set a list of allowed types, just use those
+            // otherwise attempt to search through loaded assemblies
+            IEnumerable<Type> types;
 
-            // Workaround for http://issues.umbraco.org/issue/U4-9011
-            if (baseType.Assembly.IsAppCodeAssembly())
+            if (AllowedTypes != null && AllowedTypes.Count > 0)
             {
-                // This logic is taken from the core type finder so it should be performing
-                // the same checks, it's just that these results don't get cached :(
-                types = baseType.Assembly
-                    .GetTypes()
-                    .Where(t => baseType.IsAssignableFrom(t) 
-                        && t.IsClass 
-                        && !t.IsAbstract 
-                        && !t.IsSealed 
-                        && !t.IsNestedPrivate
-                        && t.GetCustomAttribute<HideFromTypeFinderAttribute>(true) == null)
-                         .ToArray();
+                types = AllowedTypes;
             }
             else
             {
-                var method = typeof(PluginManager).GetMethod("ResolveTypes");
-                var generic = method.MakeGenericMethod(baseType);
-                types = ((IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null })).ToArray();
+                // Workaround for http://issues.umbraco.org/issue/U4-9011
+                if (baseType.Assembly.IsAppCodeAssembly())
+                {
+                    // This logic is taken from the core type finder so it should be performing
+                    // the same checks, it's just that these results don't get cached :(
+                    types = baseType.Assembly
+                        .GetTypes()
+                        .Where(t => baseType.IsAssignableFrom(t) 
+                            && t.IsClass 
+                            && !t.IsAbstract 
+                            && !t.IsSealed 
+                            && !t.IsNestedPrivate
+                            && t.GetCustomAttribute<HideFromTypeFinderAttribute>(true) == null)
+                             .ToArray();
+                }
+                else
+                {
+                    // Find the appropreate types
+                    // There is no non generic version of ResolveTypes so we have to
+                    // call it via reflection.
+                    var method = typeof(PluginManager).GetMethod("ResolveTypes");
+                    var generic = method.MakeGenericMethod(baseType);
+                    types = ((IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null })).ToArray();
+                }
             }
 
             // Check for IEnumerable<IPublishedContent> value
