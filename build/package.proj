@@ -29,6 +29,7 @@
 	<!-- NUGET ONLY PROPERTIES -->
 	<PropertyGroup>
 		<PackageId>Our.Umbraco.Ditto</PackageId>
+		<NuGetPackageName>Ditto for Umbraco</NuGetPackageName>
 		<Copyright>Copyright &#169; 2014 Umbrella Inc Ltd, Our Umbraco and other contributors</Copyright>
 		<Owners>Umbrella Inc Ltd</Owners>
 		<IconUrl>https://raw.githubusercontent.com/leekelleher/umbraco-ditto/master/docs/assets/img/logo.png</IconUrl>
@@ -159,7 +160,7 @@
 		<MSBuild.NuGet.Tasks.ManifestUpdate
 			ManifestFile="$(BuildNuGetDir)\package.nuspec"
 			WorkingDirectory="$(BuildNuGetDir)"
-			Title="$(PackageName)"
+			Title="$(NuGetPackageName)"
 			Description="$(Readme)"
 			Summary="$(Readme)"
 			Version="$(ProductVersion)"
