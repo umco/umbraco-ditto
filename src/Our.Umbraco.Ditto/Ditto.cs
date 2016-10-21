@@ -48,42 +48,19 @@ namespace Our.Umbraco.Ditto
             .Where(x => x.IsMappable())
             .ToList();
 
+        private static readonly DebugModeLazyChecker DebuggingLazyCheck = new DebugModeLazyChecker();
+
         /// <summary>
         /// Gets a value indicating whether application is running in debug mode.
         /// </summary>
         /// <value><c>true</c> if debug mode; otherwise, <c>false</c>.</value>
-        internal static bool IsDebuggingEnabled
+        internal static bool IsDebuggingEnabled => DebuggingLazyCheck.Value;
+
+        internal static void SetDebuggingState(bool debugEnabled)
         {
-            get
-            {
-                try
-                {
-                    //
-                    // TODO: [LK:2016-08-12] Consider setting the value to a private field,
-                    // so that we don't need to access the config objects for subsequent checks.
-                    //
+            ConfigurationManager.AppSettings["Ditto:DebugEnabled"] = debugEnabled.ToString();
 
-                    // Check for app setting first
-                    if (!ConfigurationManager.AppSettings["Ditto:DebugEnabled"].IsNullOrWhiteSpace())
-                    {
-                        return ConfigurationManager.AppSettings["Ditto:DebugEnabled"].InvariantEquals("true");
-                    }
-
-                    // Check the HTTP Context
-                    if (HttpContext.Current != null)
-                    {
-                        return HttpContext.Current.IsDebuggingEnabled;
-                    }
-
-                    // Go and get it from config directly
-                    var section = ConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
-                    return section != null && section.Debug;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
+            DebuggingLazyCheck.Reset();
         }
 
         /// <summary>
