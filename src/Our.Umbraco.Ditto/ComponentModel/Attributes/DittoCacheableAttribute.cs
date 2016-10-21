@@ -58,18 +58,27 @@ namespace Our.Umbraco.Ditto
                 return refresher();
             }
 
-            // Get the cache key builder type
-            var cacheKeyBuilderType = this.CacheKeyBuilderType ?? typeof(DittoDefaultCacheKeyBuilder);
-
-            // Check the cache key builder type
-            if (!typeof(DittoCacheKeyBuilder).IsAssignableFrom(cacheKeyBuilderType))
+            string cacheKey;
+            if (CacheBy == DittoCacheBy.Custom)
             {
-                throw new ApplicationException("Expected a cache key builder of type " + typeof(DittoCacheKeyBuilder) + " but got " + this.CacheKeyBuilderType);
+                // dont init a cachekeybuilder, cache key is built solely by the CustomiseCacheKey method
+                cacheKey = CustomiseCacheKey(string.Empty, cacheContext);
             }
+            else
+            {
+                // Get the cache key builder type
+                var cacheKeyBuilderType = this.CacheKeyBuilderType ?? typeof(DittoDefaultCacheKeyBuilder);
 
-            // Construct the cache key builder
-            var builder = (DittoCacheKeyBuilder)cacheKeyBuilderType.GetInstance();
-            var cacheKey = builder.BuildCacheKey(cacheContext);
+                // Check the cache key builder type
+                if (!typeof(DittoCacheKeyBuilder).IsAssignableFrom(cacheKeyBuilderType))
+                {
+                    throw new ApplicationException("Expected a cache key builder of type " + typeof(DittoCacheKeyBuilder) + " but got " + this.CacheKeyBuilderType);
+                }
+
+                // Construct the cache key builder
+                var builder = (DittoCacheKeyBuilder)cacheKeyBuilderType.GetInstance();
+                cacheKey = builder.BuildCacheKey(cacheContext);
+            }
 
             // Get and cache the result
             return (TOuputType)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
@@ -77,6 +86,19 @@ namespace Our.Umbraco.Ditto
                 () => refresher(), 
                 priority: CacheItemPriority.NotRemovable, // Same as Umbraco macros
                 timeout: new TimeSpan(0, 0, 0, this.CacheDuration));
+        }
+
+        /// <summary>
+        /// Allows the cache key to be customised by the ProcessorAttribute
+        /// </summary>
+        /// <param name="cacheKey">The existing cacheKey.</param>
+        /// <param name="cacheContext">The context.</param>
+        /// <returns>Returns the cache key.</returns>
+        public virtual string CustomiseCacheKey(string cacheKey, DittoCacheContext cacheContext)
+        {
+            var message = string.Format("{0} specified DittoCacheBy.Custom, but didn't override the CustomiseCacheKey method", cacheContext.Attribute.GetType().FullName);
+
+            throw new NotImplementedException(message);
         }
     }
 }
