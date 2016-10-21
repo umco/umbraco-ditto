@@ -113,7 +113,12 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void PropertySource_Hidden_Properties_Warn()
         {
-            ConfigurationManager.AppSettings["Ditto:DebugEnabled"] = "true";
+            var t = Ditto.IsDebuggingEnabled;
+
+            Ditto.SetDebuggingState(true);
+
+            var s = Ditto.IsDebuggingEnabled;
+
 
             // Create a mock logger
             var mockLogger = new MockLogger();
@@ -171,7 +176,7 @@ namespace Our.Umbraco.Ditto.Tests
 
             // Reset
             Ditto.DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
-            ConfigurationManager.AppSettings["Ditto:DebugEnabled"] = "false";
+            Ditto.SetDebuggingState(false);
         }
     }
 }
