@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using Our.Umbraco.Ditto.ComponentModel.Attributes;
+
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -262,19 +262,8 @@ namespace Our.Umbraco.Ditto
             Action<DittoConversionHandlerContext> onConverted = null)
         {
             // Get the default constructor, parameters and create an instance of the type.
-            // Try and return from the cache first. TryGetValue is faster than GetOrAdd.
-            ParameterInfo[] constructorParams;
-            ConstructorCache.TryGetValue(type, out constructorParams);
+            ParameterInfo[] constructorParams = type.GetConstructorParameters();
             bool hasParameter = false;
-            if (constructorParams == null)
-            {
-                var constructor = type.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault();
-                if (constructor != null)
-                {
-                    constructorParams = constructor.GetParameters();
-                    ConstructorCache.TryAdd(type, constructorParams);
-                }
-            }
 
             // If not already an instance, create an instance of the object
             if (instance == null)
@@ -284,7 +273,7 @@ namespace Our.Umbraco.Ditto
                     // Internally this uses Activator.CreateInstance which is heavily optimized.
                     instance = type.GetInstance();
                 }
-                else if (constructorParams != null && constructorParams.Length == 1 & constructorParams[0].ParameterType == typeof(IPublishedContent))
+                else if (constructorParams != null && constructorParams.Length == 1 && constructorParams[0].ParameterType == typeof(IPublishedContent))
                 {
                     // This extension method is about 7x faster than the native implementation.
                     instance = type.GetInstance(content);
@@ -331,7 +320,7 @@ namespace Our.Umbraco.Ditto
                     // Ensure it's a virtual property (Only relevant to property level lazy loads)
                     if (!propertyInfo.IsVirtualAndOverridable())
                     {
-                        throw new InvalidOperationException("Lazy property '" + propertyInfo.Name + "' of type '"+ type.AssemblyQualifiedName +"' must be declared virtual in order to be lazy loadable.");
+                        throw new InvalidOperationException("Lazy property '" + propertyInfo.Name + "' of type '" + type.AssemblyQualifiedName + "' must be declared virtual in order to be lazy loadable.");
                     }
 
                     // Check for the ignore attribute (Only relevant to class level lazy loads).

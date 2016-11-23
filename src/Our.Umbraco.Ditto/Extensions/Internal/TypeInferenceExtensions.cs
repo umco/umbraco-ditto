@@ -5,12 +5,46 @@ using global::Umbraco.Core;
 
 namespace Our.Umbraco.Ditto
 {
+    using System.Collections.Concurrent;
+    using System.Reflection;
+
     /// <summary>
     /// Extensions methods for <see cref="T:System.Type"/> for inferring type properties.
     /// Most of this code was adapted from the Entity Framework
     /// </summary>
     internal static class TypeInferenceExtensions
     {
+        /// <summary>
+        /// The cache for storing constructor parameter information.
+        /// </summary>
+        private static readonly ConcurrentDictionary<Type, ParameterInfo[]> ConstructorCache
+            = new ConcurrentDictionary<Type, ParameterInfo[]>();
+
+        /// <summary>
+        /// Returns a collection of parameter info for the given type. 
+        /// Results are cached on subsequent usage.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>The <see cref="T:ParameterInfo[]"/>.</returns>
+        public static ParameterInfo[] GetConstructorParameters(this Type type)
+        {
+            // Get the default constructor, parameters and create an instance of the type.
+            // Try and return from the cache first. TryGetValue is faster than GetOrAdd.
+            ParameterInfo[] constructorParams;
+            ConstructorCache.TryGetValue(type, out constructorParams);
+            if (constructorParams == null)
+            {
+                var constructor = type.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault();
+                if (constructor != null)
+                {
+                    constructorParams = constructor.GetParameters();
+                    ConstructorCache.TryAdd(type, constructorParams);
+                }
+            }
+
+            return constructorParams;
+        }
+
         /// <summary>
         /// Determines whether the specified type is an enumerable of the given argument type.
         /// </summary>

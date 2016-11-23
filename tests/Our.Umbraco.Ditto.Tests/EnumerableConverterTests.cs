@@ -52,6 +52,9 @@ namespace Our.Umbraco.Ditto.Tests
             public IEnumerable<MyModel> MyProperty1 { get; set; }
 
             public InheritedEnumerableModel MyProperty2 { get; set; }
+
+            public List<MyModel> MyProperty3 { get; set; }
+            public Dictionary<MyModel, string> MyProperty4 { get; set; }
         }
 
         [Test]
@@ -79,13 +82,36 @@ namespace Our.Umbraco.Ditto.Tests
             var processor = new EnumerableConverterAttribute();
             var result = processor.ProcessValue(null, context);
 
-            // The value should be null. 
-            // Attempting to cast Enumerable.Empty<MyModel>() to InheritedEnumerableModel will result 
-            // in a System.InvalidCastException so while Type.IsEnumerableType() will correctly identify the type
-            // as implementing IEnumberable<MyModel> we actually require Type.IsCastableEnumerableType().
-            // Remeber casting a concrete type to an interface works but not concrete to tconcrete if there is no 
-            // inheritance.
+            // The value should be null since we don't have an empty constructor. 
             Assert.That(result, Is.Null);
+        }
+
+        [Test]
+        public void EnumerableConverter_EnumerableModelEmptyList_Test()
+        {
+            var context = new DittoProcessorContext
+            {
+                PropertyDescriptor = TypeDescriptor.GetProperties(new WrappedModel())["MyProperty3"]
+            };
+
+            var processor = new EnumerableConverterAttribute();
+            var result = processor.ProcessValue(null, context);
+
+            Assert.That(result, Is.Not.Null);
+        }
+
+        [Test]
+        public void EnumerableConverter_EnumerableModelEmptyDictionary_Test()
+        {
+            var context = new DittoProcessorContext
+            {
+                PropertyDescriptor = TypeDescriptor.GetProperties(new WrappedModel())["MyProperty4"]
+            };
+
+            var processor = new EnumerableConverterAttribute();
+            var result = processor.ProcessValue(null, context);
+
+            Assert.That(result, Is.Not.Null);
         }
     }
 }

@@ -35,17 +35,16 @@ namespace Our.Umbraco.Ditto
         public override object ProcessValue()
         {
             object result = this.Value;
-
-            var propertyIsEnumerableType = Direction == EnumerableConvertionDirection.Automatic 
-                ? this.Context.PropertyDescriptor.PropertyType.IsCastableEnumerableType()
-                    && !this.Context.PropertyDescriptor.PropertyType.IsEnumerableOfKeyValueType()
-                    && !(this.Context.PropertyDescriptor.PropertyType == typeof(string))
+            var propertyType = this.Context.PropertyDescriptor.PropertyType;
+            var propertyIsEnumerableType = Direction == EnumerableConvertionDirection.Automatic
+                ? propertyType.IsEnumerableType()
+                    && !propertyType.IsEnumerableOfKeyValueType()
+                    && !(propertyType == typeof(string))
                 : Direction == EnumerableConvertionDirection.ToEnumerable;
 
             if (this.Value != null)
             {
                 var valueIsEnumerableType = this.Value.GetType().IsEnumerableType()
-                    && !this.Value.GetType().IsEnumerableOfKeyValueType()
                     && !(this.Value is string);
 
                 if (propertyIsEnumerableType)
@@ -72,8 +71,22 @@ namespace Our.Umbraco.Ditto
             {
                 if (propertyIsEnumerableType)
                 {
-                    // Value is null, but property is enumerable, so return empty enumerable
-                    result = EnumerableInvocations.Empty(this.Context.PropertyDescriptor.PropertyType.GenericTypeArguments.First());
+                    if (propertyType.IsInterface && !propertyType.IsEnumerableOfKeyValueType())
+                    {
+                        // Value is null, but property is enumerable interface, so return empty enumerable
+                        result = EnumerableInvocations.Empty(propertyType.GenericTypeArguments.First());
+                    }
+                    else
+                    {
+                        // Concrete enumerables cannot be cast from Array so we create an instance and return it
+                        // if we know it has an empty constructor.
+                        var constructorParams = propertyType.GetConstructorParameters();
+                        if (constructorParams != null && constructorParams.Length == 0)
+                        {
+                            // Internally this uses Activator.CreateInstance which is heavily optimized.
+                            result = propertyType.GetInstance();
+                        }
+                    }
                 }
             }
 
