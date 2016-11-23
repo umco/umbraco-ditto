@@ -5,6 +5,8 @@ using NUnit.Framework;
 
 namespace Our.Umbraco.Ditto.Tests
 {
+    using System.Linq;
+
     [TestFixture]
     public class EnumerableConverterTests
     {
@@ -77,7 +79,13 @@ namespace Our.Umbraco.Ditto.Tests
             var processor = new EnumerableConverterAttribute();
             var result = processor.ProcessValue(null, context);
 
-            Assert.That(result, Is.Not.Null);
+            // The value should be null. 
+            // Attempting to cast Enumerable.Empty<MyModel>() to InheritedEnumerableModel will result 
+            // in a System.InvalidCastException so while Type.IsEnumerableType() will correctly identify the type
+            // as implementing IEnumberable<MyModel> we actually require Type.IsCastableEnumerableType().
+            // Remeber casting a concrete type to an interface works but not concrete to tconcrete if there is no 
+            // inheritance.
+            Assert.That(result, Is.Null);
         }
     }
 }

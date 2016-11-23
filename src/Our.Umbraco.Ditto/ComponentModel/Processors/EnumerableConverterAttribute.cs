@@ -37,7 +37,7 @@ namespace Our.Umbraco.Ditto
             object result = this.Value;
 
             var propertyIsEnumerableType = Direction == EnumerableConvertionDirection.Automatic 
-                ? this.Context.PropertyDescriptor.PropertyType.IsEnumerableType()
+                ? this.Context.PropertyDescriptor.PropertyType.IsCastableEnumerableType()
                     && !this.Context.PropertyDescriptor.PropertyType.IsEnumerableOfKeyValueType()
                     && !(this.Context.PropertyDescriptor.PropertyType == typeof(string))
                 : Direction == EnumerableConvertionDirection.ToEnumerable;
