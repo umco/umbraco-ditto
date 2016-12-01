@@ -86,6 +86,9 @@
     <Reference Include="Umbraco.Tests">
       <HintPath>..\lib\Umbraco.Tests.7.3.2\Umbraco.Tests.dll</HintPath>
     </Reference>
+    <Reference Include="UmbracoExamine">
+      <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\UmbracoExamine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
