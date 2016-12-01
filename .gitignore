@@ -1,6 +1,7 @@
 _ReSharper.*
 [Bb]in/
 [Oo]bj/
+[Nn]u[Gg]et[Bb]ackup/
 *.suo
 *.user
 *.userprefs
