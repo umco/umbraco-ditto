@@ -14,7 +14,7 @@ build_script:
 
 test:
   assemblies:
-    - 'Our.Umbraco.Ditto.Tests.dll'
+    - 'Umbraco.Tests.dll'
 
 artifacts:
   - path: artifacts\*.nupkg
