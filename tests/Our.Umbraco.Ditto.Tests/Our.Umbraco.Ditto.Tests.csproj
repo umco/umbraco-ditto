@@ -88,35 +88,39 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Configuration">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\System.Data.SqlServerCe.dll</HintPath>
       <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Data.SqlServerCe.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\System.Data.SqlServerCe.Entity.dll</HintPath>
       <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Web">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Web.ApplicationServices">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.XML">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="TidyNet, Version=1.0.0.0, Culture=neutral">
       <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\TidyNet.dll</HintPath>
@@ -145,9 +149,6 @@
     <Reference Include="umbraco.providers, Version=1.0.5808.27740, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\umbraco.providers.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="Umbraco.Tests">
-      <HintPath>..\lib\Umbraco.Tests.7.3.2\Umbraco.Tests.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Web.UI, Version=1.0.5808.27748, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\Umbraco.Web.UI.dll</HintPath>
