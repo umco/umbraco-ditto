@@ -15,7 +15,7 @@ if "%PACKAGE_VERISON%" == "" (
 
 SET APPVEYOR_BUILD_VERSION=%PACKAGE_VERISON%.%APPVEYOR_BUILD_NUMBER%
 
-build-appveyor.cmd
+build\build-appveyor.cmd
 
 @IF %ERRORLEVEL% NEQ 0 GOTO err
 @EXIT /B 0
