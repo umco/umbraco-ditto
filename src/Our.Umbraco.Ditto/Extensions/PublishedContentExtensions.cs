@@ -490,7 +490,7 @@ namespace Our.Umbraco.Ditto
             processorAttrs.AddRange(DittoProcessorRegistry.Instance.GetRegisteredProcessorAttributesFor(propertyInfo.PropertyType));
 
             // Add any core processors onto the end
-            processorAttrs.AddRange(DittoProcessorRegistry.Instance.GetPostProcessorAttributes());
+            processorAttrs.AddRange(DittoProcessorRegistry.Instance.GetPostProcessorAttributes(processorContexts));
 
             // Create holder for value as it's processed
             object currentValue = content;
