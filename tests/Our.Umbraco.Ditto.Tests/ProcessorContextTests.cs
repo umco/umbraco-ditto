@@ -14,6 +14,15 @@ namespace Our.Umbraco.Ditto.Tests
 
             [MyProcessor]
             public virtual string MyLazyProperty { get; set; }
+
+            [CurrentContentAs]
+            public MyNestedValueResolverModel MyNestedProperty { get; set; }
+        }
+
+        public class MyNestedValueResolverModel
+        {
+            [MyProcessor]
+            public string MyProperty { get; set; }
         }
 
         [DittoProcessorMetaData(ContextType = typeof(MyProcessorContext))]
@@ -57,6 +66,19 @@ namespace Our.Umbraco.Ditto.Tests
 
             Assert.That(model.MyProperty, Is.EqualTo("Default value"));
             Assert.That(model.MyLazyProperty, Is.EqualTo(model.MyProperty));
+        }
+
+        [Test]
+        public void ProcessorContext_Resolves_Nested_Context()
+        {
+            var value = "Test";
+            var content = new MockPublishedContent();
+            var context = new MyProcessorContext { MyContextProperty = value };
+
+            var model = content.As<MyValueResolverModel>(processorContexts: new[] { context });
+
+            Assert.That(model.MyNestedProperty, Is.Not.Null);
+            Assert.That(model.MyNestedProperty.MyProperty, Is.EqualTo(model.MyProperty));
         }
     }
 }
