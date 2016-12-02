@@ -38,7 +38,6 @@ namespace Our.Umbraco.Ditto
             var propertyType = this.Context.PropertyDescriptor.PropertyType;
             var propertyIsEnumerableType = Direction == EnumerableConvertionDirection.Automatic
                 ? propertyType.IsEnumerableType()
-                    && !propertyType.IsEnumerableOfKeyValueType()
                     && !(propertyType == typeof(string))
                 : Direction == EnumerableConvertionDirection.ToEnumerable;
 
