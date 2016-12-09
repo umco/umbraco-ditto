@@ -33,6 +33,7 @@ namespace Our.Umbraco.Ditto.Tests
         [TestCase(typeof(HashSet<string>), true)]
         [TestCase(typeof(Enumerable), false)]
         [TestCase(typeof(Dictionary<string, string>), true)]
+        [TestCase(typeof(EnumerableConverterTests.InheritedEnumerableModel), false)]
         public void TestIsCollectionType(Type input, bool expected)
         {
             Assert.AreEqual(input.IsCollectionType(), expected);
@@ -54,6 +55,7 @@ namespace Our.Umbraco.Ditto.Tests
         [TestCase(typeof(HashSet<string>), true)]
         [TestCase(typeof(Enumerable), false)]
         [TestCase(typeof(Dictionary<string, string>), true)]
+        [TestCase(typeof(EnumerableConverterTests.InheritedEnumerableModel), true)]
         public void TestIsEnumerableType(Type input, bool expected)
         {
             Assert.AreEqual(input.IsEnumerableType(), expected);
@@ -75,6 +77,7 @@ namespace Our.Umbraco.Ditto.Tests
         [TestCase(typeof(HashSet<string>), true)]
         [TestCase(typeof(Enumerable), false)]
         [TestCase(typeof(Dictionary<string, string>), false)]
+        [TestCase(typeof(EnumerableConverterTests.InheritedEnumerableModel), false)]
         public void TestIsCastableEnumerableType(Type input, bool expected)
         {
             Assert.AreEqual(input.IsCastableEnumerableType(), expected);
@@ -99,6 +102,7 @@ namespace Our.Umbraco.Ditto.Tests
         [TestCase(typeof(List<KeyValuePair<string, string>>), true)]
         [TestCase(typeof(Collection<KeyValuePair<string, string>>), true)]
         [TestCase(typeof(HashSet<KeyValuePair<string, string>>), true)]
+        [TestCase(typeof(EnumerableConverterTests.InheritedEnumerableModel), false)]
         public void TestIsEnumerableOfKeyValueType(Type input, bool expected)
         {
             Assert.AreEqual(input.IsEnumerableOfKeyValueType(), expected);
@@ -123,6 +127,7 @@ namespace Our.Umbraco.Ditto.Tests
         [TestCase(typeof(string), typeof(char), true)]
         [TestCase(typeof(Dictionary<string, string>), typeof(KeyValuePair<string, string>), true)]
         [TestCase(typeof(IEnumerable<Mocks.MockPublishedContent>), typeof(IPublishedContent), true, TestName = "TestIsEnumerableOfType: Derived IPublishedContent")]
+        [TestCase(typeof(EnumerableConverterTests.InheritedEnumerableModel), typeof(EnumerableConverterTests.MyModel), true)]
         public void TestIsEnumerableOfType(Type input, Type argumentType, bool expected)
         {
             Assert.AreEqual(input.IsEnumerableOfType(argumentType), expected);
