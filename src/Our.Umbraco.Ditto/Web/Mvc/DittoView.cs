@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Web.Mvc;
 using Umbraco.Core.Models;
 using Umbraco.Web.Models;
@@ -51,9 +52,15 @@ namespace Our.Umbraco.Ditto
                 processorContexts.AddRange(baseDittoViewModel.ProcessorContexts);
             }
 
+            var content = default(IPublishedContent);
+            var culture = CultureInfo.CurrentCulture;
+
             // Get current content / culture
-            var content = this.UmbracoContext.PublishedContentRequest.PublishedContent;
-            var culture = this.UmbracoContext.PublishedContentRequest.Culture;
+            if (this.UmbracoContext.PublishedContentRequest != null)
+            {
+                content = this.UmbracoContext.PublishedContentRequest.PublishedContent;
+                culture = this.UmbracoContext.PublishedContentRequest.Culture;
+            }
 
             // Process model
             var publishedContent = model as IPublishedContent;
@@ -77,9 +84,9 @@ namespace Our.Umbraco.Ditto
             {
                 Model =
                     new DittoViewModel<TViewModel>(
-                    content, 
-                    culture, 
-                    processorContexts, 
+                    content,
+                    culture,
+                    processorContexts,
                     typedModel)
             };
 
