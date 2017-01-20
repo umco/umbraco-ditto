@@ -82,8 +82,6 @@ namespace Our.Umbraco.Ditto
 
             if (nodeIds.Any())
             {
-                var umbracoContext = UmbracoContext.Current;
-                var membershipHelper = UmbracoPickerHelper.GetMembershipHelper(umbracoContext);
                 var objectType = UmbracoObjectTypes.Unknown;
                 var multiPicker = new List<IPublishedContent>();
 
@@ -91,9 +89,9 @@ namespace Our.Umbraco.Ditto
                 // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var nodeId in nodeIds)
                 {
-                    var item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, umbracoContext.ContentCache.GetById)
-                            ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, umbracoContext.MediaCache.GetById)
-                            ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, membershipHelper.GetById);
+                    var item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, Umbraco.ContentCache.GetById)
+                            ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, Umbraco.MediaCache.GetById)
+                            ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, Members.GetById);
 
                     if (item != null)
                     {
