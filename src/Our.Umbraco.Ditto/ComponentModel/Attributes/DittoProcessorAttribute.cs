@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Services;
 using Umbraco.Web;
 using Umbraco.Web.Security;
 
@@ -67,6 +69,56 @@ namespace Our.Umbraco.Ditto
         /// The type of the value.
         /// </value>
         internal Type ContextType { get; set; }
+
+        /// <summary>
+        /// Returns the MembershipHelper instance
+        /// </summary>
+        protected MembershipHelper Members
+        {
+            get { return new MembershipHelper(Umbraco); }
+        }
+
+        /// <summary>
+        /// Returns an ILogger
+        /// </summary>
+        protected ILogger Logger
+        {
+            get { return ProfilingLogger.Logger; }
+        }
+
+        /// <summary>
+        /// Returns a ProfilingLogger
+        /// </summary>
+        protected virtual ProfilingLogger ProfilingLogger
+        {
+            get { return ApplicationContext.ProfilingLogger; }
+        }
+
+        /// <summary>
+        /// Returns the current UmbracoContext
+        /// </summary>
+        protected virtual UmbracoContext Umbraco { get; private set; }
+
+        /// <summary>
+        /// Returns the current ApplicationContext
+        /// </summary>
+        protected virtual ApplicationContext ApplicationContext { get; private set; }
+
+        /// <summary>
+        /// Returns a ServiceContext
+        /// </summary>
+        protected ServiceContext Services
+        {
+            get { return ApplicationContext.Services; }
+        }
+
+        /// <summary>
+        /// Returns a DatabaseContext
+        /// </summary>
+        protected DatabaseContext DatabaseContext
+        {
+            get { return ApplicationContext.DatabaseContext; }
+        }
 
         /// <summary>
         /// Processes the value.
