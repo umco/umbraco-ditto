@@ -18,13 +18,31 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoProcessorAttribute"/> class.
         /// </summary>
-        protected DittoProcessorAttribute()
+        protected DittoProcessorAttribute() : this(UmbracoContext.Current, ApplicationContext.Current) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoProcessorAttribute"/> class.
+        /// </summary>
+        /// <param name="umbracoContext"></param>
+        /// <param name="applicationContext"></param>
+        protected DittoProcessorAttribute(UmbracoContext umbracoContext, ApplicationContext applicationContext)
         {
+            if (umbracoContext == null)
+            {
+                throw new ArgumentNullException("umbracoContext");
+            }
+
+            if (applicationContext == null)
+            {
+                throw new ArgumentNullException("applicationContext");
+            }
             var metaData = this.GetType().GetCustomAttribute<DittoProcessorMetaDataAttribute>(true);
             if (metaData == null)
             {
                 throw new ApplicationException("Ditto processor attributes require a DittoProcessorMetaData attribute to be applied to the class but none was found");
             }
+            this.Umbraco = umbracoContext;
+            this.ApplicationContext = applicationContext;
 
             this.ValueType = metaData.ValueType;
             this.ContextType = metaData.ContextType;
