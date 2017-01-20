@@ -197,7 +197,7 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            return UmbracoContext.Current.ContentCache.GetById(id).As(targetType, culture);
+            return Umbraco.ContentCache.GetById(id).As(targetType, culture);
         }
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            var media = UmbracoContext.Current.MediaCache.GetById(id);
+            var media = Umbraco.MediaCache.GetById(id);
 
             // Ensure we are actually returning a media file.
             if (media.HasProperty(Constants.Conventions.Media.File))
@@ -247,7 +247,7 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            return new MembershipHelper(UmbracoContext.Current).GetById(id).As(targetType, culture);
+            return Members.GetById(id).As(targetType, culture);
         }
     }
 }
