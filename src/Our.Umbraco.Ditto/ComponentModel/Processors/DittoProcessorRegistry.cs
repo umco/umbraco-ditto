@@ -31,6 +31,11 @@ namespace Our.Umbraco.Ditto
         private Type defaultProcessorType = typeof(UmbracoPropertyAttribute);
 
         /// <summary>
+        /// The default umbraco application context accessor type for processors, (defaults to `SingletonUmbracoApplicationContextAccessor`).
+        /// </summary>
+        private Type defaultUmbracoApplicationContextAccessorType = typeof(SingletonUmbracoApplicationContextAccessor);
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="DittoProcessorRegistry"/> class from being created.
         /// </summary>
         private DittoProcessorRegistry()
@@ -142,6 +147,27 @@ namespace Our.Umbraco.Ditto
                     ? Cache[objectType]
                     : Enumerable.Empty<DittoProcessorAttribute>();
             }
+        }
+
+        /// <summary>
+        /// Registers the default umbraco application context accessor type.
+        /// </summary>
+        /// <typeparam name="TUmbracoApplicationContextAccessorType">The umbraco application context accessor type.</typeparam>
+        public void RegisterDefaultUmbracoApplicationContextAccessorType<TUmbracoApplicationContextAccessorType>()
+            where TUmbracoApplicationContextAccessorType : IUmbracoApplicationContextAccessor, new()
+        {
+            this.defaultUmbracoApplicationContextAccessorType = typeof(TUmbracoApplicationContextAccessorType);
+        }
+
+        /// <summary>
+        /// Gets the default umbraco application context accessor type.
+        /// </summary>
+        /// <returns>
+        /// Returns the default umbraco application context accessor type.
+        /// </returns>
+        public Type GetDefaultUmbracoApplicationContextAccessorType()
+        {
+            return this.defaultUmbracoApplicationContextAccessorType;
         }
     }
 }

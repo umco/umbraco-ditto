@@ -135,5 +135,15 @@ namespace Our.Umbraco.Ditto
         {
             TypeDescriptor.AddAttributes(typeof(TObjectType), new TypeConverterAttribute(typeof(TConverterType)));
         }
+
+        /// <summary>
+        /// Registers a global umbraco application context accessor.
+        /// </summary>
+        /// <typeparam name="TUmbracoApplicationContextAccessorType">The type of the accessor.</typeparam>
+        public static void RegisterUmbracoApplicationContextAccessor<TUmbracoApplicationContextAccessorType>()
+            where TUmbracoApplicationContextAccessorType : IUmbracoApplicationContextAccessor, new()
+        {
+            DittoProcessorRegistry.Instance.RegisterDefaultUmbracoApplicationContextAccessorType<TUmbracoApplicationContextAccessorType>();
+        }
     }
 }
