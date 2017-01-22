@@ -81,17 +81,17 @@ namespace Our.Umbraco.Ditto
                     // the same checks, it's just that these results don't get cached :(
                     types = baseType.Assembly
                         .GetTypes()
-                        .Where(t => baseType.IsAssignableFrom(t) 
-                            && t.IsClass 
-                            && !t.IsAbstract 
-                            && !t.IsSealed 
+                        .Where(t => baseType.IsAssignableFrom(t)
+                            && t.IsClass
+                            && !t.IsAbstract
+                            && !t.IsSealed
                             && !t.IsNestedPrivate
                             && t.GetCustomAttribute<HideFromTypeFinderAttribute>(true) == null)
                              .ToArray();
                 }
                 else
                 {
-                    // Find the appropreate types
+                    // Find the appropriate types
                     // There is no non generic version of ResolveTypes so we have to
                     // call it via reflection.
                     var method = typeof(PluginManager).GetMethod("ResolveTypes");
