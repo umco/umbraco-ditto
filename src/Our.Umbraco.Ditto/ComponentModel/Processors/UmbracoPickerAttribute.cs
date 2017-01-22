@@ -136,18 +136,4 @@ namespace Our.Umbraco.Ditto
             return content;
         }
     }
-
-    /// <summary>
-    /// A helper for UmbracoPicker processor.
-    /// </summary>
-    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed.")]
-    internal static class UmbracoPickerHelper
-    {
-        /// <summary>
-        /// Gets the MembershipHelper for the UmbracoPicker processor.
-        /// </summary>
-        internal static Func<UmbracoContext, MembershipHelper> GetMembershipHelper = (ctx) => UmbracoContext.Current != null
-            ? new MembershipHelper(ctx)
-            : null;
-    }
 }
