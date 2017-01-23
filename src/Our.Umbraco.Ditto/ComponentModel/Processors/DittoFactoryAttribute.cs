@@ -74,7 +74,7 @@ namespace Our.Umbraco.Ditto
             }
             else
             {
-                types = (IEnumerable<Type>)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem("DittoFactoryAttribute_ResolveTypes_" + baseType.AssemblyQualifiedName, () =>
+                types = (IEnumerable<Type>)ApplicationContext.Current.ApplicationCache.StaticCache.GetCacheItem("DittoFactoryAttribute_ResolveTypes_" + baseType.AssemblyQualifiedName, () =>
                 {
                     // Workaround for http://issues.umbraco.org/issue/U4-9011
                     if (baseType.Assembly.IsAppCodeAssembly())
