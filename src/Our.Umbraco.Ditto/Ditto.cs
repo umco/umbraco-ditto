@@ -17,6 +17,11 @@ namespace Our.Umbraco.Ditto
     public class Ditto
     {
         /// <summary>
+        /// The default umbraco application context accessor type for processors, (defaults to `SingletonUmbracoApplicationContextAccessor`).
+        /// </summary>
+        private static Type defaultUmbracoApplicationContextAccessorType = typeof(SingletonUmbracoApplicationContextAccessor);
+
+        /// <summary>
         /// The Ditto processor attribute targets
         /// </summary>
         public const AttributeTargets ProcessorAttributeTargets = AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Enum;
@@ -143,7 +148,18 @@ namespace Our.Umbraco.Ditto
         public static void RegisterUmbracoApplicationContextAccessor<TUmbracoApplicationContextAccessorType>()
             where TUmbracoApplicationContextAccessorType : IUmbracoApplicationContextAccessor, new()
         {
-            DittoProcessorRegistry.Instance.RegisterDefaultUmbracoApplicationContextAccessorType<TUmbracoApplicationContextAccessorType>();
+            defaultUmbracoApplicationContextAccessorType = typeof(TUmbracoApplicationContextAccessorType);
+        }
+
+        /// <summary>
+        /// Gets the default umbraco application context accessor type.
+        /// </summary>
+        /// <returns>
+        /// Returns the default umbraco application context accessor type.
+        /// </returns>
+        public static Type GetDefaultUmbracoApplicationContextAccessorType()
+        {
+            return defaultUmbracoApplicationContextAccessorType;
         }
     }
 }

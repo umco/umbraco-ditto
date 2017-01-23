@@ -194,7 +194,7 @@ namespace Our.Umbraco.Ditto
             }
 
             // Get the accessor for UmbracoContext & ApplicationContext
-            var defaultUmbracoApplicationContextAccessor = (IUmbracoApplicationContextAccessor)Activator.CreateInstance(DittoProcessorRegistry.Instance.GetDefaultUmbracoApplicationContextAccessorType());
+            var defaultUmbracoApplicationContextAccessor = (IUmbracoApplicationContextAccessor)Activator.CreateInstance(Ditto.GetDefaultUmbracoApplicationContextAccessorType());
 
             // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
             if (culture == null)
