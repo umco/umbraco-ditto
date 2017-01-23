@@ -63,5 +63,25 @@ namespace Our.Umbraco.Ditto
 
             return this;
         }
+
+        /// <summary>
+        /// Populates the core context fields using an existing context
+        /// </summary>
+        /// <param name="context">A context to duplicate</param>
+        public DittoProcessorContext(DittoProcessorContext context)
+        {
+            Culture = context.Culture;
+            TargetType = context.TargetType;
+            PropertyDescriptor = context.PropertyDescriptor;
+            Content = context.Content;
+        }
+
+        /// <summary>
+        /// Creates a new DittoProcessorContext
+        /// </summary>
+        public DittoProcessorContext()
+        {
+            
+        }
     }
 }

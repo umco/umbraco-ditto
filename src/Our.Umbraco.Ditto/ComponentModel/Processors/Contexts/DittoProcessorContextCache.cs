@@ -10,7 +10,7 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// Represents a cache of processor contexts created during a single .As call
     /// </summary>
-    internal class DittoProcessorContextCache
+    public class DittoProcessorContextCache
     {
         /// <summary>
         /// The content

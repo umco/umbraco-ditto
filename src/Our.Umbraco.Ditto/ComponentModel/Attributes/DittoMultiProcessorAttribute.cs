@@ -30,6 +30,16 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="DittoMultiProcessorAttribute" /> class.
+        /// </summary>
+        /// <param name="attributes">The attributes.</param>
+        protected DittoMultiProcessorAttribute(params DittoProcessorAttribute[] attributes)
+            : this()
+        {
+            this.Attributes.AddRange(attributes);
+        }
+
+        /// <summary>
         /// Gets or sets the attributes.
         /// </summary>
         /// <value>
@@ -45,7 +55,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            var ctx = (DittoMultiProcessorContext)this.Context;
+            var ctx = new DittoMultiProcessorContext(this.Context);
 
             foreach (var processorAttr in this.Attributes)
             {
