@@ -521,6 +521,10 @@ namespace Our.Umbraco.Ditto
                 // (Re-)Populate the context properties
                 ctx.Populate(content, targetType, propertyDescriptor, culture);
 
+                // Populate UmbracoContext & ApplicationContext 
+                processorAttr.Umbraco = umbracoApplicationContextAccessor.UmbracoContext;
+                processorAttr.ApplicationContext = umbracoApplicationContextAccessor.ApplicationContext;
+
                 // Process value
                 currentValue = processorAttr.ProcessValue(currentValue, ctx);
             }
