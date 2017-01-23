@@ -406,6 +406,7 @@ namespace Our.Umbraco.Ditto
             // Time custom value-processor.
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
             {
+                // Begin a new, or increment chain count on chain context
                 DittoChainContext.BeginChainContext();
 
                 try
@@ -427,6 +428,7 @@ namespace Our.Umbraco.Ditto
                 }
                 finally 
                 {
+                    // Not matter what happens, ensure the chain context decrements / clears out
                     DittoChainContext.EndChainContext();
                 }
             }
