@@ -406,19 +406,28 @@ namespace Our.Umbraco.Ditto
             // Time custom value-processor.
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
             {
-                // Get the target property description
-                var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+                DittoChainContext.BeginChainContext();
 
-                // Check for cache attribute
-                var cacheAttr = propertyInfo.GetCustomAttribute<DittoCacheAttribute>(true);
-                if (cacheAttr != null)
+                try
                 {
-                    var ctx = new DittoCacheContext(cacheAttr, content, targetType, propertyDescriptor, culture);
-                    return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, defaultProcessorType, processorContexts));
+                    // Get the target property description
+                    var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+
+                    // Check for cache attribute
+                    var cacheAttr = propertyInfo.GetCustomAttribute<DittoCacheAttribute>(true);
+                    if (cacheAttr != null)
+                    {
+                        var ctx = new DittoCacheContext(cacheAttr, content, targetType, propertyDescriptor, culture);
+                        return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, defaultProcessorType, processorContexts));
+                    }
+                    else
+                    {
+                        return DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, defaultProcessorType, processorContexts);
+                    }
                 }
-                else
+                finally 
                 {
-                    return DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, defaultProcessorType, processorContexts);
+                    DittoChainContext.EndChainContext();
                 }
             }
         }
@@ -484,20 +493,19 @@ namespace Our.Umbraco.Ditto
             // Create holder for value as it's processed
             object currentValue = content;
 
-            // Create a processor context cache
-            var processorContextsCache = new DittoProcessorContextCache(content, targetType, propertyDescriptor, culture);
-
-            // Add a multi processor context by default
-            processorContextsCache.AddContext(new DittoMultiProcessorContext { ContextCache = processorContextsCache });
+            // Stash the processor contexts in the chain context
+            DittoChainContext.Current.ProcessorContexts.AddRange(processorContexts);
 
             // Add the passed in contexts
-            processorContextsCache.AddContexts(processorContexts);
 
             // Process attributes
             foreach (var processorAttr in processorAttrs)
             {
                 // Get the right context type
-                var ctx = processorContextsCache.GetOrCreateContext(processorAttr.ContextType);
+                var ctx = DittoChainContext.Current.ProcessorContexts.GetOrCreate(processorAttr.ContextType);
+
+                // (Re-)Populate the context properties
+                ctx.Populate(content, targetType, propertyDescriptor, culture);
 
                 // Process value
                 currentValue = processorAttr.ProcessValue(currentValue, ctx);

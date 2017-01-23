@@ -90,8 +90,6 @@
     <Compile Include="ComponentModel\Caching\DittoCacheBy.cs" />
     <Compile Include="ComponentModel\Caching\DittoDefaultCacheKeyBuilder.cs" />
     <Compile Include="ComponentModel\Caching\DittoCacheKeyBuilder.cs" />
-    <Compile Include="ComponentModel\Processors\Contexts\DittoMultiProcessorContext.cs" />
-    <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContextCache.cs" />
     <Compile Include="ComponentModel\Processors\DittoDocTypeFactoryAttribute.cs" />
     <Compile Include="ComponentModel\Processors\DittoFactoryAttribute.cs" />
     <Compile Include="ComponentModel\Processors\TryConvertToAttribute.cs" />
@@ -120,6 +118,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Ditto.cs" />
+    <Compile Include="DittoChainContext.cs" />
     <Compile Include="Extensions\Internal\AssemblyExtensions.cs" />
     <Compile Include="Extensions\Internal\MemberInfoExtensions.cs" />
     <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
