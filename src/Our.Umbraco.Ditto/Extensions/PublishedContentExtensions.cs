@@ -194,14 +194,14 @@ namespace Our.Umbraco.Ditto
             }
 
             // Get the accessor for UmbracoContext & ApplicationContext
-            var defaultUmbracoApplicationContextAccessor = (IUmbracoApplicationContextAccessor)Activator.CreateInstance(Ditto.GetDefaultUmbracoApplicationContextAccessorType());
+            var umbracoApplicationContextAccessor = (IUmbracoApplicationContextAccessor)Activator.CreateInstance(Ditto.GetUmbracoApplicationContextAccessorType());
 
             // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
             if (culture == null)
             {
-                if (defaultUmbracoApplicationContextAccessor.UmbracoContext != null && defaultUmbracoApplicationContextAccessor.UmbracoContext.PublishedContentRequest != null)
+                if (umbracoApplicationContextAccessor.UmbracoContext != null && umbracoApplicationContextAccessor.UmbracoContext.PublishedContentRequest != null)
                 {
-                    culture = defaultUmbracoApplicationContextAccessor.UmbracoContext.PublishedContentRequest.Culture;
+                    culture = umbracoApplicationContextAccessor.UmbracoContext.PublishedContentRequest.Culture;
                 }
                 else
                 {
@@ -217,11 +217,11 @@ namespace Our.Umbraco.Ditto
                 if (cacheAttr != null)
                 {
                     var ctx = new DittoCacheContext(cacheAttr, content, type, culture);
-                    return cacheAttr.GetCacheItem(ctx, () => ConvertContent(content, type, defaultUmbracoApplicationContextAccessor, culture, instance, processorContexts, onConverting, onConverted));
+                    return cacheAttr.GetCacheItem(ctx, () => ConvertContent(content, type, umbracoApplicationContextAccessor, culture, instance, processorContexts, onConverting, onConverted));
                 }
                 else
                 {
-                    return ConvertContent(content, type, defaultUmbracoApplicationContextAccessor, culture, instance, processorContexts, onConverting, onConverted);
+                    return ConvertContent(content, type, umbracoApplicationContextAccessor, culture, instance, processorContexts, onConverting, onConverted);
                 }
             }
         }
