@@ -41,9 +41,9 @@ namespace Our.Umbraco.Ditto.Tests
 
                 PublishedCachesResolver.Current =
                     new PublishedCachesResolver(new PublishedCaches(mockPublishedContentCache.Object, new Mock<IPublishedMediaCache>().Object));
-            }
 
-            Resolution.Freeze();
+                Resolution.Freeze();
+            }
 
             NodeId = 1234;
 
@@ -52,6 +52,16 @@ namespace Our.Umbraco.Ditto.Tests
                 Properties = new[] { new MockPublishedContentProperty("myProperty", NodeId) }
             };
 
+        }
+
+
+        [TestFixtureTearDown]
+        public void Teardown()
+        {
+            if (Resolution.IsFrozen)
+            {
+                Resolution.Reset();
+            }
         }
 
         [Test]
