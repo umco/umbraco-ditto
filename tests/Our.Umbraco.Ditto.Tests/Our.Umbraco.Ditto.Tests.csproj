@@ -173,6 +173,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="EnumerableConverterTests.cs" />
+    <Compile Include="ExtremeChainedContextTests.cs" />
     <Compile Include="LazyTests.cs" />
     <Compile Include="PropertySourceMappingTests.cs" />
     <Compile Include="DittoFactoryTests.cs" />

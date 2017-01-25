@@ -99,8 +99,7 @@ namespace Our.Umbraco.Ditto
             Action<DittoConversionHandlerContext> onConverted = null)
             where T : class
         {
-            return items.As(typeof(T), culture, processorContexts, onConverting, onConverted)
-                        .Select(x => x as T);
+            return items.As(typeof(T), culture, processorContexts, onConverting, onConverted).Select(x => x as T);
         }
 
         /// <summary>
@@ -406,24 +405,33 @@ namespace Our.Umbraco.Ditto
             // Time custom value-processor.
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
             {
-                // Begin a new, or increment chain count on chain context
-                DittoChainContext.BeginChainContext();
-
                 try
                 {
                     // Get the target property description
                     var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
+
+                    // Create a base processor context for this current chain level
+                    var baseProcessorContext = new DittoProcessorContext
+                    {
+                        Content = content,
+                        TargetType = targetType,
+                        PropertyDescriptor = propertyDescriptor,
+                        Culture = culture
+                    };
+
+                    // Begin a new context cache for the current level of the chain
+                    DittoChainContext.BeginChainContext(baseProcessorContext);
 
                     // Check for cache attribute
                     var cacheAttr = propertyInfo.GetCustomAttribute<DittoCacheAttribute>(true);
                     if (cacheAttr != null)
                     {
                         var ctx = new DittoCacheContext(cacheAttr, content, targetType, propertyDescriptor, culture);
-                        return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, defaultProcessorType, processorContexts));
+                        return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, propertyInfo, defaultProcessorType, processorContexts));
                     }
                     else
                     {
-                        return DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, defaultProcessorType, processorContexts);
+                        return DoGetProcessedValue(content, propertyInfo, defaultProcessorType, processorContexts);
                     }
                 }
                 finally 
@@ -438,19 +446,13 @@ namespace Our.Umbraco.Ditto
         /// Returns the processed value for the given type and property.
         /// </summary>
         /// <param name="content">The content.</param>
-        /// <param name="culture">The culture.</param>
-        /// <param name="targetType">Type of the target.</param>
         /// <param name="propertyInfo">The property information.</param>
-        /// <param name="propertyDescriptor">The property descriptor.</param>
         /// <param name="defaultProcessorType">The default processor type.</param>
         /// <param name="processorContexts">The processor contexts.</param>
         /// <returns>Returns the processed value.</returns>
         private static object DoGetProcessedValue(
             IPublishedContent content,
-            CultureInfo culture,
-            Type targetType,
             PropertyInfo propertyInfo,
-            PropertyDescriptor propertyDescriptor,
             Type defaultProcessorType,
             IEnumerable<DittoProcessorContext> processorContexts = null)
         {
@@ -505,9 +507,6 @@ namespace Our.Umbraco.Ditto
             {
                 // Get the right context type
                 var ctx = DittoChainContext.Current.ProcessorContexts.GetOrCreate(processorAttr.ContextType);
-
-                // (Re-)Populate the context properties
-                ctx.Populate(content, targetType, propertyDescriptor, culture);
 
                 // Process value
                 currentValue = processorAttr.ProcessValue(currentValue, ctx);
