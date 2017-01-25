@@ -7,8 +7,9 @@ namespace Our.Umbraco.Ditto
     internal class DittoChainContext
     {
         private static volatile DittoChainContext instance;
-        private static object syncRoot = new Object();
+        private static object syncRoot = new object();
         private static int chainCount { get; set; }
+
 
         private DittoChainContext()
         {
@@ -27,7 +28,7 @@ namespace Our.Umbraco.Ditto
 
         public ProcessorContextsCollection ProcessorContexts { get; }
 
-        public static void BeginChainContext()
+        public static void BeginChainContext(DittoProcessorContext baseProcessorContext)
         {
             if (chainCount == 0)
             {
@@ -44,8 +45,11 @@ namespace Our.Umbraco.Ditto
             }
             else
             {
-                chainCount++;
+                ++chainCount;
             }
+
+            instance.ProcessorContexts.SetBaseContextAtLevel(chainCount, baseProcessorContext);
+            instance.ProcessorContexts.SetLevel(chainCount);
         }
 
         public static void EndChainContext(bool force = false)
@@ -63,18 +67,38 @@ namespace Our.Umbraco.Ditto
             }
             else
             {
-                chainCount--;
+                --chainCount;
+
+                instance.ProcessorContexts.SetLevel(chainCount);
             }
         }
     }
 
+    // [MB] not sure how happy I am with this collection having the set base context / level functions
+    // seems a bit hacky but can't think of a better solution right now
     internal class ProcessorContextsCollection
     {
         private ConcurrentDictionary<Type, DittoProcessorContext> _processorContexts;
+        private ConcurrentDictionary<int, DittoProcessorContext> _baseContexts;
+        private int _currentLevel;
 
         public ProcessorContextsCollection()
         {
             _processorContexts = new ConcurrentDictionary<Type, DittoProcessorContext>();
+            _baseContexts = new ConcurrentDictionary<int, DittoProcessorContext>();
+            _currentLevel = 0;
+        }
+
+        internal void SetBaseContextAtLevel(
+            int level,
+            DittoProcessorContext baseProcessorContext)
+        {
+            _baseContexts.AddOrUpdate(level, baseProcessorContext, (lvl, ctx) => baseProcessorContext);
+        }
+
+        internal void SetLevel(int level)
+        {
+            _currentLevel = level;
         }
 
         public void AddRange(IEnumerable<DittoProcessorContext> ctxs)
@@ -95,11 +119,16 @@ namespace Our.Umbraco.Ditto
             _processorContexts.AddOrUpdate(ctx.GetType(), ctx, (type, ctx2) => ctx2); // Don't override if already exists
         }
 
-        public DittoProcessorContext GetOrCreate(Type contexyType)
+        public DittoProcessorContext GetOrCreate(Type contextType)
         {
-            return _processorContexts.GetOrAdd(
-                contexyType,
-                type => (DittoProcessorContext)contexyType.GetInstance());
+            // Get the base context for current level
+            var baseCtx = _baseContexts[_currentLevel];
+
+            // Get, clone and populate the relevant context for the given level
+            return _processorContexts
+                .GetOrAdd(contextType, type => (DittoProcessorContext)contextType.GetInstance())
+                .Clone()
+                .Populate(baseCtx);
         }
     }
 }
