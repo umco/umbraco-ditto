@@ -52,7 +52,7 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            return new UmbracoHelper(Umbraco).GetDictionaryValue(dictionaryKey);
+            return Umbraco.GetDictionaryValue(dictionaryKey);
         }
     }
 }

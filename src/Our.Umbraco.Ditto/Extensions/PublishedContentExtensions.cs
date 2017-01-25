@@ -437,11 +437,11 @@ namespace Our.Umbraco.Ditto
                     if (cacheAttr != null)
                     {
                         var ctx = new DittoCacheContext(cacheAttr, content, targetType, propertyDescriptor, culture);
-                        return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, defaultProcessorType, umbracoApplicationContextAccessor, processorContexts));
+                        return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, propertyInfo, defaultProcessorType, umbracoApplicationContextAccessor, processorContexts));
                     }
                     else
                     {
-                        return DoGetProcessedValue(content, culture, targetType, propertyInfo, propertyDescriptor, defaultProcessorType, umbracoApplicationContextAccessor, processorContexts);
+                        return DoGetProcessedValue(content, propertyInfo, defaultProcessorType, umbracoApplicationContextAccessor, processorContexts);
                     }
                 }
                 finally 
@@ -521,7 +521,7 @@ namespace Our.Umbraco.Ditto
                 var ctx = DittoChainContext.Current.ProcessorContexts.GetOrCreate(processorAttr.ContextType);
 
                 // Populate UmbracoContext & ApplicationContext 
-                processorAttr.Umbraco = umbracoApplicationContextAccessor.UmbracoContext;
+                processorAttr.UmbracoContext = umbracoApplicationContextAccessor.UmbracoContext;
                 processorAttr.ApplicationContext = umbracoApplicationContextAccessor.ApplicationContext;
 
                 // Process value

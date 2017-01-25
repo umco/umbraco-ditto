@@ -75,7 +75,15 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         protected MembershipHelper Members
         {
-            get { return new MembershipHelper(Umbraco); }
+            get { return new MembershipHelper(UmbracoContext); }
+        }
+
+        /// <summary>
+        /// Returns the UmbracoHelper instance
+        /// </summary>
+        protected UmbracoHelper Umbraco
+        {
+            get { return new UmbracoHelper(UmbracoContext); }
         }
 
         /// <summary>
@@ -97,7 +105,7 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Returns the current UmbracoContext
         /// </summary>
-        public virtual UmbracoContext Umbraco { get; internal set; }
+        public virtual UmbracoContext UmbracoContext { get; internal set; }
 
         /// <summary>
         /// Returns the current ApplicationContext
@@ -179,7 +187,7 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            return Umbraco.ContentCache.GetById(id).As(targetType, culture);
+            return UmbracoContext.ContentCache.GetById(id).As(targetType, culture);
         }
 
         /// <summary>
@@ -199,7 +207,7 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            var media = Umbraco.MediaCache.GetById(id);
+            var media = UmbracoContext.MediaCache.GetById(id);
 
             // Ensure we are actually returning a media file.
             if (media.HasProperty(Constants.Conventions.Media.File))
