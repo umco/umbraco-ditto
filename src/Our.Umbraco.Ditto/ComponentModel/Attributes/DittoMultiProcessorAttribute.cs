@@ -48,13 +48,10 @@ namespace Our.Umbraco.Ditto
             foreach (var processorAttr in this.Attributes)
             {
                 // Get the right context type
-                var newCtx = DittoChainContext.Current.ProcessorContexts.GetOrCreate(processorAttr.ContextType);
-
-                // (Re-)Populate the context properties
-                //newCtx.Populate(Context.Content, Context.TargetType, Context.PropertyDescriptor, Context.Culture);
+                var newCtx = this.ChainContext.ProcessorContexts.GetOrCreate(this.Context, processorAttr.ContextType);
 
                 // Process value
-                this.Value = processorAttr.ProcessValue(this.Value, newCtx);
+                this.Value = processorAttr.ProcessValue(this.Value, newCtx, this.ChainContext);
             }
 
             return this.Value;
