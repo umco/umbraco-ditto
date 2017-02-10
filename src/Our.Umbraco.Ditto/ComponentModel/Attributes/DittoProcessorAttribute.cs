@@ -180,6 +180,7 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// An <see cref="T:System.Object"/> that represents the converted value.
         /// </returns>
+        [Obsolete("This method will be removed from the next version of Ditto. Please use one of the built-in UmbracoContext.ContentCache.", false)]
         protected virtual object ConvertContentFromInt(int id, Type targetType, CultureInfo culture)
         {
             if (id <= 0)
@@ -200,6 +201,7 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// An <see cref="T:System.Object"/> that represents the converted value.
         /// </returns>
+        [Obsolete("This method will be removed from the next version of Ditto. Please use one of the built-in UmbracoContext.MediaCache.", false)]
         protected virtual object ConvertMediaFromInt(int id, Type targetType, CultureInfo culture)
         {
             if (id <= 0)
@@ -230,6 +232,7 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// An <see cref="T:System.Object"/> that represents the converted value.
         /// </returns>
+        [Obsolete("This method will be removed from the next version of Ditto. Please use one of the built-in MembershipHelper.", false)]
         protected virtual object ConvertMemberFromInt(int id, Type targetType, CultureInfo culture)
         {
             if (id <= 0)
