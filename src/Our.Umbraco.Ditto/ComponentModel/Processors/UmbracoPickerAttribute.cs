@@ -82,8 +82,6 @@ namespace Our.Umbraco.Ditto
 
             if (nodeIds.Any())
             {
-                var umbracoContext = UmbracoContext.Current;
-                var membershipHelper = UmbracoPickerHelper.GetMembershipHelper(umbracoContext);
                 var objectType = UmbracoObjectTypes.Unknown;
                 var multiPicker = new List<IPublishedContent>();
 
@@ -91,9 +89,9 @@ namespace Our.Umbraco.Ditto
                 // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var nodeId in nodeIds)
                 {
-                    var item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, umbracoContext.ContentCache.GetById)
-                            ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, umbracoContext.MediaCache.GetById)
-                            ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, membershipHelper.GetById);
+                    var item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, UmbracoContext.ContentCache.GetById)
+                            ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, UmbracoContext.MediaCache.GetById)
+                            ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, Members.GetById);
 
                     if (item != null)
                     {
@@ -137,19 +135,5 @@ namespace Our.Umbraco.Ditto
 
             return content;
         }
-    }
-
-    /// <summary>
-    /// A helper for UmbracoPicker processor.
-    /// </summary>
-    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed.")]
-    internal static class UmbracoPickerHelper
-    {
-        /// <summary>
-        /// Gets the MembershipHelper for the UmbracoPicker processor.
-        /// </summary>
-        internal static Func<UmbracoContext, MembershipHelper> GetMembershipHelper = (ctx) => UmbracoContext.Current != null
-            ? new MembershipHelper(ctx)
-            : null;
     }
 }

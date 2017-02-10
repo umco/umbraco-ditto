@@ -78,7 +78,7 @@ namespace Our.Umbraco.Ditto
                         // ReSharper disable once LoopCanBeConvertedToQuery
                         foreach (var nodeId in nodeIds)
                         {
-                            var item = UmbracoContext.Current.ContentCache.GetById(nodeId);
+                            var item = UmbracoContext.ContentCache.GetById(nodeId);
 
                             if (item != null)
                             {
