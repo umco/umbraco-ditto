@@ -28,8 +28,7 @@ namespace Our.Umbraco.Ditto
         /// Prevents a default instance of the <see cref="DittoConversionHandlerRegistry"/> class from being created.
         /// </summary>
         private DittoConversionHandlerRegistry()
-        {
-        }
+        { }
 
         /// <summary>
         /// Gets the singleton instance.

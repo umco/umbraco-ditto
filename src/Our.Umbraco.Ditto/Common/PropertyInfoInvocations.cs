@@ -1,9 +1,9 @@
-﻿namespace Our.Umbraco.Ditto
-{
-    using System;
-    using System.Linq.Expressions;
-    using System.Reflection;
+﻿using System;
+using System.Linq.Expressions;
+using System.Reflection;
 
+namespace Our.Umbraco.Ditto
+{
     /// <summary>
     /// Provides a way to set a properties value using delegates. 
     /// This is much faster than <see cref="M:PropertyInfo.SetValue"/> as it avoids the normal overheads of reflection.

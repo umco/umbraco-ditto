@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
     /// <summary>
     /// A single method base cache item for identifying methods.

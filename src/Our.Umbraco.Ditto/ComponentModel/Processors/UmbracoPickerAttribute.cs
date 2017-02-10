@@ -10,7 +10,7 @@ using Umbraco.Web.Security;
 
 namespace Our.Umbraco.Ditto
 {
-        /// <summary>
+    /// <summary>
     /// A picker processor for handling the various types of Umbraco pickers
     /// </summary>
     public class UmbracoPickerAttribute : DittoProcessorAttribute

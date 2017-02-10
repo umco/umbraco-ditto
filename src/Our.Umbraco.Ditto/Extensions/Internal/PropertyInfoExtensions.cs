@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Our.Umbraco.Ditto.ComponentModel.Attributes;
 
 namespace Our.Umbraco.Ditto
 {

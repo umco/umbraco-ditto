@@ -175,7 +175,6 @@ namespace Our.Umbraco.Ditto
         /// ignored by using this Type:
         /// </summary>
         private class TypeToIgnore
-        {
-        }
+        { }
     }
 }
