@@ -17,8 +17,8 @@ namespace Our.Umbraco.Ditto
         /// <param name="culture">The culture.</param>
         /// <param name="processorContexts">The processor contexts.</param>
         protected BaseDittoViewModel(
-            IPublishedContent content, 
-            CultureInfo culture = null, 
+            IPublishedContent content,
+            CultureInfo culture = null,
             IEnumerable<DittoProcessorContext> processorContexts = null)
             : base(content, culture)
         {
@@ -62,9 +62,9 @@ namespace Our.Umbraco.Ditto
         /// <param name="processorContexts">The processor contexts.</param>
         /// <param name="viewModel">The view model.</param>
         public DittoViewModel(
-            IPublishedContent content, 
-            CultureInfo culture = null, 
-            IEnumerable<DittoProcessorContext> processorContexts = null, 
+            IPublishedContent content,
+            CultureInfo culture = null,
+            IEnumerable<DittoProcessorContext> processorContexts = null,
             TViewModel viewModel = null)
             : base(content, culture, processorContexts)
         {
@@ -118,8 +118,8 @@ namespace Our.Umbraco.Ditto
         /// <param name="culture">The culture.</param>
         /// <param name="processorContexts">The processor contexts.</param>
         protected DittoViewModel(
-            IPublishedContent content, 
-            CultureInfo culture = null, 
+            IPublishedContent content,
+            CultureInfo culture = null,
             IEnumerable<DittoProcessorContext> processorContexts = null)
             : base(content, culture, processorContexts)
         { }

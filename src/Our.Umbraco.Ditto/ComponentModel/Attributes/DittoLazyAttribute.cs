@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Our.Umbraco.Ditto.ComponentModel.Attributes
+namespace Our.Umbraco.Ditto
 {
     /// <summary>
     /// The Ditto lazy property attribute.

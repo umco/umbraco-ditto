@@ -5,8 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-
-using global::Umbraco.Core.Models;
+using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto
 {
