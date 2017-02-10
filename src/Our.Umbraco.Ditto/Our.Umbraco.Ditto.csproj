@@ -117,6 +117,7 @@
     <Compile Include="ComponentModel\Processors\UltimatePickerAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ComponentModel\Processors\UmbracoXPathAttribute.cs" />
     <Compile Include="Ditto.cs" />
     <Compile Include="DittoChainContext.cs" />
     <Compile Include="Extensions\Internal\AssemblyExtensions.cs" />
