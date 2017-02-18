@@ -60,7 +60,7 @@ namespace Our.Umbraco.Ditto
             if (string.IsNullOrWhiteSpace(XPath))
                 return Value;
 
-            var content = Value as IPublishedContent ?? Context.Content;
+            var content = GetPublishedContent(Value);
 
             if ((content == null || content.Id == 0) && UmbracoContext.Current.PageId.HasValue)
                 content = UmbracoContext.Current.ContentCache.GetById(UmbracoContext.Current.PageId.Value);
@@ -77,6 +77,22 @@ namespace Our.Umbraco.Ditto
                 .GetByXPath(xpath)
                 .OrderBy(x => x.Level)
                 .ThenBy(x => x.SortOrder);
+        }
+
+        /// <summary>
+        /// Attempts to get the current IPublishedContent object from the value.
+        /// </summary>
+        /// <param name="value">The processor's input value.</param>
+        /// <returns>Returns an IPublishedContent object.</returns>
+        private IPublishedContent GetPublishedContent(object value)
+        {
+            if (value is IEnumerable<IPublishedContent>)
+                return ((IEnumerable<IPublishedContent>)value).FirstOrDefault();
+
+            if (value is IPublishedContent)
+                return (IPublishedContent)value;
+
+            return this.Context.Content;
         }
     }
 }
