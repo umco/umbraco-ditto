@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -434,7 +433,7 @@ namespace Our.Umbraco.Ditto
                         return DoGetProcessedValue(content, propertyInfo, defaultProcessorType, processorContexts);
                     }
                 }
-                finally 
+                finally
                 {
                     // Not matter what happens, ensure the chain context decrements / clears out
                     DittoChainContext.EndChainContext();

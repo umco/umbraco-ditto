@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Our.Umbraco.Ditto.ComponentModel.Attributes;
 using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core.Models;
 
@@ -105,7 +104,5 @@ namespace Our.Umbraco.Ditto.Tests
 
             Ditto.LazyLoadStrategy = LazyLoad.AttributedVirtuals;
         }
-
-
     }
 }
