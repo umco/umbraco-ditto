@@ -74,9 +74,7 @@ namespace Our.Umbraco.Ditto
             return UmbracoContext
                 .Current
                 .ContentCache
-                .GetByXPath(xpath)
-                .OrderBy(x => x.Level)
-                .ThenBy(x => x.SortOrder);
+                .GetByXPath(xpath);
         }
 
         /// <summary>
