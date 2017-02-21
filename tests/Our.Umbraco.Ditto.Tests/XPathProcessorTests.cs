@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Web;
-using System.Web.Security;
 using Moq;
 using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
@@ -20,23 +19,27 @@ namespace Our.Umbraco.Ditto.Tests
 {
     [TestFixture]
     [Category("Processors")]
-    public class UmbracoPickerProcessorTests
+    public class XPathProcessorTests
     {
-        public class MyModel<T>
+        //
+        // This unit-test is to prove that the XPath processor will parse the variable names
+        // and return an IEnumerable<IPublishedContent> from the content cache.
+        //
+
+        public class MyModel
         {
-            [UmbracoProperty(Order = 1)]
-            [UmbracoPicker(Order = 2)]
-            public T MyProperty { get; set; }
+            [UmbracoXPath("$current")]
+            public IPublishedContent Self { get; set; }
+
+            [UmbracoXPath("$parent")]
+            public IPublishedContent Parent { get; set; }
+
+            [UmbracoXPath("$site")]
+            public IPublishedContent Site { get; set; }
+
+            [UmbracoXPath("$root")]
+            public IPublishedContent Root { get; set; }
         }
-
-        public class MyTypedModel
-        {
-            public int Id { get; set; }
-        }
-
-        private IPublishedContent Content;
-
-        private int NodeId;
 
         [TestFixtureSetUp]
         public void Init()
@@ -45,12 +48,6 @@ namespace Our.Umbraco.Ditto.Tests
             {
                 var mockPublishedContentCache = new Mock<IPublishedContentCache>();
 
-                mockPublishedContentCache
-                    .Setup(x => x.GetById(It.IsAny<UmbracoContext>(), It.IsAny<bool>(), It.IsAny<int>()))
-                    .Returns<UmbracoContext, bool, int>((ctx, preview, id) => new MockPublishedContent { Id = id });
-
-                // NOTE: The `GetByXPath` mock method is duplicated from the XPathProcessorTests.
-                // We need to perform a full review of the mocking objects so that they work across all the unit-tests. [LK:2017-02-10]
                 mockPublishedContentCache
                     .Setup(x => x.GetByXPath(It.IsAny<UmbracoContext>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<XPathVariable[]>()))
                     .Returns<UmbracoContext, bool, string, XPathVariable[]>(
@@ -84,35 +81,29 @@ namespace Our.Umbraco.Ditto.Tests
 
             if (!Resolution.IsFrozen)
                 Resolution.Freeze();
-
-            NodeId = 1234;
-
-            Content = new MockPublishedContent()
-            {
-                Properties = new[] { new MockPublishedContentProperty("myProperty", NodeId) }
-            };
-
-            UmbracoPickerHelper.GetMembershipHelper = (ctx) => new MembershipHelper(ctx, Mock.Of<MembershipProvider>(), Mock.Of<RoleProvider>());
         }
 
         [Test]
-        public void UmbracoPicker_Processes_PublishedContent()
+        public void XPath_Processes_PublishedContent()
         {
-            var model = Content.As<MyModel<IPublishedContent>>();
+            var parent = new MockPublishedContent { Id = 1111, Path = "-1,1111" };
+            var content = new MockPublishedContent { Id = 2222, Path = "-1,1111,2222", Parent = parent };
 
-            Assert.That(model.MyProperty, Is.Not.Null);
-            Assert.IsInstanceOf<IPublishedContent>(model.MyProperty);
-            Assert.That(model.MyProperty.Id, Is.EqualTo(NodeId));
-        }
+            var model = content.As<MyModel>();
 
-        [Test]
-        public void UmbracoPicker_Processes_Typed()
-        {
-            var model = Content.As<MyModel<MyTypedModel>>();
+            Assert.That(model, Is.Not.Null);
 
-            Assert.That(model.MyProperty, Is.Not.Null);
-            Assert.IsInstanceOf<MyTypedModel>(model.MyProperty);
-            Assert.That(model.MyProperty.Id, Is.EqualTo(NodeId));
+            Assert.That(model.Self, Is.Not.Null);
+            Assert.That(model.Self.Id, Is.EqualTo(content.Id));
+
+            Assert.That(model.Parent, Is.Not.Null);
+            Assert.That(model.Parent.Id, Is.EqualTo(parent.Id));
+
+            Assert.That(model.Site, Is.Not.Null);
+            Assert.That(model.Site.Id, Is.EqualTo(parent.Id));
+
+            Assert.That(model.Root, Is.Not.Null);
+            Assert.That(model.Root.Id, Is.EqualTo(parent.Id));
         }
     }
 }
