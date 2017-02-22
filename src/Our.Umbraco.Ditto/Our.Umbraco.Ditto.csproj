@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CachedInvocations.cs" />
-    <Compile Include="Common\UmbracoApplicationContextAccessor.cs" />
+    <Compile Include="Common\DittoContextAccessor.cs" />
     <Compile Include="Common\PropertyInfoInvocations.cs" />
     <Compile Include="ComponentModel\Attributes\DittoDefaultProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoLazyAttribute.cs" />

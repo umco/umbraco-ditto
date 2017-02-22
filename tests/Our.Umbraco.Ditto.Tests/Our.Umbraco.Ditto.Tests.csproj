@@ -176,7 +176,7 @@
     <Compile Include="ExtremeChainedContextTests.cs" />
     <Compile Include="GlobalSetupFixture.cs" />
     <Compile Include="LazyTests.cs" />
-    <Compile Include="Mocks\MockUmbracoApplicationContextAccessor.cs" />
+    <Compile Include="Mocks\MockDittoContextAccessor.cs" />
     <Compile Include="PropertySourceMappingTests.cs" />
     <Compile Include="DittoFactoryTests.cs" />
     <Compile Include="DictionaryValueTests.cs" />

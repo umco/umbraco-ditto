@@ -11,7 +11,7 @@ using Umbraco.Web.Security;
 
 namespace Our.Umbraco.Ditto.Tests.Mocks
 {
-    public class MockUmbracoApplicationContextAccessor : IUmbracoApplicationContextAccessor
+    public class MockDittoContextAccessor : IDittoContextAccessor
     {
         private readonly ApplicationContext _applicationContext;
         private readonly UmbracoContext _umbracoContext;
@@ -20,7 +20,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
         /// All logic here based on https://github.com/garydevenay/Umbraco-Context-Mock/blob/f05d3da7a9442594f0735046aacaf8c7a341ff22/GDev.Umbraco.Test/ContextMocker.cs
         /// Credit goes to the original author, need to discuss whether we include this package into this test project
         /// </summary
-        public MockUmbracoApplicationContextAccessor()
+        public MockDittoContextAccessor()
         {
             ILogger loggerMock = Mock.Of<ILogger>();
             IProfiler profilerMock = Mock.Of<IProfiler>();
