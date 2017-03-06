@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Provides a way to set a properties value using delegates. 
+    /// Provides a way to set a properties value using delegates.
     /// This is much faster than <see cref="M:PropertyInfo.SetValue"/> as it avoids the normal overheads of reflection.
     /// Once a method is invoked for a given type then it is cached so that subsequent calls do not require
     /// any overhead compilation costs.
     /// </summary>
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class PropertyInfoInvocations : CachedInvocations
+    internal sealed class PropertyInfoInvocations : CachedInvocations
     {
         /// <summary>
-        /// Gets the value of the property on the given instance. 
+        /// Gets the value of the property on the given instance.
         /// </summary>
         /// <param name="property">The property to set.</param>
         /// <param name="instance">The current instance to return the property from.</param>
         /// <returns>The <see cref="object"/> value.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object GetValue(PropertyInfo property, object instance)
         {
             var key = GetMethodCacheKey(property);
@@ -34,11 +36,12 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Set the value of the property on the given instance. 
+        /// Set the value of the property on the given instance.
         /// </summary>
         /// <param name="property">The property to set.</param>
         /// <param name="instance">The current instance to assign the property to.</param>
         /// <param name="value">The value to set.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SetValue(PropertyInfo property, object instance, object value)
         {
             var key = GetMethodCacheKey(property);
@@ -61,6 +64,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="method">The method to compile.</param>
         /// <returns>The <see cref="Action{Object, Object}"/></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Func<object, object> BuildGetAccessor(MethodInfo method)
         {
             var obj = Expression.Parameter(typeof(object), "o");
@@ -87,6 +91,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="method">The method to compile.</param>
         /// <returns>The <see cref="Action{Object, Object}"/></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Action<object, object> BuildSetAccessor(MethodInfo method)
         {
             var obj = Expression.Parameter(typeof(object), "o");

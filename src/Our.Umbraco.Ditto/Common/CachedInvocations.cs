@@ -33,6 +33,7 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// The <see cref="MethodBaseCacheItem"/> for the given method and type.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static MethodBaseCacheItem GetMethodCacheKey(object type, [CallerMemberName] string memberName = null)
         {
             return new MethodBaseCacheItem(memberName, type);
