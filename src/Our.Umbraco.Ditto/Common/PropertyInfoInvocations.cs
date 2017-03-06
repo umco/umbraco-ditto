@@ -53,10 +53,7 @@ namespace Our.Umbraco.Ditto
                 ActionCache[key] = a;
             }
 
-            if (a != null)
-            {
-                a(instance, value);
-            }
+            a?.Invoke(instance, value);
         }
 
         /// <summary>

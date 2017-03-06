@@ -1,9 +1,12 @@
-﻿namespace Our.Umbraco.Ditto
+﻿using System;
+using System.Runtime.CompilerServices;
+
+namespace Our.Umbraco.Ditto
 {
     /// <summary>
     /// A single method base cache item for identifying methods.
     /// </summary>
-    internal struct MethodBaseCacheItem
+    internal struct MethodBaseCacheItem : IEquatable<MethodBaseCacheItem>
     {
         /// <summary>
         /// Gets or sets the method base.
@@ -29,21 +32,33 @@
         /// <summary>
         /// Indicates whether this instance and a specified object are equal.
         /// </summary>
+        /// <param name="obj">Another object to compare to. </param>
         /// <returns>
-        /// true if <paramref name="obj"/> and this instance are the same type and represent the 
+        /// true if <paramref name="obj"/> and this instance are the same type and represent the
         /// same value; otherwise, false.
         /// </returns>
-        /// <param name="obj">Another object to compare to. </param>
         public override bool Equals(object obj)
         {
-            if (obj is MethodBaseCacheItem)
+            if (ReferenceEquals(null, obj))
             {
-                MethodBaseCacheItem other = (MethodBaseCacheItem)obj;
-
-                return this.MethodBase == other.MethodBase && this.Type == other.Type;
+                return false;
             }
 
-            return false;
+            return obj is MethodBaseCacheItem && this.Equals((MethodBaseCacheItem)obj);
+        }
+
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if <paramref name="other"/> and this instance are the same type and represent the
+        /// same value; otherwise, false.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(MethodBaseCacheItem other)
+        {
+            return string.Equals(this.MethodBase, other.MethodBase) && Equals(this.Type, other.Type);
         }
 
         /// <summary>
@@ -56,9 +71,7 @@
         {
             unchecked
             {
-                int hashCode = this.MethodBase.GetHashCode();
-                hashCode = (hashCode * 397) ^ this.Type.GetHashCode();
-                return hashCode;
+                return ((this.MethodBase?.GetHashCode() ?? 0) * 397) ^ (this.Type?.GetHashCode() ?? 0);
             }
         }
     }
