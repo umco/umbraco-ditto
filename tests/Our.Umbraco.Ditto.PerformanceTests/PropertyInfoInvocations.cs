@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Our.Umbraco.Ditto
+namespace Our.Umbraco.Ditto.PerformanceTests
 {
     /// <summary>
     /// Provides a way to set a properties value using delegates.

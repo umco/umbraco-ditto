@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CachedInvocations.cs" />
-    <Compile Include="Common\PropertyInfoInvocations.cs" />
+    <Compile Include="Common\FastPropertyAccessor.cs" />
     <Compile Include="ComponentModel\Attributes\DittoDefaultProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoLazyAttribute.cs" />
     <Compile Include="ComponentModel\Caching\DittoCacheContext.cs" />

@@ -23,39 +23,46 @@ namespace Our.Umbraco.Ditto.PerformanceTests
             this.descriptor = TypeDescriptor.GetProperties(this.obj)["Value"];
         }
 
-        [Benchmark(Description = "1. Static C#", Baseline = true)]
+        [Benchmark(Description = "Static C#", Baseline = true)]
         public string StaticCSharp()
         {
             this.obj.Value = "abc";
             return this.obj.Value;
         }
 
-        [Benchmark(Description = "2. Dynamic C#")]
+        [Benchmark(Description = "Dynamic C#")]
         public string DynamicCSharp()
         {
             this.dlr.Value = "abc";
             return this.dlr.Value;
         }
 
-        [Benchmark(Description = "3. PropertyInfo")]
+        [Benchmark(Description = "PropertyInfo")]
         public string PropertyInfo()
         {
             this.prop.SetValue(this.obj, "abc", null);
             return (string)this.prop.GetValue(this.obj, null);
         }
 
-        [Benchmark(Description = "4. PropertyDescriptor")]
+        [Benchmark(Description = "PropertyDescriptor")]
         public string PropertyDescriptor()
         {
             this.descriptor.SetValue(this.obj, "abc");
             return (string)this.descriptor.GetValue(this.obj);
         }
 
-        [Benchmark(Description = "5. PropertyInfoInvocations")]
+        [Benchmark(Description = "PropertyInfoInvocations")]
         public string PropertyInvocations()
         {
             PropertyInfoInvocations.SetValue(this.prop, this.obj, "abc");
             return (string)PropertyInfoInvocations.GetValue(this.prop, this.obj);
+        }
+
+        [Benchmark(Description = "FastPropertyAccessor")]
+        public string FastProperties()
+        {
+            FastPropertyAccessor.SetValue(this.prop, this.obj, "abc");
+            return (string)FastPropertyAccessor.GetValue(this.prop, this.obj);
         }
     }
 }

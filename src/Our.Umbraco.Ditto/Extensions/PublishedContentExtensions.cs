@@ -361,8 +361,8 @@ namespace Our.Umbraco.Ditto
                     // ReSharper disable once PossibleMultipleEnumeration
                     var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, processorContexts);
 
-                    // This is 2x as fast as propertyInfo.SetValue(instance, value, null);
-                    PropertyInfoInvocations.SetValue(propertyInfo, instance, value);
+                    // This over 4x faster as propertyInfo.SetValue(instance, value, null);
+                    FastPropertyAccessor.SetValue(propertyInfo, instance, value);
                 }
             }
 

@@ -208,8 +208,8 @@ namespace Our.Umbraco.Ditto
                     LogHelper.Warn<UmbracoPropertyAttribute>("The property " + umbracoPropertyName + " being mapped from content type " + contentType.Name + "'s instance properties hides a property in the umbraco properties collection of the same name. It is recommended that you avoid using umbraco property aliases that conflict with IPublishedContent instance property names, but if you can't avoid this and you require access to the hidden property you can use the PropertySource parameter of the processors attribute to override the order in which properties are checked.");
                 }
 
-                // This is more than 2x as fast as propertyValue = contentProperty.GetValue(content, null);
-                return PropertyInfoInvocations.GetValue(contentProperty, content);
+                // This is over 4x faster than propertyValue = contentProperty.GetValue(content, null);
+                return FastPropertyAccessor.GetValue(contentProperty, content);
             }
 
             return null;
