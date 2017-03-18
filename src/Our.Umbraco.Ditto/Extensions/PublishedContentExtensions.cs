@@ -19,12 +19,6 @@ namespace Our.Umbraco.Ditto
     public static class PublishedContentExtensions
     {
         /// <summary>
-        /// The cache for storing constructor parameter information.
-        /// </summary>
-        private static readonly ConcurrentDictionary<Type, ParameterInfo[]> ConstructorCache
-            = new ConcurrentDictionary<Type, ParameterInfo[]>();
-
-        /// <summary>
         /// The cache for storing type property information.
         /// </summary>
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PropertyCache
@@ -527,7 +521,7 @@ namespace Our.Umbraco.Ditto
                 currentValue = processorAttr.ProcessValue(currentValue, ctx);
             }
 
-            // The following has to happen after all the processors. 
+            // The following has to happen after all the processors.
             if (isEnumerable && currentValue != null && currentValue.Equals(Enumerable.Empty<object>()))
             {
                 if (propertyType.IsInterface)
