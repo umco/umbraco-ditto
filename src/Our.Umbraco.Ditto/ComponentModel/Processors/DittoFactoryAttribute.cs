@@ -112,7 +112,7 @@ namespace Our.Umbraco.Ditto
                     var typeName = this.ResolveTypeName(x);
                     var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
 
-                    return type != null ? x.As(type) : null;
+                    return type != null ? x.As(type, chainContext: ChainContext) : null;
                 });
 
                 return EnumerableInvocations.Cast(baseType, items);
@@ -124,7 +124,7 @@ namespace Our.Umbraco.Ditto
             {
                 var typeName = this.ResolveTypeName(ipublishedContentValue);
                 var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
-                return type != null ? ipublishedContentValue.As(type) : null;
+                return type != null ? ipublishedContentValue.As(type, chainContext:ChainContext) : null;
             }
 
             // No other possible options

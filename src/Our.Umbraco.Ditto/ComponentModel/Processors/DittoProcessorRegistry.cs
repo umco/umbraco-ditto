@@ -117,12 +117,12 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// Returns the post-processor attributes.
         /// </returns>
-        public IEnumerable<DittoProcessorAttribute> GetPostProcessorAttributes(IEnumerable<DittoProcessorContext> processorContexts = null)
+        public IEnumerable<DittoProcessorAttribute> GetPostProcessorAttributes()
         {
             // TODO: [LK] Enable the post-processor attributes to be configurable
             yield return new HtmlStringAttribute();
             yield return new EnumerableConverterAttribute();
-            yield return new RecursiveDittoAttribute() { ProcessorContexts = processorContexts };
+            yield return new RecursiveDittoAttribute();
             yield return new TryConvertToAttribute();
         }
 

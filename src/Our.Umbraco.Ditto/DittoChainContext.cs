@@ -4,103 +4,50 @@ using System.Collections.Generic;
 
 namespace Our.Umbraco.Ditto
 {
-    internal class DittoChainContext
+    /// <summary>
+    /// The chain collection of processor contexts.
+    /// </summary>
+    public class DittoChainContext
     {
-        private static volatile DittoChainContext instance;
-        private static object syncRoot = new object();
-        private static int chainCount { get; set; }
-
-
-        private DittoChainContext()
-        {
-            ProcessorContexts = new ProcessorContextsCollection();
-        }
-
-        public static DittoChainContext Current
-        {
-            get
-            {
-                if (instance == null)
-                    throw new ApplicationException("There is no current chain context initialized, you need to call BeginChainContext before accessing the current context.");
-                return instance;
-            }
-        }
-
+        /// <summary>
+        /// The collection of processor contexts.
+        /// </summary>
         public ProcessorContextsCollection ProcessorContexts { get; }
 
-        public static void BeginChainContext(DittoProcessorContext baseProcessorContext)
+        internal DittoChainContext(IEnumerable<DittoProcessorContext> processorContexts)
         {
-            if (chainCount == 0)
-            {
-                if (instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (instance == null)
-                            instance = new DittoChainContext();
-
-                        chainCount = 1;
-                    }
-                }
-            }
-            else
-            {
-                ++chainCount;
-            }
-
-            instance.ProcessorContexts.SetBaseContextAtLevel(chainCount, baseProcessorContext);
-            instance.ProcessorContexts.SetLevel(chainCount);
+            ProcessorContexts = new ProcessorContextsCollection(processorContexts);
         }
 
-        public static void EndChainContext(bool force = false)
-        {
-            if (chainCount == 1 || force)
-            {
-                if (instance != null)
-                {
-                    lock (syncRoot)
-                    {
-                        instance = null;
-                        chainCount = 0;
-                    }
-                }
-            }
-            else
-            {
-                --chainCount;
-
-                instance.ProcessorContexts.SetLevel(chainCount);
-            }
-        }
+        internal DittoChainContext()
+            : this(null)
+        { }
     }
 
-    // [MB] not sure how happy I am with this collection having the set base context / level functions
-    // seems a bit hacky but can't think of a better solution right now
-    internal class ProcessorContextsCollection
+    /// <summary>
+    /// A collection of processor contexts for the chain.
+    /// </summary>
+    public class ProcessorContextsCollection
     {
         private ConcurrentDictionary<Type, DittoProcessorContext> _processorContexts;
-        private ConcurrentDictionary<int, DittoProcessorContext> _baseContexts;
-        private int _currentLevel;
 
-        public ProcessorContextsCollection()
+        internal ProcessorContextsCollection()
         {
             _processorContexts = new ConcurrentDictionary<Type, DittoProcessorContext>();
-            _baseContexts = new ConcurrentDictionary<int, DittoProcessorContext>();
-            _currentLevel = 0;
         }
 
-        internal void SetBaseContextAtLevel(
-            int level,
-            DittoProcessorContext baseProcessorContext)
+        internal ProcessorContextsCollection(IEnumerable<DittoProcessorContext> processorContexts)
         {
-            _baseContexts.AddOrUpdate(level, baseProcessorContext, (lvl, ctx) => baseProcessorContext);
+            _processorContexts = new ConcurrentDictionary<Type, DittoProcessorContext>();
+
+            if (processorContexts != null)
+                AddRange(processorContexts);
         }
 
-        internal void SetLevel(int level)
-        {
-            _currentLevel = level;
-        }
-
+        /// <summary>
+        /// Adds a range of processor contexts to the collection chain.
+        /// </summary>
+        /// <param name="ctxs">An enumerable of processor contexts.</param>
         public void AddRange(IEnumerable<DittoProcessorContext> ctxs)
         {
             if (ctxs == null)
@@ -114,21 +61,30 @@ namespace Our.Umbraco.Ditto
             }
         }
 
+        /// <summary>
+        /// Adds a processor context to the collection chain.
+        /// </summary>
+        /// <param name="ctx">The processor context.</param>
         public void Add(DittoProcessorContext ctx)
         {
             _processorContexts.AddOrUpdate(ctx.GetType(), ctx, (type, ctx2) => ctx2); // Don't override if already exists
         }
 
-        public DittoProcessorContext GetOrCreate(Type contextType)
+        /// <summary>
+        /// Gets or creates the <see cref="DittoProcessorContext" />.
+        /// </summary>
+        /// <param name="baseContext">The base context.</param>
+        /// <param name="contextType">The object type of the content.</param>
+        /// <returns>Returns the the <see cref="DittoProcessorContext" />.</returns>
+        public DittoProcessorContext GetOrCreate(DittoProcessorContext baseContext, Type contextType)
         {
-            // Get the base context for current level
-            var baseCtx = _baseContexts[_currentLevel];
-
             // Get, clone and populate the relevant context for the given level
-            return _processorContexts
+            var ctx = _processorContexts
                 .GetOrAdd(contextType, type => (DittoProcessorContext)contextType.GetInstance())
                 .Clone()
-                .Populate(baseCtx);
+                .Populate(baseContext);
+
+            return ctx;
         }
     }
 }

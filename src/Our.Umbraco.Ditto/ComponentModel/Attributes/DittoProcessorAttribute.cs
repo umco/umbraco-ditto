@@ -45,6 +45,14 @@ namespace Our.Umbraco.Ditto
         /// The context.
         /// </value>
         public DittoProcessorContext Context { get; protected set; }
+        
+        /// <summary>
+        /// Gets the chain context.
+        /// </summary>
+        /// <value>
+        /// The chain context.
+        /// </value>
+        public DittoChainContext ChainContext { get; protected set; }
 
         /// <summary>
         /// Gets or sets the order.
@@ -148,6 +156,23 @@ namespace Our.Umbraco.Ditto
             object value,
             DittoProcessorContext context)
         {
+            return this.ProcessValue(value, context, new DittoChainContext(new[] { context }));
+        }
+
+        /// <summary>
+        /// Processes the value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="chainContext">The chain context.</param>
+        /// <returns>
+        /// The <see cref="object" /> representing the processed value.
+        /// </returns>
+        internal virtual object ProcessValue(
+            object value, 
+            DittoProcessorContext context,
+            DittoChainContext chainContext)
+        {
             if (value != null && !this.ValueType.IsInstanceOfType(value))
             {
                 throw new ArgumentException("Expected a value argument of type " + this.ValueType + " but got " + value.GetType(), "value");
@@ -163,8 +188,14 @@ namespace Our.Umbraco.Ditto
                 throw new ArgumentException("Expected a context argument of type " + this.ContextType + " but got " + context.GetType(), "context");
             }
 
+            if (chainContext == null)
+            {
+                throw new ArgumentNullException("chainContext");
+            }
+
             this.Value = value;
             this.Context = context;
+            this.ChainContext = chainContext;
 
             var ctx = new DittoCacheContext(this, context.Content, context.TargetType, context.PropertyDescriptor, context.Culture);
             return this.GetCacheItem(ctx, this.ProcessValue);
