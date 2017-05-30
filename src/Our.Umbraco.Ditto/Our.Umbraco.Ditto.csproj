@@ -114,6 +114,8 @@
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandler.cs" />
     <Compile Include="ComponentModel\Processors\DittoProcessorRegistry.cs" />
     <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContext.cs" />
+    <Compile Include="ComponentModel\Processors\UmbracoXPathProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\UmbracoXPathNavigatorAttribute.cs" />
     <Compile Include="ComponentModel\Processors\UmbracoXPathAttribute.cs" />
     <Compile Include="Ditto.cs" />
     <Compile Include="DittoChainContext.cs" />
