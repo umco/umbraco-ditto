@@ -121,6 +121,9 @@ namespace Our.Umbraco.Ditto
             this.Model = ctx.Model as TConvertedType;
 
             this.Run(type);
+
+            if (type == DittoConversionHandlerType.OnConverting && this.Content != ctx.Content)
+                ctx.Content = this.Content;
         }
     }
 }
