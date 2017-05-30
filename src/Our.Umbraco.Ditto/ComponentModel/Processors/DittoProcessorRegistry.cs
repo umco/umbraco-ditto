@@ -141,6 +141,6 @@ namespace Our.Umbraco.Ditto
                     ? Cache[objectType]
                     : Enumerable.Empty<DittoProcessorAttribute>();
             }
-        }
+        }        
     }
 }
