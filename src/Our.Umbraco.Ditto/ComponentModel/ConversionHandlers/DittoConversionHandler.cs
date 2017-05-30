@@ -53,15 +53,13 @@ namespace Our.Umbraco.Ditto
         /// Called just before conversion of the model occurs.
         /// </summary>
         public virtual void OnConverting()
-        {
-        }
+        { }
 
         /// <summary>
         /// Called just after conversion of the model occurs.
         /// </summary>
         public virtual void OnConverted()
-        {
-        }
+        { }
 
         /// <summary>
         /// Runs the conversion handler.

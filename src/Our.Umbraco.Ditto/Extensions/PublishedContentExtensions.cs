@@ -5,12 +5,12 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
 {
+    using global::Umbraco.Core;
     using System.Collections;
 
     /// <summary>
@@ -18,12 +18,6 @@ namespace Our.Umbraco.Ditto
     /// </summary>
     public static class PublishedContentExtensions
     {
-        /// <summary>
-        /// The cache for storing constructor parameter information.
-        /// </summary>
-        private static readonly ConcurrentDictionary<Type, ParameterInfo[]> ConstructorCache
-            = new ConcurrentDictionary<Type, ParameterInfo[]>();
-
         /// <summary>
         /// The cache for storing type property information.
         /// </summary>
@@ -207,12 +201,15 @@ namespace Our.Umbraco.Ditto
                 throw new ArgumentException(string.Format("The instance parameter does not implement Type '{0}'", type.Name), "instance");
             }
 
+            // Get the accessor for UmbracoContext & ApplicationContext
+            var umbracoApplicationContextAccessor = (IDittoContextAccessor)Ditto.GetContextAccessorType().GetInstance();
+
             // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
             if (culture == null)
             {
-                if (UmbracoContext.Current != null && UmbracoContext.Current.PublishedContentRequest != null)
+                if (umbracoApplicationContextAccessor.UmbracoContext != null && umbracoApplicationContextAccessor.UmbracoContext.PublishedContentRequest != null)
                 {
-                    culture = UmbracoContext.Current.PublishedContentRequest.Culture;
+                    culture = umbracoApplicationContextAccessor.UmbracoContext.PublishedContentRequest.Culture;
                 }
                 else
                 {
@@ -237,11 +234,11 @@ namespace Our.Umbraco.Ditto
                 if (cacheAttr != null)
                 {
                     var ctx = new DittoCacheContext(cacheAttr, content, type, culture);
-                    return cacheAttr.GetCacheItem(ctx, () => ConvertContent(content, type, culture, instance, onConverting, onConverted, chainContext));
+                    return cacheAttr.GetCacheItem(ctx, () => ConvertContent(content, type, umbracoApplicationContextAccessor, culture, instance, processorContexts, onConverting, onConverted, chainContext));
                 }
                 else
                 {
-                    return ConvertContent(content, type, culture, instance, onConverting, onConverted, chainContext);
+                    return ConvertContent(content, type, umbracoApplicationContextAccessor, culture, instance, processorContexts, onConverting, onConverted, chainContext);
                 }
             }
         }
@@ -255,11 +252,17 @@ namespace Our.Umbraco.Ditto
         /// <param name="type">
         /// The <see cref="Type"/> of items to return.
         /// </param>
+        /// <param name="contextAccessor">
+        /// The context accessor.
+        /// </param>
         /// <param name="culture">
         /// The <see cref="CultureInfo"/>
         /// </param>
         /// <param name="instance">
         /// An existing instance of T to populate
+        /// </param>
+        /// <param name="processorContexts">
+        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
         /// </param>
         /// <param name="onConverting">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
@@ -279,11 +282,13 @@ namespace Our.Umbraco.Ditto
         private static object ConvertContent(
             IPublishedContent content,
             Type type,
-            CultureInfo culture,
-            object instance,
-            Action<DittoConversionHandlerContext> onConverting,
-            Action<DittoConversionHandlerContext> onConverted, 
-            DittoChainContext chainContext)
+            IDittoContextAccessor contextAccessor,
+            CultureInfo culture = null,
+            object instance = null,
+            IEnumerable<DittoProcessorContext> processorContexts = null,
+            Action<DittoConversionHandlerContext> onConverting = null,
+            Action<DittoConversionHandlerContext> onConverted = null,
+            DittoChainContext chainContext = null)
         {
             // Get the default constructor, parameters and create an instance of the type.
             ParameterInfo[] constructorParams = type.GetConstructorParameters();
@@ -358,7 +363,7 @@ namespace Our.Umbraco.Ditto
                     var localInstance = instance;
 
                     // ReSharper disable once PossibleMultipleEnumeration
-                    lazyProperties.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, defaultProcessorType, chainContext)));
+                    lazyProperties.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, defaultProcessorType, contextAccessor, processorContexts, chainContext)));
                 }
             }
 
@@ -391,7 +396,7 @@ namespace Our.Umbraco.Ditto
 
                     // Set the value normally.
                     // ReSharper disable once PossibleMultipleEnumeration
-                    var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, chainContext);
+                    var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, contextAccessor, processorContexts, chainContext);
 
                     // This is 2x as fast as propertyInfo.SetValue(instance, value, null);
                     PropertyInfoInvocations.SetValue(propertyInfo, instance, value);
@@ -414,6 +419,8 @@ namespace Our.Umbraco.Ditto
         /// <param name="propertyInfo">The <see cref="PropertyInfo" /> property info associated with the type.</param>
         /// <param name="instance">The instance to assign the value to.</param>
         /// <param name="defaultProcessorType">The default processor type.</param>
+        /// <param name="contextAccessor">The context accessor.</param>
+        /// <param name="processorContexts">A collection of <see cref="DittoProcessorContext" /> entities to use whilst processing values.</param>
         /// <param name="chainContext">The <see cref="DittoChainContext"/> for the current processor chain.</param>
         /// <returns>
         /// The <see cref="object" /> representing the Umbraco value.
@@ -425,7 +432,9 @@ namespace Our.Umbraco.Ditto
             PropertyInfo propertyInfo,
             object instance,
             Type defaultProcessorType,
-            DittoChainContext chainContext)
+            IDittoContextAccessor contextAccessor,
+            IEnumerable<DittoProcessorContext> processorContexts = null,
+            DittoChainContext chainContext = null)
         {
             // Time custom value-processor.
             using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
@@ -447,11 +456,11 @@ namespace Our.Umbraco.Ditto
                 if (cacheAttr != null)
                 {
                     var ctx = new DittoCacheContext(cacheAttr, content, targetType, propertyDescriptor, culture);
-                    return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, propertyInfo, defaultProcessorType, baseProcessorContext, chainContext));
+                    return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, propertyInfo, defaultProcessorType, contextAccessor, processorContexts, baseProcessorContext, chainContext));
                 }
                 else
                 {
-                    return DoGetProcessedValue(content, propertyInfo, defaultProcessorType, baseProcessorContext, chainContext);
+                    return DoGetProcessedValue(content, propertyInfo, defaultProcessorType, contextAccessor, processorContexts, baseProcessorContext, chainContext);
                 }
             }
         }
@@ -462,6 +471,8 @@ namespace Our.Umbraco.Ditto
         /// <param name="content">The content.</param>
         /// <param name="propertyInfo">The property information.</param>
         /// <param name="defaultProcessorType">The default processor type.</param>
+        /// <param name="contextAccessor">The context accessor.</param>
+        /// <param name="processorContexts">The processor contexts.</param>
         /// <param name="baseProcessorContext">The base processor context.</param>
         /// <param name="chainContext">The <see cref="DittoChainContext"/> for the current processor chain.</param>
         /// <returns>Returns the processed value.</returns>
@@ -469,8 +480,10 @@ namespace Our.Umbraco.Ditto
             IPublishedContent content,
             PropertyInfo propertyInfo,
             Type defaultProcessorType,
-            DittoProcessorContext baseProcessorContext,
-            DittoChainContext chainContext)
+            IDittoContextAccessor contextAccessor,
+            IEnumerable<DittoProcessorContext> processorContexts = null,
+            DittoProcessorContext baseProcessorContext = null,
+            DittoChainContext chainContext = null)
         {
             // Check the property for any explicit processor attributes
             var processorAttrs = propertyInfo.GetCustomAttributes<DittoProcessorAttribute>(true)
@@ -519,11 +532,15 @@ namespace Our.Umbraco.Ditto
                 // Get the right context type
                 var ctx = chainContext.ProcessorContexts.GetOrCreate(baseProcessorContext, processorAttr.ContextType);
 
+                // Populate UmbracoContext & ApplicationContext 
+                processorAttr.UmbracoContext = contextAccessor.UmbracoContext;
+                processorAttr.ApplicationContext = contextAccessor.ApplicationContext;
+
                 // Process value
                 currentValue = processorAttr.ProcessValue(currentValue, ctx, chainContext);
             }
 
-            // The following has to happen after all the processors. 
+            // The following has to happen after all the processors.
             if (isEnumerable && currentValue != null && currentValue.Equals(Enumerable.Empty<object>()))
             {
                 if (propertyType.IsInterface)

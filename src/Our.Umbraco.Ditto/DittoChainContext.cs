@@ -4,8 +4,14 @@ using System.Collections.Generic;
 
 namespace Our.Umbraco.Ditto
 {
+    /// <summary>
+    /// The chain collection of processor contexts.
+    /// </summary>
     public class DittoChainContext
     {
+        /// <summary>
+        /// The collection of processor contexts.
+        /// </summary>
         public ProcessorContextsCollection ProcessorContexts { get; }
 
         internal DittoChainContext(IEnumerable<DittoProcessorContext> processorContexts)
@@ -18,6 +24,9 @@ namespace Our.Umbraco.Ditto
         { }
     }
 
+    /// <summary>
+    /// A collection of processor contexts for the chain.
+    /// </summary>
     public class ProcessorContextsCollection
     {
         private ConcurrentDictionary<Type, DittoProcessorContext> _processorContexts;
@@ -35,6 +44,10 @@ namespace Our.Umbraco.Ditto
                 AddRange(processorContexts);
         }
 
+        /// <summary>
+        /// Adds a range of processor contexts to the collection chain.
+        /// </summary>
+        /// <param name="ctxs">An enumerable of processor contexts.</param>
         public void AddRange(IEnumerable<DittoProcessorContext> ctxs)
         {
             if (ctxs == null)
@@ -48,11 +61,21 @@ namespace Our.Umbraco.Ditto
             }
         }
 
+        /// <summary>
+        /// Adds a processor context to the collection chain.
+        /// </summary>
+        /// <param name="ctx">The processor context.</param>
         public void Add(DittoProcessorContext ctx)
         {
             _processorContexts.AddOrUpdate(ctx.GetType(), ctx, (type, ctx2) => ctx2); // Don't override if already exists
         }
 
+        /// <summary>
+        /// Gets or creates the <see cref="DittoProcessorContext" />.
+        /// </summary>
+        /// <param name="baseContext">The base context.</param>
+        /// <param name="contextType">The object type of the content.</param>
+        /// <returns>Returns the the <see cref="DittoProcessorContext" />.</returns>
         public DittoProcessorContext GetOrCreate(DittoProcessorContext baseContext, Type contextType)
         {
             // Get, clone and populate the relevant context for the given level
