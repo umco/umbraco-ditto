@@ -17,9 +17,9 @@ namespace Our.Umbraco.Ditto
     public class Ditto
     {
         /// <summary>
-        /// The global umbraco application context accessor type for processors, (defaults to `SingletonUmbracoApplicationContextAccessor`).
+        /// The global context accessor type for processors.
         /// </summary>
-        private static Type umbracoApplicationContextAccessorType = typeof(SingletonUmbracoApplicationContextAccessor);
+        private static Type contextAccessorType = typeof(DefaultDittoContextAccessor);
 
         /// <summary>
         /// The Ditto processor attribute targets
@@ -142,13 +142,13 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Registers a global umbraco application context accessor.
+        /// Registers a global Ditto context accessor.
         /// </summary>
-        /// <typeparam name="TUmbracoApplicationContextAccessorType">The type of the accessor.</typeparam>
-        public static void RegisterUmbracoApplicationContextAccessor<TUmbracoApplicationContextAccessorType>()
-            where TUmbracoApplicationContextAccessorType : IUmbracoApplicationContextAccessor, new()
+        /// <typeparam name="TDittoContextAccessorType">The type of the context accessor.</typeparam>
+        public static void RegisterContextAccessor<TDittoContextAccessorType>()
+            where TDittoContextAccessorType : IDittoContextAccessor, new()
         {
-            umbracoApplicationContextAccessorType = typeof(TUmbracoApplicationContextAccessorType);
+            contextAccessorType = typeof(TDittoContextAccessorType);
         }
 
         /// <summary>
@@ -157,9 +157,9 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// Returns the global umbraco application context accessor type.
         /// </returns>
-        public static Type GetUmbracoApplicationContextAccessorType()
+        public static Type GetContextAccessorType()
         {
-            return umbracoApplicationContextAccessorType;
+            return contextAccessorType;
         }
     }
 }

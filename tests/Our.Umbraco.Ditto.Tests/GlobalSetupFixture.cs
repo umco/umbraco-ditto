@@ -9,7 +9,7 @@ namespace Our.Umbraco.Ditto.Tests
         [SetUp]
         public void Setup()
         {
-            Ditto.RegisterUmbracoApplicationContextAccessor<MockUmbracoApplicationContextAccessor>();
+            Ditto.RegisterContextAccessor<MockDittoContextAccessor>();
         }
     }
 }

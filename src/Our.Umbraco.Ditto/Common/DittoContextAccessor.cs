@@ -4,9 +4,9 @@ using Umbraco.Web;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// An interface allowing access to the UmbracoContext &amp; ApplicationContext without resulting to using the singletons directly.
+    /// An interface allowing access to context objects without resulting to using the singletons directly.
     /// </summary>
-    public interface IUmbracoApplicationContextAccessor
+    public interface IDittoContextAccessor
     {
         /// <summary>
         /// The UmbracoContext instance.
@@ -19,7 +19,7 @@ namespace Our.Umbraco.Ditto
         ApplicationContext ApplicationContext { get; }
     }
 
-    internal class SingletonUmbracoApplicationContextAccessor : IUmbracoApplicationContextAccessor
+    internal class DefaultDittoContextAccessor : IDittoContextAccessor
     {
         public UmbracoContext UmbracoContext
         {
