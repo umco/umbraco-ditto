@@ -1,18 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
 {
-    using global::Umbraco.Core;
-    using System.Collections;
-
     /// <summary>
     /// Encapsulates extension methods for <see cref="IPublishedContent"/>.
     /// </summary>
@@ -633,7 +632,7 @@ namespace Our.Umbraco.Ditto
                 Model = instance
             };
 
-            // Check for class level DittoOnConvertedAttribute
+            // Check for class level DittoConversionHandlerAttribute
             foreach (var attr in type.GetCustomAttributes<DittoConversionHandlerAttribute>())
             {
                 ((DittoConversionHandler)attr.HandlerType.GetInstance())
@@ -647,7 +646,7 @@ namespace Our.Umbraco.Ditto
                     .Run(conversionCtx, conversionType);
             }
 
-            // Check for method level DittoOnConvertedAttribute
+            // Check for method level DittoOnConvert[ing|ed]Attribute
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(x => x.GetCustomAttribute<TAttributeType>() != null))
             {

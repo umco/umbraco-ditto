@@ -51,7 +51,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             public override void OnConverted()
             {
-                Model.AltText2 = Content.GetPropertyValue("prop1") + " " + Content.GetPropertyValue("prop2");
+                Context.Model.AltText2 = Context.Content.GetPropertyValue("prop1") + " " + Context.Content.GetPropertyValue("prop2");
             }
         }
 
@@ -59,7 +59,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             public override void OnConverted()
             {
-                Model.AltText2 = Content.GetPropertyValue("prop1") + " " + Content.GetPropertyValue("prop2");
+                Context.Model.AltText2 = Context.Content.GetPropertyValue("prop1") + " " + Context.Content.GetPropertyValue("prop2");
             }
         }
 
