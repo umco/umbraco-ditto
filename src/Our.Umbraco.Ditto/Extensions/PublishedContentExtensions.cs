@@ -376,7 +376,7 @@ namespace Our.Umbraco.Ditto
 
             // We have the instance object but haven't yet populated properties
             // so fire the on converting event handlers
-            OnConverting(content, type, instance, onConverting);
+            OnConverting(ref content, type, instance, onConverting);
 
             // Process any non lazy properties next
             foreach (var propertyInfo in properties.Where(x => !x.ShouldAttemptLazyLoad()))
@@ -401,7 +401,7 @@ namespace Our.Umbraco.Ditto
 
             // We have now finished populating the instance object so go ahead
             // and fire the on converted event handlers
-            OnConverted(content, type, instance, onConverted);
+            OnConverted(ref content, type, instance, onConverted);
 
             return instance;
         }
@@ -563,14 +563,14 @@ namespace Our.Umbraco.Ditto
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
         /// </param>
         private static void OnConverting(
-            IPublishedContent content,
+            ref IPublishedContent content,
             Type type,
             object instance,
             Action<DittoConversionHandlerContext> callback)
         {
             OnConvert<DittoOnConvertingAttribute>(
                 DittoConversionHandlerType.OnConverting,
-                content,
+                ref content,
                 type,
                 instance,
                 callback);
@@ -586,14 +586,14 @@ namespace Our.Umbraco.Ditto
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
         /// </param>
         private static void OnConverted(
-            IPublishedContent content,
+            ref IPublishedContent content,
             Type type,
             object instance,
             Action<DittoConversionHandlerContext> callback)
         {
             OnConvert<DittoOnConvertedAttribute>(
                 DittoConversionHandlerType.OnConverted,
-                content,
+                ref content,
                 type,
                 instance,
                 callback);
@@ -610,7 +610,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="callback">The callback.</param>
         private static void OnConvert<TAttributeType>(
             DittoConversionHandlerType conversionType,
-            IPublishedContent content,
+            ref IPublishedContent content,
             Type type,
             object instance,
             Action<DittoConversionHandlerContext> callback)
@@ -654,6 +654,10 @@ namespace Our.Umbraco.Ditto
             {
                 callback(conversionCtx);
             }
+
+            // When converting, if the IPublishedContent has changed, pass back the reference
+            if (conversionType == DittoConversionHandlerType.OnConverting && conversionCtx.Content != content)
+                content = conversionCtx.Content;
         }
     }
 }

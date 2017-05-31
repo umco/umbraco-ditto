@@ -172,6 +172,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ChangePublishedContentOnConvertingTests.cs" />
     <Compile Include="EnumerableConverterTests.cs" />
     <Compile Include="ExtremeChainedContextTests.cs" />
     <Compile Include="GlobalSetupFixture.cs" />
