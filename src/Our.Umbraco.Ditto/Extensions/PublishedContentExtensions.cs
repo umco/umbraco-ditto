@@ -376,7 +376,7 @@ namespace Our.Umbraco.Ditto
 
             // We have the instance object but haven't yet populated properties
             // so fire the on converting event handlers
-            OnConverting(content, type, instance, onConverting);
+            OnConverting(content, type, culture, instance, onConverting);
 
             // Process any non lazy properties next
             foreach (var propertyInfo in properties.Where(x => !x.ShouldAttemptLazyLoad()))
@@ -401,7 +401,7 @@ namespace Our.Umbraco.Ditto
 
             // We have now finished populating the instance object so go ahead
             // and fire the on converted event handlers
-            OnConverted(content, type, instance, onConverted);
+            OnConverted(content, type, culture, instance, onConverted);
 
             return instance;
         }
@@ -558,6 +558,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
         /// <param name="type">The instance type.</param>
+        /// <param name="culture">The culture.</param>
         /// <param name="instance">The instance to assign the value to.</param>
         /// <param name="callback">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
@@ -565,6 +566,7 @@ namespace Our.Umbraco.Ditto
         private static void OnConverting(
             IPublishedContent content,
             Type type,
+            CultureInfo culture,
             object instance,
             Action<DittoConversionHandlerContext> callback)
         {
@@ -572,6 +574,7 @@ namespace Our.Umbraco.Ditto
                 DittoConversionHandlerType.OnConverting,
                 content,
                 type,
+                culture,
                 instance,
                 callback);
         }
@@ -581,6 +584,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
         /// <param name="type">The instance type.</param>
+        /// <param name="culture">The culture.</param>
         /// <param name="instance">The instance to assign the value to.</param>
         /// <param name="callback">
         /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
@@ -588,6 +592,7 @@ namespace Our.Umbraco.Ditto
         private static void OnConverted(
             IPublishedContent content,
             Type type,
+            CultureInfo culture,
             object instance,
             Action<DittoConversionHandlerContext> callback)
         {
@@ -595,6 +600,7 @@ namespace Our.Umbraco.Ditto
                 DittoConversionHandlerType.OnConverted,
                 content,
                 type,
+                culture,
                 instance,
                 callback);
         }
@@ -606,12 +612,14 @@ namespace Our.Umbraco.Ditto
         /// <param name="conversionType">Type of the conversion.</param>
         /// <param name="content">The content.</param>
         /// <param name="type">The type.</param>
+        /// <param name="culture">The culture.</param>
         /// <param name="instance">The instance.</param>
         /// <param name="callback">The callback.</param>
         private static void OnConvert<TAttributeType>(
             DittoConversionHandlerType conversionType,
             IPublishedContent content,
             Type type,
+            CultureInfo culture,
             object instance,
             Action<DittoConversionHandlerContext> callback)
             where TAttributeType : Attribute
@@ -620,6 +628,7 @@ namespace Our.Umbraco.Ditto
             var conversionCtx = new DittoConversionHandlerContext
             {
                 Content = content,
+                Culture = culture,
                 ModelType = type,
                 Model = instance
             };

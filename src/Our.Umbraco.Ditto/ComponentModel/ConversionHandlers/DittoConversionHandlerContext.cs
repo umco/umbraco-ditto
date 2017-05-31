@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto
@@ -12,6 +13,11 @@ namespace Our.Umbraco.Ditto
         /// Gets or sets the content.
         /// </summary>
         public IPublishedContent Content { get; set; }
+
+        /// <summary>
+        /// Gets or sets the culture.
+        /// </summary>
+        public CultureInfo Culture { get; set; }
 
         /// <summary>
         /// Gets or sets the model object.
