@@ -23,6 +23,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="methodBase">The method base.</param>
         /// <param name="type">The object type or property.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MethodBaseCacheItem(string methodBase, object type)
         {
             this.MethodBase = methodBase;
@@ -67,6 +68,7 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// A 32-bit signed integer that is the hash code for this instance.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {
             unchecked
