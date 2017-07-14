@@ -59,6 +59,7 @@ namespace Our.Umbraco.Ditto
         /// Builds the get accessor for the given type.
         /// </summary>
         /// <param name="method">The method to compile.</param>
+        /// <param name="propertyType">The property type.</param>
         /// <returns>The <see cref="Action{Object, Object}"/></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Func<object, object> MakeGetMethod(MethodInfo method, Type propertyType)
@@ -78,7 +79,7 @@ namespace Our.Umbraco.Ditto
                 il.Emit(OpCodes.Box, propertyType);
             }
 
-            // Return thr result.
+            // Return the result.
             il.Emit(OpCodes.Ret);
 
             return (Func<object, object>)dmethod.CreateDelegate(typeof(Func<object, object>));
