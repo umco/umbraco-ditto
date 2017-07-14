@@ -90,7 +90,7 @@ namespace Our.Umbraco.Ditto
             // For get
             // return return (PropertyType) interceptor.Intercept(methodof(BaseType.get_Property), null);
             // For set
-            // interceptor.Intercept(methodof(BaseType.get_Property), value);
+            // interceptor.Intercept(methodof(BaseType.set_Property), value);
             il.Emit(OpCodes.Ldtoken, method);
             il.Emit(OpCodes.Call, GetMethodFromHandle);
             il.Emit(parameter == null ? OpCodes.Ldnull : OpCodes.Ldarg_1);

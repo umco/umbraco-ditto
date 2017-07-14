@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Umbraco.Core;
 
 namespace Our.Umbraco.Ditto
@@ -52,6 +53,7 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// True if the type is an enumerable of the given argument type; otherwise, false.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEnumerableOfType(this Type type, Type typeArgument)
         {
             Type t = type.TryGetElementType(typeof(IEnumerable<>));
@@ -63,6 +65,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>True if the type is a collection type; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCollectionType(this Type type)
         {
             return type.TryGetElementType(typeof(ICollection<>)) != null;
@@ -73,6 +76,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>True if the type is an enumerable type; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEnumerableType(this Type type)
         {
             return type.TryGetElementType(typeof(IEnumerable<>)) != null;
@@ -90,6 +94,7 @@ namespace Our.Umbraco.Ditto
         /// <returns>
         /// True if the type is an enumerable type with the generic parameter of a key/value 
         /// pair; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEnumerableOfKeyValueType(this Type type)
         {
             return type.TryGetElementType(typeof(IDictionary<,>)) != null ||
@@ -107,6 +112,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>True if the type is a cast-safe, enumerable type; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCastableEnumerableType(this Type type)
         {
             // String, though enumerable have no generic arguments.
@@ -128,6 +134,7 @@ namespace Our.Umbraco.Ditto
         /// <c>null</c> if <paramref name="interfaceOrBaseType"/> isn't implemented or implemented multiple times,
         /// otherwise the generic argument.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Type TryGetElementType(this Type type, Type interfaceOrBaseType)
         {
             if (!type.IsGenericTypeDefinition)
@@ -148,6 +155,7 @@ namespace Our.Umbraco.Ditto
         /// <returns> 
         /// The generic types constructed from <paramref name="interfaceOrBaseType"/> and implemented by <paramref name="type"/>.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Type> GetGenericTypeImplementations(this Type type, Type interfaceOrBaseType)
         {
             if (!type.IsGenericTypeDefinition)
@@ -165,6 +173,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="type">The <see cref="Type"/> to get the base types from.</param>
         /// <returns>A collection of base types that the given type inherits from.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Type> GetBaseTypes(this Type type)
         {
             type = type.BaseType;
@@ -182,6 +191,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="type">The <see cref="Type"/> to check.</param>
         /// <returns>The type of the enumerable.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Type GetEnumerableType(this Type type)
         {
             // if it's not an enumerable why do you call this method all ?
