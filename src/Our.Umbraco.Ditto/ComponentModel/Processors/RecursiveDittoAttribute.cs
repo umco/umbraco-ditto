@@ -34,7 +34,7 @@ namespace Our.Umbraco.Ditto
                         this.Context.PropertyDescriptor.PropertyType,
                         this.Context.Culture,
                         null,
-                        this.ProcessorContexts);
+                        chainContext: ChainContext);
                 }
                 else if (this.Value != null && this.Value.GetType().IsEnumerableOfType(typeof(IPublishedContent))
                     && this.Context.PropertyDescriptor.PropertyType.IsEnumerable()
@@ -45,7 +45,7 @@ namespace Our.Umbraco.Ditto
                     result = ((IEnumerable<IPublishedContent>)this.Value).As(
                         this.Context.PropertyDescriptor.PropertyType.GetEnumerableType(),
                         this.Context.Culture,
-                        this.ProcessorContexts);
+                        chainContext: ChainContext);
                 }
             }
 

@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="Common\CachedInvocations.cs" />
     <Compile Include="Common\FastPropertyAccessor.cs" />
+    <Compile Include="Common\DittoContextAccessor.cs" />
     <Compile Include="ComponentModel\Attributes\DittoDefaultProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoLazyAttribute.cs" />
     <Compile Include="ComponentModel\Caching\DittoCacheContext.cs" />
@@ -114,6 +115,8 @@
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandler.cs" />
     <Compile Include="ComponentModel\Processors\DittoProcessorRegistry.cs" />
     <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContext.cs" />
+    <Compile Include="ComponentModel\Processors\UmbracoXPathProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\UmbracoXPathNavigatorAttribute.cs" />
     <Compile Include="ComponentModel\Processors\UmbracoXPathAttribute.cs" />
     <Compile Include="Ditto.cs" />
     <Compile Include="DittoChainContext.cs" />

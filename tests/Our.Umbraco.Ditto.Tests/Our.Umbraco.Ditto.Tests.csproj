@@ -174,7 +174,9 @@
   <ItemGroup>
     <Compile Include="EnumerableConverterTests.cs" />
     <Compile Include="ExtremeChainedContextTests.cs" />
+    <Compile Include="GlobalSetupFixture.cs" />
     <Compile Include="LazyTests.cs" />
+    <Compile Include="Mocks\MockDittoContextAccessor.cs" />
     <Compile Include="PropertySourceMappingTests.cs" />
     <Compile Include="DittoFactoryTests.cs" />
     <Compile Include="DictionaryValueTests.cs" />
