@@ -16,7 +16,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             public override void OnConverted()
             {
-                Model.Name = "foo";
+                Context.Model.Name = "foo";
             }
         }
 
@@ -24,7 +24,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             public override void OnConverted()
             {
-                Model.Name += " bar";
+                Context.Model.Name += " bar";
             }
         }
 
