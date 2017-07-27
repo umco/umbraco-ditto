@@ -200,15 +200,15 @@ namespace Our.Umbraco.Ditto
                 throw new ArgumentException(string.Format("The instance parameter does not implement Type '{0}'", type.Name), "instance");
             }
 
-            // Get the accessor for UmbracoContext & ApplicationContext
-            var umbracoApplicationContextAccessor = (IDittoContextAccessor)Ditto.GetContextAccessorType().GetInstance();
+            // Get the context accessor (for access to ApplicationContext, UmbracoContext, et al)
+            var contextAccessor = (IDittoContextAccessor)Ditto.GetContextAccessorType().GetInstance();
 
             // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
             if (culture == null)
             {
-                if (umbracoApplicationContextAccessor.UmbracoContext != null && umbracoApplicationContextAccessor.UmbracoContext.PublishedContentRequest != null)
+                if (contextAccessor.UmbracoContext != null && contextAccessor.UmbracoContext.PublishedContentRequest != null)
                 {
-                    culture = umbracoApplicationContextAccessor.UmbracoContext.PublishedContentRequest.Culture;
+                    culture = contextAccessor.UmbracoContext.PublishedContentRequest.Culture;
                 }
                 else
                 {
@@ -233,11 +233,11 @@ namespace Our.Umbraco.Ditto
                 if (cacheAttr != null)
                 {
                     var ctx = new DittoCacheContext(cacheAttr, content, type, culture);
-                    return cacheAttr.GetCacheItem(ctx, () => ConvertContent(content, type, umbracoApplicationContextAccessor, culture, instance, onConverting, onConverted, chainContext));
+                    return cacheAttr.GetCacheItem(ctx, () => ConvertContent(content, type, contextAccessor, culture, instance, onConverting, onConverted, chainContext));
                 }
                 else
                 {
-                    return ConvertContent(content, type, umbracoApplicationContextAccessor, culture, instance, onConverting, onConverted, chainContext);
+                    return ConvertContent(content, type, contextAccessor, culture, instance, onConverting, onConverted, chainContext);
                 }
             }
         }
