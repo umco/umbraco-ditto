@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace Our.Umbraco.Ditto.Extensions.Internal
+namespace Our.Umbraco.Ditto
 {
     internal static class AssemblyExtensions
     {
