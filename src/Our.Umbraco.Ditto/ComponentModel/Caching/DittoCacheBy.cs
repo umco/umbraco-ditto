@@ -31,6 +31,16 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// The culture
         /// </summary>
-        Culture = 16
+        Culture = 16,
+
+        /// <summary>
+        /// The attribute type
+        /// </summary>
+        AttributeType = 32,
+
+        /// <summary>
+        /// Use the customisation method on the attribute
+        /// </summary>
+        Custom = 64
     }
 }

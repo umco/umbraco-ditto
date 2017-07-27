@@ -16,32 +16,41 @@ namespace Our.Umbraco.Ditto
         {
             var cacheKey = new List<object>() { "DittoCache" };
 
-            if ((context.Attribute.CacheBy & DittoCacheBy.ContentId) == DittoCacheBy.ContentId)
+            var cacheBy = context.Attribute.CacheBy;
+
+            if (cacheBy.HasFlag(DittoCacheBy.ContentId))
             {
                 cacheKey.Add(context.Content.Id);
             }
 
-            if ((context.Attribute.CacheBy & DittoCacheBy.ContentVersion) == DittoCacheBy.ContentVersion)
+            if (cacheBy.HasFlag(DittoCacheBy.ContentVersion))
             {
                 cacheKey.Add(context.Content.Version);
             }
 
-            if (context.PropertyDescriptor != null && (context.Attribute.CacheBy & DittoCacheBy.PropertyName) == DittoCacheBy.PropertyName)
+            if (cacheBy.HasFlag(DittoCacheBy.PropertyName) && context.PropertyDescriptor != null)
             {
                 cacheKey.Add(context.PropertyDescriptor.Name);
             }
 
-            if ((context.Attribute.CacheBy & DittoCacheBy.TargetType) == DittoCacheBy.TargetType)
+            if (cacheBy.HasFlag(DittoCacheBy.TargetType))
             {
                 cacheKey.Add(context.TargetType.AssemblyQualifiedName);
             }
 
-            if ((context.Attribute.CacheBy & DittoCacheBy.Culture) == DittoCacheBy.Culture)
+            if (cacheBy.HasFlag(DittoCacheBy.Culture))
             {
                 cacheKey.Add(context.Culture.LCID);
             }
 
-            return string.Join("_", cacheKey);
+            if (cacheBy.HasFlag(DittoCacheBy.AttributeType))
+            {
+                cacheKey.Add(context.Attribute.GetType().FullName);
+            }
+
+            var cacheKeyString = string.Join("_", cacheKey);
+
+            return cacheBy.HasFlag(DittoCacheBy.Custom) ? context.Attribute.CustomiseCacheKey(cacheKeyString, context) : cacheKeyString;
         }
     }
 }
