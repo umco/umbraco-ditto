@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Web.Mvc;
 using Umbraco.Core.Models;
 using Umbraco.Web.Models;
@@ -27,17 +28,20 @@ namespace Our.Umbraco.Ditto
         /// <param name="viewData">The view data.</param>
         protected override void SetViewData(ViewDataDictionary viewData)
         {
-            // If model is already ditto view model, use it
-            if (viewData.Model is DittoViewModel<TViewModel>)
+            // Gather the Ditto view model
+            var model = viewData.Model;
+
+            // If model is already Ditto view-model, use it
+            if (model is DittoViewModel<TViewModel>)
             {
                 base.SetViewData(viewData);
                 return;
             }
 
-            // Gather ditto view model properties
-            var model = viewData.Model;
+            // Gather any processor contexts
             var processorContexts = new List<DittoProcessorContext>();
 
+            // Check to see if this is a Ditto transfer model
             var transferModel = model as DittoTransferModel;
             if (transferModel != null)
             {
@@ -45,21 +49,31 @@ namespace Our.Umbraco.Ditto
                 processorContexts = transferModel.ProcessorContexts;
             }
 
-            // Check to see if we are a ditto view model at least and copy processors
+            // Get current content
+            var content = this.UmbracoContext.PublishedContentRequest != null
+                ? this.UmbracoContext.PublishedContentRequest.PublishedContent
+                : default(IPublishedContent);
+
+            // Get current culture
+            var culture = this.UmbracoContext.PublishedContentRequest != null
+                ? this.UmbracoContext.PublishedContentRequest.Culture
+                : CultureInfo.CurrentCulture;
+
+            // Check if the model is a Ditto base view-model; Use the assigned properties
             var baseDittoViewModel = model as BaseDittoViewModel;
             if (baseDittoViewModel != null)
             {
+                content = baseDittoViewModel.Content ?? content;
+                culture = baseDittoViewModel.CurrentCulture ?? culture;
                 processorContexts.AddRange(baseDittoViewModel.ProcessorContexts);
-            }
 
-            var content = default(IPublishedContent);
-            var culture = CultureInfo.CurrentCulture;
-
-            // Get current content / culture
-            if (this.UmbracoContext.PublishedContentRequest != null)
-            {
-                content = this.UmbracoContext.PublishedContentRequest.PublishedContent;
-                culture = this.UmbracoContext.PublishedContentRequest.Culture;
+                // Furthermore, check if the model is generic/wrapped; Unwrap the inner view-model
+                var modelType = model.GetType();
+                if (modelType.IsGenericType && modelType.GetGenericTypeDefinition() == typeof(DittoViewModel<>))
+                {
+                    var viewProperty = modelType.GetProperty("View", Ditto.MappablePropertiesBindingFlags);
+                    model = FastPropertyAccessor.GetValue(viewProperty, model);
+                }
             }
 
             // Process model
@@ -78,7 +92,7 @@ namespace Our.Umbraco.Ditto
 
             var typedModel = model as TViewModel;
 
-            // We need to give each view it's own view data dictonary
+            // We need to give each view its own view data dictionary
             // to allow them to have different model types
             var newViewData = new ViewDataDictionary(viewData)
             {
