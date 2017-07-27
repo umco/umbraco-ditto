@@ -49,16 +49,6 @@ namespace Our.Umbraco.Ditto
                 processorContexts = transferModel.ProcessorContexts;
             }
 
-            // Get current content
-            var content = this.UmbracoContext.PublishedContentRequest != null
-                ? this.UmbracoContext.PublishedContentRequest.PublishedContent
-                : default(IPublishedContent);
-
-            // Get current culture
-            var culture = this.UmbracoContext.PublishedContentRequest != null
-                ? this.UmbracoContext.PublishedContentRequest.Culture
-                : CultureInfo.CurrentCulture;
-
             // Check if the model is a Ditto base view-model; Use the assigned properties
             var baseDittoViewModel = model as BaseDittoViewModel;
             if (baseDittoViewModel != null)
@@ -72,6 +62,16 @@ namespace Our.Umbraco.Ditto
                     var viewProperty = modelType.GetProperty("View", Ditto.MappablePropertiesBindingFlags);
                     model = FastPropertyAccessor.GetValue(viewProperty, model);
                 }
+            }
+
+            var content = default(IPublishedContent);
+            var culture = CultureInfo.CurrentCulture;
+
+            // Get current content / culture
+            if (this.UmbracoContext.PublishedContentRequest != null)
+            {
+                content = this.UmbracoContext.PublishedContentRequest.PublishedContent;
+                culture = this.UmbracoContext.PublishedContentRequest.Culture;
             }
 
             // Process model
