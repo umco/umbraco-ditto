@@ -63,8 +63,6 @@ namespace Our.Umbraco.Ditto
             var baseDittoViewModel = model as BaseDittoViewModel;
             if (baseDittoViewModel != null)
             {
-                content = baseDittoViewModel.Content ?? content;
-                culture = baseDittoViewModel.CurrentCulture ?? culture;
                 processorContexts.AddRange(baseDittoViewModel.ProcessorContexts);
 
                 // Furthermore, check if the model is generic/wrapped; Unwrap the inner view-model
