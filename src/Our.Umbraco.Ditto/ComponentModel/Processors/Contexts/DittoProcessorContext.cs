@@ -45,23 +45,25 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Populates the core context fields.
         /// </summary>
-        /// <param name="content">The content.</param>
-        /// <param name="targetType">Type of the target.</param>
-        /// <param name="propertyDescriptor">The property descriptor.</param>
-        /// <param name="culture">The culture.</param>
+        /// <param name="baseProcessorContext">The base processor content.</param>
         /// <returns>Returns the Ditto processors context.</returns>
-        internal DittoProcessorContext Populate(
-            IPublishedContent content, 
-            Type targetType, 
-            PropertyDescriptor propertyDescriptor, 
-            CultureInfo culture)
+        internal DittoProcessorContext Populate(DittoProcessorContext baseProcessorContext)
         {
-            this.Content = content;
-            this.TargetType = targetType;
-            this.PropertyDescriptor = propertyDescriptor;
-            this.Culture = culture;
+            Content = baseProcessorContext.Content;
+            TargetType = baseProcessorContext.TargetType;
+            PropertyDescriptor = baseProcessorContext.PropertyDescriptor;
+            Culture = baseProcessorContext.Culture;
 
             return this;
+        }
+
+        /// <summary>
+        /// Shallow clones the current context.
+        /// </summary>
+        /// <returns>Returns a cloned Ditto processor context.</returns>
+        internal DittoProcessorContext Clone()
+        {
+            return (DittoProcessorContext)MemberwiseClone();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Our.Umbraco.Ditto
 {
@@ -8,7 +7,6 @@ namespace Our.Umbraco.Ditto
     /// Represents a multi-ditto processor capable of wrapping multiple attributes into a single attribute definition
     /// </summary>
     [AttributeUsage(Ditto.ProcessorAttributeTargets, AllowMultiple = true, Inherited = false)]
-    [DittoProcessorMetaData(ValueType = typeof(object), ContextType = typeof(DittoMultiProcessorContext))]
     public abstract class DittoMultiProcessorAttribute : DittoProcessorAttribute
     {
         /// <summary>
@@ -45,15 +43,14 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            var ctx = (DittoMultiProcessorContext)this.Context;
 
             foreach (var processorAttr in this.Attributes)
             {
                 // Get the right context type
-                var newCtx = ctx.ContextCache.GetOrCreateContext(processorAttr.ContextType);
+                var newCtx = this.ChainContext.ProcessorContexts.GetOrCreate(this.Context, processorAttr.ContextType);
 
                 // Process value
-                this.Value = processorAttr.ProcessValue(this.Value, newCtx);
+                this.Value = processorAttr.ProcessValue(this.Value, newCtx, this.ChainContext);
             }
 
             return this.Value;

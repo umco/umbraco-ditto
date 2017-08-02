@@ -58,5 +58,17 @@ namespace Our.Umbraco.Ditto
             // All checks have passed so allow it to be mapped
             return true;
         }
+
+        /// <summary>
+        /// Checks to see if the given poperty should attempt to lazy load
+        /// </summary>
+        /// <param name="source">The property to check</param>
+        /// <returns>True if a lazy load attempt should be make</returns>
+        public static bool ShouldAttemptLazyLoad(this PropertyInfo source)
+        {
+            return source.HasCustomAttribute<DittoLazyAttribute>() || 
+                ((source.DeclaringType.HasCustomAttribute<DittoLazyAttribute>() || Ditto.LazyLoadStrategy == LazyLoad.AllVirtuals) 
+                    && source.IsVirtualAndOverridable());
+        }
     }
 }

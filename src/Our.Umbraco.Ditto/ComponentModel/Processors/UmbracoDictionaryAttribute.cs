@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using Umbraco.Core.Models;
+﻿using Umbraco.Core.Models;
 using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
@@ -54,24 +52,7 @@ namespace Our.Umbraco.Ditto
                 return null;
             }
 
-            return UmbracoDictionaryHelper.GetValue(dictionaryKey);
+            return Umbraco.GetDictionaryValue(dictionaryKey);
         }
-    }
-
-    /// <summary>
-    /// An Umbraco dictionary.
-    /// </summary>
-    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Reviewed.")]
-    internal static class UmbracoDictionaryHelper
-    {
-        /// <summary>
-        /// Gets the value from the Umbraco dictionary using a <c>key</c>.
-        /// </summary>
-        internal static Func<string, string> GetValue = (key) =>
-        {
-            return UmbracoContext.Current != null
-                ? new UmbracoHelper(UmbracoContext.Current).GetDictionaryValue(key)
-                : null;
-        };
     }
 }

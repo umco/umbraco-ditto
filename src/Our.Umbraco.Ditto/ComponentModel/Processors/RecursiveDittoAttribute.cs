@@ -10,6 +10,11 @@ namespace Our.Umbraco.Ditto
     internal class RecursiveDittoAttribute : DittoProcessorAttribute
     {
         /// <summary>
+        /// Gets or sets the processor contexts.
+        /// </summary>
+        public IEnumerable<DittoProcessorContext> ProcessorContexts { get; set; }
+
+        /// <summary>
         /// Processes the value.
         /// </summary>
         /// <returns>
@@ -25,7 +30,11 @@ namespace Our.Umbraco.Ditto
                 if (this.Value is IPublishedContent && this.Context.PropertyDescriptor.PropertyType.IsClass)
                 {
                     // If the property value is an IPublishedContent, then we can use Ditto to map to the target type.
-                    result = ((IPublishedContent)this.Value).As(this.Context.PropertyDescriptor.PropertyType);
+                    result = ((IPublishedContent)this.Value).As(
+                        this.Context.PropertyDescriptor.PropertyType,
+                        this.Context.Culture,
+                        null,
+                        chainContext: ChainContext);
                 }
                 else if (this.Value != null && this.Value.GetType().IsEnumerableOfType(typeof(IPublishedContent))
                     && this.Context.PropertyDescriptor.PropertyType.IsEnumerable()
@@ -33,7 +42,10 @@ namespace Our.Umbraco.Ditto
                     && this.Context.PropertyDescriptor.PropertyType.GetEnumerableType().IsClass)
                 {
                     // If the property value is IEnumerable<IPublishedContent>, then we can use Ditto to map to the target type.
-                    result = ((IEnumerable<IPublishedContent>)this.Value).As(this.Context.PropertyDescriptor.PropertyType.GetEnumerableType());
+                    result = ((IEnumerable<IPublishedContent>)this.Value).As(
+                        this.Context.PropertyDescriptor.PropertyType.GetEnumerableType(),
+                        this.Context.Culture,
+                        chainContext: ChainContext);
                 }
             }
 

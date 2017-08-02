@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -76,8 +76,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CachedInvocations.cs" />
-    <Compile Include="Common\PropertyInfoInvocations.cs" />
+    <Compile Include="Common\FastPropertyAccessor.cs" />
+    <Compile Include="Common\DittoContextAccessor.cs" />
     <Compile Include="ComponentModel\Attributes\DittoDefaultProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Attributes\DittoLazyAttribute.cs" />
     <Compile Include="ComponentModel\Caching\DittoCacheContext.cs" />
     <Compile Include="ComponentModel\Attributes\DittoCacheableAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoCacheAttribute.cs" />
@@ -89,8 +91,6 @@
     <Compile Include="ComponentModel\Caching\DittoCacheBy.cs" />
     <Compile Include="ComponentModel\Caching\DittoDefaultCacheKeyBuilder.cs" />
     <Compile Include="ComponentModel\Caching\DittoCacheKeyBuilder.cs" />
-    <Compile Include="ComponentModel\Processors\Contexts\DittoMultiProcessorContext.cs" />
-    <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContextCache.cs" />
     <Compile Include="ComponentModel\Processors\DittoDocTypeFactoryAttribute.cs" />
     <Compile Include="ComponentModel\Processors\DittoFactoryAttribute.cs" />
     <Compile Include="ComponentModel\Processors\TryConvertToAttribute.cs" />
@@ -115,10 +115,13 @@
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandler.cs" />
     <Compile Include="ComponentModel\Processors\DittoProcessorRegistry.cs" />
     <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContext.cs" />
-    <Compile Include="ComponentModel\Processors\UltimatePickerAttribute.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="ComponentModel\Processors\UmbracoXPathProcessorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\UmbracoXPathNavigatorAttribute.cs" />
+    <Compile Include="ComponentModel\Processors\UmbracoXPathAttribute.cs" />
     <Compile Include="Ditto.cs" />
+    <Compile Include="DittoChainContext.cs" />
+    <Compile Include="Extensions\Internal\AssemblyExtensions.cs" />
+    <Compile Include="Extensions\Internal\MemberInfoExtensions.cs" />
     <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
     <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Internal\PropertyInfoExtensions.cs" />
@@ -127,9 +130,10 @@
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />
     <Compile Include="Extensions\RenderModelExtensions.cs" />
     <Compile Include="Extensions\PublishedContentExtensions.cs" />
-    <Compile Include="Models\DittoTransferModel.cs" />
-    <Compile Include="Models\DittoViewModel.cs" />
-    <Compile Include="Models\IDittoViewModel.cs" />
+    <Compile Include="LazyLoad.cs" />
+    <Compile Include="Web\Mvc\Models\DittoTransferModel.cs" />
+    <Compile Include="Web\Mvc\Models\DittoViewModel.cs" />
+    <Compile Include="Web\Mvc\Models\IDittoViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="Proxy\ConstructorEmitter.cs" />
@@ -148,13 +152,6 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />

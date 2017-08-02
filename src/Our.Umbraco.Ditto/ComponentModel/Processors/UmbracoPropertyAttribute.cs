@@ -112,7 +112,7 @@ namespace Our.Umbraco.Ditto
 
                     // Apply property source only if it's different from the default,
                     // and the current value is the default. We only do it this
-                    // way because if they change it at the property level, we 
+                    // way because if they change it at the property level, we
                     // want that to take precedence over the class level.
                     if (classAttr.PropertySource != Ditto.DefaultPropertySource
                         && PropertySource == Ditto.DefaultPropertySource)
@@ -163,7 +163,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="umbracoPropertyName"></param>
         /// <param name="recursive"></param>
         /// <returns></returns>
-        private object GetPropertyValue(IPublishedContent content, string umbracoPropertyName, bool recursive)
+        protected object GetPropertyValue(IPublishedContent content, string umbracoPropertyName, bool recursive)
         {
             object propertyValue = null;
 
@@ -208,8 +208,8 @@ namespace Our.Umbraco.Ditto
                     LogHelper.Warn<UmbracoPropertyAttribute>("The property " + umbracoPropertyName + " being mapped from content type " + contentType.Name + "'s instance properties hides a property in the umbraco properties collection of the same name. It is recommended that you avoid using umbraco property aliases that conflict with IPublishedContent instance property names, but if you can't avoid this and you require access to the hidden property you can use the PropertySource parameter of the processors attribute to override the order in which properties are checked.");
                 }
 
-                // This is more than 2x as fast as propertyValue = contentProperty.GetValue(content, null);
-                return PropertyInfoInvocations.GetValue(contentProperty, content);
+                // This is over 4x faster than propertyValue = contentProperty.GetValue(content, null);
+                return FastPropertyAccessor.GetValue(contentProperty, content);
             }
 
             return null;

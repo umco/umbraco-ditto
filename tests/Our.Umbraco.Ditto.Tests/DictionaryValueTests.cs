@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
+using Umbraco.Core.Dictionary;
+using Moq;
+using Umbraco.Core.ObjectResolution;
 
 namespace Our.Umbraco.Ditto.Tests
 {
@@ -18,19 +19,37 @@ namespace Our.Umbraco.Ditto.Tests
             public string Foo { get; set; }
         }
 
+        [TestFixtureSetUp]
+        public void Init()
+        {
+            if (!CultureDictionaryFactoryResolver.HasCurrent)
+            {
+                var mockDictionary = new Mock<ICultureDictionary>();
+                mockDictionary.SetupGet(p => p["hello"]).Returns("world");
+                mockDictionary.SetupGet(p => p["Foo"]).Returns("bar");
+
+                var mockDictionaryFactory = new Mock<ICultureDictionaryFactory>();
+                mockDictionaryFactory.Setup(x => x.CreateDictionary()).Returns(mockDictionary.Object);
+
+
+                CultureDictionaryFactoryResolver.Current = new CultureDictionaryFactoryResolver(mockDictionaryFactory.Object);
+
+                Resolution.Freeze();
+            }
+        }
+        
+        [TestFixtureTearDown]
+        public void Teardown()
+        {
+            if (Resolution.IsFrozen)
+            {
+                Resolution.Reset();
+            }
+        }
+
         [Test]
         public void DictionaryValue_Returned()
         {
-            // Create mock dictionary items
-            var mockDict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "hello", "world" },
-                { "foo", "bar" }
-            };
-
-            // Replace dictionary helper getter
-            UmbracoDictionaryHelper.GetValue = (key) => mockDict[key];
-
             // Create mock content
             var content = new MockPublishedContent();
 

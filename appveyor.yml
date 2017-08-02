@@ -1,5 +1,7 @@
+os: Visual Studio 2015
+
 # version format
-version: 0.10.0.{build}
+version: 0.11.0.{build}
 
 # UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
@@ -10,11 +12,11 @@ cache:
   - src\packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
 
 build_script:
-- build-appveyor.cmd
+- build\build-appveyor.cmd
 
 test:
   assemblies:
-    - 'Our.Umbraco.Ditto.Tests.dll'
+    - 'Umbraco.Tests.dll'
 
 artifacts:
   - path: artifacts\*.nupkg

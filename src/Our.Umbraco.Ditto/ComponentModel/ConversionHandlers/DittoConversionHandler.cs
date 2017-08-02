@@ -1,7 +1,4 @@
-﻿using System;
-using Umbraco.Core.Models;
-
-namespace Our.Umbraco.Ditto
+﻿namespace Our.Umbraco.Ditto
 {
     /// <summary>
     /// The types of conversion handler.
@@ -26,42 +23,24 @@ namespace Our.Umbraco.Ditto
     public abstract class DittoConversionHandler
     {
         /// <summary>
-        /// Gets or sets the current IPublishedContent.
+        /// Gets or sets the current DittoConversionHandlerContext.
         /// </summary>
         /// <value>
-        /// The content.
+        /// The context.
         /// </value>
-        public IPublishedContent Content { get; protected set; }
-
-        /// <summary>
-        /// Gets or sets the type of the model.
-        /// </summary>
-        /// <value>
-        /// The type of the model.
-        /// </value>
-        public Type ModelType { get; protected set; }
-
-        /// <summary>
-        /// Gets or sets the model.
-        /// </summary>
-        /// <value>
-        /// The model.
-        /// </value>
-        public object Model { get; protected set; }
+        public DittoConversionHandlerContext Context { get; protected set; }
 
         /// <summary>
         /// Called just before conversion of the model occurs.
         /// </summary>
         public virtual void OnConverting()
-        {
-        }
+        { }
 
         /// <summary>
         /// Called just after conversion of the model occurs.
         /// </summary>
         public virtual void OnConverted()
-        {
-        }
+        { }
 
         /// <summary>
         /// Runs the conversion handler.
@@ -70,9 +49,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="type">The handler type to run.</param>
         internal virtual void Run(DittoConversionHandlerContext ctx, DittoConversionHandlerType type)
         {
-            this.Content = ctx.Content;
-            this.ModelType = ctx.ModelType;
-            this.Model = ctx.Model;
+            this.Context = ctx;
 
             this.Run(type);
         }
@@ -104,12 +81,12 @@ namespace Our.Umbraco.Ditto
         where TConvertedType : class
     {
         /// <summary>
-        /// Gets or sets the model.
+        /// Gets or sets the current DittoConversionHandlerContext.
         /// </summary>
         /// <value>
-        /// The model.
+        /// The context.
         /// </value>
-        public new TConvertedType Model { get; protected set; }
+        public new DittoConversionHandlerContext<TConvertedType> Context { get; protected set; }
 
         /// <summary>
         /// Runs the conversion handler.
@@ -118,9 +95,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="type">The handler type to run.</param>
         internal override void Run(DittoConversionHandlerContext ctx, DittoConversionHandlerType type)
         {
-            this.Content = ctx.Content;
-            this.ModelType = ctx.ModelType;
-            this.Model = ctx.Model as TConvertedType;
+            this.Context = new DittoConversionHandlerContext<TConvertedType>(ctx);
 
             this.Run(type);
         }

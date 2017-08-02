@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto
@@ -7,6 +9,21 @@ namespace Our.Umbraco.Ditto
     /// </summary>
     public class DittoDocTypeFactoryAttribute : DittoFactoryAttribute
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoDocTypeFactoryAttribute"/> class.
+        /// </summary>
+        public DittoDocTypeFactoryAttribute()
+            : base()
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoDocTypeFactoryAttribute"/> class.
+        /// </summary>
+        /// <param name="allowedTypes">List of allowed types</param>
+        public DittoDocTypeFactoryAttribute(Type[] allowedTypes)
+            : base(allowedTypes)
+        { }
+
         /// <summary>
         /// Gets or sets a prefix string to prepend onto the resolved type name.
         /// </summary>

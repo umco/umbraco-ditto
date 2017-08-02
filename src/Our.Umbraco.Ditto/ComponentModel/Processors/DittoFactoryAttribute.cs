@@ -13,6 +13,29 @@ namespace Our.Umbraco.Ditto
     public abstract class DittoFactoryAttribute : DittoProcessorAttribute
     {
         /// <summary>
+        /// Gets or sets the list of allowed types
+        /// </summary>
+        public Type[] AllowedTypes { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoFactoryAttribute"/> class.
+        /// </summary>
+        protected DittoFactoryAttribute()
+        {
+            AllowedTypes = null;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoFactoryAttribute"/> class.
+        /// </summary>
+        /// <param name="allowedTypes">List of allowed types</param>
+        protected DittoFactoryAttribute(Type[] allowedTypes)
+            : this()
+        {
+            AllowedTypes = allowedTypes;
+        }
+
+        /// <summary>
         /// Resolves a type name based upon the current content item.
         /// </summary>
         /// <param name="currentContent">The current published content.</param>
@@ -39,12 +62,45 @@ namespace Our.Umbraco.Ditto
 
             // TODO: Validate the base type more?
 
-            // Find the appropreate types
-            // There is no non generic version of ResolveTypes so we have to
-            // call it via reflection.
-            var method = typeof(PluginManager).GetMethod("ResolveTypes");
-            var generic = method.MakeGenericMethod(baseType);
-            var types = (IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null });
+            // Get the list of types to search through
+            // If we have explicitly set a list of allowed types, just use those
+            // otherwise attempt to search through loaded assemblies
+            IEnumerable<Type> types;
+
+            if (AllowedTypes != null && AllowedTypes.Length > 0)
+            {
+                types = AllowedTypes;
+            }
+            else
+            {
+                types = (IEnumerable<Type>)ApplicationContext.Current.ApplicationCache.StaticCache.GetCacheItem("DittoFactoryAttribute_ResolveTypes_" + baseType.AssemblyQualifiedName, () =>
+                {
+                    // Workaround for http://issues.umbraco.org/issue/U4-9011
+                    if (baseType.Assembly.IsAppCodeAssembly())
+                    {
+                        // This logic is taken from the core type finder so 
+                        // it should be performing the same checks
+                        return baseType.Assembly
+                            .GetTypes()
+                            .Where(t => baseType.IsAssignableFrom(t)
+                                && t.IsClass
+                                && !t.IsAbstract
+                                && !t.IsSealed
+                                && !t.IsNestedPrivate
+                                && t.GetCustomAttribute<HideFromTypeFinderAttribute>(true) == null)
+                                    .ToArray();
+                    }
+
+                    // Find the appropriate types
+                    // There is no non generic version of ResolveTypes so we have to
+                    // call it via reflection.
+                    var method = typeof(PluginManager).GetMethod("ResolveTypes");
+                    var generic = method.MakeGenericMethod(baseType);
+                    return ((IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null })).ToArray();
+
+                });
+                
+            }
 
             // Check for IEnumerable<IPublishedContent> value
             var enumerableValue = this.Value as IEnumerable<IPublishedContent>;
@@ -55,7 +111,7 @@ namespace Our.Umbraco.Ditto
                     var typeName = this.ResolveTypeName(x);
                     var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
 
-                    return type != null ? x.As(type) : null;
+                    return type != null ? x.As(type, chainContext: ChainContext) : null;
                 });
 
                 return EnumerableInvocations.Cast(baseType, items);
@@ -67,7 +123,7 @@ namespace Our.Umbraco.Ditto
             {
                 var typeName = this.ResolveTypeName(ipublishedContentValue);
                 var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
-                return type != null ? ipublishedContentValue.As(type) : null;
+                return type != null ? ipublishedContentValue.As(type, chainContext:ChainContext) : null;
             }
 
             // No other possible options
