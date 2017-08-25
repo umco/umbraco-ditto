@@ -1,4 +1,10 @@
-# Advanced usage - Property attributes
+---
+layout: default
+title: Usage Guide
+permalink: /usage/processors/index.html
+---
+
+## Processors
 
 To extend the mapping functionality, Ditto offers several attributes to decorate your POCO models:
 
@@ -11,10 +17,9 @@ To extend the mapping functionality, Ditto offers several attributes to decorate
 * [`DittoIgnore`](#dittoignore)
 * [`AppSetting`](#appsetting)
 
-
 ---
 
-## `UmbracoProperty`
+### `UmbracoProperty`
 
 In situations where you would like to name a property in your POCO model differently to your DocumentType's property alias, you can use the `UmbracoProperty` attribute to define this.
 
@@ -30,17 +35,17 @@ public string Content { get; set; }
 Now Ditto will know to map the POCO's `Content` property to the DocumentType's "bodyText" property.
 
 
-## `AltUmbracoProperty`
+### `AltUmbracoProperty`
 
 > // TODO: Add example
 > 
 
-## `UmbracoProperties`
+### `UmbracoProperties`
 
 > // TODO: Add example
 
 
-## `UmbracoDictionary`
+### `UmbracoDictionary`
 
 If you have a dictionary item (*set in the Umbraco back-office Settings section*), you can use this attribute to populate the a property value.
 
@@ -52,12 +57,12 @@ public string ReadMoreLabel { get; set; }
 ```
 
 
-## `UmbracoPicker`
+### `UmbracoPicker`
 
 > // TODO: Add example
 
 
-## `CurrentContentAs`
+### `CurrentContentAs`
 
 This attribute is used for when you would like to re-apply the current `IPublishedContent` object to a nested (inner) property of your POCO model.
 
@@ -93,7 +98,7 @@ var poco = Model.Content.As<MyModel>();
 ```
 
 
-## `DittoIgnore`
+### `DittoIgnore`
 
 For situations where you would rather that Ditto did not attempt to map a DocumentType property with one of your POCO model properties, you can use the `DittoIgnore` attribute:
 
@@ -107,7 +112,7 @@ When you map your content node, the ignored property (in this example, `Image`) 
 The `DittoIgnore` attribute is useful for when you want to construct more complex POCO models.
 
 
-## `AppSetting`
+### `AppSetting`
 
 This attribute can be used for when you would like to populate your POCO model property with a value from the `Web.config` `<appSettings>` section. By supplying the key name for the app-setting, the value will be populated.
 
@@ -117,3 +122,44 @@ For example, if you wanted to display the Umbraco version number, you could do t
 [AppSetting("umbracoConfigurationStatus")]
 public string UmbracoVersion { get; set; }
 ```
+
+---
+
+## <a name="custom-processors" title="Custom Processors"></a>Custom Processors
+
+The key feature of Ditto is the ability to process a value (typically from an `IPublishedContent` property) and set it to the property of the target view-model. To do this we use a Processor (or a combination of Processors).
+
+While Ditto covers the most common types of processing, (via the use of [attributes](usage-advanced-attributes), there may be scenarios where you may need a little help in processing custom (or complex) values.
+
+Traditionally any custom processor logic would be typically done within an MVC controller.  However, if the logic is only relevant to the mapping operation, then it may clutter your controller code and be better suited as a custom `Processor`.
+
+For example, let's look at having a calculated value during mapping, say that you wanted to display the number of days since a piece of content was last updated:
+
+```csharp
+public class MyModel
+{
+    [MyCustomProcessor]
+    public int DaysSinceUpdated { get; set; }
+}
+
+public class MyCustomProcessor : DittoProcessorAttribute
+{
+    public override object ProcessValue()
+    {
+        var content = Value as IPublishedContent;
+        if (content == null) return null;
+
+        return (DateTime.UtcNow - content.UpdateDate).Days;
+    }
+}
+```
+
+Once mapped, the value of `DaysSinceUpdated` would contain the number of days difference between the content item's last update date and today's date (UTC now).
+
+---
+
+## <a name="chaining-processors" title="Chaining Processors"></a>Chaining Processors
+
+---
+
+## <a name="caching-processors" title="Caching Processors"></a>Caching Processors

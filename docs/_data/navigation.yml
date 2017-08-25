@@ -1,0 +1,42 @@
+- title: Installation
+  url: /installation/
+  subnav: 
+    - title: Requirements
+      url: "#requirements"
+    - title: Our Umbraco installation
+      url: "#our-umbraco"
+    - title: Nuget installation
+      url: "#nuget"
+    - title: Manual installation
+      url: "#manual"
+
+- title: Usage Guide
+  url: /usage/
+  subnav:
+    - title: Basic Usage
+      url: "#basic-usage"
+    - title: Processors
+      url: /usage/processors/
+    - title: Conversion Handlers
+      url: /usage/conversion/
+    - title: MVC
+      url: /usage/mvc/
+
+- title: Advanced Topics
+  url: /advanced/
+  subnav: 
+    - title: Lazy Loading
+      url: "#lazy-loading"
+    - title: Lists
+      url: "#lists"
+  
+- title: Upgrading
+  url: /upgrading/
+  subnav:
+    - title: Upgrading to v1.0.0
+      name: upgrading-to-v100
+    - title: Upgrading to v0.9.0
+      name: upgrading-to-v090
+
+- title: API
+  url: /api/

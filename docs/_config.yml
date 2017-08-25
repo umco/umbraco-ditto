@@ -1,0 +1,18 @@
+# settings
+title: Ditto
+description: Ditto - the friendly view-model mapper for Umbraco
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+
+# collections
+collections:
+  pages:
+    output: true
+    permalink: /:name/index.html
+
+# Build settings
+markdown: kramdown
+exclude:
+  - .editorconfig
+  - Gemfile
+  - Gemfile.lock

@@ -1,4 +1,17 @@
-## Upgrading to v0.9.0
+---
+layout: default
+title: Upgrading
+permalink: /upgrading/index.html
+---
+
+## Upgrading to v1.0.0
+
+If you are upgrading from Ditto v0.9+ to v1.0, then there's nothing to worry about. No breaking changes, just upgrade the Ditto assembly and you're done.
+
+For earlier versions, keep reading.
+
+
+## <a name="upgrading-to-v090" title="Upgrading to v0.9.0"></a>Upgrading to v0.9.0 (and beyond)
 
 With Ditto v0.9.0 the introduction of Processors has made an overall breaking change for developers who have built custom TypeConverters or ValueResolvers with previous Ditto versions. The intention of Processors are to combine the power and flexibility of both TypeConverters and ValueResolvers together.
 
@@ -59,7 +72,6 @@ Below is a list of old core TypeConverters and their new Processor alternatives:
 | Old                                                          | New                |
 | ------------------------------------------------------------ | ------------------ |
 | `[TypeConverter(typeof(DittoPickerConverter))]`              | `[Enum]`           |
-| `[TypeConverter(typeof(DittoUltimatePicker))]`               | `[UltimatePicker]` |
 | `[TypeConverter(typeof(DittoPickerConverter))]`              | `[UmbracoPicker]`  |
 | `[TypeConverter(typeof(DittoContentPickerConverter))]`       | `[UmbracoPicker]`  |
 | `[TypeConverter(typeof(DittoMediaPickerConverter))]`         | `[UmbracoPicker]`  |

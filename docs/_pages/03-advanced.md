@@ -1,4 +1,16 @@
-## Lists (mapping collections of nodes)
+---
+layout: default
+title: Advanced Topics
+permalink: /advanced/index.html
+---
+
+## <a name="lazy-loading" title="Lazy Loading"></a>Lazy Loading
+
+> // TODO: Add examples of marking properties with `virtual`
+
+---
+
+## <a name="lists" title="Lists"></a>Lists (mapping collections of nodes)
 
 Ditto has the ability to map collections of any item that is stored as `IPublishedContent` within the published content cache. This is done my means of the built in [TypeConverters](usage-advanced-typeconverters/) that are included within the package.
 
@@ -28,3 +40,4 @@ If you are referencing multiple types you might want to list the property as fol
     }
 
 You can then filter the items in the collection by document typ alias and convert them using individual calls to `As<T>`. 
+

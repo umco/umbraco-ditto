@@ -15,4 +15,5 @@ Thumbs.db
 .wyam/
 artifacts/
 src/packages/
-docs/
+docs/_site
+docs/.jekyll-metadata
