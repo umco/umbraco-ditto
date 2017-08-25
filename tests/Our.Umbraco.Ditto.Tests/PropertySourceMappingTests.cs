@@ -155,7 +155,7 @@ namespace Our.Umbraco.Ditto.Tests
             var logMessages = mockLogger.GetLogMessages().Where(x => x.MessageType == LogMessageType.Warn && x.CallingType == typeof(UmbracoPropertyAttribute));
 
             Assert.NotNull(logMessages);
-            Assert.That(logMessages.Any(x => x.Message.Contains("hides a property in the umbraco properties collection")));
+            Assert.That(logMessages.Any(x => x.Message.Contains("hides a property in the Umbraco properties collection")));
 
             // Check for hidden instance properties
             mockLogger.ClearLogMessages();
