@@ -54,7 +54,7 @@ namespace Our.Umbraco.Ditto.Tests
                 contentList.Add(new MockPublishedContent
                 {
                     Id = i,
-                    Name = "Node " + i,
+                    Name = string.Concat("Node ", i),
                     Properties = new[] { new MockPublishedContentProperty("myProperty", value) }
                 });
             }

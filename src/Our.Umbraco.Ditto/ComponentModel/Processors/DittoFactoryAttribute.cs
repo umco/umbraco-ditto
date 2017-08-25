@@ -73,33 +73,34 @@ namespace Our.Umbraco.Ditto
             }
             else
             {
-                types = (IEnumerable<Type>)ApplicationContext.Current.ApplicationCache.StaticCache.GetCacheItem("DittoFactoryAttribute_ResolveTypes_" + baseType.AssemblyQualifiedName, () =>
-                {
-                    // Workaround for http://issues.umbraco.org/issue/U4-9011
-                    if (baseType.Assembly.IsAppCodeAssembly())
+                types = (IEnumerable<Type>)ApplicationContext.Current.ApplicationCache.StaticCache.GetCacheItem(
+                    string.Concat("DittoFactoryAttribute_ResolveTypes_", baseType.AssemblyQualifiedName),
+                    () =>
                     {
-                        // This logic is taken from the core type finder so 
-                        // it should be performing the same checks
-                        return baseType.Assembly
-                            .GetTypes()
-                            .Where(t => baseType.IsAssignableFrom(t)
-                                && t.IsClass
-                                && !t.IsAbstract
-                                && !t.IsSealed
-                                && !t.IsNestedPrivate
-                                && t.GetCustomAttribute<HideFromTypeFinderAttribute>(true) == null)
-                                    .ToArray();
-                    }
+                        // Workaround for http://issues.umbraco.org/issue/U4-9011
+                        if (baseType.Assembly.IsAppCodeAssembly())
+                        {
+                            // This logic is taken from the core type finder so 
+                            // it should be performing the same checks
+                            return baseType.Assembly
+                                .GetTypes()
+                                .Where(t => baseType.IsAssignableFrom(t)
+                                    && t.IsClass
+                                    && !t.IsAbstract
+                                    && !t.IsSealed
+                                    && !t.IsNestedPrivate
+                                    && t.GetCustomAttribute<HideFromTypeFinderAttribute>(true) == null)
+                                        .ToArray();
+                        }
 
-                    // Find the appropriate types
-                    // There is no non generic version of ResolveTypes so we have to
-                    // call it via reflection.
-                    var method = typeof(PluginManager).GetMethod("ResolveTypes");
-                    var generic = method.MakeGenericMethod(baseType);
-                    return ((IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null })).ToArray();
+                        // Find the appropriate types
+                        // There is no non generic version of ResolveTypes so we have to
+                        // call it via reflection.
+                        var method = typeof(PluginManager).GetMethod("ResolveTypes");
+                        var generic = method.MakeGenericMethod(baseType);
+                        return ((IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null })).ToArray();
 
-                });
-                
+                    });
             }
 
             // Check for IEnumerable<IPublishedContent> value
@@ -123,7 +124,7 @@ namespace Our.Umbraco.Ditto
             {
                 var typeName = this.ResolveTypeName(ipublishedContentValue);
                 var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
-                return type != null ? ipublishedContentValue.As(type, chainContext:ChainContext) : null;
+                return type != null ? ipublishedContentValue.As(type, chainContext: ChainContext) : null;
             }
 
             // No other possible options

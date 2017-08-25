@@ -339,12 +339,12 @@ namespace Our.Umbraco.Ditto
             foreach (var propertyInfo in properties.Where(x => x.ShouldAttemptLazyLoad()))
             {
                 // Configure lazy properties
-                using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Lazy Property ({1} {0})", propertyInfo.Name, content.Id)))
+                using (DittoDisposableTimer.DebugDuration<object>(string.Format("Lazy Property ({0} {1})", content.Id, propertyInfo.Name)))
                 {
                     // Ensure it's a virtual property (Only relevant to property level lazy loads)
                     if (!propertyInfo.IsVirtualAndOverridable())
                     {
-                        throw new InvalidOperationException("Lazy property '" + propertyInfo.Name + "' of type '" + type.AssemblyQualifiedName + "' must be declared virtual in order to be lazy loadable.");
+                        throw new InvalidOperationException(string.Format("Lazy property '{0}' of type '{1}' must be declared virtual in order to be lazy loadable.", propertyInfo.Name, type.AssemblyQualifiedName));
                     }
 
                     // Check for the ignore attribute (Only relevant to class level lazy loads).
@@ -381,7 +381,7 @@ namespace Our.Umbraco.Ditto
             foreach (var propertyInfo in properties.Where(x => !x.ShouldAttemptLazyLoad()))
             {
                 // Configure non lazy properties
-                using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
+                using (DittoDisposableTimer.DebugDuration<object>(string.Format("Property ({0} {1})", content.Id, propertyInfo.Name)))
                 {
                     // Check for the ignore attribute.
                     if (propertyInfo.HasCustomAttribute<DittoIgnoreAttribute>())
@@ -429,8 +429,8 @@ namespace Our.Umbraco.Ditto
             IDittoContextAccessor contextAccessor,
             DittoChainContext chainContext)
         {
-            // Time custom value-processor.
-            using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
+            // Time custom value-processor
+            using (DittoDisposableTimer.DebugDuration<object>(string.Format("Processor ({0} {1})", content.Id, propertyInfo.Name)))
             {
                 // Get the target property description
                 var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
