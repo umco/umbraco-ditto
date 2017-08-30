@@ -24,7 +24,7 @@ To install from Our Umbraco, please download the package from:
 
 To [install from NuGet](https://www.nuget.org/packages/Our.Umbraco.Ditto), you can run the following command from within Visual Studio:
 
-```bash
+```
 PM> Install-Package Our.Umbraco.Ditto
 ```
 
@@ -41,7 +41,7 @@ If you prefer, you can compile Ditto yourself, you'll need:
 
 To clone it locally run the following git commands:
 
-```bash
+```
 git clone https://github.com/leekelleher/umbraco-ditto.git umbraco-ditto
 cd umbraco-ditto
 .\build.cmd

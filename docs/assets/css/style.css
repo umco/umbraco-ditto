@@ -3,7 +3,7 @@ body, html {
     padding: 0;
 }
 
-body, 
+body,
 input,
 h1,
 h2,
@@ -11,7 +11,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: "Raleway", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    font-family: "Raleway", Helvetica, Arial, "Lucida Grande", sans-serif;
     font-weight: 300;
     font-size: 18px;
 }
@@ -31,13 +31,12 @@ iframe {
 }
 
 img {
-    height:auto;
+    height: auto;
 }
 
 iframe {
     border: 0 !important;
 }
-
 
 header {
     width: 100%;
@@ -66,7 +65,6 @@ h6 {
     color: inherit;
     text-rendering: optimizelegibility;
 }
-
 
 h1,
 h2,
@@ -110,7 +108,6 @@ blockquote {
 }
 
 
-
 dt {
 }
 
@@ -138,22 +135,21 @@ a:active {
 
 /* Header Styles */
 header {
-    padding: 2em 0 2em 0; 
-    background: #c33; 
+    padding: 2em 0 2em 0;
+    background: #c33;
     color: #fff;
 }
-
 
 h1 {
     margin: 0;
     padding: 0;
     float: left;
-	color:#fff;
-	font-weight:bold;
-	font-size:35px;
-	text-transform:uppercase;
-	padding-top: 10px;
-	margin-right:30px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 35px;
+    text-transform: uppercase;
+    padding-top: 10px;
+    margin-right: 30px;
 }
 
 header h2 {
@@ -167,7 +163,7 @@ header h2.docs-header {
 footer {
     text-align: center;
     padding: 1.5em 0;
-    background: #222; 
+    background: #222;
     color: #fff;
 }
 
@@ -175,7 +171,6 @@ footer p {
     margin: 0;
     color: #fff;
 }
-
 
 
 /* Navigation Styles */
@@ -225,7 +220,6 @@ nav a:active {
 }
 
 
-
 nav ul.toplinks {
     padding: 20px 0 0 0;
 }
@@ -243,7 +237,6 @@ nav #menu {
     clear: left;
 }
 
-
 nav #menu-toggle {
     position: absolute;
     right: 0;
@@ -255,7 +248,6 @@ nav #menu-toggle {
 #menu-left {
     margin: 0;
 }
-
 
 @media only screen and (min-width: 680px) {
     nav, nav #menu {
@@ -287,33 +279,34 @@ nav #menu-toggle {
     }
 }
 
-
-
-
-
-
-
-
-
-
 /* Content Styles */
-section { padding: 1em 0 3em; text-align: center; }
-section.vibrant { background: #222; color: #fff; }
+section {
+    padding: 1em 0 3em;
+    text-align: center;
+}
 
-nav:before, 
-nav:after, 
-header:before, 
-header:after, 
-section:before, 
+section.vibrant {
+    background: #222;
+    color: #fff;
+}
+
+nav:before,
+nav:after,
+header:before,
+header:after,
+section:before,
 section:after {
     content: " ";
     display: table;
 }
 
-nav:after, header:after, section:after  { clear: both; }
-nav, header, section { *zoom: 1; }
+nav:after, header:after, section:after {
+    clear: both;
+}
 
-
+nav, header, section {
+    *zoom: 1;
+}
 
 /* Form Styles */
 input {
@@ -323,56 +316,19 @@ input {
     margin: 0 auto;
     width: 100%;
     max-width: 400px;
-
-       -moz-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-
+    box-sizing: border-box;
     -webkit-transition: all linear 0.2s;
     -moz-transition: all linear 0.2s;
     -o-transition: all linear 0.2s;
     transition: all linear 0.2s;
 }
 
-
-
-
-
-
-
 input:focus {
     border-color: #007eb2;
     outline: 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .docs-nav {
     background-color: #f5f5f5;
@@ -391,19 +347,16 @@ input:focus {
 }
 
 @media only screen and (min-width: 400px) {
-
 }
 
 @media only screen and (min-width: 600px) {
-
 }
 
 @media only screen and (min-width: 960px) {
-        .docs-nav {
+    .docs-nav {
         position: absolute;
         top: 0;
         width: 220px;
-
         -webkit-transition: top linear 50ms;
         -moz-transition: top linear 50ms;
         -o-transition: top linear 50ms;
@@ -420,7 +373,7 @@ input:focus {
         background: #eee;
     }
 
-    .docs-nav a:active, 
+    .docs-nav a:active,
     .docs-nav .active {
         background: #eee;
         border-right: 2px solid #ccc;
@@ -434,10 +387,8 @@ input:focus {
         padding-left: 310px;
     }
 
-
-
     header {
-        padding: 4em 0 4em 0; 
+        padding: 4em 0 4em 0;
     }
 
     .container {
@@ -445,36 +396,28 @@ input:focus {
         padding: 0 20px;
     }
 
-    section { padding: 3em 0; text-align: left; }
+    section {
+        padding: 3em 0;
+        text-align: left;
+    }
+
     section.centered {
         text-align: center;
     }
 
-
-
-
-
-
-
-
-
     input {
         display: inline-block;
     }
-
-
-
 }
 
-
-pre.prettyprint.prettyprint {
-    line-height: 1;
+pre.highlight {
+    line-height: 1.5;
     margin-left: 0;
     margin-right: 0;
+    padding: 10px 15px;
 }
 
-.badges 
-{
+.badges {
     background: #c33;
     padding: 1.5em 0;
 }
@@ -493,7 +436,6 @@ pre.prettyprint.prettyprint {
 .badge:hover {
     opacity: 1;
 }
-
 
 table {
     border: solid 1px #ccc;

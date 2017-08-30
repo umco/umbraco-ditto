@@ -53,7 +53,7 @@ Here is an example in the context of an MVC view:
 
 @poco.BodyText
 
-<p><img src="@poco.Image" alt="[image]" /></p>
+<img src="@poco.Image" alt="..." />
 
 ```
 
@@ -61,5 +61,5 @@ For further examples, please read the [advanced topics](/advanced/).
 
 #### Video demonstrations
 
-* A short screencast giving [a brief introduction to Ditto](https://www.screenr.com/3oRN) (5 mins)
+* A short screencast giving [a brief introduction to Ditto](http://www.screenr.com/3oRN) (5 mins)
 * Lee Kelleher showcases Ditto on [uHangout EP40](https://www.youtube.com/watch?v=L40haIBLNS4)

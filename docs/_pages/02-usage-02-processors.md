@@ -23,7 +23,7 @@ To extend the mapping functionality, Ditto offers several attributes to decorate
 
 In situations where you would like to name a property in your POCO model differently to your DocumentType's property alias, you can use the `UmbracoProperty` attribute to define this.
 
-Using the `MyTextModel` class POCO model from the [basic usage example](usage-basic), let's say that you would rather the `BodyText` property to be called `Content` instead.
+Using the `MyTextModel` class POCO model from the [basic usage example](/usage/#basic-usage), let's say that you would rather the `BodyText` property to be called `Content` instead.
 
 You can do the following:
 
@@ -34,16 +34,28 @@ public string Content { get; set; }
 
 Now Ditto will know to map the POCO's `Content` property to the DocumentType's "bodyText" property.
 
+The `UmbracoProperty` processor attribute has several optional parameters available for you to define how to get the property value. These are:
+
+- `PropertyName = propertyName;
+- `AltPropertyName = altPropertyName;
+- `Recursive = recursive;
+- `DefaultValue = defaultValue;
+
+
+---
 
 ### `AltUmbracoProperty`
 
 > // TODO: Add example
 > 
 
+---
+
 ### `UmbracoProperties`
 
 > // TODO: Add example
 
+---
 
 ### `UmbracoDictionary`
 
@@ -56,11 +68,13 @@ The advantage of using an Umbraco dictionary item is that the value is based on 
 public string ReadMoreLabel { get; set; }
 ```
 
+---
 
 ### `UmbracoPicker`
 
 > // TODO: Add example
 
+---
 
 ### `CurrentContentAs`
 
@@ -97,6 +111,7 @@ var poco = Model.Content.As<MyModel>();
 <title>@poco.MetaData.MetaTitle</title>
 ```
 
+---
 
 ### `DittoIgnore`
 
@@ -111,6 +126,7 @@ When you map your content node, the ignored property (in this example, `Image`) 
 
 The `DittoIgnore` attribute is useful for when you want to construct more complex POCO models.
 
+---
 
 ### `AppSetting`
 
