@@ -42,7 +42,7 @@ namespace Our.Umbraco.Ditto
                 return default(T);
             }
 
-            using (DittoDisposableTimer.DebugDuration<T>(string.Format("RenderModel As ({0})", model.Content.DocumentTypeAlias)))
+            using (DittoDisposableTimer.DebugDuration<T>($"RenderModel As ({model.Content.DocumentTypeAlias})"))
             {
                 return model.Content.As<T>(model.CurrentCulture, null, processorContexts, onConverting, onConverted);
             }

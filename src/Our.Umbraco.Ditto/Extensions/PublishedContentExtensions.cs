@@ -139,7 +139,7 @@ namespace Our.Umbraco.Ditto
             Action<DittoConversionHandlerContext> onConverted = null,
             DittoChainContext chainContext = null)
         {
-            using (DittoDisposableTimer.DebugDuration<IEnumerable<object>>("IEnumerable As"))
+            using (DittoDisposableTimer.DebugDuration<Ditto>($"IEnumerable As<{type.Name}>"))
             {
                 var typedItems = items.Select(x => x.As(type, culture, null, processorContexts, onConverting, onConverted, chainContext));
 
@@ -197,7 +197,7 @@ namespace Our.Umbraco.Ditto
             // Ensure instance is of target type
             if (instance != null && !type.IsInstanceOfType(instance))
             {
-                throw new ArgumentException(string.Format("The instance parameter does not implement Type '{0}'", type.Name), "instance");
+                throw new ArgumentException($"The instance parameter does not implement Type '{type.Name}'", "instance");
             }
 
             // Get the context accessor (for access to ApplicationContext, UmbracoContext, et al)
@@ -227,7 +227,7 @@ namespace Our.Umbraco.Ditto
             chainContext.ProcessorContexts.AddRange(processorContexts);
 
             // Convert
-            using (DittoDisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
+            using (DittoDisposableTimer.DebugDuration<Ditto>($"As<{type.Name}>({content.DocumentTypeAlias} {content.Id})"))
             {
                 var cacheAttr = type.GetCustomAttribute<DittoCacheAttribute>(true);
                 if (cacheAttr != null)
@@ -312,7 +312,7 @@ namespace Our.Umbraco.Ditto
                     }
                     else
                     {
-                        throw new InvalidOperationException(string.Format("Can't convert IPublishedContent to {0} as it has no valid constructor. A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.", type));
+                        throw new InvalidOperationException($"Can't convert IPublishedContent to {type} as it has no valid constructor. A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.");
                     }
                 }
             }
@@ -339,12 +339,12 @@ namespace Our.Umbraco.Ditto
             foreach (var propertyInfo in properties.Where(x => x.ShouldAttemptLazyLoad()))
             {
                 // Configure lazy properties
-                using (DittoDisposableTimer.DebugDuration<object>(string.Format("Lazy Property ({0} {1})", content.Id, propertyInfo.Name)))
+                using (DittoDisposableTimer.DebugDuration<Ditto>($"Lazy Property ({content.Id} {propertyInfo.Name})"))
                 {
                     // Ensure it's a virtual property (Only relevant to property level lazy loads)
                     if (!propertyInfo.IsVirtualAndOverridable())
                     {
-                        throw new InvalidOperationException(string.Format("Lazy property '{0}' of type '{1}' must be declared virtual in order to be lazy loadable.", propertyInfo.Name, type.AssemblyQualifiedName));
+                        throw new InvalidOperationException($"Lazy property '{propertyInfo.Name}' of type '{type.AssemblyQualifiedName}' must be declared virtual in order to be lazy loadable.");
                     }
 
                     // Check for the ignore attribute (Only relevant to class level lazy loads).
@@ -380,22 +380,18 @@ namespace Our.Umbraco.Ditto
             // Process any non lazy properties next
             foreach (var propertyInfo in properties.Where(x => !x.ShouldAttemptLazyLoad()))
             {
-                // Configure non lazy properties
-                using (DittoDisposableTimer.DebugDuration<object>(string.Format("Property ({0} {1})", content.Id, propertyInfo.Name)))
+                // Check for the ignore attribute.
+                if (propertyInfo.HasCustomAttribute<DittoIgnoreAttribute>())
                 {
-                    // Check for the ignore attribute.
-                    if (propertyInfo.HasCustomAttribute<DittoIgnoreAttribute>())
-                    {
-                        continue;
-                    }
-
-                    // Set the value normally.
-                    // ReSharper disable once PossibleMultipleEnumeration
-                    var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, contextAccessor, chainContext);
-
-                    // This over 4x faster as propertyInfo.SetValue(instance, value, null);
-                    FastPropertyAccessor.SetValue(propertyInfo, instance, value);
+                    continue;
                 }
+
+                // Set the value normally.
+                // ReSharper disable once PossibleMultipleEnumeration
+                var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, contextAccessor, chainContext);
+
+                // This over 4x faster as propertyInfo.SetValue(instance, value, null);
+                FastPropertyAccessor.SetValue(propertyInfo, instance, value);
             }
 
             // We have now finished populating the instance object so go ahead
@@ -429,8 +425,7 @@ namespace Our.Umbraco.Ditto
             IDittoContextAccessor contextAccessor,
             DittoChainContext chainContext)
         {
-            // Time custom value-processor
-            using (DittoDisposableTimer.DebugDuration<object>(string.Format("Processor ({0} {1})", content.Id, propertyInfo.Name)))
+            using (DittoDisposableTimer.DebugDuration<Ditto>($"Processing '{propertyInfo.Name}' ({content.Id})"))
             {
                 // Get the target property description
                 var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
@@ -490,8 +485,9 @@ namespace Our.Umbraco.Ditto
             var propertyType = propertyInfo.PropertyType;
 
             // Check for type registered processors
-            processorAttrs.AddRange(propertyType.GetCustomAttributes<DittoProcessorAttribute>(true)
-                    .OrderBy(x => x.Order));
+            processorAttrs.AddRange(propertyType
+                .GetCustomAttributes<DittoProcessorAttribute>(true)
+                .OrderBy(x => x.Order));
 
             // Check any type arguments in generic enumerable types.
             // This should return false against typeof(string) etc also.
@@ -501,7 +497,10 @@ namespace Our.Umbraco.Ditto
             if (propertyType.IsCastableEnumerableType())
             {
                 typeArg = typeInfo.GenericTypeArguments.First();
-                processorAttrs.AddRange(typeInfo.GenericTypeArguments.First().GetCustomAttributes<DittoProcessorAttribute>(true)
+                processorAttrs.AddRange(typeInfo
+                    .GenericTypeArguments
+                    .First()
+                    .GetCustomAttributes<DittoProcessorAttribute>(true)
                     .OrderBy(x => x.Order)
                     .ToList());
 
@@ -520,15 +519,18 @@ namespace Our.Umbraco.Ditto
             // Process attributes
             foreach (var processorAttr in processorAttrs)
             {
-                // Get the right context type
-                var ctx = chainContext.ProcessorContexts.GetOrCreate(baseProcessorContext, processorAttr.ContextType);
+                using (DittoDisposableTimer.DebugDuration<Ditto>($"Processor '{processorAttr.GetType().Name}' ({content.Id})"))
+                {
+                    // Get the right context type
+                    var ctx = chainContext.ProcessorContexts.GetOrCreate(baseProcessorContext, processorAttr.ContextType);
 
-                // Populate UmbracoContext & ApplicationContext 
-                processorAttr.UmbracoContext = contextAccessor.UmbracoContext;
-                processorAttr.ApplicationContext = contextAccessor.ApplicationContext;
+                    // Populate UmbracoContext & ApplicationContext 
+                    processorAttr.UmbracoContext = contextAccessor.UmbracoContext;
+                    processorAttr.ApplicationContext = contextAccessor.ApplicationContext;
 
-                // Process value
-                currentValue = processorAttr.ProcessValue(currentValue, ctx, chainContext);
+                    // Process value
+                    currentValue = processorAttr.ProcessValue(currentValue, ctx, chainContext);
+                }
             }
 
             // The following has to happen after all the processors.

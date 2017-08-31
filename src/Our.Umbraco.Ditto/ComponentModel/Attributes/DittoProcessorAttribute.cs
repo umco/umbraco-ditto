@@ -175,7 +175,7 @@ namespace Our.Umbraco.Ditto
         {
             if (value != null && !this.ValueType.IsInstanceOfType(value))
             {
-                throw new ArgumentException(string.Format("Expected a value argument of type {0} but got {1}", this.ValueType, value.GetType()), "value");
+                throw new ArgumentException($"Expected a value argument of type {this.ValueType} but got {value.GetType()}", "value");
             }
 
             if (context == null)
@@ -185,7 +185,7 @@ namespace Our.Umbraco.Ditto
 
             if (!this.ContextType.IsInstanceOfType(context))
             {
-                throw new ArgumentException(string.Format("Expected a context argument of type {0} but got {1}", this.ContextType, context.GetType()), "context");
+                throw new ArgumentException($"Expected a context argument of type {this.ContextType} but got {context.GetType()}", "context");
             }
 
             if (chainContext == null)
