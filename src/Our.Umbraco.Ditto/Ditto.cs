@@ -161,5 +161,26 @@ namespace Our.Umbraco.Ditto
         {
             return contextAccessorType;
         }
+
+        /// <summary>
+        /// Registers a processor attribute to the end of the default set of post-processor attributes.
+        /// </summary>
+        /// <typeparam name="TProcessorAttributeType"></typeparam>
+        /// <param name="position"></param>
+        public static void RegisterPostProcessorAttribute<TProcessorAttributeType>(int position = -1)
+            where TProcessorAttributeType : DittoProcessorAttribute, new()
+        {
+            DittoProcessorRegistry.Instance.RegisterPostProcessorAttribute<TProcessorAttributeType>(position);
+        }
+
+        /// <summary>
+        /// Unregisters a processor attribute from the default set of post-processor attributes.
+        /// </summary>
+        /// <typeparam name="TProcessorAttributeType"></typeparam>
+        public static void UnregisterPostProcessorAttribute<TProcessorAttributeType>()
+            where TProcessorAttributeType : DittoProcessorAttribute, new()
+        {
+            DittoProcessorRegistry.Instance.UnregisterPostProcessorAttribute<TProcessorAttributeType>();
+        }
     }
 }

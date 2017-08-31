@@ -31,6 +31,17 @@ namespace Our.Umbraco.Ditto
         private Type DefaultProcessorType = typeof(UmbracoPropertyAttribute);
 
         /// <summary>
+        /// The default post-processors.
+        /// </summary>
+        private List<DittoProcessorAttribute> DefaultPostProcessorAttributes = new List<DittoProcessorAttribute>()
+        {
+            new HtmlStringAttribute(),
+            new EnumerableConverterAttribute(),
+            new RecursiveDittoAttribute(),
+            new TryConvertToAttribute()
+        };
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="DittoProcessorRegistry"/> class from being created.
         /// </summary>
         private DittoProcessorRegistry()
@@ -119,11 +130,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public IEnumerable<DittoProcessorAttribute> GetPostProcessorAttributes()
         {
-            // TODO: [LK] Enable the post-processor attributes to be configurable
-            yield return new HtmlStringAttribute();
-            yield return new EnumerableConverterAttribute();
-            yield return new RecursiveDittoAttribute();
-            yield return new TryConvertToAttribute();
+            return this.DefaultPostProcessorAttributes;
         }
 
         /// <summary>
@@ -141,6 +148,36 @@ namespace Our.Umbraco.Ditto
                     ? Cache[objectType]
                     : Enumerable.Empty<DittoProcessorAttribute>();
             }
-        }        
+        }
+
+        /// <summary>
+        /// Registers a processor attribute to the end of the default set of post-processor attributes.
+        /// </summary>
+        /// <typeparam name="TProcessorAttributeType"></typeparam>
+        /// <param name="position"></param>
+        public void RegisterPostProcessorAttribute<TProcessorAttributeType>(int position = -1)
+            where TProcessorAttributeType : DittoProcessorAttribute, new()
+        {
+            var processor = (DittoProcessorAttribute)typeof(TProcessorAttributeType).GetInstance();
+
+            if (position < 0)
+            {
+                this.DefaultPostProcessorAttributes.Add(processor);
+            }
+            else
+            {
+                this.DefaultPostProcessorAttributes.Insert(position, processor);
+            }
+        }
+
+        /// <summary>
+        /// Unregisters a processor attribute from the default set of post-processor attributes.
+        /// </summary>
+        /// <typeparam name="TProcessorAttributeType"></typeparam>
+        public void UnregisterPostProcessorAttribute<TProcessorAttributeType>()
+             where TProcessorAttributeType : DittoProcessorAttribute, new()
+        {
+            this.DefaultPostProcessorAttributes.RemoveAll(x => x is TProcessorAttributeType);
+        }
     }
 }
