@@ -11,9 +11,9 @@ namespace Our.Umbraco.Ditto
     internal class DittoProcessorRegistry
     {
         /// <summary>
-        /// The cache for storing handler information.
+        /// The cache for storing processors associated by type.
         /// </summary>
-        private static readonly Dictionary<Type, List<DittoProcessorAttribute>> Cache = new Dictionary<Type, List<DittoProcessorAttribute>>();
+        private static readonly Dictionary<Type, List<DittoProcessorAttribute>> ProcessorCache = new Dictionary<Type, List<DittoProcessorAttribute>>();
 
         /// <summary>
         /// Static holder for singleton instance.
@@ -21,9 +21,9 @@ namespace Our.Umbraco.Ditto
         private static readonly Lazy<DittoProcessorRegistry> InternalInstance = new Lazy<DittoProcessorRegistry>(() => new DittoProcessorRegistry());
 
         /// <summary>
-        /// The lock object to make Cache access thread safe
+        /// The lock object to make ProcessorCache access thread safe.
         /// </summary>
-        private static readonly object CacheLock = new object();
+        private static readonly object ProcessorCacheLock = new object();
 
         /// <summary>
         /// The default processor type, (defaults to `UmbracoProperty`).
@@ -93,14 +93,14 @@ namespace Our.Umbraco.Ditto
         {
             var objType = typeof(TObjectType);
 
-            lock (CacheLock)
+            lock (ProcessorCacheLock)
             {
-                if (!Cache.ContainsKey(objType))
+                if (!ProcessorCache.ContainsKey(objType))
                 {
-                    Cache.Add(objType, new List<DittoProcessorAttribute>());
+                    ProcessorCache.Add(objType, new List<DittoProcessorAttribute>());
                 }
 
-                Cache[objType].Add(instance);
+                ProcessorCache[objType].Add(instance);
             }
         }
 
@@ -142,10 +142,10 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public IEnumerable<DittoProcessorAttribute> GetRegisteredProcessorAttributesFor(Type objectType)
         {
-            lock (CacheLock)
+            lock (ProcessorCacheLock)
             {
-                return Cache.ContainsKey(objectType)
-                    ? Cache[objectType]
+                return ProcessorCache.ContainsKey(objectType)
+                    ? ProcessorCache[objectType]
                     : Enumerable.Empty<DittoProcessorAttribute>();
             }
         }
