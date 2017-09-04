@@ -174,13 +174,13 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Unregisters a processor attribute from the default set of post-processor attributes.
+        /// Deregisters a processor attribute from the default set of post-processor attributes.
         /// </summary>
         /// <typeparam name="TProcessorAttributeType"></typeparam>
-        public static void UnregisterPostProcessorAttribute<TProcessorAttributeType>()
+        public static void DeregisterPostProcessorAttribute<TProcessorAttributeType>()
             where TProcessorAttributeType : DittoProcessorAttribute, new()
         {
-            DittoProcessorRegistry.Instance.UnregisterPostProcessorAttribute<TProcessorAttributeType>();
+            DittoProcessorRegistry.Instance.DeregisterPostProcessorAttribute<TProcessorAttributeType>();
         }
     }
 }
