@@ -28,7 +28,12 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// The default processor type, (defaults to `UmbracoProperty`).
         /// </summary>
-        private Type DefaultProcessorType = typeof(UmbracoPropertyAttribute);
+        private static Type DefaultProcessorType = typeof(UmbracoPropertyAttribute);
+
+        /// <summary>
+        /// The lock object to make DefaultProcessorType access thread safe.
+        /// </summary>
+        private static readonly object DefaultProcessorTypeLock = new object();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="DittoProcessorRegistry"/> class from being created.
@@ -57,7 +62,10 @@ namespace Our.Umbraco.Ditto
         public void RegisterDefaultProcessorType<TProcessorAttributeType>()
             where TProcessorAttributeType : DittoProcessorAttribute, new()
         {
-            this.DefaultProcessorType = typeof(TProcessorAttributeType);
+            lock (DefaultProcessorTypeLock)
+            {
+                DefaultProcessorType = typeof(TProcessorAttributeType);
+            }
         }
 
         /// <summary>
@@ -108,7 +116,10 @@ namespace Our.Umbraco.Ditto
                 return attr.ProcessorType;
             }
 
-            return this.DefaultProcessorType;
+            lock (DefaultProcessorTypeLock)
+            {
+                return DefaultProcessorType;
+            }
         }
 
         /// <summary>
