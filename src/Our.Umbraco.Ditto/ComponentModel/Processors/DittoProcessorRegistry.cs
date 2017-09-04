@@ -33,13 +33,18 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// The default post-processors.
         /// </summary>
-        private List<DittoProcessorAttribute> DefaultPostProcessorAttributes = new List<DittoProcessorAttribute>()
+        private static readonly List<DittoProcessorAttribute> PostProcessorCache = new List<DittoProcessorAttribute>()
         {
             new HtmlStringAttribute(),
             new EnumerableConverterAttribute(),
             new RecursiveDittoAttribute(),
             new TryConvertToAttribute()
         };
+
+        /// <summary>
+        /// The lock object to make DefaultPostProcessorAttributes access thread safe.
+        /// </summary>
+        private static readonly object PostProcessorCacheLock = new object();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="DittoProcessorRegistry"/> class from being created.
@@ -130,7 +135,10 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public IEnumerable<DittoProcessorAttribute> GetPostProcessorAttributes()
         {
-            return this.DefaultPostProcessorAttributes;
+            lock (PostProcessorCacheLock)
+            {
+                return PostProcessorCache;
+            }
         }
 
         /// <summary>
@@ -160,13 +168,19 @@ namespace Our.Umbraco.Ditto
         {
             var processor = (DittoProcessorAttribute)typeof(TProcessorAttributeType).GetInstance();
 
-            if (position < 0)
+            lock (PostProcessorCacheLock)
             {
-                this.DefaultPostProcessorAttributes.Add(processor);
-            }
-            else
-            {
-                this.DefaultPostProcessorAttributes.Insert(position, processor);
+                if (!PostProcessorCache.Contains(processor))
+                {
+                    if (position < 0)
+                    {
+                        PostProcessorCache.Add(processor);
+                    }
+                    else
+                    {
+                        PostProcessorCache.Insert(position, processor);
+                    }
+                }
             }
         }
 
@@ -177,7 +191,10 @@ namespace Our.Umbraco.Ditto
         public void DeregisterPostProcessorAttribute<TProcessorAttributeType>()
              where TProcessorAttributeType : DittoProcessorAttribute, new()
         {
-            this.DefaultPostProcessorAttributes.RemoveAll(x => x is TProcessorAttributeType);
+            lock (PostProcessorCacheLock)
+            {
+                PostProcessorCache.RemoveAll(x => x is TProcessorAttributeType);
+            }
         }
     }
 }
