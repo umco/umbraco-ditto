@@ -199,6 +199,7 @@
     <Compile Include="InheritedClassWithPrefixedPropertyTests.cs" />
     <Compile Include="Mocks\MockLogger.cs" />
     <Compile Include="Issue177Tests.cs" />
+    <Compile Include="ProxyFactoryTests.cs" />
     <Compile Include="SetMethodTests.cs" />
     <Compile Include="JsonSerializationWithTypeConverterTests.cs" />
     <Compile Include="MockProcessorTests.cs" />

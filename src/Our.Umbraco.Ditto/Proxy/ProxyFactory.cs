@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -28,38 +29,36 @@ namespace Our.Umbraco.Ditto
         /// Creates an instance of the proxy class for the given <see cref="Type"/>.
         /// </summary>
         /// <param name="baseType">The base <see cref="Type"/> to proxy.</param>
-        /// <param name="interceptor">The <see cref="IInterceptor"/> to intercept properties with.</param>
+        /// <param name="properties">The collection of property names to map.</param>
         /// <param name="content">The <see cref="IPublishedContent"/> to pass as a parameter.</param>
         /// <returns>
         /// The proxy <see cref="Type"/> instance.
         /// </returns>
-        public object CreateProxy(Type baseType, IInterceptor interceptor, IPublishedContent content = null)
+        public IProxy CreateProxy(Type baseType, IEnumerable<string> properties, IPublishedContent content = null)
         {
-            Type proxyType = this.CreateProxyType(baseType);
+            Type proxyType = this.CreateProxyType(baseType, properties);
 
             object result = content == null ? proxyType.GetInstance() : proxyType.GetInstance(content);
 
-            IProxy proxy = (IProxy)result;
-            proxy.Interceptor = interceptor;
-
-            return result;
+            return (IProxy)result;
         }
 
         /// <summary>
         /// Creates the proxy class or returns already created class from the cache.
         /// </summary>
         /// <param name="baseType">The base <see cref="Type"/> to proxy.</param>
+        /// <param name="properties">The collection of property names to map.</param>
         /// <returns>
         /// The proxy <see cref="Type"/>.
         /// </returns>
-        private Type CreateProxyType(Type baseType)
+        private Type CreateProxyType(Type baseType, IEnumerable<string> properties)
         {
             try
             {
                 // ConcurrentDictionary.GetOrAdd() is not atomic so we'll be doubly sure.
                 Locker.EnterWriteLock();
 
-                return ProxyCache.GetOrAdd(baseType, c => this.CreateUncachedProxyType(baseType));
+                return ProxyCache.GetOrAdd(baseType, c => this.CreateUncachedProxyType(baseType, properties));
             }
             finally
             {
@@ -70,38 +69,47 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Creates an un-cached proxy class.
         /// </summary>
-        /// <param name="baseType">
-        /// The base <see cref="Type"/> to proxy.
-        /// </param>
+        /// <param name="baseType">The base <see cref="Type"/> to proxy.</param>
+        /// <param name="properties">The collection of property names to map.</param>
         /// <returns>
         /// The proxy <see cref="Type"/>.
         /// </returns>
-        private Type CreateUncachedProxyType(Type baseType)
+        private Type CreateUncachedProxyType(Type baseType, IEnumerable<string> properties)
         {
             // Create a dynamic assembly and module to store the proxy.
             AppDomain currentDomain = AppDomain.CurrentDomain;
-            string typeName = string.Format("{0}Proxy", baseType.Name);
-            string assemblyName = string.Format("{0}Assembly", typeName);
-            string moduleName = string.Format("{0}Module", typeName);
+            string typeName = $"{baseType.Name}Proxy";
+            string assemblyName = $"{typeName}Assembly";
+            string moduleName = $"{typeName}Module";
 
             // Define different behaviors for debug and release so that we can make debugging easier.
-            AssemblyName name = new AssemblyName(assemblyName);
+            var name = new AssemblyName(assemblyName);
+            AssemblyBuilder assemblyBuilder;
 #if DEBUG
-            AssemblyBuilder assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.RunAndSave);
-            ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName, string.Format("{0}.mod", moduleName), true);
+            assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.RunAndSave);
+            ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName, $"{moduleName}.mod", true);
+
+            // Add a debuggable attribute to the assembly saying to disable optimizations
+            Type daType = typeof(DebuggableAttribute);
+            ConstructorInfo daCtor = daType.GetConstructor(new[] { typeof(DebuggableAttribute.DebuggingModes) });
+            var daBuilder = new CustomAttributeBuilder(
+                daCtor,
+                new object[] { DebuggableAttribute.DebuggingModes.DisableOptimizations | DebuggableAttribute.DebuggingModes.Default });
+            assemblyBuilder.SetCustomAttribute(daBuilder);
 
 #else
-            AssemblyBuilder assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+            assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
             ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName);
 #endif
+
             // Define type attributes
-            const TypeAttributes TypeAttributes = TypeAttributes.AutoClass |
+            const TypeAttributes typeAttributes = TypeAttributes.AutoClass |
                                                   TypeAttributes.Class |
                                                   TypeAttributes.Public |
                                                   TypeAttributes.BeforeFieldInit;
 
             // Define the type.
-            TypeBuilder typeBuilder = moduleBuilder.DefineType(typeName, TypeAttributes, baseType);
+            TypeBuilder typeBuilder = moduleBuilder.DefineType(typeName, typeAttributes, baseType);
 
             // Emit the default constructors for this proxy so that classes without parameterless constructors
             // can be proxied.
@@ -114,17 +122,25 @@ namespace Our.Umbraco.Ditto
             // Emit the IProxy IInterceptor property.
             FieldInfo interceptorField = InterceptorEmitter.Emit(typeBuilder);
 
-            // Emit each property that is to be intercepted.
+            // Collect and filter our list of properties to intercept.
             MethodInfo[] methods = baseType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
-            IEnumerable<MethodInfo> proxyList = this.BuildPropertyList(methods);
 
+            IEnumerable<MethodInfo> proxyList = this.BuildPropertyList(methods)
+                .Where(m => properties.Contains(m.Name.Substring(4), StringComparer.OrdinalIgnoreCase));
+
+            // Emit each property that is to be intercepted.
             foreach (MethodInfo methodInfo in proxyList)
             {
                 PropertyEmitter.Emit(typeBuilder, methodInfo, interceptorField);
             }
 
             // Create and return.
-            return typeBuilder.CreateType();
+            Type result = typeBuilder.CreateType();
+
+#if DEBUG
+            assemblyBuilder.Save(typeName + ".dll");
+#endif
+            return result;
         }
 
         /// <summary>
@@ -138,7 +154,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         private IEnumerable<MethodInfo> BuildPropertyList(MethodInfo[] methodInfos)
         {
-            List<MethodInfo> proxyList = new List<MethodInfo>();
+            var proxyList = new List<MethodInfo>();
 
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (MethodInfo method in methodInfos)
@@ -175,9 +191,7 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Returns the parent <see cref="PropertyInfo"/> if any, for the given <see cref="MethodInfo"/>.
         /// </summary>
-        /// <param name="method">
-        /// The <see cref="MethodInfo"/>.
-        /// </param>
+        /// <param name="method">The <see cref="MethodInfo"/>.</param>
         /// <returns>
         /// The <see cref="PropertyInfo"/>, or <c>null</c>.
         /// </returns>
@@ -188,10 +202,10 @@ namespace Our.Umbraco.Ditto
         {
             if (method == null)
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException(nameof(method));
             }
 
-            const BindingFlags PropertyFlags = BindingFlags.Instance | BindingFlags.Public;
+            const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance;
 
             bool takesArg = method.GetParameters().Length == 1;
             bool hasReturn = method.ReturnType != typeof(void);
@@ -205,14 +219,14 @@ namespace Our.Umbraco.Ditto
             {
                 if (method.DeclaringType != null)
                 {
-                    return method.DeclaringType.GetProperties(PropertyFlags)
+                    return method.DeclaringType.GetProperties(propertyFlags)
                                  .FirstOrDefault(p => this.AreMethodsEqualForDeclaringType(p.GetSetMethod(), method));
                 }
             }
 
             if (method.DeclaringType != null)
             {
-                return method.DeclaringType.GetProperties(PropertyFlags)
+                return method.DeclaringType.GetProperties(propertyFlags)
                              .FirstOrDefault(p => this.AreMethodsEqualForDeclaringType(p.GetGetMethod(), method));
             }
 
@@ -220,15 +234,11 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Returns a value indicating whether two instances of <see cref="MethodInfo"/> are equal 
+        /// Returns a value indicating whether two instances of <see cref="MethodInfo"/> are equal
         /// for a declaring type.
         /// </summary>
-        /// <param name="first">
-        /// The first <see cref="MethodInfo"/>.
-        /// </param>
-        /// <param name="second">
-        /// The second <see cref="MethodInfo"/>.
-        /// </param>
+        /// <param name="first">The first <see cref="MethodInfo"/>.</param>
+        /// <param name="second">The second <see cref="MethodInfo"/>.</param>
         /// <returns>
         /// True if the two instances of <see cref="MethodInfo"/> are equal; otherwise, false.
         /// </returns>
@@ -245,10 +255,7 @@ namespace Our.Umbraco.Ditto
                                 first.GetParameters().Select(p => p.ParameterType).ToArray());
 
                 MethodBody body = first.GetMethodBody();
-                if (body != null)
-                {
-                    firstBytes = body.GetILAsByteArray();
-                }
+                firstBytes = body.GetILAsByteArray();
             }
 
             if (second != null && second.ReflectedType != null && second.DeclaringType != null)
@@ -260,10 +267,7 @@ namespace Our.Umbraco.Ditto
                                  second.GetParameters().Select(p => p.ParameterType).ToArray());
 
                 MethodBody body = second.GetMethodBody();
-                if (body != null)
-                {
-                    secondBytes = body.GetILAsByteArray();
-                }
+                secondBytes = body.GetILAsByteArray();
             }
 
             return firstBytes.SequenceEqual(secondBytes);
