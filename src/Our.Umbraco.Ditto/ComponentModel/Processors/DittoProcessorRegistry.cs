@@ -116,10 +116,7 @@ namespace Our.Umbraco.Ditto
                 return attr.ProcessorType;
             }
 
-            lock (DefaultProcessorTypeLock)
-            {
-                return DefaultProcessorType;
-            }
+            return DefaultProcessorType;
         }
 
         /// <summary>
