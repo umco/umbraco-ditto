@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using Umbraco.Core;
 using Umbraco.Core.Models;
-using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
 {
@@ -139,7 +138,7 @@ namespace Our.Umbraco.Ditto
             Action<DittoConversionHandlerContext> onConverted = null,
             DittoChainContext chainContext = null)
         {
-            using (DittoDisposableTimer.DebugDuration<IEnumerable<object>>("IEnumerable As"))
+            using (DittoDisposableTimer.DebugDuration<Ditto>($"IEnumerable As<{type.Name}>"))
             {
                 var typedItems = items.Select(x => x.As(type, culture, null, processorContexts, onConverting, onConverted, chainContext));
 
@@ -197,7 +196,7 @@ namespace Our.Umbraco.Ditto
             // Ensure instance is of target type
             if (instance != null && !type.IsInstanceOfType(instance))
             {
-                throw new ArgumentException(string.Format("The instance parameter does not implement Type '{0}'", type.Name), "instance");
+                throw new ArgumentException($"The instance parameter does not implement Type '{type.Name}'", nameof(instance));
             }
 
             // Get the context accessor (for access to ApplicationContext, UmbracoContext, et al)
@@ -206,15 +205,9 @@ namespace Our.Umbraco.Ditto
             // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
             if (culture == null)
             {
-                if (contextAccessor.UmbracoContext != null && contextAccessor.UmbracoContext.PublishedContentRequest != null)
-                {
-                    culture = contextAccessor.UmbracoContext.PublishedContentRequest.Culture;
-                }
-                else
-                {
-                    // Fallback
-                    culture = CultureInfo.CurrentCulture;
-                }
+                culture = contextAccessor.UmbracoContext?.PublishedContentRequest != null
+                    ? contextAccessor.UmbracoContext.PublishedContentRequest.Culture
+                    : CultureInfo.CurrentCulture;
             }
 
             // Ensure a chain context
@@ -227,7 +220,7 @@ namespace Our.Umbraco.Ditto
             chainContext.ProcessorContexts.AddRange(processorContexts);
 
             // Convert
-            using (DittoDisposableTimer.DebugDuration<object>(string.Format("IPublishedContent As ({0})", content.DocumentTypeAlias)))
+            using (DittoDisposableTimer.DebugDuration<Ditto>($"As<{type.Name}>({content.DocumentTypeAlias} {content.Id})"))
             {
                 var cacheAttr = type.GetCustomAttribute<DittoCacheAttribute>(true);
                 if (cacheAttr != null)
@@ -285,38 +278,6 @@ namespace Our.Umbraco.Ditto
             Action<DittoConversionHandlerContext> onConverted,
             DittoChainContext chainContext)
         {
-            // Get the default constructor, parameters and create an instance of the type.
-            ParameterInfo[] constructorParams = type.GetConstructorParameters();
-            bool hasParameter = false;
-
-            // If not already an instance, create an instance of the object
-            if (instance == null)
-            {
-                if (constructorParams != null && constructorParams.Length == 0)
-                {
-                    // Internally this uses Activator.CreateInstance which is heavily optimized.
-                    instance = type.GetInstance();
-                }
-                else if (constructorParams != null && constructorParams.Length == 1 && constructorParams[0].ParameterType == typeof(IPublishedContent))
-                {
-                    // This extension method is about 7x faster than the native implementation.
-                    instance = type.GetInstance(content);
-                    hasParameter = true;
-                }
-                else
-                {
-                    // No valid constructor, but see if the value can be cast to the type
-                    if (type.IsInstanceOfType(content))
-                    {
-                        instance = content;
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException(string.Format("Can't convert IPublishedContent to {0} as it has no valid constructor. A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.", type));
-                    }
-                }
-            }
-
             // Collect all the properties of the given type and loop through writable ones.
             PropertyInfo[] properties;
             PropertyCache.TryGetValue(type, out properties);
@@ -329,73 +290,115 @@ namespace Our.Umbraco.Ditto
                 PropertyCache.TryAdd(type, properties);
             }
 
-            // Gets the default processor for this conversion.
-            var defaultProcessorType = DittoProcessorRegistry.Instance.GetDefaultProcessorType(type);
+            // Check the validity of the mpped type constructor as early as possible.
+            ParameterInfo[] constructorParams = type.GetConstructorParameters();
+            bool validConstructor = false;
+            bool hasParameter = false;
+            bool isType = false;
+            bool hasLazy = false;
 
-            // A dictionary to store lazily invoked values.
-            var lazyProperties = new Dictionary<string, Lazy<object>>();
-
-            // process lazy load properties first
-            foreach (var propertyInfo in properties.Where(x => x.ShouldAttemptLazyLoad()))
+            if (constructorParams != null)
             {
-                // Configure lazy properties
-                using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Lazy Property ({1} {0})", propertyInfo.Name, content.Id)))
+                // Is it PublishedContentmModel or similar?
+                if (constructorParams.Length == 1 && constructorParams[0].ParameterType == typeof(IPublishedContent))
                 {
-                    // Ensure it's a virtual property (Only relevant to property level lazy loads)
-                    if (!propertyInfo.IsVirtualAndOverridable())
-                    {
-                        throw new InvalidOperationException("Lazy property '" + propertyInfo.Name + "' of type '" + type.AssemblyQualifiedName + "' must be declared virtual in order to be lazy loadable.");
-                    }
+                    hasParameter = true;
+                }
 
-                    // Check for the ignore attribute (Only relevant to class level lazy loads).
-                    if (propertyInfo.HasCustomAttribute<DittoIgnoreAttribute>())
-                    {
-                        continue;
-                    }
-
-                    // Create a Lazy<object> to deferr returning our value.
-                    var deferredPropertyInfo = propertyInfo;
-                    var localInstance = instance;
-
-                    // ReSharper disable once PossibleMultipleEnumeration
-                    lazyProperties.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, deferredPropertyInfo, localInstance, defaultProcessorType, contextAccessor, chainContext)));
+                if (constructorParams.Length == 0 || hasParameter)
+                {
+                    validConstructor = true;
                 }
             }
 
-            if (lazyProperties.Any())
+            // No valid constructor, but see if the value can be cast to the type
+            if (type.IsInstanceOfType(content))
             {
-                // Create a proxy instance to replace our object.
-                var interceptor = new LazyInterceptor(instance, lazyProperties);
-                var factory = new ProxyFactory();
+                isType = true;
+                validConstructor = true;
+            }
 
-                instance = hasParameter
-                    ? factory.CreateProxy(type, interceptor, content)
-                    : factory.CreateProxy(type, interceptor);
+            if (!validConstructor)
+            {
+                throw new InvalidOperationException(
+                    $"Cannot convert IPublishedContent to {type} as it has no valid constructor. " +
+                    "A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.");
+            }
+
+            // Gets the default processor for this conversion.
+            var defaultProcessorType = DittoProcessorRegistry.Instance.GetDefaultProcessorType(type);
+            PropertyInfo[] lazyProperties = null;
+
+            // If not already an instance, create an instance of the object
+            if (instance == null)
+            {
+                // We can only proxy new instances.
+                lazyProperties = properties.Where(x => x.ShouldAttemptLazyLoad()).ToArray();
+
+                if (lazyProperties.Any())
+                {
+                    hasLazy = true;
+
+                    var factory = new ProxyFactory();
+                    instance = hasParameter
+                        ? factory.CreateProxy(type, lazyProperties.Select(x => x.Name), content)
+                        : factory.CreateProxy(type, lazyProperties.Select(x => x.Name));
+
+                }
+                else if (isType)
+                {
+                    instance = content;
+                }
+                else
+                {
+                    // 1: This extension method is about 7x faster than the native implementation.
+                    // 2: Internally this uses Activator.CreateInstance which is heavily optimized.
+                    instance = hasParameter
+                        ? type.GetInstance(content) // 1
+                        : type.GetInstance(); // 2
+                }
             }
 
             // We have the instance object but haven't yet populated properties
             // so fire the on converting event handlers
             OnConverting(content, type, culture, instance, onConverting);
 
-            // Process any non lazy properties next
+            if (hasLazy)
+            {
+                // A dictionary to store lazily invoked values.
+                var lazyMappings = new Dictionary<string, Lazy<object>>();
+                foreach (var propertyInfo in lazyProperties)
+                {
+                    // Configure lazy properties
+                    using (DittoDisposableTimer.DebugDuration<Ditto>($"Lazy Property ({content.Id} {propertyInfo.Name})"))
+                    {
+                        // Ensure it's a virtual property (Only relevant to property level lazy loads)
+                        if (!propertyInfo.IsVirtualAndOverridable())
+                        {
+                            throw new InvalidOperationException($"Lazy property '{propertyInfo.Name}' of type '{type.AssemblyQualifiedName}' must be declared virtual in order to be lazy loadable.");
+                        }
+
+                        lazyMappings.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, contextAccessor, chainContext)));
+                    }
+                }
+
+                ((IProxy)instance).Interceptor = new LazyInterceptor(lazyMappings);
+            }
+
+            // Process any non lazy properties
             foreach (var propertyInfo in properties.Where(x => !x.ShouldAttemptLazyLoad()))
             {
-                // Configure non lazy properties
-                using (DittoDisposableTimer.DebugDuration<object>(string.Format("ForEach Property ({1} {0})", propertyInfo.Name, content.Id)))
+                // Check for the ignore attribute.
+                if (propertyInfo.HasCustomAttribute<DittoIgnoreAttribute>())
                 {
-                    // Check for the ignore attribute.
-                    if (propertyInfo.HasCustomAttribute<DittoIgnoreAttribute>())
-                    {
-                        continue;
-                    }
-
-                    // Set the value normally.
-                    // ReSharper disable once PossibleMultipleEnumeration
-                    var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, contextAccessor, chainContext);
-
-                    // This over 4x faster as propertyInfo.SetValue(instance, value, null);
-                    FastPropertyAccessor.SetValue(propertyInfo, instance, value);
+                    continue;
                 }
+
+                // Set the value normally.
+                var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, contextAccessor, chainContext);
+
+                // This over 4x faster as propertyInfo.SetValue(instance, value, null);
+                FastPropertyAccessor.SetValue(propertyInfo, instance, value);
             }
 
             // We have now finished populating the instance object so go ahead
@@ -429,8 +432,7 @@ namespace Our.Umbraco.Ditto
             IDittoContextAccessor contextAccessor,
             DittoChainContext chainContext)
         {
-            // Time custom value-processor.
-            using (DittoDisposableTimer.DebugDuration<object>(string.Format("Custom ValueProcessor ({0}, {1})", content.Id, propertyInfo.Name)))
+            using (DittoDisposableTimer.DebugDuration<Ditto>($"Processing '{propertyInfo.Name}' ({content.Id})"))
             {
                 // Get the target property description
                 var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
@@ -490,8 +492,9 @@ namespace Our.Umbraco.Ditto
             var propertyType = propertyInfo.PropertyType;
 
             // Check for type registered processors
-            processorAttrs.AddRange(propertyType.GetCustomAttributes<DittoProcessorAttribute>(true)
-                    .OrderBy(x => x.Order));
+            processorAttrs.AddRange(propertyType
+                .GetCustomAttributes<DittoProcessorAttribute>(true)
+                .OrderBy(x => x.Order));
 
             // Check any type arguments in generic enumerable types.
             // This should return false against typeof(string) etc also.
@@ -501,7 +504,10 @@ namespace Our.Umbraco.Ditto
             if (propertyType.IsCastableEnumerableType())
             {
                 typeArg = typeInfo.GenericTypeArguments.First();
-                processorAttrs.AddRange(typeInfo.GenericTypeArguments.First().GetCustomAttributes<DittoProcessorAttribute>(true)
+                processorAttrs.AddRange(typeInfo
+                    .GenericTypeArguments
+                    .First()
+                    .GetCustomAttributes<DittoProcessorAttribute>(true)
                     .OrderBy(x => x.Order)
                     .ToList());
 
@@ -520,15 +526,18 @@ namespace Our.Umbraco.Ditto
             // Process attributes
             foreach (var processorAttr in processorAttrs)
             {
-                // Get the right context type
-                var ctx = chainContext.ProcessorContexts.GetOrCreate(baseProcessorContext, processorAttr.ContextType);
+                using (DittoDisposableTimer.DebugDuration<Ditto>($"Processor '{processorAttr.GetType().Name}' ({content.Id})"))
+                {
+                    // Get the right context type
+                    var ctx = chainContext.ProcessorContexts.GetOrCreate(baseProcessorContext, processorAttr.ContextType);
 
-                // Populate UmbracoContext & ApplicationContext 
-                processorAttr.UmbracoContext = contextAccessor.UmbracoContext;
-                processorAttr.ApplicationContext = contextAccessor.ApplicationContext;
+                    // Populate UmbracoContext & ApplicationContext 
+                    processorAttr.UmbracoContext = contextAccessor.UmbracoContext;
+                    processorAttr.ApplicationContext = contextAccessor.ApplicationContext;
 
-                // Process value
-                currentValue = processorAttr.ProcessValue(currentValue, ctx, chainContext);
+                    // Process value
+                    currentValue = processorAttr.ProcessValue(currentValue, ctx, chainContext);
+                }
             }
 
             // The following has to happen after all the processors.

@@ -43,7 +43,8 @@ namespace Our.Umbraco.Ditto
 
             if (this.Value != null)
             {
-                var valueIsEnumerableType = this.Value.GetType().IsEnumerableType()
+                var valueType = this.Value.GetType();
+                var valueIsEnumerableType = valueType.IsEnumerableType()
                     && !(this.Value is string);
 
                 if (propertyIsEnumerableType)
@@ -51,7 +52,7 @@ namespace Our.Umbraco.Ditto
                     if (!valueIsEnumerableType)
                     {
                         // Property is enumerable, but value isn't, so make enumerable
-                        var arr = Array.CreateInstance(this.Value.GetType(), 1);
+                        var arr = Array.CreateInstance(valueType, 1);
                         arr.SetValue(this.Value, 0);
                         result = arr;
                     }

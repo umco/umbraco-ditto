@@ -13,14 +13,15 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// The get interceptor method.
         /// </summary>
-        private static readonly MethodInfo GetInterceptor = typeof(IProxy).GetProperty("Interceptor").GetGetMethod();
+        // ReSharper disable once PossibleNullReferenceException
+        private static readonly MethodInfo GetInterceptor = typeof(IProxy).GetProperty(nameof(IProxy.Interceptor)).GetGetMethod();
 
         /// <summary>
         /// The intercept handler method.
         /// </summary>
         private static readonly MethodInfo InterceptorMethod = typeof(IInterceptor).GetMethod(
             "Intercept",
-            new[] { typeof(MethodBase), typeof(object) });
+            new[] { typeof(MethodBase), typeof(IProxy) });
 
         /// <summary>
         /// The get method from handle method.
@@ -28,10 +29,10 @@ namespace Our.Umbraco.Ditto
         private static readonly MethodInfo GetMethodFromHandle = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
 
         /// <summary>
-        /// The <see cref="NotImplementedException"/> constructor.
+        /// The <see cref="ArgumentNullException"/> constructor.
         /// </summary>
-        private static readonly ConstructorInfo NotImplementedConstructor =
-            typeof(NotImplementedException).GetConstructor(new Type[0]);
+        private static readonly ConstructorInfo ArgumentNullExceptionConstructor =
+            typeof(ArgumentNullException).GetConstructor(new Type[0]);
 
         /// <summary>
         /// Uses reflection to emit the given <see cref="MethodInfo"/> body for interception.
@@ -52,14 +53,14 @@ namespace Our.Umbraco.Ditto
             ParameterInfo parameter = parameters.FirstOrDefault();
 
             // Define attributes.
-            const MethodAttributes MethodAttributes = MethodAttributes.Public |
+            const MethodAttributes methodAttributes = MethodAttributes.Public |
                                                       MethodAttributes.HideBySig |
                                                       MethodAttributes.Virtual;
 
             // Define the method.
             MethodBuilder methodBuilder = typeBuilder.DefineMethod(
                 method.Name,
-                MethodAttributes,
+                methodAttributes,
                 CallingConventions.HasThis,
                 method.ReturnType,
                 parameters.Select(param => param.ParameterType).ToArray());
@@ -74,37 +75,46 @@ namespace Our.Umbraco.Ditto
             // IInterceptor interceptor = ((IProxy)this).Interceptor;
             // if (interceptor == null)
             // {
-            //    throw new NotImplementedException();
+            //    throw new ArgumentNullException();
             // }
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Callvirt, GetInterceptor);
+            il.Emit(OpCodes.Ldarg_0); // this
+            il.Emit(OpCodes.Callvirt, GetInterceptor); // .Interceptor
             Label skipThrow = il.DefineLabel();
             il.Emit(OpCodes.Dup);
             il.Emit(OpCodes.Ldnull);
             il.Emit(OpCodes.Bne_Un, skipThrow);
-            il.Emit(OpCodes.Newobj, NotImplementedConstructor);
+            il.Emit(OpCodes.Newobj, ArgumentNullExceptionConstructor);
             il.Emit(OpCodes.Throw);
             il.MarkLabel(skipThrow);
 
-            // This is equivalent to: 
-            // For get
+            // This is equivalent to:
             // return return (PropertyType) interceptor.Intercept(methodof(BaseType.get_Property), null);
-            // For set
-            // interceptor.Intercept(methodof(BaseType.set_Property), value);
             il.Emit(OpCodes.Ldtoken, method);
             il.Emit(OpCodes.Call, GetMethodFromHandle);
-            il.Emit(parameter == null ? OpCodes.Ldnull : OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Callvirt, InterceptorMethod);
 
-            // Setter only.
-            if (method.ReturnType == typeof(void))
+            if (parameter == null)
             {
-                il.Emit(OpCodes.Pop);
+                // Getter
+                // return interceptor.Intercept(MethodBase.GetMethodFromHandle(typeof(BaseType).GetMethod("get_PropertyName").MethodHandle), null);
+                il.Emit(OpCodes.Ldnull);
+                il.Emit(OpCodes.Callvirt, InterceptorMethod);
+
+                // Unbox the object back to the correct type.
+                il.Emit(OpCodes.Unbox_Any, method.ReturnType);
             }
             else
             {
-                // Unbox the object back to the corrct type.
-                il.Emit(OpCodes.Unbox_Any, method.ReturnType);
+                // Setter
+                // interceptor.Intercept(MethodBase.GetMethodFromHandle(typeof(BaseType).GetMethod("set_PropertyName", new Type[] { typeof(PropertyType) }).MethodHandle), value);
+                il.Emit(OpCodes.Ldarg_1);
+
+                if (parameter.ParameterType.IsValueType)
+                {
+                    il.Emit(OpCodes.Box, parameter.ParameterType);
+                }
+
+                il.Emit(OpCodes.Callvirt, InterceptorMethod);
+                il.Emit(OpCodes.Pop); // Clear the stack
             }
 
             il.Emit(OpCodes.Ret);

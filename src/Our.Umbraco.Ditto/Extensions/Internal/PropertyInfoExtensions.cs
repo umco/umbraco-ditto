@@ -66,8 +66,13 @@ namespace Our.Umbraco.Ditto
         /// <returns>True if a lazy load attempt should be make</returns>
         public static bool ShouldAttemptLazyLoad(this PropertyInfo source)
         {
-            return source.HasCustomAttribute<DittoLazyAttribute>() || 
-                ((source.DeclaringType.HasCustomAttribute<DittoLazyAttribute>() || Ditto.LazyLoadStrategy == LazyLoad.AllVirtuals) 
+            if (source.HasCustomAttribute<DittoIgnoreAttribute>())
+            {
+                return false;
+            }
+
+            return source.HasCustomAttribute<DittoLazyAttribute>() ||
+                ((source.DeclaringType.HasCustomAttribute<DittoLazyAttribute>() || Ditto.LazyLoadStrategy == LazyLoad.AllVirtuals)
                     && source.IsVirtualAndOverridable());
         }
     }

@@ -21,10 +21,7 @@ namespace Our.Umbraco.Ditto
             // property's type matches the containing model's type, then we throw an exception.
             if (this.Context.PropertyDescriptor.PropertyType == this.Context.PropertyDescriptor.ComponentType)
             {
-                throw new InvalidOperationException(
-                    string.Format(
-                        "Unable to process property type '{0}', it is the same as the containing model type.",
-                        this.Context.PropertyDescriptor.PropertyType.Name));
+                throw new InvalidOperationException($"Unable to process property type '{this.Context.PropertyDescriptor.PropertyType.Name}', it is the same as the containing model type.");
             }
 
             return this.Context.Content;
