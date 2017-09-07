@@ -1,7 +1,7 @@
 os: Visual Studio 2015
 
 # version format
-version: 0.11.1.{build}
+version: 0.11.2.{build}
 
 # UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
