@@ -325,8 +325,6 @@ namespace Our.Umbraco.Ditto
                     "A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.");
             }
 
-            // Gets the default processor for this conversion.
-            var defaultProcessorType = DittoProcessorRegistry.Instance.GetDefaultProcessorType(type);
             PropertyInfo[] lazyProperties = null;
 
             // If not already an instance, create an instance of the object
@@ -378,7 +376,7 @@ namespace Our.Umbraco.Ditto
                             throw new InvalidOperationException($"Lazy property '{propertyInfo.Name}' of type '{type.AssemblyQualifiedName}' must be declared virtual in order to be lazy loadable.");
                         }
 
-                        lazyMappings.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, contextAccessor, chainContext)));
+                        lazyMappings.Add(propertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, type, propertyInfo, instance, contextAccessor, chainContext)));
                     }
                 }
 
@@ -395,7 +393,7 @@ namespace Our.Umbraco.Ditto
                 }
 
                 // Set the value normally.
-                var value = GetProcessedValue(content, culture, type, propertyInfo, instance, defaultProcessorType, contextAccessor, chainContext);
+                var value = GetProcessedValue(content, culture, type, propertyInfo, instance, contextAccessor, chainContext);
 
                 // This over 4x faster as propertyInfo.SetValue(instance, value, null);
                 FastPropertyAccessor.SetValue(propertyInfo, instance, value);
@@ -416,7 +414,6 @@ namespace Our.Umbraco.Ditto
         /// <param name="targetType">The target type.</param>
         /// <param name="propertyInfo">The <see cref="PropertyInfo" /> property info associated with the type.</param>
         /// <param name="instance">The instance to assign the value to.</param>
-        /// <param name="defaultProcessorType">The default processor type.</param>
         /// <param name="contextAccessor">The context accessor.</param>
         /// <param name="chainContext">The <see cref="DittoChainContext"/> for the current processor chain.</param>
         /// <returns>
@@ -428,7 +425,6 @@ namespace Our.Umbraco.Ditto
             Type targetType,
             PropertyInfo propertyInfo,
             object instance,
-            Type defaultProcessorType,
             IDittoContextAccessor contextAccessor,
             DittoChainContext chainContext)
         {
@@ -451,11 +447,11 @@ namespace Our.Umbraco.Ditto
                 if (cacheAttr != null)
                 {
                     var ctx = new DittoCacheContext(cacheAttr, content, targetType, propertyDescriptor, culture);
-                    return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, propertyInfo, defaultProcessorType, contextAccessor, baseProcessorContext, chainContext));
+                    return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, propertyInfo, contextAccessor, baseProcessorContext, chainContext));
                 }
                 else
                 {
-                    return DoGetProcessedValue(content, propertyInfo, defaultProcessorType, contextAccessor, baseProcessorContext, chainContext);
+                    return DoGetProcessedValue(content, propertyInfo, contextAccessor, baseProcessorContext, chainContext);
                 }
             }
         }
@@ -465,7 +461,6 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="content">The content.</param>
         /// <param name="propertyInfo">The property information.</param>
-        /// <param name="defaultProcessorType">The default processor type.</param>
         /// <param name="contextAccessor">The context accessor.</param>
         /// <param name="baseProcessorContext">The base processor context.</param>
         /// <param name="chainContext">The <see cref="DittoChainContext"/> for the current processor chain.</param>
@@ -473,7 +468,6 @@ namespace Our.Umbraco.Ditto
         private static object DoGetProcessedValue(
             IPublishedContent content,
             PropertyInfo propertyInfo,
-            Type defaultProcessorType,
             IDittoContextAccessor contextAccessor,
             DittoProcessorContext baseProcessorContext,
             DittoChainContext chainContext)
@@ -485,8 +479,8 @@ namespace Our.Umbraco.Ditto
 
             if (!processorAttrs.Any())
             {
-                // Adds the default processor attribute
-                processorAttrs.Add((DittoProcessorAttribute)defaultProcessorType.GetInstance());
+                // Adds the default processor for this conversion
+                processorAttrs.Add(DittoProcessorRegistry.Instance.GetDefaultProcessorFor(baseProcessorContext.TargetType));
             }
 
             var propertyType = propertyInfo.PropertyType;
