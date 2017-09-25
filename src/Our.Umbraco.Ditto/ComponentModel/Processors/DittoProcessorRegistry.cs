@@ -200,7 +200,7 @@ namespace Our.Umbraco.Ditto
         {
             lock (PostProcessorTypesLock)
             {
-                PostProcessorTypes.RemoveAll(x => x is TProcessorAttributeType);
+                PostProcessorTypes.RemoveAll(x => x == typeof(TProcessorAttributeType));
             }
         }
     }
