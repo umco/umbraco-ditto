@@ -18,9 +18,9 @@ namespace Our.Umbraco.Ditto
         /// <param name="targetType">Type of the target.</param>
         /// <param name="culture">The culture.</param>
         internal DittoCacheContext(
-            DittoCacheableAttribute attribute, 
-            IPublishedContent content, 
-            Type targetType, 
+            DittoCacheableAttribute attribute,
+            IPublishedContent content,
+            Type targetType,
             CultureInfo culture)
             : this(attribute, content, targetType, null, culture)
         { }
@@ -34,10 +34,10 @@ namespace Our.Umbraco.Ditto
         /// <param name="propertyDescriptor">The property descriptor.</param>
         /// <param name="culture">The culture.</param>
         internal DittoCacheContext(
-            DittoCacheableAttribute attribute, 
-            IPublishedContent content, 
-            Type targetType, 
-            PropertyDescriptor propertyDescriptor, 
+            DittoCacheableAttribute attribute,
+            IPublishedContent content,
+            Type targetType,
+            PropertyDescriptor propertyDescriptor,
             CultureInfo culture)
         {
             this.Attribute = attribute;

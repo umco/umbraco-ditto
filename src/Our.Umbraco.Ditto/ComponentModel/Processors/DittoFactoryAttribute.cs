@@ -73,15 +73,14 @@ namespace Our.Umbraco.Ditto
             }
             else
             {
-                types = (IEnumerable<Type>)ApplicationContext.Current.ApplicationCache.StaticCache.GetCacheItem(
-                    string.Concat("DittoFactoryAttribute_ResolveTypes_", baseType.AssemblyQualifiedName),
+                types = (IEnumerable<Type>)ApplicationContext.ApplicationCache.StaticCache.GetCacheItem(
+                    $"DittoFactoryAttribute_ResolveTypes_{baseType.AssemblyQualifiedName}",
                     () =>
                     {
                         // Workaround for http://issues.umbraco.org/issue/U4-9011
                         if (baseType.Assembly.IsAppCodeAssembly())
                         {
-                            // This logic is taken from the core type finder so 
-                            // it should be performing the same checks
+                            // This logic is taken from the core type finder so it should be performing the same checks.
                             return baseType.Assembly
                                 .GetTypes()
                                 .Where(t => baseType.IsAssignableFrom(t)
@@ -90,7 +89,7 @@ namespace Our.Umbraco.Ditto
                                     && !t.IsSealed
                                     && !t.IsNestedPrivate
                                     && t.GetCustomAttribute<HideFromTypeFinderAttribute>(true) == null)
-                                        .ToArray();
+                                .ToArray();
                         }
 
                         // Find the appropriate types
@@ -99,13 +98,11 @@ namespace Our.Umbraco.Ditto
                         var method = typeof(PluginManager).GetMethod("ResolveTypes");
                         var generic = method.MakeGenericMethod(baseType);
                         return ((IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null })).ToArray();
-
                     });
             }
 
             // Check for IEnumerable<IPublishedContent> value
-            var enumerableValue = this.Value as IEnumerable<IPublishedContent>;
-            if (enumerableValue != null)
+            if (this.Value is IEnumerable<IPublishedContent> enumerableValue && enumerableValue != null)
             {
                 var items = enumerableValue.Select(x =>
                 {
@@ -119,12 +116,13 @@ namespace Our.Umbraco.Ditto
             }
 
             // Check for IPublishedContent value
-            var ipublishedContentValue = this.Value as IPublishedContent;
-            if (ipublishedContentValue != null)
+            if (this.Value is IPublishedContent ipublishedContentValue && ipublishedContentValue != null)
             {
                 var typeName = this.ResolveTypeName(ipublishedContentValue);
                 var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
-                return type != null ? ipublishedContentValue.As(type, chainContext: ChainContext) : null;
+                return type != null
+                    ? ipublishedContentValue.As(type, chainContext: ChainContext)
+                    : null;
             }
 
             // No other possible options
