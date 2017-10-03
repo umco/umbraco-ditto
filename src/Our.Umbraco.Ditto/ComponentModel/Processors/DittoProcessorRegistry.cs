@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Umbraco.Core;
 
 namespace Our.Umbraco.Ditto
 {
@@ -118,21 +119,21 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Gets the default processor attribute type for the given object type.
+        /// Gets the default processor for the given object type.
         /// </summary>
         /// <param name="objectType">Type of the object.</param>
         /// <returns>
-        /// Returns the default processor attribute type for the given object type.
+        /// Returns the default processor for the given object type.
         /// </returns>
-        public Type GetDefaultProcessorType(Type objectType)
+        public DittoProcessorAttribute GetDefaultProcessorFor(Type objectType)
         {
             var attr = objectType.GetCustomAttribute<DittoDefaultProcessorAttribute>();
             if (attr != null)
             {
-                return attr.ProcessorType;
+                return (DittoProcessorAttribute)attr.ProcessorType.GetInstance();
             }
 
-            return DefaultProcessorType;
+            return (DittoProcessorAttribute)DefaultProcessorType.GetInstance();
         }
 
         /// <summary>
