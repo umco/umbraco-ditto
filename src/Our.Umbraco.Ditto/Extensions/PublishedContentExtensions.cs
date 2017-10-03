@@ -531,7 +531,7 @@ namespace Our.Umbraco.Ditto
                     // Get the right context type
                     var ctx = chainContext.ProcessorContexts.GetOrCreate(baseProcessorContext, processorAttr.ContextType);
 
-                    // Populate UmbracoContext & ApplicationContext 
+                    // Populate UmbracoContext & ApplicationContext
                     processorAttr.UmbracoContext = contextAccessor.UmbracoContext;
                     processorAttr.ApplicationContext = contextAccessor.ApplicationContext;
 

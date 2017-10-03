@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
@@ -23,7 +22,7 @@ namespace Our.Umbraco.Ditto
             var metaData = this.GetType().GetCustomAttribute<DittoProcessorMetaDataAttribute>(true);
             if (metaData == null)
             {
-                throw new ApplicationException("Ditto processor attributes require a DittoProcessorMetaData attribute to be applied to the class but none was found");
+                throw new ApplicationException("Ditto processor attributes require a DittoProcessorMetaData attribute to be applied to the class but none was found.");
             }
 
             this.ValueType = metaData.ValueType;
@@ -79,7 +78,7 @@ namespace Our.Umbraco.Ditto
         internal Type ContextType { get; set; }
 
         /// <summary>
-        /// Returns the MembershipHelper instance
+        /// Returns a new instance of MembershipHelper.
         /// </summary>
         protected MembershipHelper Members
         {
@@ -87,7 +86,7 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Returns the UmbracoHelper instance
+        /// Returns a new instance of UmbracoHelper.
         /// </summary>
         protected UmbracoHelper Umbraco
         {
@@ -95,7 +94,7 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Returns an ILogger
+        /// Returns the current implementation of ILogger.
         /// </summary>
         protected ILogger Logger
         {
@@ -103,7 +102,7 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Returns a ProfilingLogger
+        /// Returns the current instance of ProfilingLogger.
         /// </summary>
         protected virtual ProfilingLogger ProfilingLogger
         {
@@ -111,17 +110,17 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Returns the current UmbracoContext
+        /// Returns the current instance of UmbracoContext.
         /// </summary>
         public virtual UmbracoContext UmbracoContext { get; internal set; }
 
         /// <summary>
-        /// Returns the current ApplicationContext
+        /// Returns the current instance of ApplicationContext.
         /// </summary>
         public virtual ApplicationContext ApplicationContext { get; internal set; }
 
         /// <summary>
-        /// Returns a ServiceContext
+        /// Returns the current instance of ServiceContext.
         /// </summary>
         protected ServiceContext Services
         {
@@ -129,7 +128,7 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Returns a DatabaseContext
+        /// Returns the current instance of DatabaseContext.
         /// </summary>
         protected DatabaseContext DatabaseContext
         {

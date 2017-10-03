@@ -33,13 +33,12 @@ namespace Our.Umbraco.Ditto
             string altPropertyName = null,
             bool recursive = false,
             object defaultValue = null)
+            : this()
         {
             this.PropertyName = propertyName;
             this.AltPropertyName = altPropertyName;
             this.Recursive = recursive;
             this.DefaultValue = defaultValue;
-
-            PropertySource = Ditto.DefaultPropertySource;
         }
 
         /// <summary>
@@ -93,11 +92,11 @@ namespace Our.Umbraco.Ditto
             var propName = this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty;
             var altPropName = string.Empty;
 
-            // Check for umbraco properties attribute on class
+            // Check for Umbraco properties attribute on class
             if (this.Context.TargetType != null)
             {
-                var classAttr = this.Context.TargetType
-                    .GetCustomAttribute<UmbracoPropertiesAttribute>();
+                // TODO: [LK:2017-09-26] Is there a way to optimise or avoid this?
+                var classAttr = this.Context.TargetType.GetCustomAttribute<UmbracoPropertiesAttribute>();
                 if (classAttr != null)
                 {
                     // Apply the prefix

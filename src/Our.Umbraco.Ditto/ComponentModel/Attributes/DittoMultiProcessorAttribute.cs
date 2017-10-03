@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Represents a multi-ditto processor capable of wrapping multiple attributes into a single attribute definition
+    /// Represents a multi-Ditto processor capable of wrapping multiple attributes into a single attribute definition.
     /// </summary>
     [AttributeUsage(Ditto.ProcessorAttributeTargets, AllowMultiple = true, Inherited = false)]
     public abstract class DittoMultiProcessorAttribute : DittoProcessorAttribute
@@ -43,7 +43,6 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-
             foreach (var processorAttr in this.Attributes)
             {
                 // Get the right context type

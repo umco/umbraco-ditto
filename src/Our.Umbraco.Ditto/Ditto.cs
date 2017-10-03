@@ -49,7 +49,8 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// A list of mappable properties defined on the IPublishedContent interface
         /// </summary>
-        internal static readonly IEnumerable<PropertyInfo> IPublishedContentProperties = typeof(IPublishedContent).GetProperties(MappablePropertiesBindingFlags)
+        internal static readonly IEnumerable<PropertyInfo> IPublishedContentProperties = typeof(IPublishedContent)
+            .GetProperties(MappablePropertiesBindingFlags)
             .Where(x => x.IsMappable())
             .ToList();
 
