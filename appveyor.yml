@@ -1,4 +1,4 @@
-os: Visual Studio 2015
+image: Visual Studio 2017
 
 # version format
 version: 0.11.3.{build}
