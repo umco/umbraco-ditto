@@ -49,6 +49,10 @@ namespace Our.Umbraco.Ditto
                 // Get the right context type
                 var newCtx = this.ChainContext.ProcessorContexts.GetOrCreate(this.Context, processorAttr.ContextType);
 
+                // Populate UmbracoContext & ApplicationContext
+                processorAttr.UmbracoContext = this.UmbracoContext;
+                processorAttr.ApplicationContext = this.ApplicationContext;
+
                 // Process value
                 this.Value = processorAttr.ProcessValue(this.Value, newCtx, this.ChainContext);
             }
