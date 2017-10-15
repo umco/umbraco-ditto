@@ -127,8 +127,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public DittoProcessorAttribute GetDefaultProcessorFor(Type objectType)
         {
-            var attr = objectType.GetCustomAttribute<DittoDefaultProcessorAttribute>();
-            if (attr != null)
+            if (Ditto.TryGetAttribute(objectType, out DittoDefaultProcessorAttribute attr))
             {
                 return (DittoProcessorAttribute)attr.ProcessorType.GetInstance();
             }

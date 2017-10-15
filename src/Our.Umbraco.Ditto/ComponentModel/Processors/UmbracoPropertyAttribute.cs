@@ -93,31 +93,26 @@ namespace Our.Umbraco.Ditto
             var altPropName = string.Empty;
 
             // Check for Umbraco properties attribute on class
-            if (this.Context.TargetType != null)
+            if (this.Context.TargetType != null && Ditto.TryGetAttribute(this.Context.TargetType, out UmbracoPropertiesAttribute classAttr))
             {
-                // TODO: [LK:2017-09-26] Is there a way to optimise or avoid this?
-                var classAttr = this.Context.TargetType.GetCustomAttribute<UmbracoPropertiesAttribute>();
-                if (classAttr != null)
+                // Apply the prefix
+                if (!string.IsNullOrWhiteSpace(classAttr.Prefix))
                 {
-                    // Apply the prefix
-                    if (!string.IsNullOrWhiteSpace(classAttr.Prefix))
-                    {
-                        altPropName = propName;
-                        propName = classAttr.Prefix + propName;
-                    }
+                    altPropName = propName;
+                    propName = classAttr.Prefix + propName;
+                }
 
-                    // Apply global recursive setting
-                    recursive |= classAttr.Recursive;
+                // Apply global recursive setting
+                recursive |= classAttr.Recursive;
 
-                    // Apply property source only if it's different from the default,
-                    // and the current value is the default. We only do it this
-                    // way because if they change it at the property level, we
-                    // want that to take precedence over the class level.
-                    if (classAttr.PropertySource != Ditto.DefaultPropertySource
-                        && PropertySource == Ditto.DefaultPropertySource)
-                    {
-                        PropertySource = classAttr.PropertySource;
-                    }
+                // Apply property source only if it's different from the default,
+                // and the current value is the default. We only do it this
+                // way because if they change it at the property level, we
+                // want that to take precedence over the class level.
+                if (classAttr.PropertySource != Ditto.DefaultPropertySource
+                    && PropertySource == Ditto.DefaultPropertySource)
+                {
+                    PropertySource = classAttr.PropertySource;
                 }
             }
 
