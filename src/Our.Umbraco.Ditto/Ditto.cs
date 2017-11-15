@@ -183,5 +183,23 @@ namespace Our.Umbraco.Ditto
         {
             DittoProcessorRegistry.Instance.DeregisterPostProcessorType<TProcessorAttributeType>();
         }
+
+        /// <summary>
+        /// Tries to get the associated attribute for a given object type.
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="objectType">The object type.</param>
+        /// <param name="attribute">The attribute.</param>
+        /// <returns>Returns the associated attribute for the given type.</returns>
+        public static bool TryGetAttribute<TAttribute>(Type objectType, out TAttribute attribute) where TAttribute : Attribute
+        {
+            if (AttributedTypeResolver<TAttribute>.HasCurrent == false)
+            {
+                attribute = null;
+                return false;
+            }
+
+            return AttributedTypeResolver<TAttribute>.Current.TryGetAttribute(objectType, out attribute);
+        }
     }
 }

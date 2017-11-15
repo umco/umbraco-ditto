@@ -222,8 +222,7 @@ namespace Our.Umbraco.Ditto
             // Convert
             using (DittoDisposableTimer.DebugDuration<Ditto>($"As<{type.Name}>({content.DocumentTypeAlias} {content.Id})"))
             {
-                var cacheAttr = type.GetCustomAttribute<DittoCacheAttribute>(true);
-                if (cacheAttr != null)
+                if (Ditto.TryGetAttribute(type, out DittoCacheAttribute cacheAttr))
                 {
                     var ctx = new DittoCacheContext(cacheAttr, content, type, culture);
                     return cacheAttr.GetCacheItem(ctx, () => ConvertContent(content, type, contextAccessor, culture, instance, onConverting, onConverted, chainContext));
