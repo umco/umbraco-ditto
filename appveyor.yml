@@ -12,7 +12,7 @@ cache:
   - src\packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
 
 build_script:
-- build\build-appveyor.cmd
+  - build\build-appveyor.cmd
 
 test:
   assemblies:

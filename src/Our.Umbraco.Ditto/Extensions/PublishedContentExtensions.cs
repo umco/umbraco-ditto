@@ -278,8 +278,7 @@ namespace Our.Umbraco.Ditto
             DittoChainContext chainContext)
         {
             // Collect all the properties of the given type and loop through writable ones.
-            PropertyInfo[] properties;
-            PropertyCache.TryGetValue(type, out properties);
+            PropertyCache.TryGetValue(type, out PropertyInfo[] properties);
 
             if (properties == null)
             {
