@@ -184,16 +184,7 @@ namespace Our.Umbraco.Ditto
                         "A valid constructor is either empty, or one accepting a single IPublishedContent parameter.");
                 }
 
-                // We can only proxy new instances.
-                if (config.ConstructorRequiresProxyType)
-                {
-                    var factory = new ProxyFactory();
-                    instance = config.ConstructorHasPublishedContentParameter
-                        ? factory.CreateProxy(config.TargetType, config.LazyPropertyNames, content)
-                        : factory.CreateProxy(config.TargetType, config.LazyPropertyNames);
-
-                }
-                else if (config.IsOfTypePublishedContent)
+                if (config.IsOfTypePublishedContent)
                 {
                     instance = content;
                 }
@@ -212,29 +203,16 @@ namespace Our.Umbraco.Ditto
             // so fire the on converting event handlers
             OnConverting(content, config, culture, instance, onConverting);
 
-            if (config.HasLazyProperties)
+            // Process any properties
+            if (config.HasProperties)
             {
-                // A dictionary to store lazily invoked values.
-                var lazyMappings = new Dictionary<string, Lazy<object>>();
-                foreach (var lazyProperty in config.LazyProperties)
-                {
-                    // Configure lazy properties
-                    lazyMappings.Add(lazyProperty.PropertyInfo.Name, new Lazy<object>(() => GetProcessedValue(content, culture, config, lazyProperty, instance, chainContext)));
-                }
-
-                ((IProxy)instance).Interceptor = new LazyInterceptor(lazyMappings);
-            }
-
-            // Process any eager properties
-            if (config.HasEagerProperties)
-            {
-                foreach (var eagerProperty in config.EagerProperties)
+                foreach (var property in config.Properties)
                 {
                     // Set the value normally.
-                    var value = GetProcessedValue(content, culture, config, eagerProperty, instance, chainContext);
+                    var value = GetProcessedValue(content, culture, config, property, instance, chainContext);
 
                     // This over 4x faster as propertyInfo.SetValue(instance, value, null);
-                    FastPropertyAccessor.SetValue(eagerProperty.PropertyInfo, instance, value);
+                    FastPropertyAccessor.SetValue(property.PropertyInfo, instance, value);
                 }
             }
 

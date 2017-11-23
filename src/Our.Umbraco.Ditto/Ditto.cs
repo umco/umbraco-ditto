@@ -36,11 +36,6 @@ namespace Our.Umbraco.Ditto
         public static PropertySource DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
 
         /// <summary>
-        /// The default lazy load strategy
-        /// </summary>
-        public static LazyLoad LazyLoadStrategy = LazyLoad.AttributedVirtuals;
-
-        /// <summary>
         /// The property bindings for mappable properties
         /// </summary>
         internal const BindingFlags MappablePropertiesBindingFlags = BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static;

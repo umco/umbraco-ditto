@@ -179,7 +179,6 @@
     <Compile Include="EnumerableConverterTests.cs" />
     <Compile Include="ExtremeChainedContextTests.cs" />
     <Compile Include="GlobalSetupFixture.cs" />
-    <Compile Include="LazyTests.cs" />
     <Compile Include="Mocks\MockDittoContextAccessor.cs" />
     <Compile Include="PropertySourceMappingTests.cs" />
     <Compile Include="DittoFactoryTests.cs" />
@@ -202,7 +201,6 @@
     <Compile Include="InheritedClassWithPrefixedPropertyTests.cs" />
     <Compile Include="Mocks\MockLogger.cs" />
     <Compile Include="Issue177Tests.cs" />
-    <Compile Include="ProxyFactoryTests.cs" />
     <Compile Include="SetMethodTests.cs" />
     <Compile Include="JsonSerializationWithTypeConverterTests.cs" />
     <Compile Include="MockProcessorTests.cs" />

@@ -68,11 +68,9 @@ namespace Our.Umbraco.Ditto
                 }
             }
 
-            // properties (lazy & eager)
+            // properties
             //
-            var lazyProperties = new List<DittoTypePropertyInfo>();
-            var lazyPropertyNames = new List<string>();
-            var eagerProperties = new List<DittoTypePropertyInfo>();
+            var properties = new List<DittoTypePropertyInfo>();
 
             // Collect all the properties of the given type and loop through writable ones.
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
@@ -140,30 +138,13 @@ namespace Our.Umbraco.Ditto
                     propertyConfig.CacheInfo = propertyCache;
                 }
 
-                // detect if the property should be lazy-loaded
-                if (property.ShouldAttemptLazyLoad())
-                {
-                    lazyProperties.Add(propertyConfig);
-                    lazyPropertyNames.Add(property.Name);
-                }
-                else
-                {
-                    eagerProperties.Add(propertyConfig);
-                }
+                properties.Add(propertyConfig);
             }
 
-            if (lazyProperties.Count > 0)
+            if (properties.Count > 0)
             {
-                config.ConstructorRequiresProxyType = true;
-                config.HasLazyProperties = true;
-                config.LazyPropertyNames = lazyPropertyNames; // lazyProperties.Select(x => x.PropertyInfo.Name);
-                config.LazyProperties = lazyProperties;
-            }
-
-            if (eagerProperties.Count > 0)
-            {
-                config.HasEagerProperties = true;
-                config.EagerProperties = eagerProperties;
+                config.HasProperties = true;
+                config.Properties = properties;
             }
 
 
@@ -216,18 +197,13 @@ namespace Our.Umbraco.Ditto
 
         public bool ConstructorIsValid { get; set; }
         public bool ConstructorHasPublishedContentParameter { get; set; }
-        public bool ConstructorRequiresProxyType { get; set; }
 
         public bool IsOfTypePublishedContent { get; set; }
 
         public IEnumerable<Attribute> CustomAttributes { get; set; }
 
-        public bool HasLazyProperties { get; set; }
-        public IEnumerable<DittoTypePropertyInfo> LazyProperties { get; set; }
-        public IEnumerable<string> LazyPropertyNames { get; set; }
-
-        public bool HasEagerProperties { get; set; }
-        public IEnumerable<DittoTypePropertyInfo> EagerProperties { get; set; }
+        public bool HasProperties { get; set; }
+        public IEnumerable<DittoTypePropertyInfo> Properties { get; set; }
 
         public IEnumerable<DittoConversionHandler> ConversionHandlers { get; set; }
         public IEnumerable<MethodInfo> ConvertingMethods { get; set; }

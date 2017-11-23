@@ -86,7 +86,6 @@
     <Compile Include="Common\FastPropertyAccessor.cs" />
     <Compile Include="Common\DittoContextAccessor.cs" />
     <Compile Include="ComponentModel\Attributes\DittoDefaultProcessorAttribute.cs" />
-    <Compile Include="ComponentModel\Attributes\DittoLazyAttribute.cs" />
     <Compile Include="ComponentModel\Caching\DittoCacheContext.cs" />
     <Compile Include="ComponentModel\Attributes\DittoCacheableAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoCacheAttribute.cs" />
@@ -135,19 +134,11 @@
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />
     <Compile Include="Extensions\PublishedContentExtensions.cs" />
     <Compile Include="Extensions\RenderModelExtensions.cs" />
-    <Compile Include="LazyLoad.cs" />
     <Compile Include="Web\Mvc\Models\DittoTransferModel.cs" />
     <Compile Include="Web\Mvc\Models\DittoViewModel.cs" />
     <Compile Include="Web\Mvc\Models\IDittoViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
-    <Compile Include="Proxy\ConstructorEmitter.cs" />
-    <Compile Include="Proxy\IInterceptor.cs" />
-    <Compile Include="Proxy\IProxy.cs" />
-    <Compile Include="Proxy\LazyInterceptor.cs" />
-    <Compile Include="Proxy\PropertyEmitter.cs" />
-    <Compile Include="Proxy\ProxyFactory.cs" />
-    <Compile Include="Proxy\InterceptorEmitter.cs" />
     <Compile Include="Web\Mvc\Controllers\DittoController.cs" />
     <Compile Include="Web\Mvc\DittoView.cs" />
   </ItemGroup>
