@@ -114,7 +114,7 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Registers a global value resolver attribute.
+        /// Registers a global processor attribute.
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>
         /// <typeparam name="TProcessorAttributeType">The type of the processor attribute type.</typeparam>
@@ -125,11 +125,11 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Registers a global value resolver attribute.
+        /// Registers a global processor attribute.
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>
         /// <typeparam name="TProcessorAttributeType">The type of the processor attribute type.</typeparam>
-        /// <param name="instance">An instance of the value resolver attribute to use.</param>
+        /// <param name="instance">An instance of the processor attribute to use.</param>
         public static void RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>(TProcessorAttributeType instance)
             where TProcessorAttributeType : DittoProcessorAttribute
         {

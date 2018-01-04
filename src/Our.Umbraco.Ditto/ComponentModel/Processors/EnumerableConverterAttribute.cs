@@ -5,10 +5,10 @@ using System.Linq;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// An enumerable Ditto processor that converts values to/from an enumerable based 
+    /// An enumerable Ditto processor that converts values to/from an enumerable based
     /// upon the properties target type
     /// NB: It won't try to cast the inner values, just convert an enumerable so this
-    /// should ideally already have occurred
+    /// should ideally already have occurred.
     /// </summary>
     public class EnumerableConverterAttribute : DittoProcessorAttribute
     {
@@ -22,7 +22,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         public EnumerableConverterAttribute()
         {
-            // Default to automatic 
+            // Default to automatic
             Direction = EnumerableConvertionDirection.Automatic;
         }
 

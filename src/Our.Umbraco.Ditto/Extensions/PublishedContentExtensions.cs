@@ -22,36 +22,16 @@ namespace Our.Umbraco.Ditto
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PropertyCache
             = new ConcurrentDictionary<Type, PropertyInfo[]>();
 
-        /// <summary>
-        /// Returns the given instance of <see cref="IPublishedContent"/> as the specified type.
-        /// </summary>
-        /// <param name="content">
-        /// The <see cref="IPublishedContent"/> to convert.
-        /// </param>
-        /// <param name="culture">
-        /// The <see cref="CultureInfo"/>
-        /// </param>
-        /// <param name="instance">
-        /// An existing instance of T to populate
-        /// </param>
-        /// <param name="processorContexts">
-        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
-        /// </param>
-        /// <param name="onConverting">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
-        /// </param>
-        /// <param name="onConverted">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
-        /// </param>
-        /// <param name="chainContext">
-        /// The <see cref="DittoChainContext"/> for the current processor chain.
-        /// </param>
-        /// <typeparam name="T">
-        /// The <see cref="Type"/> of items to return.
-        /// </typeparam>
-        /// <returns>
-        /// The converted generic <see cref="Type"/>.
-        /// </returns>
+        /// <summary>Returns the given instance of <see cref="IPublishedContent"/> as the specified type.</summary>
+        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
+        /// <param name="instance">An existing instance of T to populate</param>
+        /// <param name="processorContexts">A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.</param>
+        /// <param name="onConverting">The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.</param>
+        /// <param name="onConverted">The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.</param>
+        /// <param name="chainContext">The <see cref="DittoChainContext"/> for the current processor chain.</param>
+        /// <typeparam name="T">The <see cref="Type"/> of items to return.</typeparam>
+        /// <returns>The converted generic <see cref="Type"/>.</returns>
         public static T As<T>(
             this IPublishedContent content,
             CultureInfo culture = null,
@@ -65,31 +45,15 @@ namespace Our.Umbraco.Ditto
             return content.As(typeof(T), culture, instance, processorContexts, onConverting, onConverted, chainContext) as T;
         }
 
-        /// <summary>
-        /// Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.
-        /// </summary>
-        /// <param name="items">
-        /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
-        /// </param>
+        /// <summary>Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.</summary>
+        /// <param name="items">The <see cref="IEnumerable{IPublishedContent}"/> to convert.</param>
         /// <param name="culture">The <see cref="CultureInfo"/></param>
-        /// <param name="processorContexts">
-        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
-        /// </param>
-        /// <param name="onConverting">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
-        /// </param>
-        /// <param name="onConverted">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
-        /// </param>
-        /// <param name="chainContext">
-        /// The <see cref="DittoChainContext"/> for the current processor chain.
-        /// </param>
-        /// <typeparam name="T">
-        /// The <see cref="Type"/> of items to return.
-        /// </typeparam>
-        /// <returns>
-        /// The converted <see cref="IEnumerable{T}"/>.
-        /// </returns>
+        /// <param name="processorContexts">A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.</param>
+        /// <param name="onConverting">The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.</param>
+        /// <param name="onConverted">The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.</param>
+        /// <param name="chainContext">The <see cref="DittoChainContext"/> for the current processor chain.</param>
+        /// <typeparam name="T">The <see cref="Type"/> of items to return.</typeparam>
+        /// <returns>The converted <see cref="IEnumerable{T}"/>.</returns>
         public static IEnumerable<T> As<T>(
             this IEnumerable<IPublishedContent> items,
             CultureInfo culture = null,
@@ -102,33 +66,15 @@ namespace Our.Umbraco.Ditto
             return items.As(typeof(T), culture, processorContexts, onConverting, onConverted, chainContext).Select(x => x as T);
         }
 
-        /// <summary>
-        /// Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.
-        /// </summary>
-        /// <param name="items">
-        /// The <see cref="IEnumerable{IPublishedContent}"/> to convert.
-        /// </param>
-        /// <param name="type">
-        /// The <see cref="Type"/> of items to return.
-        /// </param>
-        /// <param name="culture">
-        /// The <see cref="CultureInfo"/>.
-        /// </param>
-        /// <param name="processorContexts">
-        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
-        /// </param>
-        /// <param name="onConverting">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
-        /// </param>
-        /// <param name="onConverted">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
-        /// </param>
-        /// <param name="chainContext">
-        /// The <see cref="DittoChainContext"/> for the current processor chain.
-        /// </param>
-        /// <returns>
-        /// The converted <see cref="IEnumerable{T}"/>.
-        /// </returns>
+        /// <summary>Gets a collection of the given type from the given <see cref="IEnumerable{IPublishedContent}"/>.</summary>
+        /// <param name="items">The <see cref="IEnumerable{IPublishedContent}"/> to convert.</param>
+        /// <param name="type">The <see cref="Type"/> of items to return.</param>
+        /// <param name="culture">The <see cref="CultureInfo"/>.</param>
+        /// <param name="processorContexts">A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.</param>
+        /// <param name="onConverting">The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.</param>
+        /// <param name="onConverted">The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.</param>
+        /// <param name="chainContext">The <see cref="DittoChainContext"/> for the current processor chain.</param>
+        /// <returns>The converted <see cref="IEnumerable{T}"/>.</returns>
         public static IEnumerable<object> As(
             this IEnumerable<IPublishedContent> items,
             Type type,
@@ -147,36 +93,16 @@ namespace Our.Umbraco.Ditto
             }
         }
 
-        /// <summary>
-        /// Returns an object representing the given <see cref="Type"/>.
-        /// </summary>
-        /// <param name="content">
-        /// The <see cref="IPublishedContent"/> to convert.
-        /// </param>
-        /// <param name="type">
-        /// The <see cref="Type"/> of items to return.
-        /// </param>
-        /// <param name="culture">
-        /// The <see cref="CultureInfo"/>
-        /// </param>
-        /// <param name="instance">
-        /// An existing instance of T to populate
-        /// </param>
-        /// <param name="processorContexts">
-        /// A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.
-        /// </param>
-        /// <param name="onConverting">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
-        /// </param>
-        /// <param name="onConverted">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
-        /// </param>
-        /// <param name="chainContext">
-        /// The <see cref="DittoChainContext"/> for the current processor chain.
-        /// </param>
-        /// <returns>
-        /// The converted <see cref="Object"/> as the given type.
-        /// </returns>
+        /// <summary>Returns an object representing the given <see cref="Type"/>.</summary>
+        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="type">The <see cref="Type"/> of items to return.</param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
+        /// <param name="instance">An existing instance of T to populate</param>
+        /// <param name="processorContexts">A collection of <see cref="DittoProcessorContext"/> entities to use whilst processing values.</param>
+        /// <param name="onConverting">The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.</param>
+        /// <param name="onConverted">The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.</param>
+        /// <param name="chainContext">The <see cref="DittoChainContext"/> for the current processor chain.</param>
+        /// <returns>The converted <see cref="Object"/> as the given type.</returns>
         public static object As(
             this IPublishedContent content,
             Type type,
@@ -234,39 +160,17 @@ namespace Our.Umbraco.Ditto
             }
         }
 
-        /// <summary>
-        /// Returns an object representing the given <see cref="Type"/>.
-        /// </summary>
-        /// <param name="content">
-        /// The <see cref="IPublishedContent"/> to convert.
-        /// </param>
-        /// <param name="type">
-        /// The <see cref="Type"/> of items to return.
-        /// </param>
-        /// <param name="contextAccessor">
-        /// The context accessor.
-        /// </param>
-        /// <param name="culture">
-        /// The <see cref="CultureInfo"/>
-        /// </param>
-        /// <param name="instance">
-        /// An existing instance of T to populate
-        /// </param>
-        /// <param name="onConverting">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
-        /// </param>
-        /// <param name="onConverted">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
-        /// </param>
-        /// <param name="chainContext">
-        /// The <see cref="DittoChainContext"/> for the current processor chain.
-        /// </param>
-        /// <returns>
-        /// The converted <see cref="Object"/> as the given type.
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if the given type has invalid constructors.
-        /// </exception>
+        /// <summary>Returns an object representing the given <see cref="Type"/>.</summary>
+        /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
+        /// <param name="type">The <see cref="Type"/> of items to return.</param>
+        /// <param name="contextAccessor">The context accessor.</param>
+        /// <param name="culture">The <see cref="CultureInfo"/></param>
+        /// <param name="instance">An existing instance of T to populate</param>
+        /// <param name="onConverting">The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.</param>
+        /// <param name="onConverted">The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.</param>
+        /// <param name="chainContext">The <see cref="DittoChainContext"/> for the current processor chain.</param>
+        /// <returns>The converted <see cref="Object"/> as the given type.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the given type has invalid constructors.</exception>
         private static object ConvertContent(
             IPublishedContent content,
             Type type,
@@ -404,9 +308,7 @@ namespace Our.Umbraco.Ditto
             return instance;
         }
 
-        /// <summary>
-        /// Returns the processed value for the given type and property.
-        /// </summary>
+        /// <summary>Returns the processed value for the given type and property.</summary>
         /// <param name="content">The <see cref="IPublishedContent" /> to convert.</param>
         /// <param name="culture">The <see cref="CultureInfo" /></param>
         /// <param name="targetType">The target type.</param>
@@ -414,9 +316,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="instance">The instance to assign the value to.</param>
         /// <param name="contextAccessor">The context accessor.</param>
         /// <param name="chainContext">The <see cref="DittoChainContext"/> for the current processor chain.</param>
-        /// <returns>
-        /// The <see cref="object" /> representing the Umbraco value.
-        /// </returns>
+        /// <returns>The <see cref="object" /> representing the Umbraco value.</returns>
         private static object GetProcessedValue(
             IPublishedContent content,
             CultureInfo culture,
@@ -454,9 +354,7 @@ namespace Our.Umbraco.Ditto
             }
         }
 
-        /// <summary>
-        /// Returns the processed value for the given type and property.
-        /// </summary>
+        /// <summary>Returns the processed value for the given type and property.</summary>
         /// <param name="content">The content.</param>
         /// <param name="propertyInfo">The property information.</param>
         /// <param name="contextAccessor">The context accessor.</param>
@@ -553,16 +451,12 @@ namespace Our.Umbraco.Ditto
                 : currentValue;
         }
 
-        /// <summary>
-        /// Fires off the various on converting events.
-        /// </summary>
+        /// <summary>Fires off the various on converting events.</summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
         /// <param name="type">The instance type.</param>
         /// <param name="culture">The culture.</param>
         /// <param name="instance">The instance to assign the value to.</param>
-        /// <param name="callback">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.
-        /// </param>
+        /// <param name="callback">The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.</param>
         private static void OnConverting(
             IPublishedContent content,
             Type type,
@@ -579,16 +473,12 @@ namespace Our.Umbraco.Ditto
                 callback);
         }
 
-        /// <summary>
-        /// Fires off the various on converted events.
-        /// </summary>
+        /// <summary>Fires off the various on converted events.</summary>
         /// <param name="content">The <see cref="IPublishedContent"/> to convert.</param>
         /// <param name="type">The instance type.</param>
         /// <param name="culture">The culture.</param>
         /// <param name="instance">The instance to assign the value to.</param>
-        /// <param name="callback">
-        /// The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.
-        /// </param>
+        /// <param name="callback">The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.</param>
         private static void OnConverted(
             IPublishedContent content,
             Type type,
@@ -605,9 +495,7 @@ namespace Our.Umbraco.Ditto
                 callback);
         }
 
-        /// <summary>
-        /// Convenience method for calling converting/converter handlers.
-        /// </summary>
+        /// <summary>Convenience method for calling converting/converter handlers.</summary>
         /// <typeparam name="TAttributeType">The type of the attribute type.</typeparam>
         /// <param name="conversionType">Type of the conversion.</param>
         /// <param name="content">The content.</param>

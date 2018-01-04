@@ -5,7 +5,7 @@ using Umbraco.Core;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Represents a ditto attribute capable of caching
+    /// Represents a Ditto attribute capable of caching
     /// </summary>
     public abstract class DittoCacheableAttribute : Attribute
     {
@@ -52,8 +52,8 @@ namespace Our.Umbraco.Ditto
         /// <exception cref="System.ApplicationException">Expected a cache key builder of type  + typeof(DittoProcessorCacheKeyBuilder) +  but got  + CacheKeyBuilderType</exception>
         internal TOuputType GetCacheItem<TOuputType>(DittoCacheContext cacheContext, Func<TOuputType> refresher)
         {
-            // If no cache duration set, just run the refresher
-            if (this.CacheDuration == 0 || Ditto.IsDebuggingEnabled)
+            // If no cache duration set, (and in debug mode AND NOT a unit-test), then just run the refresher
+            if (this.CacheDuration == 0 || (Ditto.IsDebuggingEnabled && Ditto.IsRunningInUnitTest == false))
             {
                 return refresher();
             }
