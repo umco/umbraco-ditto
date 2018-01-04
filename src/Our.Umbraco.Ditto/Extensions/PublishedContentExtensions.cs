@@ -138,7 +138,7 @@ namespace Our.Umbraco.Ditto
             Action<DittoConversionHandlerContext> onConverted = null,
             DittoChainContext chainContext = null)
         {
-            using (DittoDisposableTimer.DebugDuration<Ditto>($"IEnumerable As<{type.Name}>"))
+            using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"IEnumerable As<{type.Name}>"))
             {
                 var typedItems = items.Select(x => x.As(type, culture, null, processorContexts, onConverting, onConverted, chainContext));
 
@@ -220,7 +220,7 @@ namespace Our.Umbraco.Ditto
             chainContext.ProcessorContexts.AddRange(processorContexts);
 
             // Convert
-            using (DittoDisposableTimer.DebugDuration<Ditto>($"As<{type.Name}>({content.DocumentTypeAlias} {content.Id})"))
+            using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"As<{type.Name}>({content.DocumentTypeAlias} {content.Id})"))
             {
                 if (Ditto.TryGetAttribute(type, out DittoCacheAttribute cacheAttr))
                 {
@@ -366,7 +366,7 @@ namespace Our.Umbraco.Ditto
                 foreach (var propertyInfo in lazyProperties)
                 {
                     // Configure lazy properties
-                    using (DittoDisposableTimer.DebugDuration<Ditto>($"Lazy Property ({content.Id} {propertyInfo.Name})"))
+                    using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"Lazy Property ({content.Id} {propertyInfo.Name})"))
                     {
                         // Ensure it's a virtual property (Only relevant to property level lazy loads)
                         if (!propertyInfo.IsVirtualAndOverridable())
@@ -426,7 +426,7 @@ namespace Our.Umbraco.Ditto
             IDittoContextAccessor contextAccessor,
             DittoChainContext chainContext)
         {
-            using (DittoDisposableTimer.DebugDuration<Ditto>($"Processing '{propertyInfo.Name}' ({content.Id})"))
+            using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"Processing '{propertyInfo.Name}' ({content.Id})"))
             {
                 // Get the target property description
                 var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
@@ -518,7 +518,7 @@ namespace Our.Umbraco.Ditto
             // Process attributes
             foreach (var processorAttr in processorAttrs)
             {
-                using (DittoDisposableTimer.DebugDuration<Ditto>($"Processor '{processorAttr.GetType().Name}' ({content.Id})"))
+                using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"Processor '{processorAttr.GetType().Name}' ({content.Id})"))
                 {
                     // Get the right context type
                     var ctx = chainContext.ProcessorContexts.GetOrCreate(baseProcessorContext, processorAttr.ContextType);

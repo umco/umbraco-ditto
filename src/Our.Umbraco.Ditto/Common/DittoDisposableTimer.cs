@@ -24,9 +24,20 @@ namespace Our.Umbraco.Ditto
         /// <returns>Returns an instance of the disposable timer.</returns>
         public new static DisposableTimer DebugDuration<T>(string startMessage)
         {
-            if (Ditto.IsDebuggingEnabled && ApplicationContext.Current != null && ApplicationContext.Current.ProfilingLogger != null)
+            return DebugDuration(typeof(T), startMessage);
+        }
+
+        /// <summary>
+        /// Profiles and tracks how long a code fragment takes, until it is disposed.
+        /// </summary>
+        /// <param name="loggerType">The type of the calling class.</param>
+        /// <param name="startMessage">The starting message for the profiler.</param>
+        /// <returns>Returns an instance of the disposable timer.</returns>
+        public static DisposableTimer DebugDuration(Type loggerType, string startMessage)
+        {
+            if (Ditto.IsProfilingEnabled() && ApplicationContext.Current?.ProfilingLogger != null)
             {
-                return ApplicationContext.Current.ProfilingLogger.DebugDuration<T>(startMessage);
+                return ApplicationContext.Current.ProfilingLogger.DebugDuration(loggerType, startMessage, "Complete");
             }
 
             return new DittoDisposableTimer((x) => { });

@@ -14,7 +14,7 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// The public facade for non extension method Ditto actions
     /// </summary>
-    public class Ditto
+    public static class Ditto
     {
         /// <summary>
         /// The global context accessor type for processors.
@@ -55,37 +55,42 @@ namespace Our.Umbraco.Ditto
             .ToList();
 
         /// <summary>
-        /// Gets a value indicating whether application is running in debug mode.
+        /// Indicates whether the application is running in debug mode.
         /// </summary>
-        /// <value><c>true</c> if debug mode; otherwise, <c>false</c>.</value>
-        internal static bool IsDebuggingEnabled
+        internal static readonly bool IsDebuggingEnabled = GetDebugFlag();
+
+        private static bool GetDebugFlag()
         {
-            get
+            // Check for app-setting first
+            var appSetting = ConfigurationManager.AppSettings["Ditto:DebugEnabled"];
+            if (string.IsNullOrWhiteSpace(appSetting) == false && bool.TryParse(appSetting, out bool dittoDebugEnabled))
             {
-                try
-                {
-                    // Check for app setting first
-                    if (!ConfigurationManager.AppSettings["Ditto:DebugEnabled"].IsNullOrWhiteSpace())
-                    {
-                        return ConfigurationManager.AppSettings["Ditto:DebugEnabled"].InvariantEquals("true");
-                    }
-
-                    // Check the HTTP Context
-                    if (HttpContext.Current != null)
-                    {
-                        return HttpContext.Current.IsDebuggingEnabled;
-                    }
-
-                    // Go and get it from config directly
-                    var section = ConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
-                    return section != null && section.Debug;
-                }
-                catch
-                {
-                    return false;
-                }
+                return dittoDebugEnabled;
             }
+
+            // Until `Umbraco.Core.Configuration.GlobalSettings.DebugMode` is available, we're using the legacy API.
+            // ref: https://github.com/umbraco/Umbraco-CMS/blob/release-7.3.2/src/umbraco.businesslogic/GlobalSettings.cs#L129
+            return umbraco.GlobalSettings.DebugMode;
         }
+
+        /// <summary>
+        /// Indicates whether the application is running in profile mode, e.g. "umbDebug" querystring.
+        /// </summary>
+        internal static bool IsProfilingEnabled()
+        {
+            var qs = HttpContext.Current?.Request?.QueryString?["umbDebug"];
+            if (IsDebuggingEnabled && string.IsNullOrWhiteSpace(qs) == false && bool.TryParse(qs, out bool umbDebug))
+            {
+                return umbDebug;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Indicates whether the application is running within a unit-test scenario.
+        /// </summary>
+        internal static bool IsRunningInUnitTest = false;
 
         /// <summary>
         /// Registers a global conversion handler.
