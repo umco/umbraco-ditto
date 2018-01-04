@@ -21,9 +21,7 @@ namespace Our.Umbraco.Ditto
         /// Initializes a new instance of the <see cref="DittoFactoryAttribute"/> class.
         /// </summary>
         protected DittoFactoryAttribute()
-        {
-            AllowedTypes = null;
-        }
+        { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoFactoryAttribute"/> class.
