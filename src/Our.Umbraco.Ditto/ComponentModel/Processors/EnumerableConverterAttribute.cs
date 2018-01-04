@@ -38,18 +38,18 @@ namespace Our.Umbraco.Ditto
             var propertyType = this.Context.PropertyDescriptor.PropertyType;
             var propertyIsEnumerableType = Direction == EnumerableConvertionDirection.Automatic
                 ? propertyType.IsEnumerableType()
-                    && !(propertyType == typeof(string))
+                    && (propertyType == typeof(string)) == false
                 : Direction == EnumerableConvertionDirection.ToEnumerable;
 
             if (this.Value != null)
             {
                 var valueType = this.Value.GetType();
                 var valueIsEnumerableType = valueType.IsEnumerableType()
-                    && !(this.Value is string);
+                    && (this.Value is string) == false;
 
                 if (propertyIsEnumerableType)
                 {
-                    if (!valueIsEnumerableType)
+                    if (valueIsEnumerableType == false)
                     {
                         // Property is enumerable, but value isn't, so make enumerable
                         var arr = Array.CreateInstance(valueType, 1);
@@ -71,7 +71,7 @@ namespace Our.Umbraco.Ditto
             {
                 if (propertyIsEnumerableType)
                 {
-                    if (propertyType.IsInterface && !propertyType.IsEnumerableOfKeyValueType())
+                    if (propertyType.IsInterface && propertyType.IsEnumerableOfKeyValueType() == false)
                     {
                         // Value is null, but property is enumerable interface, so return empty enumerable
                         result = EnumerableInvocations.Empty(propertyType.GenericTypeArguments.First());

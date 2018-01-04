@@ -137,7 +137,7 @@ namespace Our.Umbraco.Ditto
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Type TryGetElementType(this Type type, Type interfaceOrBaseType)
         {
-            if (!type.IsGenericTypeDefinition)
+            if (type.IsGenericTypeDefinition == false)
             {
                 Type[] types = GetGenericTypeImplementations(type, interfaceOrBaseType).ToArray();
                 return types.Length == 1 ? types[0].GetGenericArguments().FirstOrDefault() : null;
@@ -158,7 +158,7 @@ namespace Our.Umbraco.Ditto
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Type> GetGenericTypeImplementations(this Type type, Type interfaceOrBaseType)
         {
-            if (!type.IsGenericTypeDefinition)
+            if (type.IsGenericTypeDefinition == false)
             {
                 return (interfaceOrBaseType.IsInterface ? type.GetInterfaces() : type.GetBaseTypes())
                         .Union(new[] { type })
@@ -195,7 +195,7 @@ namespace Our.Umbraco.Ditto
         public static Type GetEnumerableType(this Type type)
         {
             // if it's not an enumerable why do you call this method all ?
-            if (!type.IsEnumerable())
+            if (type.IsEnumerable() == false)
             {
                 return null;
             }

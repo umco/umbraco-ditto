@@ -28,13 +28,13 @@ namespace Our.Umbraco.Ditto
                 throw new ArgumentNullException("source");
             }
 
-            if (!source.CanWrite)
+            if (source.CanWrite == false)
             {
                 return false;
             }
 
             var method = source.GetGetMethod();
-            return method.IsVirtual && !method.IsFinal;
+            return method.IsVirtual && method.IsFinal == false;
         }
 
         /// <summary>
@@ -49,11 +49,17 @@ namespace Our.Umbraco.Ditto
         public static bool IsMappable(this PropertyInfo source)
         {
             // Make sure source is readable
-            if (!source.CanRead) return false;
+            if (source.CanRead == false)
+            {
+                return false;
+            }
 
             // Check to make sure the get method has no parameters
             var hasParams = source.GetIndexParameters().GetLength(0) > 0;
-            if (hasParams) return false;
+            if (hasParams)
+            {
+                return false;
+            }
 
             // All checks have passed so allow it to be mapped
             return true;

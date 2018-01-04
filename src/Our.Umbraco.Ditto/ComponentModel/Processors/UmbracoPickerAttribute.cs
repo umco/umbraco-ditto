@@ -68,7 +68,7 @@ namespace Our.Umbraco.Ditto
             if (!nodeIds.Any())
             {
                 var s = this.Value as string ?? this.Value.ToString();
-                if (!string.IsNullOrWhiteSpace(s))
+                if (string.IsNullOrWhiteSpace(s) == false)
                 {
                     int n;
                     nodeIds = XmlHelper.CouldItBeXml(s)

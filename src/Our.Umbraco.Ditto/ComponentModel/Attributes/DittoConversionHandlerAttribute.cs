@@ -16,7 +16,7 @@ namespace Our.Umbraco.Ditto
         /// <exception cref="System.ArgumentException">Handler type must inherit from DittoConversionHandler;handlerType</exception>
         public DittoConversionHandlerAttribute(Type handlerType)
         {
-            if (!typeof(DittoConversionHandler).IsAssignableFrom(handlerType))
+            if (typeof(DittoConversionHandler).IsAssignableFrom(handlerType) == false)
             {
                 throw new ArgumentException("Handler type must inherit from DittoConversionHandler", "handlerType");
             }

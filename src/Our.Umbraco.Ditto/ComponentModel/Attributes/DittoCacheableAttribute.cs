@@ -62,7 +62,7 @@ namespace Our.Umbraco.Ditto
             var cacheKeyBuilderType = this.CacheKeyBuilderType ?? typeof(DittoDefaultCacheKeyBuilder);
 
             // Check the cache key builder type
-            if (!typeof(DittoCacheKeyBuilder).IsAssignableFrom(cacheKeyBuilderType))
+            if (typeof(DittoCacheKeyBuilder).IsAssignableFrom(cacheKeyBuilderType) == false)
             {
                 throw new ApplicationException($"Expected a cache key builder of type {typeof(DittoCacheKeyBuilder)} but got {this.CacheKeyBuilderType}");
             }
