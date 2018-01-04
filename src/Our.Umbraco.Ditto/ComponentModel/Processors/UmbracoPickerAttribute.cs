@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
-using Umbraco.Web.Security;
 
 namespace Our.Umbraco.Ditto
 {
@@ -26,12 +24,11 @@ namespace Our.Umbraco.Ditto
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (this.Context == null || this.Context.PropertyDescriptor == null || this.Value.IsNullOrEmptyString())
             {
-                return Enumerable.Empty<object>();
+                return Enumerable.Empty<IPublishedContent>();
             }
 
             // Single IPublishedContent
-            IPublishedContent content = this.Value as IPublishedContent;
-            if (content != null)
+            if (this.Value is IPublishedContent content)
             {
                 return content;
             }
@@ -52,10 +49,9 @@ namespace Our.Umbraco.Ditto
             {
                 if (type.IsEnumerableOfType(typeof(string)))
                 {
-                    int n;
                     nodeIds = ((IEnumerable<string>)this.Value)
-                                .Select(x => int.TryParse(x, NumberStyles.Any, this.Context.Culture, out n) ? n : -1)
-                                .ToArray();
+                        .Select(x => int.TryParse(x, NumberStyles.Any, this.Context.Culture, out int n) ? n : -1)
+                        .ToArray();
                 }
 
                 if (type.IsEnumerableOfType(typeof(int)))
@@ -64,17 +60,16 @@ namespace Our.Umbraco.Ditto
                 }
             }
 
-            // Now csv strings.
+            // Now CSV strings.
             if (!nodeIds.Any())
             {
                 var s = this.Value as string ?? this.Value.ToString();
                 if (string.IsNullOrWhiteSpace(s) == false)
                 {
-                    int n;
                     nodeIds = XmlHelper.CouldItBeXml(s)
-                    ? s.GetXmlIds()
+                    ? umbraco.uQuery.GetXmlIds(s)
                     : s.ToDelimitedList()
-                        .Select(x => int.TryParse(x, NumberStyles.Any, this.Context.Culture, out n) ? n : -1)
+                        .Select(x => int.TryParse(x, NumberStyles.Any, this.Context.Culture, out int n) ? n : -1)
                         .Where(x => x > 0)
                         .ToArray();
                 }

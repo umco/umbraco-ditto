@@ -127,7 +127,6 @@
     <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
     <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Internal\PropertyInfoExtensions.cs" />
-    <Compile Include="Extensions\Internal\StringExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInferenceExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />
     <Compile Include="Extensions\RenderModelExtensions.cs" />
