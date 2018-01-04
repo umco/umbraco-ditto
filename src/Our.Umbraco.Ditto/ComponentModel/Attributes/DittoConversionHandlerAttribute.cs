@@ -7,7 +7,7 @@ namespace Our.Umbraco.Ditto
     /// Provides the ability to associate a handler class with a model to handle pre/post conversion custom logic.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
-    public class DittoConversionHandlerAttribute : Attribute
+    public sealed class DittoConversionHandlerAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoConversionHandlerAttribute"/> class.

@@ -6,8 +6,8 @@ namespace Our.Umbraco.Ditto
     /// The Ditto default processor attribute.
     /// Used for specifying that Ditto should use a default processor during object conversion.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class DittoDefaultProcessorAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    public sealed class DittoDefaultProcessorAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoDefaultProcessorAttribute"/> class.

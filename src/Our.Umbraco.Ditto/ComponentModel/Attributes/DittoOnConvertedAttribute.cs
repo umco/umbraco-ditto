@@ -7,6 +7,6 @@ namespace Our.Umbraco.Ditto
     /// Used to identify a method on a Ditto POCO model to run as a post conversion handler.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class DittoOnConvertedAttribute : Attribute
+    public sealed class DittoOnConvertedAttribute : Attribute
     { }
 }
