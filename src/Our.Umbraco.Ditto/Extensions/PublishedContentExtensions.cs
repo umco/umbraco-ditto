@@ -126,7 +126,7 @@ namespace Our.Umbraco.Ditto
             }
 
             // Get the context accessor (for access to ApplicationContext, UmbracoContext, et al)
-            var contextAccessor = (IDittoContextAccessor)Ditto.GetContextAccessorType().GetInstance();
+            var contextAccessor = Ditto.GetContextAccessor();
 
             // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
             if (culture == null)

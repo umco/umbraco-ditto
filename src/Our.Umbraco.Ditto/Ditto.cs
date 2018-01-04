@@ -158,14 +158,14 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Gets the global umbraco application context accessor type.
+        /// Gets the global Umbraco application context accessor.
         /// </summary>
         /// <returns>
-        /// Returns the global umbraco application context accessor type.
+        /// Returns the global Umbraco application context accessor.
         /// </returns>
-        public static Type GetContextAccessorType()
+        public static IDittoContextAccessor GetContextAccessor()
         {
-            return contextAccessorType;
+            return contextAccessorType.GetInstance<IDittoContextAccessor>();
         }
 
         /// <summary>
