@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Configuration;
 using Umbraco.Core;
 using Umbraco.Core.Models;
+using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
 {
@@ -49,7 +50,7 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// A list of mappable properties defined on the IPublishedContent interface
         /// </summary>
-        internal static readonly IEnumerable<PropertyInfo> IPublishedContentProperties = typeof(IPublishedContent)
+        internal static readonly List<PropertyInfo> IPublishedContentProperties = typeof(IPublishedContent)
             .GetProperties(MappablePropertiesBindingFlags)
             .Where(x => x.IsMappable())
             .ToList();

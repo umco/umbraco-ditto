@@ -19,6 +19,12 @@ namespace Our.Umbraco.Ditto
                     AttributedTypeResolver<DittoDefaultProcessorAttribute>.Current = AttributedTypeResolver<DittoDefaultProcessorAttribute>.Create(PluginManager.Current);
                 }
 
+                if (AttributedTypeResolver<DittoProcessorMetaDataAttribute>.HasCurrent == false)
+                {
+                    AttributedTypeResolver<DittoProcessorMetaDataAttribute>.Current
+                        = AttributedTypeResolver<DittoProcessorMetaDataAttribute>.Create(PluginManager.Current.ResolveTypes<DittoProcessorAttribute>(), inherit: true);
+                }
+
                 if (AttributedTypeResolver<UmbracoPropertiesAttribute>.HasCurrent == false)
                 {
                     AttributedTypeResolver<UmbracoPropertiesAttribute>.Current = AttributedTypeResolver<UmbracoPropertiesAttribute>.Create(PluginManager.Current);

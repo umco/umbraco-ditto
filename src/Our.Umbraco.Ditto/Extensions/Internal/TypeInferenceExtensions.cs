@@ -139,6 +139,7 @@ namespace Our.Umbraco.Ditto
         {
             if (type.IsGenericTypeDefinition == false)
             {
+                // TODO: Review this. The `ToArray` causes a lot of allocations
                 Type[] types = GetGenericTypeImplementations(type, interfaceOrBaseType).ToArray();
                 return types.Length == 1 ? types[0].GetGenericArguments().FirstOrDefault() : null;
             }
@@ -160,6 +161,7 @@ namespace Our.Umbraco.Ditto
         {
             if (type.IsGenericTypeDefinition == false)
             {
+                // TODO: Review this. This gets called a LOT!
                 return (interfaceOrBaseType.IsInterface ? type.GetInterfaces() : type.GetBaseTypes())
                         .Union(new[] { type })
                         .Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == interfaceOrBaseType);

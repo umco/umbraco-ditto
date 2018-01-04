@@ -71,6 +71,7 @@ namespace Our.Umbraco.Ditto
             var builder = cacheKeyBuilderType.GetInstance<DittoCacheKeyBuilder>();
             var cacheKey = builder.BuildCacheKey(cacheContext);
 
+            // TODO: Review this. Is there a way we can remove the use of the `ApplicationContext` singleton?
             // Get and cache the result
             return (TOuputType)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
                 cacheKey,

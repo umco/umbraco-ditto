@@ -90,11 +90,11 @@ namespace Our.Umbraco.Ditto.Tests
             {
                 Properties = new List<IPublishedProperty>
                 {
-                    new MockPublishedContentProperty("MyCollection", new [] { content1, content2, content3  }),
+                    new MockPublishedContentProperty("MyCollection", new [] { content1, content2, content3 }),
                     new MockPublishedContentProperty("MyProperty", content3),
-                    new MockPublishedContentProperty("MyCollection2", new [] { content4, content5  }),
+                    new MockPublishedContentProperty("MyCollection2", new [] { content4, content5 }),
                     new MockPublishedContentProperty("MyProperty2", content4),
-                    new MockPublishedContentProperty("MyCollection3", new [] { content1, content2, content3  })
+                    new MockPublishedContentProperty("MyCollection3", new [] { content1, content2, content3 })
                 }
             };
 
