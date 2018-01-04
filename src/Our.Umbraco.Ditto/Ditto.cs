@@ -195,8 +195,9 @@ namespace Our.Umbraco.Ditto
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="objectType">The object type.</param>
         /// <param name="attribute">The attribute.</param>
-        /// <returns>Returns the associated attribute for the given type.</returns>
-        public static bool TryGetAttribute<TAttribute>(Type objectType, out TAttribute attribute) where TAttribute : Attribute
+        /// <param name="inherit">A boolean flag to search the type's inheritance chain to find the attribute.</param>
+        /// <returns>Returns the associated attribute for the given object-type.</returns>
+        public static bool TryGetTypeAttribute<TAttribute>(Type objectType, out TAttribute attribute, bool inherit = false) where TAttribute : Attribute
         {
             if (AttributedTypeResolver<TAttribute>.HasCurrent == false)
             {
@@ -204,7 +205,7 @@ namespace Our.Umbraco.Ditto
                 return false;
             }
 
-            return AttributedTypeResolver<TAttribute>.Current.TryGetAttribute(objectType, out attribute);
+            return AttributedTypeResolver<TAttribute>.Current.TryGetTypeAttribute(objectType, out attribute, inherit);
         }
     }
 }

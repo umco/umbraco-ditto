@@ -19,21 +19,13 @@ namespace Our.Umbraco.Ditto
             _attributedTypeLookup = new ConcurrentDictionary<Type, TAttribute>();
         }
 
-        private void Initialize(IEnumerable<Type> types)
+        private void Initialize(IEnumerable<Type> types, bool inherit = false)
         {
             if (types != null)
             {
                 foreach (var type in types)
                 {
-                    var attribute = type.GetCustomAttribute<TAttribute>(false);
-                    if (attribute != null && _attributedTypeLookup.ContainsKey(type) == false)
-                    {
-                        _attributedTypeLookup.TryAdd(type, attribute);
-                    }
-                    else
-                    {
-                        LogHelper.Warn<AttributedTypeResolver<TAttribute>>($"Duplicate '{nameof(TAttribute)}' attribute found in type: '{type}'");
-                    }
+                    TryAddAttributedType(type, out TAttribute attribute, inherit);
                 }
             }
         }
@@ -61,47 +53,67 @@ namespace Our.Umbraco.Ditto
         /// Creates a new instance of the attributed type resolver.
         /// </summary>
         /// <param name="pluginManager">An instance of Umbraco's PluginManager object.</param>
+        /// <param name="inherit">A boolean flag to search the type's inheritance chain to find the attribute.</param>
         /// <returns>Returns a new instance of the attributed type resolver.</returns>
-        public static AttributedTypeResolver<TAttribute> Create(PluginManager pluginManager)
+        public static AttributedTypeResolver<TAttribute> Create(PluginManager pluginManager, bool inherit = false)
         {
-            return Create(pluginManager.ResolveAttributedTypes<TAttribute>());
+            return Create(pluginManager.ResolveAttributedTypes<TAttribute>(), inherit);
         }
 
         /// <summary>
         /// Creates a new instance of the attributed type resolver.
         /// </summary>
         /// <param name="types">An enumerable of attributed types.</param>
+        /// <param name="inherit">A boolean flag to search the type's inheritance chain to find the attribute.</param>
         /// <returns>Returns a new instance of the attributed type resolver.</returns>
-        public static AttributedTypeResolver<TAttribute> Create(IEnumerable<Type> types)
+        public static AttributedTypeResolver<TAttribute> Create(IEnumerable<Type> types, bool inherit = false)
         {
             var resolver = new AttributedTypeResolver<TAttribute>();
 
-            resolver.Initialize(types);
+            resolver.Initialize(types, inherit);
 
             return resolver;
         }
 
         /// <summary>
-        /// Tries to get the associated attribute for a given type.
+        /// Tries to add the associated attribute for a given type.
         /// </summary>
         /// <param name="type">The object type.</param>
         /// <param name="attribute">The attribute.</param>
-        /// <returns>Returns the associated attribute for the given type.</returns>
-        public bool TryGetAttribute(Type type, out TAttribute attribute)
+        /// <param name="inherit">A boolean flag to search the type's inheritance chain to find the attribute.</param>
+        /// <returns>Returns the result status of adding the attribute to the internal dictionary.</returns>
+        private bool TryAddAttributedType(Type type, out TAttribute attribute, bool inherit)
         {
-            return _attributedTypeLookup.TryGetValue(type, out attribute);
+            attribute = type.GetCustomAttribute<TAttribute>(inherit);
+            if (attribute != null && _attributedTypeLookup.ContainsKey(type) == false)
+            {
+                return _attributedTypeLookup.TryAdd(type, attribute);
+            }
+            else
+            {
+                LogHelper.Warn<AttributedTypeResolver<TAttribute>>($"Duplicate '{nameof(TAttribute)}' attribute found in type: '{type}'");
+            }
+
+            return false;
         }
 
         /// <summary>
-        /// Gets the associated attribute for a given type.
+        /// Tries to get the associated attribute for a given object-type.
         /// </summary>
-        /// <param name="type">The object type.</param>
-        /// <returns>Returns the associated attribute for the given type.</returns>
-        public TAttribute GetAttribute(Type type)
+        /// <param name="type">The object-type.</param>
+        /// <param name="attribute">The attribute.</param>
+        /// <param name="inherit">A boolean flag to search the type's inheritance chain to find the attribute.</param>
+        /// <returns>Returns the associated attribute for the given object-type.</returns>
+        public bool TryGetTypeAttribute(Type type, out TAttribute attribute, bool inherit = false)
         {
-            return _attributedTypeLookup.TryGetValue(type, out TAttribute attribute)
-                ? attribute
-                : null;
+            bool result = _attributedTypeLookup.TryGetValue(type, out attribute);
+
+            if (result == false)
+            {
+                result = TryAddAttributedType(type, out attribute, inherit);
+            }
+
+            return result;
         }
     }
 }
