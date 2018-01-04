@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Web.Mvc;
 
 namespace Our.Umbraco.Ditto
 {
@@ -16,18 +15,6 @@ namespace Our.Umbraco.Ditto
     {
         /// <summary>
         /// Returns an instance of the <paramref name="type"/> on which the method is invoked.
-        /// This method will first check if there constructors dictated by dependency injection
-        /// and fall back to the default constructor method if none are found.
-        /// </summary>
-        /// <param name="type">The type on which the method was invoked.</param>
-        /// <returns>An instance of the <paramref name="type"/>.</returns>
-        public static object GetDependencyResolvedInstance(this Type type)
-        {
-            return DependencyResolver.Current.GetService(type) ?? GetInstance(type);
-        }
-
-        /// <summary>
-        /// Returns an instance of the <paramref name="type"/> on which the method is invoked.
         /// </summary>
         /// <param name="type">The type on which the method was invoked.</param>
         /// <returns>An instance of the <paramref name="type"/>.</returns>
@@ -35,6 +22,12 @@ namespace Our.Umbraco.Ditto
         {
             // This is about as quick as it gets.
             return Activator.CreateInstance(type);
+        }
+
+        public static T GetInstance<T>(this Type type)
+        {
+            // This is about as quick as it gets.
+            return (T)Activator.CreateInstance(type);
         }
 
         /// <summary>
@@ -125,8 +118,7 @@ namespace Our.Umbraco.Ditto
             private static void CacheInstanceCreationMethodIfRequired(Type type)
             {
                 // Bail out if we've already cached the instance creation method:
-                Func<TArg1, TArg2, TArg3, object> cached;
-                if (InstanceCreationMethods.TryGetValue(type, out cached))
+                if (InstanceCreationMethods.TryGetValue(type, out Func<TArg1, TArg2, TArg3, object> cached))
                 {
                     return;
                 }
@@ -171,8 +163,8 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// To allow for overloads with differing numbers of arguments, we flag arguments which should be 
-        /// ignored by using this Type:
+        /// To allow for overloads with differing numbers of arguments,
+        /// we flag arguments which should be ignored by using this Type.
         /// </summary>
         private class TypeToIgnore
         { }

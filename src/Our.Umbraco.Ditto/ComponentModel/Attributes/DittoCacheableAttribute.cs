@@ -68,7 +68,7 @@ namespace Our.Umbraco.Ditto
             }
 
             // Construct the cache key builder
-            var builder = (DittoCacheKeyBuilder)cacheKeyBuilderType.GetInstance();
+            var builder = cacheKeyBuilderType.GetInstance<DittoCacheKeyBuilder>();
             var cacheKey = builder.BuildCacheKey(cacheContext);
 
             // Get and cache the result
