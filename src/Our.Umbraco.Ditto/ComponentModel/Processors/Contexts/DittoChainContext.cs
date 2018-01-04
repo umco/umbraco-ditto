@@ -80,7 +80,7 @@ namespace Our.Umbraco.Ditto
         {
             // Get, clone and populate the relevant context for the given level
             var ctx = _processorContexts
-                .GetOrAdd(contextType, type => (DittoProcessorContext)contextType.GetInstance())
+                .GetOrAdd(contextType, type => contextType.GetInstance<DittoProcessorContext>())
                 .Clone()
                 .Populate(baseContext);
 

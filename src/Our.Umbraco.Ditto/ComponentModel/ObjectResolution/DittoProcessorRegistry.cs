@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Umbraco.Core;
 
 namespace Our.Umbraco.Ditto
 {
@@ -93,7 +91,7 @@ namespace Our.Umbraco.Ditto
         public void RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>()
             where TProcessorAttributeType : DittoProcessorAttribute, new()
         {
-            this.RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>((TProcessorAttributeType)typeof(TProcessorAttributeType).GetInstance());
+            this.RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>(typeof(TProcessorAttributeType).GetInstance<TProcessorAttributeType>());
         }
 
         /// <summary>
@@ -127,12 +125,12 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public DittoProcessorAttribute GetDefaultProcessorFor(Type objectType)
         {
-            if (Ditto.TryGetAttribute(objectType, out DittoDefaultProcessorAttribute attr))
+            if (Ditto.TryGetTypeAttribute(objectType, out DittoDefaultProcessorAttribute attr))
             {
-                return (DittoProcessorAttribute)attr.ProcessorType.GetInstance();
+                return attr.ProcessorType.GetInstance<DittoProcessorAttribute>();
             }
 
-            return (DittoProcessorAttribute)DefaultProcessorType.GetInstance();
+            return DefaultProcessorType.GetInstance<DittoProcessorAttribute>();
         }
 
         /// <summary>
@@ -145,7 +143,7 @@ namespace Our.Umbraco.Ditto
         {
             foreach (var type in PostProcessorTypes)
             {
-                yield return (DittoProcessorAttribute)type.GetInstance();
+                yield return type.GetInstance<DittoProcessorAttribute>();
             }
         }
 
