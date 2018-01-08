@@ -70,6 +70,9 @@ namespace Our.Umbraco.Ditto.Tests
 
             // Tidy-up after test, otherwise the new default processor will cause other tests to fail!
             Ditto.RegisterDefaultProcessorType<UmbracoPropertyAttribute>();
+
+            // ...and clear the type-config cache
+            DittoTypeConfigCache.Clear<MyModel>();
         }
     }
 }

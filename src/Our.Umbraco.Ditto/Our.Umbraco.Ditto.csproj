@@ -81,6 +81,8 @@
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Common\CachedInvocations.cs" />
+    <Compile Include="Common\DittoTypeConfigCache.cs" />
+    <Compile Include="Common\DittoTypeConfig.cs" />
     <Compile Include="Common\FastPropertyAccessor.cs" />
     <Compile Include="Common\DittoContextAccessor.cs" />
     <Compile Include="ComponentModel\Attributes\DittoDefaultProcessorAttribute.cs" />
@@ -131,8 +133,8 @@
     <Compile Include="Extensions\Internal\PropertyInfoExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInferenceExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />
-    <Compile Include="Extensions\RenderModelExtensions.cs" />
     <Compile Include="Extensions\PublishedContentExtensions.cs" />
+    <Compile Include="Extensions\RenderModelExtensions.cs" />
     <Compile Include="LazyLoad.cs" />
     <Compile Include="Web\Mvc\Models\DittoTransferModel.cs" />
     <Compile Include="Web\Mvc\Models\DittoViewModel.cs" />

@@ -48,6 +48,9 @@ namespace Our.Umbraco.Ditto.PerformanceTests
             Ditto.DeregisterPostProcessorType<EnumerableConverterAttribute>();
             Ditto.DeregisterPostProcessorType<RecursiveDittoAttribute>();
             Ditto.DeregisterPostProcessorType<TryConvertToAttribute>();
+
+            // pre-load the type config
+            DittoTypeConfigCache.Add<BasicModel>();
         }
 
         [Benchmark(Baseline = true)]
