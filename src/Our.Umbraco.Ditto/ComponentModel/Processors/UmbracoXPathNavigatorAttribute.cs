@@ -40,7 +40,6 @@ namespace Our.Umbraco.Ditto
                 return Enumerable.Empty<XPathNavigator>();
 
             return UmbracoContext
-                .Current
                 .ContentCache
                 .GetXPathNavigator()
                 .Select(xpath)

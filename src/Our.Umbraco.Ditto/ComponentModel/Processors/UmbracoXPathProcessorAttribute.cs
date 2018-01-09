@@ -66,8 +66,8 @@ namespace Our.Umbraco.Ditto
                 content = ((IEnumerable<IPublishedContent>)Value).FirstOrDefault();
             }
 
-            if ((content == null || content.Id == 0) && UmbracoContext.Current.PageId.HasValue)
-                content = UmbracoContext.Current.ContentCache.GetById(UmbracoContext.Current.PageId.Value);
+            if ((content == null || content.Id == 0) && UmbracoContext.PageId.HasValue)
+                content = UmbracoContext.ContentCache.GetById(UmbracoContext.PageId.Value);
 
             return content;
         }
