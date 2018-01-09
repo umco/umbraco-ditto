@@ -19,19 +19,12 @@ namespace Our.Umbraco.Ditto
         {
             if (typeof(IHtmlString).IsAssignableFrom(this.Context.PropertyInfo.PropertyType))
             {
-                if (this.Value.IsNullOrEmptyString())
+                if (this.Value is string text && string.IsNullOrWhiteSpace(text) == false)
                 {
-                    return null;
-                }
-
-                if (this.Value is string)
-                {
-                    var text = this.Value.ToString();
-
-                    if (!string.IsNullOrWhiteSpace(text))
-                    {
-                        text = text.Replace("\n", "<br/>\n");
-                    }
+                    text = text
+                        .Replace("\r\n", "<br />")
+                        .Replace("\n", "<br />")
+                        .Replace("\r", "<br />");
 
                     return new HtmlString(text);
                 }
@@ -40,7 +33,7 @@ namespace Our.Umbraco.Ditto
                 {
                     var html = this.Value.ToString();
 
-                    if (!string.IsNullOrWhiteSpace(html))
+                    if (string.IsNullOrWhiteSpace(html) == false)
                     {
                         html = TemplateUtilities.ParseInternalLinks(html);
                     }

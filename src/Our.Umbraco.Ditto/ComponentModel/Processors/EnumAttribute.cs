@@ -26,7 +26,7 @@ namespace Our.Umbraco.Ditto
 
             var propertyType = this.Context.PropertyInfo.PropertyType;
 
-            if (this.Value.IsNullOrEmptyString())
+            if (this.Value == null || (this.Value is string value && string.IsNullOrWhiteSpace(value)))
             {
                 // Value types return default instance.
                 return propertyType.GetInstance();
