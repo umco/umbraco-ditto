@@ -96,7 +96,7 @@ namespace Our.Umbraco.Ditto
             if (this.Context.TargetType != null && Ditto.TryGetTypeAttribute(this.Context.TargetType, out UmbracoPropertiesAttribute classAttr))
             {
                 // Apply the prefix
-                if (!string.IsNullOrWhiteSpace(classAttr.Prefix))
+                if (string.IsNullOrWhiteSpace(classAttr.Prefix) == false)
                 {
                     altPropName = propName;
                     propName = classAttr.Prefix + propName;
@@ -109,8 +109,7 @@ namespace Our.Umbraco.Ditto
                 // and the current value is the default. We only do it this
                 // way because if they change it at the property level, we
                 // want that to take precedence over the class level.
-                if (classAttr.PropertySource != Ditto.DefaultPropertySource
-                    && PropertySource == Ditto.DefaultPropertySource)
+                if (classAttr.PropertySource != Ditto.DefaultPropertySource && PropertySource == Ditto.DefaultPropertySource)
                 {
                     PropertySource = classAttr.PropertySource;
                 }
@@ -128,14 +127,14 @@ namespace Our.Umbraco.Ditto
             object propertyValue = null;
 
             // Try fetching the value.
-            if (!umbracoPropertyName.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(umbracoPropertyName) == false)
             {
                 propertyValue = GetPropertyValue(content, umbracoPropertyName, recursive);
             }
 
             // Try fetching the alt value.
             if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
-                && !string.IsNullOrWhiteSpace(altUmbracoPropertyName))
+                && string.IsNullOrWhiteSpace(altUmbracoPropertyName) == false)
             {
                 propertyValue = GetPropertyValue(content, altUmbracoPropertyName, recursive);
             }

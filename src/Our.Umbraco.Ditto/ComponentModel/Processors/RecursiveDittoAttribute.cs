@@ -25,7 +25,7 @@ namespace Our.Umbraco.Ditto
             var result = this.Value;
 
             // If we aren't already the right type, try recursing if the type is IPublishedContent
-            if (this.Value != null && !this.Context.PropertyInfo.PropertyType.IsInstanceOfType(this.Value))
+            if (this.Value != null && this.Context.PropertyInfo.PropertyType.IsInstanceOfType(this.Value) == false)
             {
                 if (this.Value is IPublishedContent && this.Context.PropertyInfo.PropertyType.IsClass)
                 {

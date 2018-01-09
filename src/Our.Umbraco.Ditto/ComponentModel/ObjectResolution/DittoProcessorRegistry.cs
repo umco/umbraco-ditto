@@ -107,7 +107,7 @@ namespace Our.Umbraco.Ditto
 
             lock (ProcessorCacheLock)
             {
-                if (!ProcessorCache.ContainsKey(objType))
+                if (ProcessorCache.ContainsKey(objType) == false)
                 {
                     ProcessorCache.Add(objType, new List<DittoProcessorAttribute>());
                 }
@@ -175,7 +175,7 @@ namespace Our.Umbraco.Ditto
             lock (PostProcessorTypesLock)
             {
                 var type = typeof(TProcessorAttributeType);
-                if (!PostProcessorTypes.Contains(type))
+                if (PostProcessorTypes.Contains(type) == false)
                 {
                     if (position < 0)
                     {

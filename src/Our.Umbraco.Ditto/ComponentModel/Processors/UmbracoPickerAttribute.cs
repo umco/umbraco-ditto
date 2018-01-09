@@ -60,18 +60,18 @@ namespace Our.Umbraco.Ditto
                 }
             }
 
-            // Now CSV strings.
-            if (!nodeIds.Any())
+            // Now CSV string.
+            if (nodeIds.Any() == false)
             {
                 var s = this.Value as string ?? this.Value.ToString();
                 if (string.IsNullOrWhiteSpace(s) == false)
                 {
                     nodeIds = XmlHelper.CouldItBeXml(s)
-                    ? umbraco.uQuery.GetXmlIds(s)
-                    : s.ToDelimitedList()
-                        .Select(x => int.TryParse(x, NumberStyles.Any, this.Context.Culture, out int n) ? n : -1)
-                        .Where(x => x > 0)
-                        .ToArray();
+                        ? umbraco.uQuery.GetXmlIds(s)
+                        : s.ToDelimitedList()
+                            .Select(x => int.TryParse(x, NumberStyles.Any, this.Context.Culture, out int n) ? n : -1)
+                            .Where(x => x > 0)
+                            .ToArray();
                 }
             }
 

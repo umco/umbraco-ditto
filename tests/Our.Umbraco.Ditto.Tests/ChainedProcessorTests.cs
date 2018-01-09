@@ -98,7 +98,7 @@
         {
             // In this test, the `MyProperty` property gets a `string` value
             // via the `UmbracoProperty`. The `string` type/value is passed
-            // to the `MyCustomConverter` so to convert the `string` to a
+            // to the `MyCustomProcessor` so to convert the `string` to a
             // `MyCustomModel` type/object.
 
             var content = new MockPublishedContent() { Name = "MyName" };
@@ -117,7 +117,7 @@
         {
             // In this test, the `MyProperty` property gets its value from
             // the `MyCustomValueResolver` (returning a `MyCustomModel`).
-            // The `MyCustomConverter` is called, but fails the
+            // The `MyCustomProcessor` is called, but fails the
             // `CanConvertFrom` check, so wouldn't try to convert it.
             // Since the value type is the same as the target property type,
             // the property value can be set.
@@ -138,7 +138,7 @@
         {
             // In this test, the `MyProperty` property gets a `string` value
             // via the `UmbracoProperty`. The `string` type/value is passed
-            // to the `MyCustomConverter` so to convert the `string` to a
+            // to the `MyCustomProcessor` so to convert the `string` to a
             // `MyCustomModel` type/object.
 
             var content = new MockPublishedContent() { Name = "MyName" };

@@ -32,9 +32,8 @@ namespace Our.Umbraco.Ditto
                 return propertyType.GetInstance();
             }
 
-            if (this.Value is string)
+            if (this.Value is string strValue)
             {
-                string strValue = (string)this.Value;
                 if (strValue.IndexOf(',') != -1)
                 {
                     long convertedValue = 0;
@@ -91,8 +90,7 @@ namespace Our.Umbraco.Ditto
                 }
             }
 
-            var enums = this.Value as Enum[];
-            if (enums != null)
+            if (this.Value is Enum[] enums)
             {
                 long convertedValue = 0;
 

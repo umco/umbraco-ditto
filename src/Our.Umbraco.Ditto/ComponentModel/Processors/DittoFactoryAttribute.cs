@@ -83,9 +83,9 @@ namespace Our.Umbraco.Ditto
                                 .GetTypes()
                                 .Where(t => baseType.IsAssignableFrom(t)
                                     && t.IsClass
-                                    && !t.IsAbstract
-                                    && !t.IsSealed
-                                    && !t.IsNestedPrivate
+                                    && t.IsAbstract == false
+                                    && t.IsSealed == false
+                                    && t.IsNestedPrivate == false
                                     && t.GetCustomAttribute<HideFromTypeFinderAttribute>(true) == null)
                                 .ToArray();
                         }

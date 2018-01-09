@@ -120,7 +120,7 @@ namespace Our.Umbraco.Ditto
             }
 
             // Ensure instance is of target type
-            if (instance != null && !type.IsInstanceOfType(instance))
+            if (instance != null && type.IsInstanceOfType(instance) == false)
             {
                 throw new ArgumentException($"The instance parameter does not implement Type '{type.Name}'", nameof(instance));
             }
@@ -220,7 +220,7 @@ namespace Our.Umbraco.Ditto
                 validConstructor = true;
             }
 
-            if (!validConstructor)
+            if (validConstructor == false)
             {
                 throw new InvalidOperationException(
                     $"Cannot convert IPublishedContent to {type} as it has no valid constructor. " +
@@ -273,7 +273,7 @@ namespace Our.Umbraco.Ditto
                     using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"Lazy Property ({content.Id} {propertyInfo.Name})"))
                     {
                         // Ensure it's a virtual property (Only relevant to property level lazy loads)
-                        if (!propertyInfo.IsVirtualAndOverridable())
+                        if (propertyInfo.IsVirtualAndOverridable() == false)
                         {
                             throw new InvalidOperationException($"Lazy property '{propertyInfo.Name}' of type '{type.AssemblyQualifiedName}' must be declared virtual in order to be lazy loadable.");
                         }
@@ -286,7 +286,7 @@ namespace Our.Umbraco.Ditto
             }
 
             // Process any non lazy properties
-            foreach (var propertyInfo in properties.Where(x => !x.ShouldAttemptLazyLoad()))
+            foreach (var propertyInfo in properties.Where(x => x.ShouldAttemptLazyLoad() == false))
             {
                 // Check for the ignore attribute.
                 if (propertyInfo.HasCustomAttribute<DittoIgnoreAttribute>())
@@ -370,7 +370,7 @@ namespace Our.Umbraco.Ditto
                 .OrderBy(x => x.Order)
                 .ToList();
 
-            if (!processorAttrs.Any())
+            if (processorAttrs.Any() == false)
             {
                 // Adds the default processor for this conversion
                 processorAttrs.Add(DittoProcessorRegistry.Instance.GetDefaultProcessorFor(baseProcessorContext.TargetType));
