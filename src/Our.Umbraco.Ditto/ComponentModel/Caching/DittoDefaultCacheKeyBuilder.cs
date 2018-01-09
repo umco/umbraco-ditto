@@ -26,9 +26,9 @@ namespace Our.Umbraco.Ditto
                 cacheKey.Add(context.Content.Version);
             }
 
-            if (context.PropertyDescriptor != null && (context.Attribute.CacheBy & DittoCacheBy.PropertyName) == DittoCacheBy.PropertyName)
+            if (context.PropertyInfo != null && (context.Attribute.CacheBy & DittoCacheBy.PropertyName) == DittoCacheBy.PropertyName)
             {
-                cacheKey.Add(context.PropertyDescriptor.Name);
+                cacheKey.Add(context.PropertyInfo.Name);
             }
 
             if ((context.Attribute.CacheBy & DittoCacheBy.TargetType) == DittoCacheBy.TargetType)

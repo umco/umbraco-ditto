@@ -39,7 +39,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             public override object ProcessValue()
             {
-                Assert.That(this.Context.PropertyDescriptor.Name, Is.EqualTo("MyProperty"));
+                Assert.That(this.Context.PropertyInfo.Name, Is.EqualTo("MyProperty"));
 
                 var items = Value as IEnumerable;
                 foreach (var item in items)
@@ -47,7 +47,7 @@ namespace Our.Umbraco.Ditto.Tests
                     // do nothing, we just need the for-loop so that the collection is evaluated
                 }
 
-                Assert.That(this.Context.PropertyDescriptor.Name, Is.EqualTo("MyProperty"));
+                Assert.That(this.Context.PropertyInfo.Name, Is.EqualTo("MyProperty"));
 
                 return Value;
             }

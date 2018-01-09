@@ -62,7 +62,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var context = new DittoProcessorContext
             {
-                PropertyDescriptor = TypeDescriptor.GetProperties(new WrappedModel())["MyProperty1"]
+                PropertyInfo = typeof(WrappedModel).GetProperty("MyProperty1")
             };
 
             var processor = new EnumerableConverterAttribute();
@@ -76,7 +76,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var context = new DittoProcessorContext
             {
-                PropertyDescriptor = TypeDescriptor.GetProperties(new WrappedModel())["MyProperty2"]
+                PropertyInfo = typeof(WrappedModel).GetProperty("MyProperty2")
             };
 
             var processor = new EnumerableConverterAttribute();
@@ -91,7 +91,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var context = new DittoProcessorContext
             {
-                PropertyDescriptor = TypeDescriptor.GetProperties(new WrappedModel())["MyProperty3"]
+                PropertyInfo = typeof(WrappedModel).GetProperty("MyProperty3")
             };
 
             var processor = new EnumerableConverterAttribute();
@@ -105,7 +105,7 @@ namespace Our.Umbraco.Ditto.Tests
         {
             var context = new DittoProcessorContext
             {
-                PropertyDescriptor = TypeDescriptor.GetProperties(new WrappedModel())["MyProperty4"]
+                PropertyInfo = typeof(WrappedModel).GetProperty("MyProperty4")
             };
 
             var processor = new EnumerableConverterAttribute();

@@ -196,7 +196,7 @@ namespace Our.Umbraco.Ditto
             this.Context = context;
             this.ChainContext = chainContext;
 
-            var ctx = new DittoCacheContext(this, context.Content, context.TargetType, context.PropertyDescriptor, context.Culture);
+            var ctx = new DittoCacheContext(this, context.Content, context.TargetType, context.PropertyInfo, context.Culture);
             return this.GetCacheItem(ctx, this.ProcessValue);
         }
     }

@@ -17,7 +17,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            if (typeof(IHtmlString).IsAssignableFrom(this.Context.PropertyDescriptor.PropertyType))
+            if (typeof(IHtmlString).IsAssignableFrom(this.Context.PropertyInfo.PropertyType))
             {
                 if (this.Value.IsNullOrEmptyString())
                 {

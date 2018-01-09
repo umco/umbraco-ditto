@@ -19,9 +19,9 @@ namespace Our.Umbraco.Ditto
         {
             // NOTE: [LK] In order to prevent an infinite loop / stack-overflow, we check if the
             // property's type matches the containing model's type, then we throw an exception.
-            if (this.Context.PropertyDescriptor.PropertyType == this.Context.PropertyDescriptor.ComponentType)
+            if (this.Context.PropertyInfo.PropertyType == this.Context.TargetType)
             {
-                throw new InvalidOperationException($"Unable to process property type '{this.Context.PropertyDescriptor.PropertyType.Name}', it is the same as the containing model type.");
+                throw new InvalidOperationException($"Unable to process property type '{this.Context.TargetType.Name}', it is the same as the containing model type.");
             }
 
             return this.Context.Content;

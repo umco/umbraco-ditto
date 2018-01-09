@@ -48,7 +48,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            var propType = this.Context.PropertyDescriptor.PropertyType;
+            var propType = this.Context.PropertyInfo.PropertyType;
             var propTypeIsEnumerable = propType.IsEnumerableType();
             var baseType = propTypeIsEnumerable ? propType.GetEnumerableType() : propType;
 
