@@ -129,7 +129,6 @@
     <Compile Include="Extensions\Internal\AssemblyExtensions.cs" />
     <Compile Include="Extensions\Internal\MemberInfoExtensions.cs" />
     <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
-    <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Internal\PropertyInfoExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInferenceExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />

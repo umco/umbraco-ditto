@@ -195,7 +195,6 @@
     <Compile Include="CustomProcessorTests.cs" />
     <Compile Include="DefaultProcessorTests.cs" />
     <Compile Include="EnumerableDetectionTests.cs" />
-    <Compile Include="EnumerableTests.cs" />
     <Compile Include="ExistingObjectInstanceTests.cs" />
     <Compile Include="GlobalProcessorTests.cs" />
     <Compile Include="IgnoreAttributeTests.cs" />
