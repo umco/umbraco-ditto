@@ -44,7 +44,7 @@ namespace Our.Umbraco.Ditto.Tests
         [TestFixtureSetUp]
         public void Init()
         {
-            if (!PublishedCachesResolver.HasCurrent)
+            if (PublishedCachesResolver.HasCurrent == false)
             {
                 var mockPublishedContentCache = new Mock<IPublishedContentCache>();
 

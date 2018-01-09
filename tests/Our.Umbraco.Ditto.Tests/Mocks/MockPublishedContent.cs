@@ -77,7 +77,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
 
                 // PublishedPropertyType initializes and looks up value resolvers
                 // so we need to populate a resolver base before we instantiate them
-                if (!ResolverBase<PropertyValueConvertersResolver>.HasCurrent)
+                if (ResolverBase<PropertyValueConvertersResolver>.HasCurrent == false)
                 {
                     ResolverBase<PropertyValueConvertersResolver>.Current =
                         new PropertyValueConvertersResolver(
@@ -87,7 +87,9 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
                         { CanResolveBeforeFrozen = true };
                 }
 
-                return new PublishedContentType("MockContentType", this.Properties.Select(x => new PublishedPropertyType(x.PropertyTypeAlias, "MockPropertyType")));
+                return new PublishedContentType(
+                    "MockContentType",
+                    this.Properties.Select(x => new PublishedPropertyType(x.PropertyTypeAlias, "MockPropertyType")));
             }
             set
             {

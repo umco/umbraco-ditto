@@ -67,8 +67,6 @@ namespace Our.Umbraco.Ditto
             /// The type.
             /// </param>
             /// <param name="arg1">The first argument to pass to the constructor.</param>
-            /// <param name="arg2">The second argument to pass to the constructor.</param>
-            /// <param name="arg3">The third argument to pass to the constructor.</param>
             /// <returns>
             /// The <see cref="object"/>.
             /// </returns>
