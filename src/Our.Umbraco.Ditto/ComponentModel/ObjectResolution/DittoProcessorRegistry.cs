@@ -91,7 +91,7 @@ namespace Our.Umbraco.Ditto
         public void RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>()
             where TProcessorAttributeType : DittoProcessorAttribute, new()
         {
-            this.RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>(typeof(TProcessorAttributeType).GetInstance<TProcessorAttributeType>());
+            this.RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>(new TProcessorAttributeType());
         }
 
         /// <summary>
