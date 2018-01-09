@@ -89,7 +89,7 @@ namespace Our.Umbraco.Ditto
             var defaultValue = this.DefaultValue;
 
             var recursive = this.Recursive;
-            var propName = this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty;
+            var propName = this.Context.PropertyInfo != null ? this.Context.PropertyInfo.Name : string.Empty;
             var altPropName = string.Empty;
 
             // Check for Umbraco properties attribute on class

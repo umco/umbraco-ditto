@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reflection;
 using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto
@@ -32,7 +33,24 @@ namespace Our.Umbraco.Ditto
         /// <value>
         /// The property descriptor.
         /// </value>
-        public PropertyDescriptor PropertyDescriptor { get; internal set; }
+        [Obsolete("PropertyDescriptor has been deprecated, please use PropertyInfo instead. This property will be removed in a future Ditto version.", false)]
+        public PropertyDescriptor PropertyDescriptor
+        {
+            get
+            {
+                return this.TargetType != null && this.PropertyInfo != null
+                    ? TypeDescriptor.GetProperties(this.TargetType)[this.PropertyInfo.Name]
+                    : null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the property info.
+        /// </summary>
+        /// <value>
+        /// The property info.
+        /// </value>
+        public PropertyInfo PropertyInfo { get; set; }
 
         /// <summary>
         /// Gets the culture.
@@ -51,7 +69,7 @@ namespace Our.Umbraco.Ditto
         {
             Content = baseProcessorContext.Content;
             TargetType = baseProcessorContext.TargetType;
-            PropertyDescriptor = baseProcessorContext.PropertyDescriptor;
+            PropertyInfo = baseProcessorContext.PropertyInfo;
             Culture = baseProcessorContext.Culture;
 
             return this;

@@ -39,7 +39,7 @@ namespace Our.Umbraco.Ditto
         public override object ProcessValue()
         {
             var dictionaryKey = this.DictionaryKey
-                ?? (this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty);
+                ?? (this.Context.PropertyInfo != null ? this.Context.PropertyInfo.Name : string.Empty);
 
             if (string.IsNullOrWhiteSpace(dictionaryKey))
             {

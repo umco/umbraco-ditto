@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reflection;
 using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto
@@ -30,21 +31,21 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         /// <param name="attribute">The attribute.</param>
         /// <param name="content">The content.</param>
-        /// <param name="targetType">Type of the target.</param>
-        /// <param name="propertyDescriptor">The property descriptor.</param>
+        /// <param name="targetType">Type of the target.</param> 
+        /// <param name="propertyInfo">The property info.</param>
         /// <param name="culture">The culture.</param>
         internal DittoCacheContext(
             DittoCacheableAttribute attribute,
             IPublishedContent content,
             Type targetType,
-            PropertyDescriptor propertyDescriptor,
+            PropertyInfo propertyInfo,
             CultureInfo culture)
         {
             this.Attribute = attribute;
             this.Content = content;
             this.TargetType = targetType;
             this.Culture = culture;
-            this.PropertyDescriptor = propertyDescriptor;
+            this.PropertyInfo = propertyInfo;
         }
 
         /// <summary>
@@ -69,7 +70,24 @@ namespace Our.Umbraco.Ditto
         /// <value>
         /// The property descriptor.
         /// </value>
-        public PropertyDescriptor PropertyDescriptor { get; internal set; }
+        [Obsolete("PropertyDescriptor has been deprecated, please use PropertyInfo instead. This property will be removed in a future Ditto version.", false)]
+        public PropertyDescriptor PropertyDescriptor
+        {
+            get
+            {
+                return this.TargetType != null && this.PropertyInfo != null
+                    ? TypeDescriptor.GetProperties(this.TargetType)[this.PropertyInfo.Name]
+                    : null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the property info.
+        /// </summary>
+        /// <value>
+        /// The property info.
+        /// </value>
+        public PropertyInfo PropertyInfo { get; set; }
 
         /// <summary>
         /// Gets the culture.

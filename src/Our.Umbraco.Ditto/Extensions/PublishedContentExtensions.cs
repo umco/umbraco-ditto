@@ -328,15 +328,12 @@ namespace Our.Umbraco.Ditto
         {
             using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"Processing '{propertyInfo.Name}' ({content.Id})"))
             {
-                // Get the target property description
-                var propertyDescriptor = TypeDescriptor.GetProperties(instance)[propertyInfo.Name];
-
                 // Create a base processor context for this current chain level
                 var baseProcessorContext = new DittoProcessorContext
                 {
                     Content = content,
                     TargetType = targetType,
-                    PropertyDescriptor = propertyDescriptor,
+                    PropertyInfo = propertyInfo,
                     Culture = culture
                 };
 
@@ -344,7 +341,7 @@ namespace Our.Umbraco.Ditto
                 var cacheAttr = propertyInfo.GetCustomAttribute<DittoCacheAttribute>(true);
                 if (cacheAttr != null)
                 {
-                    var ctx = new DittoCacheContext(cacheAttr, content, targetType, propertyDescriptor, culture);
+                    var ctx = new DittoCacheContext(cacheAttr, content, targetType, propertyInfo, culture);
                     return cacheAttr.GetCacheItem(ctx, () => DoGetProcessedValue(content, propertyInfo, contextAccessor, baseProcessorContext, chainContext));
                 }
                 else

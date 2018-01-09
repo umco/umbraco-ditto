@@ -19,12 +19,12 @@ namespace Our.Umbraco.Ditto
         public override object ProcessValue()
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (this.Context == null || this.Context.PropertyDescriptor == null)
+            if (this.Context == null || this.Context.PropertyInfo == null)
             {
                 return null;
             }
 
-            var propertyType = this.Context.PropertyDescriptor.PropertyType;
+            var propertyType = this.Context.PropertyInfo.PropertyType;
 
             if (this.Value.IsNullOrEmptyString())
             {
