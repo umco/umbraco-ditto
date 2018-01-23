@@ -91,7 +91,7 @@ namespace Our.Umbraco.Ditto
             }
             else
             {
-                LogHelper.Warn<AttributedTypeResolver<TAttribute>>($"Duplicate '{nameof(TAttribute)}' attribute found in type: '{type}'");
+                LogHelper.Warn<AttributedTypeResolver<TAttribute>>($"Duplicate '{typeof(TAttribute)}' attribute found in type: '{type}'");
             }
 
             return false;
