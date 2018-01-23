@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
-using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -133,14 +131,14 @@ namespace Our.Umbraco.Ditto
             }
 
             // Try fetching the alt value.
-            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+            if ((propertyValue == null || (propertyValue is string tmp && string.IsNullOrWhiteSpace(tmp)))
                 && string.IsNullOrWhiteSpace(altUmbracoPropertyName) == false)
             {
                 propertyValue = GetPropertyValue(content, altUmbracoPropertyName, recursive);
             }
 
             // Try setting the default value.
-            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+            if ((propertyValue == null || (propertyValue is string tmp2 && string.IsNullOrWhiteSpace(tmp2)))
                 && defaultValue != null)
             {
                 propertyValue = defaultValue;
@@ -165,13 +163,13 @@ namespace Our.Umbraco.Ditto
                 propertyValue = GetClassPropertyValue(content, umbracoPropertyName);
             }
 
-            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+            if ((propertyValue == null || (propertyValue is string tmp && string.IsNullOrWhiteSpace(tmp)))
                 && (PropertySource != PropertySource.InstanceProperties))
             {
                 propertyValue = GetUmbracoPropertyValue(content, umbracoPropertyName, recursive);
             }
 
-            if ((propertyValue == null || propertyValue.ToString().IsNullOrWhiteSpace())
+            if ((propertyValue == null || (propertyValue is string tmp2 && string.IsNullOrWhiteSpace(tmp2)))
                 && PropertySource == PropertySource.UmbracoThenInstanceProperties)
             {
                 propertyValue = GetClassPropertyValue(content, umbracoPropertyName);
@@ -194,10 +192,10 @@ namespace Our.Umbraco.Ditto
             {
                 if (Ditto.IsDebuggingEnabled
                     && PropertySource == PropertySource.InstanceThenUmbracoProperties
-                    && Ditto.IPublishedContentProperties.Any(x => x.Name.InvariantEquals(umbracoPropertyName))
+                    && Ditto.IPublishedContentProperties.Any(x => string.Equals(x.Name, umbracoPropertyName, StringComparison.InvariantCultureIgnoreCase))
                     && content.HasProperty(umbracoPropertyName))
                 {
-                    // Property is an IPublishedContent property and an umbraco property exists so warn the user
+                    // Property is an IPublishedContent property and an Umbraco property exists so warn the user
                     LogHelper.Warn<UmbracoPropertyAttribute>($"The property {umbracoPropertyName} being mapped from content type {contentType.Name}'s instance properties hides a property in the Umbraco properties collection of the same name. It is recommended that you avoid using Umbraco property aliases that conflict with IPublishedContent instance property names, but if you can't avoid this and you require access to the hidden property you can use the PropertySource parameter of the processors attribute to override the order in which properties are checked.");
                 }
 
@@ -219,11 +217,11 @@ namespace Our.Umbraco.Ditto
         {
             if (Ditto.IsDebuggingEnabled
                 && PropertySource == PropertySource.UmbracoThenInstanceProperties
-                && Ditto.IPublishedContentProperties.Any(x => x.Name.InvariantEquals(umbracoPropertyName))
+                && Ditto.IPublishedContentProperties.Any(x => string.Equals(x.Name, umbracoPropertyName, StringComparison.InvariantCultureIgnoreCase))
                 && content.HasProperty(umbracoPropertyName))
             {
-                // Property is an IPublishedContent property and an umbraco property exists so warn the user
-                LogHelper.Warn<UmbracoPropertyAttribute>($"The property {umbracoPropertyName} being mapped from the Umbraco properties collection hides an instance property of the same name on content type {content.GetType().Name}. It is recommended that you avoid using Umbraco property aliases that conflict with IPublishedContent instance property names, but if you can't avoid this and you require access to the hidden property you can use the PropertySource parameter of the processors attribute to override the order in which properties are checked.");
+                // Property is an IPublishedContent property and an Umbraco property exists so warn the user
+                LogHelper.Warn<UmbracoPropertyAttribute>($"The property {umbracoPropertyName} being mapped from the Umbraco properties collection hides an instance property of the same name on content type {content}. It is recommended that you avoid using Umbraco property aliases that conflict with IPublishedContent instance property names, but if you can't avoid this and you require access to the hidden property you can use the PropertySource parameter of the processors attribute to override the order in which properties are checked.");
             }
 
             return content.GetPropertyValue(umbracoPropertyName, recursive);

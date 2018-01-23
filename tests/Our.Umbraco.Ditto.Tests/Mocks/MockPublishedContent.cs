@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Moq;
-using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
@@ -50,7 +49,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
 
         public IPublishedProperty GetProperty(string alias, bool recurse)
         {
-            var prop = Properties.SingleOrDefault(p => p.PropertyTypeAlias.InvariantEquals(alias));
+            var prop = Properties.FirstOrDefault(p => string.Equals(p.PropertyTypeAlias, alias, StringComparison.InvariantCultureIgnoreCase));
 
             if (prop == null && recurse && Parent != null)
             {

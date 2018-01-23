@@ -49,9 +49,12 @@ namespace Our.Umbraco.Ditto
         /// <param name="cacheContext">The cache context.</param>
         /// <param name="refresher">The refresher.</param>
         /// <returns>Returns the output type.</returns>
-        /// <exception cref="System.ApplicationException">Expected a cache key builder of type  + typeof(DittoProcessorCacheKeyBuilder) +  but got  + CacheKeyBuilderType</exception>
+        /// <exception cref="ApplicationException">Expected a cache key builder of type DittoProcessorCacheKeyBuilder but got CacheKeyBuilderType.</exception>
         internal TOuputType GetCacheItem<TOuputType>(DittoCacheContext cacheContext, Func<TOuputType> refresher)
         {
+            // TODO: [LK:2018-01-18] Review this, does `cacheContext` need to be passed in?
+            // Given that the values are available on the instance.
+
             // If no cache duration set, (and in debug mode AND NOT a unit-test), then just run the refresher
             if (this.CacheDuration == 0 || (Ditto.IsDebuggingEnabled && Ditto.IsRunningInUnitTest == false))
             {
@@ -64,7 +67,7 @@ namespace Our.Umbraco.Ditto
             // Check the cache key builder type
             if (typeof(DittoCacheKeyBuilder).IsAssignableFrom(cacheKeyBuilderType) == false)
             {
-                throw new ApplicationException($"Expected a cache key builder of type {typeof(DittoCacheKeyBuilder)} but got {this.CacheKeyBuilderType}");
+                throw new ApplicationException($"Expected a cache key builder of type {typeof(DittoCacheKeyBuilder)} but got {cacheKeyBuilderType}");
             }
 
             // Construct the cache key builder

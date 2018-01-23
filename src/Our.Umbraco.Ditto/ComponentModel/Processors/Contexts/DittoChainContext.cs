@@ -48,16 +48,16 @@ namespace Our.Umbraco.Ditto
         /// Adds a range of processor contexts to the collection chain.
         /// </summary>
         /// <param name="ctxs">An enumerable of processor contexts.</param>
-        public void AddRange(IEnumerable<DittoProcessorContext> ctxs)
+        public void AddRange(IEnumerable<DittoProcessorContext> contexts)
         {
-            if (ctxs == null)
+            if (contexts == null)
             {
                 return;
             }
 
-            foreach (var ctx in ctxs)
+            foreach (var context in contexts)
             {
-                Add(ctx);
+                Add(context);
             }
         }
 
@@ -65,9 +65,9 @@ namespace Our.Umbraco.Ditto
         /// Adds a processor context to the collection chain.
         /// </summary>
         /// <param name="ctx">The processor context.</param>
-        public void Add(DittoProcessorContext ctx)
+        public void Add(DittoProcessorContext context)
         {
-            _processorContexts.AddOrUpdate(ctx.GetType(), ctx, (type, ctx2) => ctx2); // Don't override if already exists
+            _processorContexts.AddOrUpdate(context.GetType(), context, (type, ctx) => ctx); // Don't override if already exists
         }
 
         /// <summary>

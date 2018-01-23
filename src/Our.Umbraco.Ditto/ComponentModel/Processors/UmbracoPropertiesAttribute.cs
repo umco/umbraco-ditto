@@ -5,7 +5,7 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// The Umbraco properties attribute.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public sealed class UmbracoPropertiesAttribute : Attribute
     {
         /// <summary>
