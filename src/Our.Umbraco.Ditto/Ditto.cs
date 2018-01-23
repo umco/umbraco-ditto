@@ -58,9 +58,13 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Indicates whether the application is running in debug mode.
         /// </summary>
-        internal static readonly bool IsDebuggingEnabled = GetDebugFlag();
+#if DEBUG
+        internal static bool IsDebuggingEnabled = true;
+#else
+        internal static bool IsDebuggingEnabled = false;
+#endif
 
-        private static bool GetDebugFlag()
+        internal static bool GetDebugFlag()
         {
             // Check for app-setting first
             var appSetting = ConfigurationManager.AppSettings["Ditto:DebugEnabled"];
@@ -79,8 +83,11 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         internal static bool IsProfilingEnabled()
         {
+            if (IsDebuggingEnabled == false)
+                return false;
+
             var qs = HttpContext.Current?.Request?.QueryString?["umbDebug"];
-            if (IsDebuggingEnabled && string.IsNullOrWhiteSpace(qs) == false && bool.TryParse(qs, out bool umbDebug))
+            if (string.IsNullOrWhiteSpace(qs) == false && bool.TryParse(qs, out bool umbDebug))
             {
                 return umbDebug;
             }

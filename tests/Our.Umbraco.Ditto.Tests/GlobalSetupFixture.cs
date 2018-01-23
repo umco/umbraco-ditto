@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
-using Umbraco.Core;
 
 namespace Our.Umbraco.Ditto.Tests
 {
@@ -10,8 +9,9 @@ namespace Our.Umbraco.Ditto.Tests
         [SetUp]
         public void Setup()
         {
-            // Let Ditto know that we're running in a unit-test scenario
+            // Let Ditto know that we're running in a unit-test scenario (in debug mode)
             Ditto.IsRunningInUnitTest = true;
+            Ditto.IsDebuggingEnabled = Ditto.GetDebugFlag();
 
             // Configure the accessor to use the mock contexts
             Ditto.RegisterContextAccessor<MockDittoContextAccessor>();
