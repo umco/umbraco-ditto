@@ -70,6 +70,7 @@ namespace Our.Umbraco.Ditto
                 throw new ApplicationException($"Expected a cache key builder of type {typeof(DittoCacheKeyBuilder)} but got {cacheKeyBuilderType}");
             }
 
+            // TODO: [LK:2018-01-18] Review this, a new instance is being created per call
             // Construct the cache key builder
             var builder = cacheKeyBuilderType.GetInstance<DittoCacheKeyBuilder>();
             var cacheKey = builder.BuildCacheKey(cacheContext);

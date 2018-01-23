@@ -58,6 +58,7 @@ namespace Our.Umbraco.Ditto.PerformanceTests
                 Id = default(int), // this.content.Id,
                 Name = default(string), // this.content.Name,
                 Item = default(string), // this.content.GetProperty("item").Value.TryConvertTo<string>().Result
+                Item = default(string) // this.content.GetProperty("item").Value.TryConvertTo<string>().Result
             };
         }
 

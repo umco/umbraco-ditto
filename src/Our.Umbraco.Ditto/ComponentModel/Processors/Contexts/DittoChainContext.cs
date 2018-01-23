@@ -47,7 +47,7 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Adds a range of processor contexts to the collection chain.
         /// </summary>
-        /// <param name="ctxs">An enumerable of processor contexts.</param>
+        /// <param name="contexts">An enumerable of processor contexts.</param>
         public void AddRange(IEnumerable<DittoProcessorContext> contexts)
         {
             if (contexts == null)
