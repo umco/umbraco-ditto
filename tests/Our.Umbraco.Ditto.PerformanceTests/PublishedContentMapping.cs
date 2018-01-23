@@ -2,6 +2,7 @@
 using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core;
 using Umbraco.Core.Models;
+using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto.PerformanceTests
 {
@@ -19,6 +20,17 @@ namespace Our.Umbraco.Ditto.PerformanceTests
 
         private IPublishedContent content;
 
+        public class NullContextAccessor : IDittoContextAccessor
+        {
+            public UmbracoContext UmbracoContext => default(UmbracoContext);
+            public ApplicationContext ApplicationContext => default(ApplicationContext);
+        }
+
+        public class NullProcessorAttribute : DittoProcessorAttribute
+        {
+            public override object ProcessValue() { return null; }
+        }
+
         [GlobalSetup]
         public void Setup()
         {
@@ -28,6 +40,14 @@ namespace Our.Umbraco.Ditto.PerformanceTests
                 Name = "MyCustomName",
                 Properties = new[] { new MockPublishedContentProperty("item", "myValue") }
             };
+
+            // Try running at a complete minimum, strip back everything
+            Ditto.RegisterContextAccessor<NullContextAccessor>();
+            Ditto.RegisterDefaultProcessorType<NullProcessorAttribute>();
+            Ditto.DeregisterPostProcessorType<HtmlStringAttribute>();
+            Ditto.DeregisterPostProcessorType<EnumerableConverterAttribute>();
+            Ditto.DeregisterPostProcessorType<RecursiveDittoAttribute>();
+            Ditto.DeregisterPostProcessorType<TryConvertToAttribute>();
         }
 
         [Benchmark(Baseline = true)]
@@ -35,9 +55,9 @@ namespace Our.Umbraco.Ditto.PerformanceTests
         {
             new BasicModel
             {
-                Id = this.content.Id,
-                Name = this.content.Name,
-                Item = this.content.GetProperty("item").Value.TryConvertTo<string>().Result
+                Id = default(int), // this.content.Id,
+                Name = default(string), // this.content.Name,
+                Item = default(string), // this.content.GetProperty("item").Value.TryConvertTo<string>().Result
             };
         }
 
