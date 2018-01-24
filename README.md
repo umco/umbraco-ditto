@@ -4,7 +4,6 @@
 [![Documentation Status](https://readthedocs.org/projects/umbraco-ditto/badge/?version=latest)](https://readthedocs.org/projects/umbraco-ditto/?badge=latest)
 [![NuGet release](https://img.shields.io/nuget/v/Our.Umbraco.Ditto.svg)](https://www.nuget.org/packages/Our.Umbraco.Ditto)
 [![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/developer-tools/ditto)
-[![Chat on Gitter](https://img.shields.io/badge/gitter-join_chat-green.svg)](https://gitter.im/leekelleher/umbraco-ditto)
 
 Ditto is a lightweight view-model mapper for Umbraco. It offers a simple solution to the problem of using **strongly-typed models in your MVC views**.
 There are no 3<sup>rd</sup> party dependencies, other than Umbraco core itself.
@@ -60,6 +59,7 @@ Have a question?
 ## License
 
 Copyright &copy; 2018 UMCO, Our Umbraco and [other contributors](https://github.com/umco/umbraco-ditto/graphs/contributors)
+
 Copyright &copy; 2014 Umbrella Inc
 
 Licensed under the [MIT License](LICENSE.md)

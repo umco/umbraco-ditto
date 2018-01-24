@@ -11,5 +11,5 @@ For further details, please see our [installation](install) guide, then read the
 
 ## How can I get help?
 
-For quick questions, give [Gitter](https://gitter.im/leekelleher/umbraco-ditto) a try. For more detailed questions, head over to [Our Umbraco forum](https://our.umbraco.org/projects/developer-tools/ditto/ditto-feedback/). Finally, for bugs, issues or feature requests, create a [GitHub Issue](https://github.com/umco/umbraco-ditto/issues).
+Feel free to ask any questions on the [Our Umbraco forum](https://our.umbraco.org/projects/developer-tools/ditto/ditto-feedback/). For any bugs, issues or feature requests, create a [GitHub Issue](https://github.com/umco/umbraco-ditto/issues).
 
