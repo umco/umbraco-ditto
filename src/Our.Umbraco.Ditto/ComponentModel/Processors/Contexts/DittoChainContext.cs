@@ -64,7 +64,7 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Adds a processor context to the collection chain.
         /// </summary>
-        /// <param name="ctx">The processor context.</param>
+        /// <param name="context">The processor context.</param>
         public void Add(DittoProcessorContext context)
         {
             _processorContexts.AddOrUpdate(context.GetType(), context, (type, ctx) => ctx); // Don't override if already exists
