@@ -5,7 +5,7 @@ namespace Our.Umbraco.Ditto.Tests
 {
     /// <remarks>
     /// Unit-test to verify an issue - as outlined in #177
-    /// https://github.com/leekelleher/umbraco-ditto/issues/177
+    /// https://github.com/umco/umbraco-ditto/issues/177
     /// When a property is marked as `virtual`, it becomes lazy-loaded,
     /// and not accessible by other properties on the model.
     /// </remarks>

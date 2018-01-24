@@ -28,7 +28,7 @@ If you prefer, you can compile Ditto yourself, you'll need:
 To clone it locally run the following git commands:
 
 ```bash
-git clone https://github.com/leekelleher/umbraco-ditto.git umbraco-ditto
+git clone https://github.com/umco/umbraco-ditto.git umbraco-ditto
 cd umbraco-ditto
 .\build.cmd
 ```

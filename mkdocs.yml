@@ -1,6 +1,6 @@
 site_name: Ditto
 
-repo_url: https://github.com/leekelleher/umbraco-ditto/tree/develop/docs
+repo_url: https://github.com/umco/umbraco-ditto/tree/develop/docs
 
 pages:
   - 'Introduction': 'index.md'
