@@ -85,13 +85,16 @@ namespace Our.Umbraco.Ditto
         private bool TryAddAttributedType(Type type, out TAttribute attribute, bool inherit)
         {
             attribute = type.GetCustomAttribute<TAttribute>(inherit);
-            if (attribute != null && _attributedTypeLookup.ContainsKey(type) == false)
+            if (attribute != null)
             {
-                return _attributedTypeLookup.TryAdd(type, attribute);
-            }
-            else
-            {
-                LogHelper.Warn<AttributedTypeResolver<TAttribute>>($"Duplicate '{typeof(TAttribute)}' attribute found in type: '{type}'");
+                if (_attributedTypeLookup.ContainsKey(type) == false)
+                {
+                    return _attributedTypeLookup.TryAdd(type, attribute);
+                }
+                else
+                {
+                    LogHelper.Warn<AttributedTypeResolver<TAttribute>>($"Duplicate '{typeof(TAttribute)}' attribute found in type: '{type}'");
+                }
             }
 
             return false;
