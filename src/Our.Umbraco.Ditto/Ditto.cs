@@ -81,9 +81,6 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         internal static bool IsProfilingEnabled()
         {
-            if (IsDebuggingEnabled == false)
-                return false;
-
             var qs = HttpContext.Current?.Request?.QueryString?["umbDebug"];
             if (string.IsNullOrWhiteSpace(qs) == false && bool.TryParse(qs, out bool umbDebug))
             {
