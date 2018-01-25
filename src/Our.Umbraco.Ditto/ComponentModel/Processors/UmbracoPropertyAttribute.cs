@@ -91,7 +91,7 @@ namespace Our.Umbraco.Ditto
             var altPropName = string.Empty;
 
             // Check for Umbraco properties attribute on class
-            if (this.Context.TargetType != null && Ditto.TryGetTypeAttribute(this.Context.TargetType, out UmbracoPropertiesAttribute classAttr))
+            if (Ditto.TryGetTypeAttribute(this.Context.TargetType, out UmbracoPropertiesAttribute classAttr))
             {
                 // Apply the prefix
                 if (string.IsNullOrWhiteSpace(classAttr.Prefix) == false)
