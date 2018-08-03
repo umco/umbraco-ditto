@@ -19,22 +19,21 @@ namespace Our.Umbraco.Ditto
         public override object ProcessValue()
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (this.Context == null || this.Context.PropertyDescriptor == null)
+            if (this.Context == null || this.Context.PropertyInfo == null)
             {
                 return null;
             }
 
-            var propertyType = this.Context.PropertyDescriptor.PropertyType;
+            var propertyType = this.Context.PropertyInfo.PropertyType;
 
-            if (this.Value.IsNullOrEmptyString())
+            if (this.Value == null || (this.Value is string value && string.IsNullOrWhiteSpace(value)))
             {
                 // Value types return default instance.
                 return propertyType.GetInstance();
             }
 
-            if (this.Value is string)
+            if (this.Value is string strValue)
             {
-                string strValue = (string)this.Value;
                 if (strValue.IndexOf(',') != -1)
                 {
                     long convertedValue = 0;
@@ -91,8 +90,7 @@ namespace Our.Umbraco.Ditto
                 }
             }
 
-            var enums = this.Value as Enum[];
-            if (enums != null)
+            if (this.Value is Enum[] enums)
             {
                 long convertedValue = 0;
 

@@ -40,7 +40,6 @@ namespace Our.Umbraco.Ditto
                 return Enumerable.Empty<IPublishedContent>();
 
             return UmbracoContext
-                .Current
                 .ContentCache
                 .GetByXPath(xpath);
         }

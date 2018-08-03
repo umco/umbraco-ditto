@@ -52,6 +52,7 @@ namespace Our.Umbraco.Ditto.Tests
             };
 
             Ditto.DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
+            DittoTypeInfoCache.Clear<BasicModelProperty>();
 
             var model = content.As<BasicModelProperty>();
             Assert.AreEqual(instanceName, model.Name);
@@ -59,6 +60,7 @@ namespace Our.Umbraco.Ditto.Tests
             Assert.AreEqual(customProp, model.Custom);
 
             Ditto.DefaultPropertySource = PropertySource.UmbracoThenInstanceProperties;
+            DittoTypeInfoCache.Clear<BasicModelProperty>();
 
             model = content.As<BasicModelProperty>();
             Assert.AreEqual(customName, model.Name);
@@ -66,6 +68,7 @@ namespace Our.Umbraco.Ditto.Tests
             Assert.AreEqual(customProp, model.Custom);
 
             Ditto.DefaultPropertySource = PropertySource.InstanceProperties;
+            DittoTypeInfoCache.Clear<BasicModelProperty>();
 
             model = content.As<BasicModelProperty>();
             Assert.AreEqual(instanceName, model.Name);
@@ -73,6 +76,7 @@ namespace Our.Umbraco.Ditto.Tests
             Assert.IsNull(model.Custom);
 
             Ditto.DefaultPropertySource = PropertySource.UmbracoProperties;
+            DittoTypeInfoCache.Clear<BasicModelProperty>();
 
             model = content.As<BasicModelProperty>();
             Assert.AreEqual(customName, model.Name);
@@ -81,6 +85,7 @@ namespace Our.Umbraco.Ditto.Tests
 
             // Reset
             Ditto.DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
+            DittoTypeInfoCache.Clear<BasicModelProperty>();
         }
 
         [Test]
@@ -113,8 +118,6 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void PropertySource_Hidden_Properties_Warn()
         {
-            ConfigurationManager.AppSettings["Ditto:DebugEnabled"] = "true";
-
             // Create a mock logger
             var mockLogger = new MockLogger();
             //
@@ -147,11 +150,12 @@ namespace Our.Umbraco.Ditto.Tests
                 }
             };
 
-            // Check for hidden umbraco properties
+            // Check for hidden Umbraco properties
             Ditto.DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
-            
+            DittoTypeInfoCache.Clear<BasicModelProperty>();
+
             var model = content.As<BasicModelProperty>();
-            
+
             var logMessages = mockLogger.GetLogMessages().Where(x => x.MessageType == LogMessageType.Warn && x.CallingType == typeof(UmbracoPropertyAttribute));
 
             Assert.NotNull(logMessages);
@@ -161,6 +165,7 @@ namespace Our.Umbraco.Ditto.Tests
             mockLogger.ClearLogMessages();
 
             Ditto.DefaultPropertySource = PropertySource.UmbracoThenInstanceProperties;
+            DittoTypeInfoCache.Clear<BasicModelProperty>();
 
             model = content.As<BasicModelProperty>();
 
@@ -171,7 +176,7 @@ namespace Our.Umbraco.Ditto.Tests
 
             // Reset
             Ditto.DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
-            ConfigurationManager.AppSettings["Ditto:DebugEnabled"] = "false";
+            DittoTypeInfoCache.Clear<BasicModelProperty>();
         }
     }
 }

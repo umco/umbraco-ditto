@@ -1,7 +1,7 @@
 image: Visual Studio 2017
 
 # version format
-version: 0.11.3.{build}
+version: 0.12.0.{build}
 
 # UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
@@ -12,7 +12,7 @@ cache:
   - src\packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
 
 build_script:
-- build\build-appveyor.cmd
+  - build\build-appveyor.cmd
 
 test:
   assemblies:
@@ -23,22 +23,12 @@ artifacts:
   - path: artifacts\*.zip
 
 deploy:
-    # MyGet (Ditto feed) Deployment for builds & releases
-  - provider: NuGet
-    server: https://www.myget.org/F/umbraco-ditto/
-    symbol_server: https://www.myget.org/F/umbraco-ditto/symbols/api/v2/package
-    api_key:
-      secure: Q1/4K8VSwr7BjwmKDTef8y5lOc7S+jK9ELuWy67y6OVRpjxmnF9M3Gfs1kT+ir8x
-    artifact: /.*\.nupkg/
-    on:
-      branch: develop
-
     # MyGet (Umbraco Community feed) Deployment for builds & releases
   - provider: NuGet
-    server: https://www.myget.org/F/umbraco-packages/
+    server: https://www.myget.org/F/umbraco-packages/api/v2/package
     symbol_server: https://www.myget.org/F/umbraco-packages/symbols/api/v2/package
     api_key:
-      secure: Q1/4K8VSwr7BjwmKDTef8y5lOc7S+jK9ELuWy67y6OVRpjxmnF9M3Gfs1kT+ir8x
+      secure: 36/Ax5O+e6wENlhoTwgvoEBZV3FG4XjF429SNTej2qsGTAL+cdfA1kT/tm1St8vx
     artifact: /.*\.nupkg/
     on:
       branch: develop
@@ -46,7 +36,7 @@ deploy:
     # GitHub Deployment for releases
   - provider: GitHub
     auth_token:
-      secure: pEozEGTqJutQwOidJU6BTB+Ix0NV4vrUnomhfeqheVz4RNwfxjEYLoqR4XabhlPz
+      secure: yDxrRTveSScJA35MQTOaLYVjoPKFKl2bHBkG+JMZjiN0r7AfuUCxVU3CgW8Imu4h
     artifact: /.*\.zip/            # upload all Zip packages to release assets
     draft: false
     prerelease: false
@@ -58,7 +48,7 @@ deploy:
   - provider: NuGet
     server: 
     api_key:
-      secure: CGzDKxw4QI/z2VSe9ceiYlIabqGXHolgBgVNWWZjVAJ2V5WLF11IFdlp9r5Qp+Sw
+      secure: 0+oAleUTnr9UuJrhLW5rphRR+QGz00XX1Ui3k5kwyr2kUdEamiQ3F+gW0q8MJbDT
     artifact: /.*\.nupkg/
     on:
       branch: master

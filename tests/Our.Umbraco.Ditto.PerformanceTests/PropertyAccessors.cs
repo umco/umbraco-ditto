@@ -14,7 +14,7 @@ namespace Our.Umbraco.Ditto.PerformanceTests
 
         public string Value { get; set; }
 
-        [Setup]
+        [GlobalSetup]
         public void Setup()
         {
             this.obj = new PropertyAccessors();

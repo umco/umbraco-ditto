@@ -19,25 +19,25 @@ namespace Our.Umbraco.Ditto
         /// The cast method.
         /// </summary>
         private static readonly MethodInfo CastMethod =
-        ((Func<IEnumerable, IEnumerable<object>>)Enumerable.Cast<object>)
-        .Method
-        .GetGenericMethodDefinition();
+            ((Func<IEnumerable, IEnumerable<object>>)Enumerable.Cast<object>)
+            .Method
+            .GetGenericMethodDefinition();
 
         /// <summary>
         /// The empty method.
         /// </summary>
         private static readonly MethodInfo EmptyMethod =
-        ((Func<IEnumerable<object>>)Enumerable.Empty<object>)
-        .Method
-        .GetGenericMethodDefinition();
+            ((Func<IEnumerable<object>>)Enumerable.Empty<object>)
+            .Method
+            .GetGenericMethodDefinition();
 
         /// <summary>
         /// The first or default method.
         /// </summary>
         private static readonly MethodInfo FirstOrDefaultMethod =
-        ((Func<IEnumerable<object>, object>)Enumerable.FirstOrDefault)
-        .Method
-        .GetGenericMethodDefinition();
+            ((Func<IEnumerable<object>, object>)Enumerable.FirstOrDefault)
+            .Method
+            .GetGenericMethodDefinition();
 
         /// <summary>
         /// Casts the elements of the given <see cref="IEnumerable"/> to the specified type.
@@ -53,8 +53,7 @@ namespace Our.Umbraco.Ditto
         {
             var key = GetMethodCacheKey(type);
 
-            Func<object, object> f;
-            if (!FunctionCache.TryGetValue(key, out f))
+            if (FunctionCache.TryGetValue(key, out Func<object, object> f) == false)
             {
                 f = StaticMethodSingleParameter<object>(CastMethod.MakeGenericMethod(type));
                 FunctionCache[key] = f;
@@ -77,8 +76,7 @@ namespace Our.Umbraco.Ditto
         {
             var key = GetMethodCacheKey(type);
 
-            Func<object, object> f;
-            if (!FunctionCache.TryGetValue(key, out f))
+            if (FunctionCache.TryGetValue(key, out Func<object, object> f) == false)
             {
                 f = StaticMethod<object>(EmptyMethod.MakeGenericMethod(type));
                 FunctionCache[key] = f;
@@ -101,8 +99,7 @@ namespace Our.Umbraco.Ditto
         {
             var key = GetMethodCacheKey(type);
 
-            Func<object, object> f;
-            if (!FunctionCache.TryGetValue(key, out f))
+            if (FunctionCache.TryGetValue(key, out Func<object, object> f) == false)
             {
                 f = StaticMethodSingleParameter<object>(FirstOrDefaultMethod.MakeGenericMethod(type));
                 FunctionCache[key] = f;

@@ -7,7 +7,7 @@ namespace Our.Umbraco.Ditto
     /// Provides the ability to associate a handler class with a model to handle pre/post conversion custom logic.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
-    public class DittoConversionHandlerAttribute : Attribute
+    public sealed class DittoConversionHandlerAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoConversionHandlerAttribute"/> class.
@@ -16,7 +16,7 @@ namespace Our.Umbraco.Ditto
         /// <exception cref="System.ArgumentException">Handler type must inherit from DittoConversionHandler;handlerType</exception>
         public DittoConversionHandlerAttribute(Type handlerType)
         {
-            if (!typeof(DittoConversionHandler).IsAssignableFrom(handlerType))
+            if (typeof(DittoConversionHandler).IsAssignableFrom(handlerType) == false)
             {
                 throw new ArgumentException("Handler type must inherit from DittoConversionHandler", "handlerType");
             }

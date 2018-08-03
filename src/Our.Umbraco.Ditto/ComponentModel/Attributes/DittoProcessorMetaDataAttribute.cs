@@ -6,8 +6,8 @@ namespace Our.Umbraco.Ditto
     /// Meta data attribute for a DittoProcessorAttribute to help validate
     /// the passed in types
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class DittoProcessorMetaDataAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    public sealed class DittoProcessorMetaDataAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoProcessorMetaDataAttribute"/> class.

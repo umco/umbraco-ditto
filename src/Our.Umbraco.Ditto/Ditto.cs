@@ -5,16 +5,15 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Web;
-using System.Web.Configuration;
-using Umbraco.Core;
 using Umbraco.Core.Models;
+using Umbraco.Web;
 
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
     /// The public facade for non extension method Ditto actions
     /// </summary>
-    public class Ditto
+    public static class Ditto
     {
         /// <summary>
         /// The global context accessor type for processors.
@@ -49,43 +48,52 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// A list of mappable properties defined on the IPublishedContent interface
         /// </summary>
-        internal static readonly IEnumerable<PropertyInfo> IPublishedContentProperties = typeof(IPublishedContent)
+        internal static readonly List<PropertyInfo> IPublishedContentProperties = typeof(IPublishedContent)
             .GetProperties(MappablePropertiesBindingFlags)
             .Where(x => x.IsMappable())
             .ToList();
 
         /// <summary>
-        /// Gets a value indicating whether application is running in debug mode.
+        /// Indicates whether the application is running in debug mode.
         /// </summary>
-        /// <value><c>true</c> if debug mode; otherwise, <c>false</c>.</value>
-        internal static bool IsDebuggingEnabled
+#if DEBUG
+        internal static bool IsDebuggingEnabled = true;
+#else
+        internal static bool IsDebuggingEnabled = false;
+#endif
+
+        internal static bool GetDebugFlag()
         {
-            get
+            // Check for app-setting first
+            var appSetting = ConfigurationManager.AppSettings["Ditto:DebugEnabled"];
+            if (string.IsNullOrWhiteSpace(appSetting) == false && bool.TryParse(appSetting, out bool dittoDebugEnabled))
             {
-                try
-                {
-                    // Check for app setting first
-                    if (!ConfigurationManager.AppSettings["Ditto:DebugEnabled"].IsNullOrWhiteSpace())
-                    {
-                        return ConfigurationManager.AppSettings["Ditto:DebugEnabled"].InvariantEquals("true");
-                    }
-
-                    // Check the HTTP Context
-                    if (HttpContext.Current != null)
-                    {
-                        return HttpContext.Current.IsDebuggingEnabled;
-                    }
-
-                    // Go and get it from config directly
-                    var section = ConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
-                    return section != null && section.Debug;
-                }
-                catch
-                {
-                    return false;
-                }
+                return dittoDebugEnabled;
             }
+
+            // Until `Umbraco.Core.Configuration.GlobalSettings.DebugMode` is available, we're using the legacy API.
+            // ref: https://github.com/umbraco/Umbraco-CMS/blob/release-7.3.2/src/umbraco.businesslogic/GlobalSettings.cs#L129
+            return umbraco.GlobalSettings.DebugMode;
         }
+
+        /// <summary>
+        /// Indicates whether the application is running in profile mode, e.g. "umbDebug" querystring.
+        /// </summary>
+        internal static bool IsProfilingEnabled()
+        {
+            var qs = HttpContext.Current?.Request?.QueryString?["umbDebug"];
+            if (string.IsNullOrWhiteSpace(qs) == false && bool.TryParse(qs, out bool umbDebug))
+            {
+                return umbDebug;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Indicates whether the application is running within a unit-test scenario.
+        /// </summary>
+        internal static bool IsRunningInUnitTest = false;
 
         /// <summary>
         /// Registers a global conversion handler.
@@ -109,7 +117,7 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Registers a global value resolver attribute.
+        /// Registers a global processor attribute.
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>
         /// <typeparam name="TProcessorAttributeType">The type of the processor attribute type.</typeparam>
@@ -120,11 +128,11 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Registers a global value resolver attribute.
+        /// Registers a global processor attribute.
         /// </summary>
         /// <typeparam name="TObjectType">The type of the object being converted.</typeparam>
         /// <typeparam name="TProcessorAttributeType">The type of the processor attribute type.</typeparam>
-        /// <param name="instance">An instance of the value resolver attribute to use.</param>
+        /// <param name="instance">An instance of the processor attribute to use.</param>
         public static void RegisterProcessorAttribute<TObjectType, TProcessorAttributeType>(TProcessorAttributeType instance)
             where TProcessorAttributeType : DittoProcessorAttribute
         {
@@ -153,14 +161,14 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Gets the global umbraco application context accessor type.
+        /// Gets the global Umbraco application context accessor.
         /// </summary>
         /// <returns>
-        /// Returns the global umbraco application context accessor type.
+        /// Returns the global Umbraco application context accessor.
         /// </returns>
-        public static Type GetContextAccessorType()
+        public static IDittoContextAccessor GetContextAccessor()
         {
-            return contextAccessorType;
+            return contextAccessorType.GetInstance<IDittoContextAccessor>();
         }
 
         /// <summary>
@@ -182,6 +190,24 @@ namespace Our.Umbraco.Ditto
             where TProcessorAttributeType : DittoProcessorAttribute, new()
         {
             DittoProcessorRegistry.Instance.DeregisterPostProcessorType<TProcessorAttributeType>();
+        }
+
+        /// <summary>
+        /// Tries to get the associated attribute for a given object type.
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="objectType">The object type.</param>
+        /// <param name="attribute">The attribute.</param>
+        /// <param name="inherit">A boolean flag to search the type's inheritance chain to find the attribute.</param>
+        /// <returns>Returns the associated attribute for the given object-type.</returns>
+        public static bool TryGetTypeAttribute<TAttribute>(Type objectType, out TAttribute attribute, bool inherit = false) where TAttribute : Attribute
+        {
+            if (AttributedTypeResolver<TAttribute>.HasCurrent == false)
+            {
+                AttributedTypeResolver<TAttribute>.Current = AttributedTypeResolver<TAttribute>.Create(new[] { objectType });
+            }
+
+            return AttributedTypeResolver<TAttribute>.Current.TryGetTypeAttribute(objectType, out attribute, inherit);
         }
     }
 }

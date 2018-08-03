@@ -38,8 +38,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="businesslogic, Version=1.0.5808.27738, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\businesslogic.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="cms, Version=1.0.5808.27739, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\cms.dll</HintPath>
@@ -88,39 +88,43 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Configuration">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\System.Data.SqlServerCe.dll</HintPath>
       <Private>True</Private>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.SqlServerCe.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\System.Data.SqlServerCe.Entity.dll</HintPath>
       <Private>True</Private>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.ApplicationServices">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\src\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
     </Reference>
     <Reference Include="System.XML">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="TidyNet, Version=1.0.0.0, Culture=neutral">
       <HintPath>..\..\src\packages\UmbracoCms.Core.7.3.2\lib\TidyNet.dll</HintPath>
@@ -191,7 +195,6 @@
     <Compile Include="CustomProcessorTests.cs" />
     <Compile Include="DefaultProcessorTests.cs" />
     <Compile Include="EnumerableDetectionTests.cs" />
-    <Compile Include="EnumerableTests.cs" />
     <Compile Include="ExistingObjectInstanceTests.cs" />
     <Compile Include="GlobalProcessorTests.cs" />
     <Compile Include="IgnoreAttributeTests.cs" />

@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="businesslogic">
+      <HintPath>..\packages\UmbracoCms.Core.7.3.2\lib\businesslogic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -75,7 +79,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bootstrapper.cs" />
     <Compile Include="Common\CachedInvocations.cs" />
+    <Compile Include="Common\DittoTypeInfoCache.cs" />
+    <Compile Include="Common\DittoTypeInfo.cs" />
     <Compile Include="Common\FastPropertyAccessor.cs" />
     <Compile Include="Common\DittoContextAccessor.cs" />
     <Compile Include="ComponentModel\Attributes\DittoDefaultProcessorAttribute.cs" />
@@ -84,6 +91,7 @@
     <Compile Include="ComponentModel\Attributes\DittoCacheableAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoCacheAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoProcessorMetaDataAttribute.cs" />
+    <Compile Include="ComponentModel\ObjectResolution\AttributedTypeResolver.cs" />
     <Compile Include="ComponentModel\Processors\AppSettingAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoConversionHandlerAttribute.cs" />
     <Compile Include="ComponentModel\Attributes\DittoOnConvertingAttribute.cs" />
@@ -113,23 +121,20 @@
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandlerRegistry.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandlerContext.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandler.cs" />
-    <Compile Include="ComponentModel\Processors\DittoProcessorRegistry.cs" />
+    <Compile Include="ComponentModel\ObjectResolution\DittoProcessorRegistry.cs" />
     <Compile Include="ComponentModel\Processors\Contexts\DittoProcessorContext.cs" />
     <Compile Include="ComponentModel\Processors\UmbracoXPathProcessorAttribute.cs" />
     <Compile Include="ComponentModel\Processors\UmbracoXPathNavigatorAttribute.cs" />
     <Compile Include="ComponentModel\Processors\UmbracoXPathAttribute.cs" />
     <Compile Include="Ditto.cs" />
-    <Compile Include="DittoChainContext.cs" />
+    <Compile Include="ComponentModel\Processors\Contexts\DittoChainContext.cs" />
     <Compile Include="Extensions\Internal\AssemblyExtensions.cs" />
     <Compile Include="Extensions\Internal\MemberInfoExtensions.cs" />
-    <Compile Include="Extensions\Internal\ObjectExtensions.cs" />
-    <Compile Include="Extensions\Internal\EnumerableExtensions.cs" />
     <Compile Include="Extensions\Internal\PropertyInfoExtensions.cs" />
-    <Compile Include="Extensions\Internal\StringExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInferenceExtensions.cs" />
     <Compile Include="Extensions\Internal\TypeInitializationExtensions.cs" />
-    <Compile Include="Extensions\RenderModelExtensions.cs" />
     <Compile Include="Extensions\PublishedContentExtensions.cs" />
+    <Compile Include="Extensions\RenderModelExtensions.cs" />
     <Compile Include="LazyLoad.cs" />
     <Compile Include="Web\Mvc\Models\DittoTransferModel.cs" />
     <Compile Include="Web\Mvc\Models\DittoViewModel.cs" />

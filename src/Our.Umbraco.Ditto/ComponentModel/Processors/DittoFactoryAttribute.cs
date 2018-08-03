@@ -21,9 +21,7 @@ namespace Our.Umbraco.Ditto
         /// Initializes a new instance of the <see cref="DittoFactoryAttribute"/> class.
         /// </summary>
         protected DittoFactoryAttribute()
-        {
-            AllowedTypes = null;
-        }
+        { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DittoFactoryAttribute"/> class.
@@ -50,7 +48,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            var propType = this.Context.PropertyDescriptor.PropertyType;
+            var propType = this.Context.PropertyInfo.PropertyType;
             var propTypeIsEnumerable = propType.IsEnumerableType();
             var baseType = propTypeIsEnumerable ? propType.GetEnumerableType() : propType;
 
@@ -85,9 +83,9 @@ namespace Our.Umbraco.Ditto
                                 .GetTypes()
                                 .Where(t => baseType.IsAssignableFrom(t)
                                     && t.IsClass
-                                    && !t.IsAbstract
-                                    && !t.IsSealed
-                                    && !t.IsNestedPrivate
+                                    && t.IsAbstract == false
+                                    && t.IsSealed == false
+                                    && t.IsNestedPrivate == false
                                     && t.GetCustomAttribute<HideFromTypeFinderAttribute>(true) == null)
                                 .ToArray();
                         }

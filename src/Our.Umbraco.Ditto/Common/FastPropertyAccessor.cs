@@ -24,8 +24,7 @@ namespace Our.Umbraco.Ditto
         {
             var key = GetMethodCacheKey(property);
 
-            Func<object, object> a;
-            if (!FunctionCache.TryGetValue(key, out a))
+            if (FunctionCache.TryGetValue(key, out Func<object, object> a) == false)
             {
                 a = MakeGetMethod(property.GetGetMethod(), property.PropertyType);
                 FunctionCache[key] = a;
@@ -45,8 +44,7 @@ namespace Our.Umbraco.Ditto
         {
             var key = GetMethodCacheKey(property);
 
-            Action<object, object> a;
-            if (!ActionCache.TryGetValue(key, out a))
+            if (ActionCache.TryGetValue(key, out Action<object, object> a) == false)
             {
                 a = MakeSetMethod(property.GetSetMethod(), property.PropertyType);
                 ActionCache[key] = a;

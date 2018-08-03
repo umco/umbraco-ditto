@@ -172,7 +172,7 @@ namespace Our.Umbraco.Ditto
                 }
 
                 // Only virtual methods can be intercepted.
-                if (!method.IsVirtual && !method.IsAbstract)
+                if (method.IsVirtual == false && method.IsAbstract == false)
                 {
                     continue;
                 }
@@ -210,17 +210,17 @@ namespace Our.Umbraco.Ditto
             bool takesArg = method.GetParameters().Length == 1;
             bool hasReturn = method.ReturnType != typeof(void);
 
-            if (!(takesArg || hasReturn))
+            if ((takesArg || hasReturn) == false)
             {
                 return null;
             }
 
-            if (takesArg && !hasReturn)
+            if (takesArg && hasReturn == false)
             {
                 if (method.DeclaringType != null)
                 {
                     return method.DeclaringType.GetProperties(propertyFlags)
-                                 .FirstOrDefault(p => this.AreMethodsEqualForDeclaringType(p.GetSetMethod(), method));
+                        .FirstOrDefault(p => this.AreMethodsEqualForDeclaringType(p.GetSetMethod(), method));
                 }
             }
 

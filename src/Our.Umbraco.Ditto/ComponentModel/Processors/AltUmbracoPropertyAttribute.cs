@@ -26,7 +26,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            if (this.Value.IsNullOrEmptyString())
+            if (this.Value == null || (this.Value is string value && string.IsNullOrWhiteSpace(value)))
             {
                 // Reset value to published content
                 this.Value = this.Context.Content;

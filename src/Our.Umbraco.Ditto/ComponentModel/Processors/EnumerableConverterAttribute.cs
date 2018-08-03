@@ -5,10 +5,10 @@ using System.Linq;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// An enumerable Ditto processor that converts values to/from an enumerable based 
+    /// An enumerable Ditto processor that converts values to/from an enumerable based
     /// upon the properties target type
     /// NB: It won't try to cast the inner values, just convert an enumerable so this
-    /// should ideally already have occurred
+    /// should ideally already have occurred.
     /// </summary>
     public class EnumerableConverterAttribute : DittoProcessorAttribute
     {
@@ -22,7 +22,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         public EnumerableConverterAttribute()
         {
-            // Default to automatic 
+            // Default to automatic
             Direction = EnumerableConvertionDirection.Automatic;
         }
 
@@ -35,21 +35,21 @@ namespace Our.Umbraco.Ditto
         public override object ProcessValue()
         {
             object result = this.Value;
-            var propertyType = this.Context.PropertyDescriptor.PropertyType;
+            var propertyType = this.Context.PropertyInfo.PropertyType;
             var propertyIsEnumerableType = Direction == EnumerableConvertionDirection.Automatic
                 ? propertyType.IsEnumerableType()
-                    && !(propertyType == typeof(string))
+                    && (propertyType == typeof(string)) == false
                 : Direction == EnumerableConvertionDirection.ToEnumerable;
 
             if (this.Value != null)
             {
                 var valueType = this.Value.GetType();
                 var valueIsEnumerableType = valueType.IsEnumerableType()
-                    && !(this.Value is string);
+                    && (this.Value is string) == false;
 
                 if (propertyIsEnumerableType)
                 {
-                    if (!valueIsEnumerableType)
+                    if (valueIsEnumerableType == false)
                     {
                         // Property is enumerable, but value isn't, so make enumerable
                         var arr = Array.CreateInstance(valueType, 1);
@@ -71,7 +71,7 @@ namespace Our.Umbraco.Ditto
             {
                 if (propertyIsEnumerableType)
                 {
-                    if (propertyType.IsInterface && !propertyType.IsEnumerableOfKeyValueType())
+                    if (propertyType.IsInterface && propertyType.IsEnumerableOfKeyValueType() == false)
                     {
                         // Value is null, but property is enumerable interface, so return empty enumerable
                         result = EnumerableInvocations.Empty(propertyType.GenericTypeArguments.First());

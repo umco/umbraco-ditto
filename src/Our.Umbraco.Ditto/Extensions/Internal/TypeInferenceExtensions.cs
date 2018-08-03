@@ -137,8 +137,9 @@ namespace Our.Umbraco.Ditto
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Type TryGetElementType(this Type type, Type interfaceOrBaseType)
         {
-            if (!type.IsGenericTypeDefinition)
+            if (type.IsGenericTypeDefinition == false)
             {
+                // TODO: Review this. The `ToArray` causes a lot of allocations
                 Type[] types = GetGenericTypeImplementations(type, interfaceOrBaseType).ToArray();
                 return types.Length == 1 ? types[0].GetGenericArguments().FirstOrDefault() : null;
             }
@@ -158,8 +159,9 @@ namespace Our.Umbraco.Ditto
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Type> GetGenericTypeImplementations(this Type type, Type interfaceOrBaseType)
         {
-            if (!type.IsGenericTypeDefinition)
+            if (type.IsGenericTypeDefinition == false)
             {
+                // TODO: Review this. This gets called a LOT!
                 return (interfaceOrBaseType.IsInterface ? type.GetInterfaces() : type.GetBaseTypes())
                         .Union(new[] { type })
                         .Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == interfaceOrBaseType);
@@ -195,7 +197,7 @@ namespace Our.Umbraco.Ditto
         public static Type GetEnumerableType(this Type type)
         {
             // if it's not an enumerable why do you call this method all ?
-            if (!type.IsEnumerable())
+            if (type.IsEnumerable() == false)
             {
                 return null;
             }

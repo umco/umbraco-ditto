@@ -5,7 +5,7 @@ using Umbraco.Core;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Represents a ditto attribute capable of caching
+    /// Represents a Ditto attribute capable of caching
     /// </summary>
     public abstract class DittoCacheableAttribute : Attribute
     {
@@ -49,11 +49,14 @@ namespace Our.Umbraco.Ditto
         /// <param name="cacheContext">The cache context.</param>
         /// <param name="refresher">The refresher.</param>
         /// <returns>Returns the output type.</returns>
-        /// <exception cref="System.ApplicationException">Expected a cache key builder of type  + typeof(DittoProcessorCacheKeyBuilder) +  but got  + CacheKeyBuilderType</exception>
+        /// <exception cref="ApplicationException">Expected a cache key builder of type DittoProcessorCacheKeyBuilder but got CacheKeyBuilderType.</exception>
         internal TOuputType GetCacheItem<TOuputType>(DittoCacheContext cacheContext, Func<TOuputType> refresher)
         {
-            // If no cache duration set, just run the refresher
-            if (this.CacheDuration == 0 || Ditto.IsDebuggingEnabled)
+            // TODO: [LK:2018-01-18] Review this, does `cacheContext` need to be passed in?
+            // Given that the values are available on the instance.
+
+            // If no cache duration set, (and in debug mode AND NOT a unit-test), then just run the refresher
+            if (this.CacheDuration == 0 || (Ditto.IsDebuggingEnabled && Ditto.IsRunningInUnitTest == false))
             {
                 return refresher();
             }
@@ -62,15 +65,17 @@ namespace Our.Umbraco.Ditto
             var cacheKeyBuilderType = this.CacheKeyBuilderType ?? typeof(DittoDefaultCacheKeyBuilder);
 
             // Check the cache key builder type
-            if (!typeof(DittoCacheKeyBuilder).IsAssignableFrom(cacheKeyBuilderType))
+            if (typeof(DittoCacheKeyBuilder).IsAssignableFrom(cacheKeyBuilderType) == false)
             {
-                throw new ApplicationException($"Expected a cache key builder of type {typeof(DittoCacheKeyBuilder)} but got {this.CacheKeyBuilderType}");
+                throw new ApplicationException($"Expected a cache key builder of type {typeof(DittoCacheKeyBuilder)} but got {cacheKeyBuilderType}");
             }
 
+            // TODO: [LK:2018-01-18] Review this, a new instance is being created per call
             // Construct the cache key builder
-            var builder = (DittoCacheKeyBuilder)cacheKeyBuilderType.GetInstance();
+            var builder = cacheKeyBuilderType.GetInstance<DittoCacheKeyBuilder>();
             var cacheKey = builder.BuildCacheKey(cacheContext);
 
+            // TODO: Review this. Is there a way we can remove the use of the `ApplicationContext` singleton?
             // Get and cache the result
             return (TOuputType)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
                 cacheKey,

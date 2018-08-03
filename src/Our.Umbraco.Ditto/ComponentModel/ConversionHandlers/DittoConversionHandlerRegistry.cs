@@ -59,7 +59,7 @@ namespace Our.Umbraco.Ditto
             {
                 if (Cache.ContainsKey(objType))
                 {
-                    if (!Cache[objType].Contains(handlerType))
+                    if (Cache[objType].Contains(handlerType) == false)
                     {
                         Cache[objType].Add(handlerType);
                     }

@@ -31,7 +31,7 @@ namespace Our.Umbraco.Ditto
         /// </returns>
         public override object ProcessValue()
         {
-            var appSettingKey = this.AppSettingKey ?? (this.Context.PropertyDescriptor != null ? this.Context.PropertyDescriptor.Name : string.Empty);
+            var appSettingKey = this.AppSettingKey ?? this.Context.PropertyInfo?.Name ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(appSettingKey))
             {

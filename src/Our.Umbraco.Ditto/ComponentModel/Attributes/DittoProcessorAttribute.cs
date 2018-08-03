@@ -19,8 +19,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         protected DittoProcessorAttribute()
         {
-            var metaData = this.GetType().GetCustomAttribute<DittoProcessorMetaDataAttribute>(true);
-            if (metaData == null)
+            if (Ditto.TryGetTypeAttribute(this.GetType(), out DittoProcessorMetaDataAttribute metaData, true) == false || metaData == null)
             {
                 throw new ApplicationException("Ditto processor attributes require a DittoProcessorMetaData attribute to be applied to the class but none was found.");
             }
@@ -172,7 +171,7 @@ namespace Our.Umbraco.Ditto
             DittoProcessorContext context,
             DittoChainContext chainContext)
         {
-            if (value != null && !this.ValueType.IsInstanceOfType(value))
+            if (value != null && this.ValueType.IsInstanceOfType(value) == false)
             {
                 throw new ArgumentException($"Expected a value argument of type {this.ValueType} but got {value.GetType()}", "value");
             }
@@ -182,7 +181,7 @@ namespace Our.Umbraco.Ditto
                 throw new ArgumentNullException("context");
             }
 
-            if (!this.ContextType.IsInstanceOfType(context))
+            if (this.ContextType.IsInstanceOfType(context) == false)
             {
                 throw new ArgumentException($"Expected a context argument of type {this.ContextType} but got {context.GetType()}", "context");
             }
@@ -196,7 +195,7 @@ namespace Our.Umbraco.Ditto
             this.Context = context;
             this.ChainContext = chainContext;
 
-            var ctx = new DittoCacheContext(this, context.Content, context.TargetType, context.PropertyDescriptor, context.Culture);
+            var ctx = new DittoCacheContext(this, context.Content, context.TargetType, context.PropertyInfo, context.Culture);
             return this.GetCacheItem(ctx, this.ProcessValue);
         }
     }
