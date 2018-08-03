@@ -81,8 +81,8 @@
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Common\CachedInvocations.cs" />
-    <Compile Include="Common\DittoTypeConfigCache.cs" />
-    <Compile Include="Common\DittoTypeConfig.cs" />
+    <Compile Include="Common\DittoTypeInfoCache.cs" />
+    <Compile Include="Common\DittoTypeInfo.cs" />
     <Compile Include="Common\FastPropertyAccessor.cs" />
     <Compile Include="Common\DittoContextAccessor.cs" />
     <Compile Include="ComponentModel\Attributes\DittoDefaultProcessorAttribute.cs" />

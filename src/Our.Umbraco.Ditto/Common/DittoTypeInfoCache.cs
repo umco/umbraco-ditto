@@ -3,9 +3,9 @@ using System.Collections.Concurrent;
 
 namespace Our.Umbraco.Ditto
 {
-    internal static class DittoTypeConfigCache
+    internal static class DittoTypeInfoCache
     {
-        private static readonly ConcurrentDictionary<Type, DittoTypeConfig> _cache = new ConcurrentDictionary<Type, DittoTypeConfig>();
+        private static readonly ConcurrentDictionary<Type, DittoTypeInfo> _cache = new ConcurrentDictionary<Type, DittoTypeInfo>();
 
         public static void Add<T>()
         {
@@ -14,7 +14,7 @@ namespace Our.Umbraco.Ditto
 
         public static void Add(Type type)
         {
-            _cache.TryAdd(type, DittoTypeConfig.Create(type));
+            _cache.TryAdd(type, DittoTypeInfo.Create(type));
         }
 
         public static void Clear<T>()
@@ -24,19 +24,19 @@ namespace Our.Umbraco.Ditto
 
         public static void Clear(Type type)
         {
-            _cache.TryRemove(type, out DittoTypeConfig config);
+            _cache.TryRemove(type, out DittoTypeInfo config);
         }
 
-        public static DittoTypeConfig GetOrAdd<T>()
+        public static DittoTypeInfo GetOrAdd<T>()
         {
             return GetOrAdd(typeof(T));
         }
 
-        public static DittoTypeConfig GetOrAdd(Type type)
+        public static DittoTypeInfo GetOrAdd(Type type)
         {
-            if (_cache.TryGetValue(type, out DittoTypeConfig config) == false)
+            if (_cache.TryGetValue(type, out DittoTypeInfo config) == false)
             {
-                config = DittoTypeConfig.Create(type);
+                config = DittoTypeInfo.Create(type);
                 _cache.TryAdd(type, config);
             }
 

@@ -72,7 +72,7 @@ namespace Our.Umbraco.Ditto.Tests
             Ditto.RegisterDefaultProcessorType<UmbracoPropertyAttribute>();
 
             // ...and clear the type-config cache
-            DittoTypeConfigCache.Clear<MyModel>();
+            DittoTypeInfoCache.Clear<MyModel>();
         }
     }
 }

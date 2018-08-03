@@ -138,7 +138,7 @@ namespace Our.Umbraco.Ditto
             // Convert
             using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"As<{type.Name}>({content.DocumentTypeAlias} {content.Id})"))
             {
-                var config = DittoTypeConfigCache.GetOrAdd(type);
+                var config = DittoTypeInfoCache.GetOrAdd(type);
 
                 if (config.IsCacheable)
                 {
@@ -164,7 +164,7 @@ namespace Our.Umbraco.Ditto
         /// <exception cref="InvalidOperationException">Thrown if the given type has invalid constructors.</exception>
         private static object ConvertContent(
             IPublishedContent content,
-            DittoTypeConfig config,
+            DittoTypeInfo config,
             CultureInfo culture,
             object instance,
             Action<DittoConversionHandlerContext> onConverting,
@@ -254,8 +254,8 @@ namespace Our.Umbraco.Ditto
         private static object GetProcessedValue(
             IPublishedContent content,
             CultureInfo culture,
-            DittoTypeConfig config,
-            DittoTypeConfig.DittoTypePropertyConfig mappableProperty,
+            DittoTypeInfo config,
+            DittoTypeInfo.DittoTypePropertyInfo mappableProperty,
             object instance,
             DittoChainContext chainContext)
         {
@@ -291,7 +291,7 @@ namespace Our.Umbraco.Ditto
         /// <returns>Returns the processed value.</returns>
         private static object DoGetProcessedValue(
             IPublishedContent content,
-            DittoTypeConfig.DittoTypePropertyConfig mappableProperty,
+            DittoTypeInfo.DittoTypePropertyInfo mappableProperty,
             DittoProcessorContext baseProcessorContext,
             DittoChainContext chainContext)
         {
@@ -344,7 +344,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="callback">The <see cref="Action{ConversionHandlerContext}"/> to fire when converting.</param>
         private static void OnConverting(
             IPublishedContent content,
-            DittoTypeConfig config,
+            DittoTypeInfo config,
             CultureInfo culture,
             object instance,
             Action<DittoConversionHandlerContext> callback)
@@ -366,7 +366,7 @@ namespace Our.Umbraco.Ditto
         /// <param name="callback">The <see cref="Action{ConversionHandlerContext}"/> to fire when converted.</param>
         private static void OnConverted(
             IPublishedContent content,
-            DittoTypeConfig config,
+            DittoTypeInfo config,
             CultureInfo culture,
             object instance,
             Action<DittoConversionHandlerContext> callback)
@@ -391,7 +391,7 @@ namespace Our.Umbraco.Ditto
         private static void OnConvert<TAttributeType>(
             DittoConversionHandlerType conversionType,
             IPublishedContent content,
-            DittoTypeConfig config,
+            DittoTypeInfo config,
             CultureInfo culture,
             object instance,
             Action<DittoConversionHandlerContext> callback)

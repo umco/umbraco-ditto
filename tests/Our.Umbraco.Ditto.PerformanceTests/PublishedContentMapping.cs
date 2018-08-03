@@ -50,7 +50,7 @@ namespace Our.Umbraco.Ditto.PerformanceTests
             Ditto.DeregisterPostProcessorType<TryConvertToAttribute>();
 
             // pre-load the type config
-            DittoTypeConfigCache.Add<BasicModel>();
+            DittoTypeInfoCache.Add<BasicModel>();
         }
 
         [Benchmark(Baseline = true)]

@@ -6,16 +6,16 @@ using Umbraco.Core.Models;
 
 namespace Our.Umbraco.Ditto
 {
-    internal sealed class DittoTypeConfig
+    internal sealed class DittoTypeInfo
     {
-        public static DittoTypeConfig Create<T>()
+        public static DittoTypeInfo Create<T>()
         {
             return Create(typeof(T));
         }
 
-        public static DittoTypeConfig Create(Type type)
+        public static DittoTypeInfo Create(Type type)
         {
-            var config = new DittoTypeConfig
+            var config = new DittoTypeInfo
             {
                 TargetType = type
             };
@@ -70,9 +70,9 @@ namespace Our.Umbraco.Ditto
 
             // properties (lazy & eager)
             //
-            var lazyProperties = new List<DittoTypePropertyConfig>();
+            var lazyProperties = new List<DittoTypePropertyInfo>();
             var lazyPropertyNames = new List<string>();
-            var eagerProperties = new List<DittoTypePropertyConfig>();
+            var eagerProperties = new List<DittoTypePropertyInfo>();
 
             // Collect all the properties of the given type and loop through writable ones.
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
@@ -90,7 +90,7 @@ namespace Our.Umbraco.Ditto
 
                 var propertyType = property.PropertyType;
 
-                var propertyConfig = new DittoTypePropertyConfig
+                var propertyConfig = new DittoTypePropertyInfo
                 {
                     CustomAttributes = attributes,
                     PropertyInfo = property,
@@ -223,17 +223,17 @@ namespace Our.Umbraco.Ditto
         public IEnumerable<Attribute> CustomAttributes { get; set; }
 
         public bool HasLazyProperties { get; set; }
-        public IEnumerable<DittoTypePropertyConfig> LazyProperties { get; set; }
+        public IEnumerable<DittoTypePropertyInfo> LazyProperties { get; set; }
         public IEnumerable<string> LazyPropertyNames { get; set; }
 
         public bool HasEagerProperties { get; set; }
-        public IEnumerable<DittoTypePropertyConfig> EagerProperties { get; set; }
+        public IEnumerable<DittoTypePropertyInfo> EagerProperties { get; set; }
 
         public IEnumerable<DittoConversionHandler> ConversionHandlers { get; set; }
         public IEnumerable<MethodInfo> ConvertingMethods { get; set; }
         public IEnumerable<MethodInfo> ConvertedMethods { get; set; }
 
-        internal sealed class DittoTypePropertyConfig
+        internal sealed class DittoTypePropertyInfo
         {
             public bool IsCacheable { get; set; }
             public DittoCacheAttribute CacheInfo { get; set; }
