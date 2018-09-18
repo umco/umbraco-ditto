@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using Umbraco.Core.Models;
 using Umbraco.Web.Models;
@@ -8,16 +9,17 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// Base class for a DittoViewModel
     /// </summary>
-    public abstract class BaseDittoViewModel : RenderModel, IDittoViewModel
+    public abstract class BaseDittoViewModel<TContent> : RenderModel<TContent>, IDittoViewModel, IHasProcessorContexts
+         where TContent : IPublishedContent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseDittoViewModel"/> class.
+        /// Initializes a new instance of the <see cref="BaseDittoViewModel{TContent}"/> class.
         /// </summary>
         /// <param name="content">The content.</param>
         /// <param name="culture">The culture.</param>
         /// <param name="processorContexts">The processor contexts.</param>
         protected BaseDittoViewModel(
-            IPublishedContent content,
+            TContent content,
             CultureInfo culture = null,
             IEnumerable<DittoProcessorContext> processorContexts = null)
             : base(content, culture)
@@ -39,14 +41,17 @@ namespace Our.Umbraco.Ditto
         /// <value>
         /// The processor contexts.
         /// </value>
-        internal IEnumerable<DittoProcessorContext> ProcessorContexts { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public IEnumerable<DittoProcessorContext> ProcessorContexts { get; private set; }
     }
 
     /// <summary>
     /// Model for a DittoView
     /// </summary>
+    /// <typeparam name="TContent">The type of the content.</typeparam>
     /// <typeparam name="TViewModel">The type of the view model.</typeparam>
-    public class DittoViewModel<TViewModel> : BaseDittoViewModel
+    public class DittoViewModel<TContent, TViewModel> : BaseDittoViewModel<TContent>
+        where TContent : class, IPublishedContent
         where TViewModel : class
     {
         /// <summary>
@@ -55,14 +60,14 @@ namespace Our.Umbraco.Ditto
         private TViewModel view;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DittoViewModel{TViewModel}"/> class.
+        /// Initializes a new instance of the <see cref="DittoViewModel{TContent, TViewModel}"/> class.
         /// </summary>
         /// <param name="content">The content.</param>
         /// <param name="culture">The culture.</param>
         /// <param name="processorContexts">The processor contexts.</param>
         /// <param name="viewModel">The view model.</param>
         public DittoViewModel(
-            IPublishedContent content,
+            TContent content,
             CultureInfo culture = null,
             IEnumerable<DittoProcessorContext> processorContexts = null,
             TViewModel viewModel = null)
@@ -104,6 +109,29 @@ namespace Our.Umbraco.Ditto
                 this.view = value;
             }
         }
+    }
+
+    /// <summary>
+    /// Model for a DittoView
+    /// </summary>
+    /// <typeparam name="TViewModel">The type of the view model.</typeparam>
+    public class DittoViewModel<TViewModel> : DittoViewModel<IPublishedContent, TViewModel>
+        where TViewModel : class
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DittoViewModel{TViewModel}"/> class.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <param name="culture">The culture.</param>
+        /// <param name="processorContexts">The processor contexts.</param>
+        /// <param name="viewModel">The view model.</param>
+        public DittoViewModel(
+            IPublishedContent content,
+            CultureInfo culture = null,
+            IEnumerable<DittoProcessorContext> processorContexts = null,
+            TViewModel viewModel = null)
+            : base(content, culture, processorContexts, viewModel)
+        { }
     }
 
     /// <summary>

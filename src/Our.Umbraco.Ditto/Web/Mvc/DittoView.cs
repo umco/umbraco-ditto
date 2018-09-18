@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Web.Mvc;
 using Umbraco.Core.Models;
 using Umbraco.Web.Models;
@@ -17,8 +18,17 @@ namespace Our.Umbraco.Ditto
     /// Abstract class for a DittoView
     /// </summary>
     /// <typeparam name="TViewModel">The type of the view model.</typeparam>
-    public abstract class DittoView<TViewModel>
-        : UmbracoViewPage<DittoViewModel<TViewModel>>
+    public abstract class DittoView<TViewModel> : DittoView<IPublishedContent, TViewModel>
+         where TViewModel : class
+    { }
+
+    /// <summary>
+    /// Abstract class for a DittoView
+    /// </summary>
+    /// <typeparam name="TContent">The type of the content model.</typeparam>
+    /// <typeparam name="TViewModel">The type of the view model.</typeparam>
+    public abstract class DittoView<TContent, TViewModel> : UmbracoViewPage<DittoViewModel<TContent, TViewModel>>
+        where TContent : class, IPublishedContent
         where TViewModel : class
     {
         /// <summary>
@@ -31,7 +41,7 @@ namespace Our.Umbraco.Ditto
             var model = viewData.Model;
 
             // If model is already Ditto view-model, use it
-            if (model is DittoViewModel<TViewModel>)
+            if (model is DittoViewModel<TContent, TViewModel>)
             {
                 base.SetViewData(viewData);
                 return;
@@ -41,47 +51,44 @@ namespace Our.Umbraco.Ditto
             var processorContexts = new List<DittoProcessorContext>();
 
             // Check to see if this is a Ditto transfer model
-            var transferModel = model as DittoTransferModel;
-            if (transferModel != null)
+            if (model is DittoTransferModel transferModel)
             {
                 model = transferModel.Model;
                 processorContexts = transferModel.ProcessorContexts;
             }
 
             // Check if the model is a Ditto base view-model; Use the assigned properties
-            var baseDittoViewModel = model as BaseDittoViewModel;
-            if (baseDittoViewModel != null)
+            if (model is IDittoViewModel)
             {
-                processorContexts.AddRange(baseDittoViewModel.ProcessorContexts);
+                if (model is IHasProcessorContexts foo && foo.ProcessorContexts != null)
+                    processorContexts.AddRange(foo.ProcessorContexts);
 
-                // Furthermore, check if the model is generic/wrapped; Unwrap the inner view-model
+                // check if the model is generic/wrapped; Unwrap the inner view-model and processor-contexts
                 var modelType = model.GetType();
-                if (modelType.IsGenericType && modelType.GetGenericTypeDefinition() == typeof(DittoViewModel<>))
+                if (modelType.IsGenericType && modelType.GetGenericTypeDefinition() == typeof(DittoViewModel<,>))
                 {
                     var viewProperty = modelType.GetProperty("View", Ditto.MappablePropertiesBindingFlags);
                     model = FastPropertyAccessor.GetValue(viewProperty, model);
                 }
             }
 
-            var content = default(IPublishedContent);
+            var content = default(TContent);
             var culture = CultureInfo.CurrentCulture;
 
             // Get current content / culture
             if (this.UmbracoContext.PublishedContentRequest != null)
             {
-                content = this.UmbracoContext.PublishedContentRequest.PublishedContent;
+                content = this.UmbracoContext.PublishedContentRequest.PublishedContent as TContent;
                 culture = this.UmbracoContext.PublishedContentRequest.Culture;
             }
 
             // Process model
-            var publishedContent = model as IPublishedContent;
-            if (publishedContent != null)
+            if (model is TContent publishedContent)
             {
                 content = publishedContent;
             }
 
-            var renderModel = model as RenderModel;
-            if (renderModel != null)
+            if (model is RenderModel<TContent> renderModel)
             {
                 content = renderModel.Content;
                 culture = renderModel.CurrentCulture;
@@ -94,7 +101,7 @@ namespace Our.Umbraco.Ditto
             var newViewData = new ViewDataDictionary(viewData)
             {
                 Model =
-                    new DittoViewModel<TViewModel>(
+                    new DittoViewModel<TContent, TViewModel>(
                     content,
                     culture,
                     processorContexts,
