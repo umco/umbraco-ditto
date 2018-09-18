@@ -1,4 +1,5 @@
-﻿using Umbraco.Core.Models;
+﻿using System.Collections.Generic;
+using Umbraco.Core.Models;
 using Umbraco.Web.Models;
 
 namespace Our.Umbraco.Ditto
@@ -15,5 +16,10 @@ namespace Our.Umbraco.Ditto
         /// The current page.
         /// </value>
         IPublishedContent CurrentPage { get; }
+    }
+
+    internal interface IHasProcessorContexts
+    {
+        IEnumerable<DittoProcessorContext> ProcessorContexts { get; }
     }
 }
