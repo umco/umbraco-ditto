@@ -204,7 +204,7 @@ namespace Our.Umbraco.Ditto
         {
             if (AttributedTypeResolver<TAttribute>.HasCurrent == false)
             {
-                AttributedTypeResolver<TAttribute>.Current = AttributedTypeResolver<TAttribute>.Create(new[] { objectType });
+                AttributedTypeResolver<TAttribute>.Current = AttributedTypeResolver<TAttribute>.Create(new[] { objectType }, inherit);
             }
 
             return AttributedTypeResolver<TAttribute>.Current.TryGetTypeAttribute(objectType, out attribute, inherit);

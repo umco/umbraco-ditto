@@ -30,23 +30,17 @@ namespace Our.Umbraco.Ditto
             }
         }
 
-        private static AttributedTypeResolver<TAttribute> _resolver;
-
         /// <summary>
         /// A static instance of the attributed type resolver.
         /// </summary>
-        public static AttributedTypeResolver<TAttribute> Current
-        {
-            get { return _resolver; }
-            set { _resolver = value; }
-        }
+        public static AttributedTypeResolver<TAttribute> Current { get; set; }
 
         /// <summary>
         /// Returns true if the resolver instance is currently available.
         /// </summary>
         public static bool HasCurrent
         {
-            get { return _resolver != null; }
+            get { return Current != null; }
         }
 
         /// <summary>
