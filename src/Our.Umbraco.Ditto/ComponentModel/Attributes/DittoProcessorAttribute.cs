@@ -21,7 +21,7 @@ namespace Our.Umbraco.Ditto
         {
             if (Ditto.TryGetTypeAttribute(this.GetType(), out DittoProcessorMetaDataAttribute metaData, true) == false || metaData == null)
             {
-                throw new ApplicationException("Ditto processor attributes require a DittoProcessorMetaData attribute to be applied to the class but none was found.");
+                throw new ApplicationException($"The Ditto processor attribute ('{this.GetType()}') requires a DittoProcessorMetaData attribute to be applied to the class but none was found.");
             }
 
             this.ValueType = metaData.ValueType;
