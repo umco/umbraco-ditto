@@ -12,20 +12,26 @@ namespace Our.Umbraco.Ditto
     /// <typeparam name="TAttribute">A specific Ditto attribute type.</typeparam>
     internal sealed class AttributedTypeResolver<TAttribute> where TAttribute : Attribute
     {
-        private readonly ConcurrentDictionary<Type, TAttribute> _attributedTypeLookup;
+        private readonly object _lock = new object();
+
+        private readonly Dictionary<Type, TAttribute> _attributedTypeLookup;
 
         private AttributedTypeResolver()
         {
-            _attributedTypeLookup = new ConcurrentDictionary<Type, TAttribute>();
+            _attributedTypeLookup = new Dictionary<Type, TAttribute>();
         }
 
         private void Initialize(IEnumerable<Type> types, bool inherit = false)
         {
-            if (types != null)
+            // NOTE: Lock when initializing the resolver, so that it can't be read from (at the same time).
+            lock (_lock)
             {
-                foreach (var type in types)
+                if (types != null)
                 {
-                    TryAddAttributedType(type, out TAttribute attribute, inherit);
+                    foreach (var type in types)
+                    {
+                        TryAddAttributedType(type, out TAttribute attribute, inherit);
+                    }
                 }
             }
         }
@@ -83,7 +89,8 @@ namespace Our.Umbraco.Ditto
             {
                 if (_attributedTypeLookup.ContainsKey(type) == false)
                 {
-                    return _attributedTypeLookup.TryAdd(type, attribute);
+                    _attributedTypeLookup.Add(type, attribute);
+                    return true;
                 }
                 else
                 {
@@ -103,14 +110,18 @@ namespace Our.Umbraco.Ditto
         /// <returns>Returns the associated attribute for the given object-type.</returns>
         public bool TryGetTypeAttribute(Type type, out TAttribute attribute, bool inherit = false)
         {
-            bool result = _attributedTypeLookup.TryGetValue(type, out attribute);
-
-            if (result == false)
+            // NOTE: Lock when looking up from the resolver, to avoid concurrency issues.
+            lock (_lock)
             {
-                result = TryAddAttributedType(type, out attribute, inherit);
-            }
+                bool result = _attributedTypeLookup.TryGetValue(type, out attribute);
 
-            return result;
+                if (result == false)
+                {
+                    result = TryAddAttributedType(type, out attribute, inherit);
+                }
+
+                return result;
+            }
         }
     }
 }
