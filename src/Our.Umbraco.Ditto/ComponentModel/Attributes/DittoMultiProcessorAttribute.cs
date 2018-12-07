@@ -45,8 +45,10 @@ namespace Our.Umbraco.Ditto
         {
             foreach (var processorAttr in this.Attributes)
             {
-                using (DittoDisposableTimer.DebugDuration<DittoMultiProcessorAttribute>($"Processor '{processorAttr.GetType().Name}' ({this.Context.Content.Id})"))
+#if DEBUG
+                using (ProfilingLogger?.DebugDuration<DittoMultiProcessorAttribute>($"Processor '{processorAttr.GetType().Name}' ({this.Context.Content.Id})"))
                 {
+#endif
                     // Get the right context type
                     var newCtx = this.ChainContext.ProcessorContexts.GetOrCreate(this.Context, processorAttr.ContextType);
 
@@ -56,7 +58,9 @@ namespace Our.Umbraco.Ditto
 
                     // Process value
                     this.Value = processorAttr.ProcessValue(this.Value, newCtx, this.ChainContext);
+#if DEBUG
                 }
+#endif
             }
 
             return this.Value;

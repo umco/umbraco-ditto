@@ -79,15 +79,19 @@ namespace Our.Umbraco.Ditto
             Action<DittoConversionHandlerContext> onConverted = null,
             DittoChainContext chainContext = null)
         {
-            using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"IEnumerable As<{type.Name}>"))
+#if DEBUG
+            using (ContextAccessor?.ApplicationContext?.ProfilingLogger?.DebugDuration(typeof(Ditto), $"IEnumerable As<{type.Name}>", "Complete"))
             {
+#endif
                 var typedItems = items
                     .Select(x => x.As(type, culture, null, processorContexts, onConverting, onConverted, chainContext))
                     .ToArray(); // Avoid deferred execution.
 
                 // We need to cast back here as nothing is strong typed anymore.
                 return (IEnumerable<object>)EnumerableInvocations.Cast(type, typedItems);
+#if DEBUG
             }
+#endif
         }
 
         /// <summary>Returns an object representing the given <see cref="Type"/>.</summary>
@@ -138,8 +142,10 @@ namespace Our.Umbraco.Ditto
             chainContext.ProcessorContexts.AddRange(processorContexts);
 
             // Convert
-            using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"As<{type.Name}>({content.DocumentTypeAlias} {content.Id})"))
+#if DEBUG
+            using (ContextAccessor?.ApplicationContext?.ProfilingLogger?.DebugDuration(typeof(Ditto), $"As<{type.Name}>({content.DocumentTypeAlias} {content.Id})", "Complete"))
             {
+#endif
                 var config = DittoTypeInfoCache.GetOrAdd(type);
 
                 if (config.IsCacheable)
@@ -151,7 +157,9 @@ namespace Our.Umbraco.Ditto
                 {
                     return ConvertContent(content, config, culture, instance, onConverting, onConverted, chainContext);
                 }
+#if DEBUG
             }
+#endif
         }
 
         /// <summary>Returns an object representing the given <see cref="Type"/>.</summary>
@@ -261,8 +269,10 @@ namespace Our.Umbraco.Ditto
             object instance,
             DittoChainContext chainContext)
         {
-            using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"Processing '{mappableProperty.PropertyInfo.Name}' ({content.Id})"))
+#if DEBUG
+            using (ContextAccessor?.ApplicationContext?.ProfilingLogger?.DebugDuration(typeof(Ditto), $"Processing '{mappableProperty.PropertyInfo.Name}' ({content.Id})", "Complete"))
             {
+#endif
                 // Create a base processor context for this current chain level
                 var baseProcessorContext = new DittoProcessorContext
                 {
@@ -282,7 +292,9 @@ namespace Our.Umbraco.Ditto
                 {
                     return DoGetProcessedValue(content, mappableProperty, baseProcessorContext, chainContext);
                 }
+#if DEBUG
             }
+#endif
         }
 
         /// <summary>Returns the processed value for the given type and property.</summary>
@@ -303,8 +315,10 @@ namespace Our.Umbraco.Ditto
             // Process attributes
             foreach (var processorAttr in mappableProperty.Processors)
             {
-                using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"Processor '{processorAttr}' ({content.Id})"))
+#if DEBUG
+                using (ContextAccessor?.ApplicationContext?.ProfilingLogger?.DebugDuration(typeof(Ditto), $"Processor '{processorAttr}' ({content.Id})", "Complete"))
                 {
+#endif
                     // Get the right context type
                     var ctx = chainContext.ProcessorContexts.GetOrCreate(baseProcessorContext, processorAttr.ContextType);
 
@@ -314,7 +328,9 @@ namespace Our.Umbraco.Ditto
 
                     // Process value
                     currentValue = processorAttr.ProcessValue(currentValue, ctx, chainContext);
+#if DEBUG
                 }
+#endif
             }
 
             // The following has to happen after all the processors.

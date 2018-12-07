@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Linq;
 using System.Reflection;
-using System.Web;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -31,7 +29,7 @@ namespace Our.Umbraco.Ditto
         public static DittoCacheBy DefaultCacheBy = DittoCacheBy.ContentId | DittoCacheBy.ContentVersion | DittoCacheBy.PropertyName | DittoCacheBy.Culture;
 
         /// <summary>
-        /// The default source for umbraco property mappings
+        /// The default source for Umbraco property mappings
         /// </summary>
         public static PropertySource DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
 
@@ -52,48 +50,6 @@ namespace Our.Umbraco.Ditto
             .GetProperties(MappablePropertiesBindingFlags)
             .Where(x => x.IsMappable())
             .ToList();
-
-        /// <summary>
-        /// Indicates whether the application is running in debug mode.
-        /// </summary>
-#if DEBUG
-        internal static bool IsDebuggingEnabled = true;
-#else
-        internal static bool IsDebuggingEnabled = false;
-#endif
-
-        internal static bool GetDebugFlag()
-        {
-            // Check for app-setting first
-            var appSetting = ConfigurationManager.AppSettings["Ditto:DebugEnabled"];
-            if (string.IsNullOrWhiteSpace(appSetting) == false && bool.TryParse(appSetting, out bool dittoDebugEnabled))
-            {
-                return dittoDebugEnabled;
-            }
-
-            // Until `Umbraco.Core.Configuration.GlobalSettings.DebugMode` is available, we're using the legacy API.
-            // ref: https://github.com/umbraco/Umbraco-CMS/blob/release-7.3.2/src/umbraco.businesslogic/GlobalSettings.cs#L129
-            return umbraco.GlobalSettings.DebugMode;
-        }
-
-        /// <summary>
-        /// Indicates whether the application is running in profile mode, e.g. "umbDebug" querystring.
-        /// </summary>
-        internal static bool IsProfilingEnabled()
-        {
-            var qs = HttpContext.Current?.Request?.QueryString?["umbDebug"];
-            if (string.IsNullOrWhiteSpace(qs) == false && bool.TryParse(qs, out bool umbDebug))
-            {
-                return umbDebug;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Indicates whether the application is running within a unit-test scenario.
-        /// </summary>
-        internal static bool IsRunningInUnitTest = false;
 
         /// <summary>
         /// Registers a global conversion handler.

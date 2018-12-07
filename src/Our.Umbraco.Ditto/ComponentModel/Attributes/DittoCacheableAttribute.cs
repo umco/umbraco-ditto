@@ -55,8 +55,8 @@ namespace Our.Umbraco.Ditto
             // TODO: [LK:2018-01-18] Review this, does `cacheContext` need to be passed in?
             // Given that the values are available on the instance.
 
-            // If no cache duration set, (and in debug mode AND NOT a unit-test), then just run the refresher
-            if (this.CacheDuration == 0 || (Ditto.IsDebuggingEnabled && Ditto.IsRunningInUnitTest == false))
+            // If no cache duration set, then just run the refresher
+            if (this.CacheDuration == 0)
             {
                 return refresher();
             }

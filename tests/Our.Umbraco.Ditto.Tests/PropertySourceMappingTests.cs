@@ -115,6 +115,7 @@ namespace Our.Umbraco.Ditto.Tests
             Assert.AreEqual(customProp, model.Custom);
         }
 
+#if DEBUG
         [Test]
         public void PropertySource_Hidden_Properties_Warn()
         {
@@ -178,5 +179,6 @@ namespace Our.Umbraco.Ditto.Tests
             Ditto.DefaultPropertySource = PropertySource.InstanceThenUmbracoProperties;
             DittoTypeInfoCache.Clear<BasicModelProperty>();
         }
+#endif
     }
 }

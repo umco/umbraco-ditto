@@ -79,7 +79,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bootstrapper.cs" />
     <Compile Include="Common\CachedInvocations.cs" />
     <Compile Include="Common\DittoTypeInfoCache.cs" />
     <Compile Include="Common\DittoTypeInfo.cs" />
@@ -115,7 +114,6 @@
     <Compile Include="ComponentModel\Processors\UmbracoPropertiesAttribute.cs" />
     <Compile Include="ComponentModel\Processors\AltUmbracoPropertyAttribute.cs" />
     <Compile Include="ComponentModel\Processors\UmbracoPropertyAttribute.cs" />
-    <Compile Include="Common\DittoDisposableTimer.cs" />
     <Compile Include="Common\EnumerableInvocations.cs" />
     <Compile Include="Common\MethodBaseCacheItem.cs" />
     <Compile Include="ComponentModel\ConversionHandlers\DittoConversionHandlerRegistry.cs" />
