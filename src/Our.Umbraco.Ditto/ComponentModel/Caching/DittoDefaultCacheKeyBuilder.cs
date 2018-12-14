@@ -14,16 +14,16 @@ namespace Our.Umbraco.Ditto
         /// <returns>Returns the cache key.</returns>
         public override string BuildCacheKey(DittoCacheContext context)
         {
-            var cacheKey = new List<object>() { "DittoCache" };
+            var cacheKey = new List<object> { "DittoCache" };
 
             if ((context.Attribute.CacheBy & DittoCacheBy.ContentId) == DittoCacheBy.ContentId)
             {
                 cacheKey.Add(context.Content.Id);
             }
 
-            if ((context.Attribute.CacheBy & DittoCacheBy.ContentVersion) == DittoCacheBy.ContentVersion)
+            if ((context.Attribute.CacheBy & DittoCacheBy.UpdateDate) == DittoCacheBy.UpdateDate)
             {
-                cacheKey.Add(context.Content.Version);
+                cacheKey.Add(context.Content.UpdateDate);
             }
 
             if (context.PropertyInfo != null && (context.Attribute.CacheBy & DittoCacheBy.PropertyName) == DittoCacheBy.PropertyName)

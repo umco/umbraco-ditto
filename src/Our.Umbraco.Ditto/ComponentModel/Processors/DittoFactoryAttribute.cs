@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Our.Umbraco.Ditto
 {
@@ -53,7 +55,7 @@ namespace Our.Umbraco.Ditto
             var baseType = propTypeIsEnumerable ? propType.GetEnumerableType() : propType;
 
             // We have an enumerable processor that runs at the end of every conversion
-            // converting individual instances to IEnumerables and vica versa, so we
+            // converting individual instances to IEnumerables and vice versa, so we
             // won't worry about returning in the right way, rather we'll just ensure
             // that the IPublishedContent's are converted to the right types
             // and let the enumerable processor handle the rest.
@@ -71,7 +73,7 @@ namespace Our.Umbraco.Ditto
             }
             else
             {
-                types = (IEnumerable<Type>)ApplicationContext.ApplicationCache.StaticCache.GetCacheItem(
+                types = (IEnumerable<Type>)Current.ApplicationCache.StaticCache.GetCacheItem(
                     $"DittoFactoryAttribute_ResolveTypes_{baseType.AssemblyQualifiedName}",
                     () =>
                     {
@@ -93,9 +95,10 @@ namespace Our.Umbraco.Ditto
                         // Find the appropriate types
                         // There is no non generic version of ResolveTypes so we have to
                         // call it via reflection.
-                        var method = typeof(PluginManager).GetMethod("ResolveTypes");
+										
+                        var method = typeof(TypeLoader).GetMethod("GetTypes");
                         var generic = method.MakeGenericMethod(baseType);
-                        return ((IEnumerable<Type>)generic.Invoke(PluginManager.Current, new object[] { true, null })).ToArray();
+												return ((IEnumerable<Type>)generic.Invoke(Current.TypeLoader, new object[] { true, null })).ToArray();
                     });
             }
 

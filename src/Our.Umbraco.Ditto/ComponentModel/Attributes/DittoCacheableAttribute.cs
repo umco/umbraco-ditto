@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.Caching;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
 
 namespace Our.Umbraco.Ditto
 {
@@ -77,7 +78,7 @@ namespace Our.Umbraco.Ditto
 
             // TODO: Review this. Is there a way we can remove the use of the `ApplicationContext` singleton?
             // Get and cache the result
-            return (TOuputType)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
+            return (TOuputType)Current.ApplicationCache.RuntimeCache.GetCacheItem(
                 cacheKey,
                 () => refresher(),
                 priority: CacheItemPriority.NotRemovable, // Same as Umbraco macros

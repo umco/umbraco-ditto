@@ -1,5 +1,6 @@
 using System;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Our.Umbraco.Ditto
 {
@@ -40,7 +41,7 @@ namespace Our.Umbraco.Ditto
         /// <returns>The name.</returns>
         public override string ResolveTypeName(IPublishedContent currentContent)
         {
-            return string.Concat(this.Prefix, currentContent.DocumentTypeAlias, this.Suffix);
+            return string.Concat(this.Prefix, currentContent.ContentType.Alias, this.Suffix);
         }
     }
 }

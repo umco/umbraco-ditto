@@ -2,7 +2,6 @@
 using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core.Dictionary;
 using Moq;
-using Umbraco.Core.ObjectResolution;
 
 namespace Our.Umbraco.Ditto.Tests
 {

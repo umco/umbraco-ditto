@@ -1,5 +1,4 @@
 ﻿using System.Web;
-using Umbraco.Core.Dynamics;
 using Umbraco.Web.Templates;
 
 namespace Our.Umbraco.Ditto
@@ -35,15 +34,10 @@ namespace Our.Umbraco.Ditto
 
                     if (string.IsNullOrWhiteSpace(html) == false)
                     {
-                        html = TemplateUtilities.ParseInternalLinks(html);
+                        // TODO : html = TemplateUtilities.ParseInternalLinks(html);
                     }
 
                     return new HtmlString(html);
-                }
-
-                if (this.Value is DynamicXml)
-                {
-                    return ((DynamicXml)this.Value).ToHtml();
                 }
             }
 

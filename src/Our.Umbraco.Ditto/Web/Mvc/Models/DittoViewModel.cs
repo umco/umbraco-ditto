@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web.Models;
 
 namespace Our.Umbraco.Ditto
@@ -8,19 +9,17 @@ namespace Our.Umbraco.Ditto
     /// <summary>
     /// Base class for a DittoViewModel
     /// </summary>
-    public abstract class BaseDittoViewModel : RenderModel, IDittoViewModel
+    public abstract class BaseDittoViewModel : ContentModel, IDittoViewModel
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseDittoViewModel"/> class.
         /// </summary>
         /// <param name="content">The content.</param>
-        /// <param name="culture">The culture.</param>
         /// <param name="processorContexts">The processor contexts.</param>
         protected BaseDittoViewModel(
             IPublishedContent content,
-            CultureInfo culture = null,
             IEnumerable<DittoProcessorContext> processorContexts = null)
-            : base(content, culture)
+            : base(content)
         {
             this.ProcessorContexts = processorContexts ?? new List<DittoProcessorContext>();
         }
@@ -58,15 +57,13 @@ namespace Our.Umbraco.Ditto
         /// Initializes a new instance of the <see cref="DittoViewModel{TViewModel}"/> class.
         /// </summary>
         /// <param name="content">The content.</param>
-        /// <param name="culture">The culture.</param>
         /// <param name="processorContexts">The processor contexts.</param>
         /// <param name="viewModel">The view model.</param>
         public DittoViewModel(
             IPublishedContent content,
-            CultureInfo culture = null,
             IEnumerable<DittoProcessorContext> processorContexts = null,
             TViewModel viewModel = null)
-            : base(content, culture, processorContexts)
+            : base(content, processorContexts)
         {
             if (viewModel != null)
             {
@@ -115,13 +112,11 @@ namespace Our.Umbraco.Ditto
         /// Initializes a new instance of the <see cref="DittoViewModel"/> class.
         /// </summary>
         /// <param name="content">The content.</param>
-        /// <param name="culture">The culture.</param>
         /// <param name="processorContexts">The processor contexts.</param>
         protected DittoViewModel(
             IPublishedContent content,
-            CultureInfo culture = null,
             IEnumerable<DittoProcessorContext> processorContexts = null)
-            : base(content, culture, processorContexts)
+            : base(content, processorContexts)
         { }
     }
 }

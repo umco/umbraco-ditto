@@ -1,4 +1,6 @@
-﻿namespace Our.Umbraco.Ditto.Tests
+﻿using Umbraco.Core.Models.PublishedContent;
+
+namespace Our.Umbraco.Ditto.Tests
 {
     using NUnit.Framework;
     using Our.Umbraco.Ditto.Tests.Mocks;

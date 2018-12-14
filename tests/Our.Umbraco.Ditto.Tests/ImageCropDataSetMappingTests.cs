@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web.Models;
 
 namespace Our.Umbraco.Ditto.Tests

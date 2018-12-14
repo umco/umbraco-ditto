@@ -13,10 +13,6 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         UmbracoContext UmbracoContext { get; }
 
-        /// <summary>
-        /// The ApplicationContext instance.
-        /// </summary>
-        ApplicationContext ApplicationContext { get; }
     }
 
     internal class DefaultDittoContextAccessor : IDittoContextAccessor
@@ -29,12 +25,5 @@ namespace Our.Umbraco.Ditto
             }
         }
 
-        public ApplicationContext ApplicationContext
-        {
-            get
-            {
-                return ApplicationContext.Current;
-            }
-        }
     }
 }

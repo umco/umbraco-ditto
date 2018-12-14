@@ -7,7 +7,6 @@ using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
-using Umbraco.Core.ObjectResolution;
 
 namespace Our.Umbraco.Ditto.Tests
 {

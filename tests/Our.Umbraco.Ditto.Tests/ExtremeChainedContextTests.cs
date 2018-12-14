@@ -4,6 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Our.Umbraco.Ditto.Tests
 {
@@ -56,7 +57,7 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void ChainedContext_Returns()
         {
-            var items = Enumerable.Repeat<IPublishedContent>(new MockPublishedContent() { DocumentTypeAlias = "MyDifferentModel" }, 1);
+            var items = Enumerable.Repeat<IPublishedContent>(new MockPublishedContent { DocumentTypeAlias = "MyDifferentModel" }, 1);
 
             var content = new MockPublishedContent
             {

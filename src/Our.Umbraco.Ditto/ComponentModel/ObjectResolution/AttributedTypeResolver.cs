@@ -2,12 +2,13 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// A resolver class to provide a lookup for a specific Ditto attribue for a given type.
+    /// A resolver class to provide a lookup for a specific Ditto attribute for a given type.
     /// </summary>
     /// <typeparam name="TAttribute">A specific Ditto attribute type.</typeparam>
     internal sealed class AttributedTypeResolver<TAttribute> where TAttribute : Attribute
@@ -55,9 +56,9 @@ namespace Our.Umbraco.Ditto
         /// <param name="pluginManager">An instance of Umbraco's PluginManager object.</param>
         /// <param name="inherit">A boolean flag to search the type's inheritance chain to find the attribute.</param>
         /// <returns>Returns a new instance of the attributed type resolver.</returns>
-        public static AttributedTypeResolver<TAttribute> Create(PluginManager pluginManager, bool inherit = false)
+        public static AttributedTypeResolver<TAttribute> Create(TypeLoader pluginManager, bool inherit = false)
         {
-            return Create(pluginManager.ResolveAttributedTypes<TAttribute>(), inherit);
+            return Create(pluginManager.GetAttributedTypes<TAttribute>(), inherit);
         }
 
         /// <summary>
@@ -94,7 +95,7 @@ namespace Our.Umbraco.Ditto
                 }
                 else
                 {
-                    LogHelper.Warn<AttributedTypeResolver<TAttribute>>($"Duplicate '{typeof(TAttribute)}' attribute found in type: '{type}'");
+                    global::Umbraco.Core.Composing.Current.Logger.Warn<AttributedTypeResolver<TAttribute>>($"Duplicate '{typeof(TAttribute)}' attribute found in type: '{type}'");
                 }
             }
 
