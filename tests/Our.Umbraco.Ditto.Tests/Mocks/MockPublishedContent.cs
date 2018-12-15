@@ -47,7 +47,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
 
         public IPublishedProperty GetProperty(string alias, bool recurse)
         {
-            var prop = Properties.FirstOrDefault(p => string.Equals(p.PropertyTypeAlias, alias, StringComparison.InvariantCultureIgnoreCase));
+            var prop = Properties.FirstOrDefault(p => string.Equals(p.PropertyType.Alias, alias, StringComparison.InvariantCultureIgnoreCase));
 
             if (prop == null && recurse && Parent != null)
             {
@@ -136,7 +136,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
 
         public IEnumerable<IPublishedContent> Children { get; set; }
 
-        public ICollection<IPublishedProperty> Properties { get; set; }
+        public IEnumerable<IPublishedProperty> Properties { get; set; }
 
         public object this[string alias]
         {
