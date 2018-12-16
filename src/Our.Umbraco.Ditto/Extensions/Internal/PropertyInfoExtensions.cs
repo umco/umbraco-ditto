@@ -69,7 +69,7 @@ namespace Our.Umbraco.Ditto
         /// Checks to see if the given poperty should attempt to lazy load
         /// </summary>
         /// <param name="source">The property to check</param>
-        /// <returns>True if a lazy load attempt should be make</returns>
+        /// <returns>True if a lazy load attempt should be made</returns>
         public static bool ShouldAttemptLazyLoad(this PropertyInfo source)
         {
             var hasPropertyAttribute = source.HasCustomAttribute<DittoLazyAttribute>();

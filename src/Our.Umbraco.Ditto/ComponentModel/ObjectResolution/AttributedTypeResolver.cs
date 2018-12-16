@@ -7,7 +7,7 @@ using Umbraco.Core.Logging;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// A resolver class to provide a lookup for a specific Ditto attribue for a given type.
+    /// A resolver class to provide a lookup for a specific Ditto attribute for a given type.
     /// </summary>
     /// <typeparam name="TAttribute">A specific Ditto attribute type.</typeparam>
     internal sealed class AttributedTypeResolver<TAttribute> where TAttribute : Attribute
