@@ -6,8 +6,8 @@ using System.Runtime.CompilerServices;
 namespace Our.Umbraco.Ditto
 {
     /// <summary>
-    /// Provides a way to set a properties value using a combination of dynamic methods and IL generation.
-    /// This is much faster 4.3x than <see cref="M:PropertyInfo.SetValue"/> as it avoids the normal overheads of reflection.
+    /// Provides a way to set a property's value using a combination of dynamic methods and IL generation.
+    /// This is much faster (4.3x) than <see cref="M:PropertyInfo.SetValue"/> as it avoids the normal overhead of reflection.
     /// Once a method is invoked for a given type then it is cached so that subsequent calls do not require
     /// any overhead compilation costs.
     /// </summary>
