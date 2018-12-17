@@ -21,7 +21,8 @@ namespace Our.Umbraco.Ditto.Tests
         [TestFixtureSetUp]
         public void Init()
         {
-            if (!CultureDictionaryFactoryResolver.HasCurrent)
+            /* TODO ? */
+            /*if (!CultureDictionaryFactoryResolver.HasCurrent)
             {
                 var mockDictionary = new Mock<ICultureDictionary>();
                 mockDictionary.SetupGet(p => p["hello"]).Returns("world");
@@ -34,16 +35,16 @@ namespace Our.Umbraco.Ditto.Tests
                 CultureDictionaryFactoryResolver.Current = new CultureDictionaryFactoryResolver(mockDictionaryFactory.Object);
 
                 Resolution.Freeze();
-            }
+            }*/
         }
         
         [TestFixtureTearDown]
         public void Teardown()
         {
-            if (Resolution.IsFrozen)
+            /*if (Resolution.IsFrozen)
             {
                 Resolution.Reset();
-            }
+            }*/
         }
 
         [Test]

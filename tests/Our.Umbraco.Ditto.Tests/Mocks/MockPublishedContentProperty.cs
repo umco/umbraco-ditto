@@ -1,5 +1,9 @@
-﻿using Umbraco.Core.Models;
+﻿using System;
+using System.Linq;
+using Moq;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Core.PropertyEditors;
+using Umbraco.Core.Services;
 
 namespace Our.Umbraco.Ditto.Tests.Mocks
 {
@@ -10,18 +14,35 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
 
         public MockPublishedContentProperty(string alias, object value)
         {
-            PropertyTypeAlias = alias;
+            Alias = alias;
             Value = value;
         }
 
-        public string PropertyTypeAlias { get; set; }
+        
+        bool IPublishedProperty.HasValue(string culture, string segment)
+        {
+            return Value != null;
+        }
 
-        public bool HasValue { get; set; }
+        public object GetSourceValue(string culture = null, string segment = null)
+        {
+            return Value;
+        }
 
-        public object DataValue { get; set; }
+        public object GetValue(string culture = null, string segment = null)
+        {
+            return Value;
+        }
+
+        public object GetXPathValue(string culture = null, string segment = null)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public PublishedPropertyType PropertyType => null;
+
+        public string Alias { get; }
 
         public object Value { get; set; }
-
-        public object XPathValue { get; set; }
     }
 }

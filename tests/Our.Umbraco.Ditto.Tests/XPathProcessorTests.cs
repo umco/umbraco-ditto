@@ -77,7 +77,7 @@ namespace Our.Umbraco.Ditto.Tests
                 webSecurity: new Mock<WebSecurity>(null, null).Object,
                 umbracoSettings: Mock.Of<IUmbracoSettingsSection>(),
                 urlProviders: Enumerable.Empty<IUrlProvider>(),
-                replaceContext: true);
+                replace: true);
 
             if (!Resolution.IsFrozen)
                 Resolution.Freeze();

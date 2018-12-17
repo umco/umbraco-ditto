@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Configuration;
-using System.Linq;
-using System.Web;
-using Moq;
 using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Our.Umbraco.Ditto.Tests
 {

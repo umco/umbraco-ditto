@@ -15,10 +15,13 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
     /// </summary>
     public class MockPublishedContent : IPublishedContent
     {
+        private readonly string _contentTypeAlias;
+
         public MockPublishedContent()
         {
             Id = 1234;
             Name = "Name";
+            _contentTypeAlias = "contentType";
             Children = Enumerable.Empty<IPublishedContent>();
             Properties = new Collection<IPublishedProperty>();
         }
@@ -26,6 +29,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
         public MockPublishedContent(
             int id,
             string name,
+            string contentTypeAlias,
             IEnumerable<IPublishedContent> children,
             ICollection<IPublishedProperty> properties)
         {
@@ -33,6 +37,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
             Id = id;
             Name = name;
             Children = children;
+            _contentTypeAlias = contentTypeAlias;
         }
 
         public int GetIndex()
@@ -47,11 +52,11 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
 
         public IPublishedProperty GetProperty(string alias, bool recurse)
         {
-            var prop = Properties.FirstOrDefault(p => string.Equals(p.PropertyType.Alias, alias, StringComparison.InvariantCultureIgnoreCase));
+            var prop = Properties.FirstOrDefault(p => string.Equals(p.Alias, alias, StringComparison.InvariantCultureIgnoreCase));
 
             if (prop == null && recurse && Parent != null)
             {
-                return Parent.GetProperty(alias, true);
+                return ((MockPublishedContent)Parent).GetProperty(alias, true);
             }
 
             return prop;
@@ -67,26 +72,10 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
                 if (_contentType != null)
                     return _contentType;
 
-                //
-                // TODO: [LK:2016-08-12] Could we initalize this in an `SetUpFixture` method?
-                // Then it could apply across all unit-tests.
-                //
+                _contentType = new PublishedContentType(0, _contentTypeAlias, PublishedItemType.Content, Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(),
+                    ContentVariation.Nothing);
 
-                // PublishedPropertyType initializes and looks up value resolvers
-                // so we need to populate a resolver base before we instantiate them
-                if (ResolverBase<PropertyValueConvertersResolver>.HasCurrent == false)
-                {
-                    ResolverBase<PropertyValueConvertersResolver>.Current =
-                        new PropertyValueConvertersResolver(
-                            new Mock<IServiceProvider>().Object,
-                            new Mock<ILogger>().Object,
-                            Enumerable.Empty<Type>())
-                        { CanResolveBeforeFrozen = true };
-                }
-
-                return new PublishedContentType(
-                    "MockContentType",
-                    this.Properties.Select(x => new PublishedPropertyType(x.PropertyTypeAlias, "MockPropertyType")));
+                return _contentType;
             }
             set
             {
@@ -94,9 +83,23 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
             }
         }
 
+        public Guid Key { get; }
+
+        public string GetUrl(string culture = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PublishedCultureInfo GetCulture(string culture = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public int Id { get; set; }
 
         public int TemplateId { get; set; }
+
+        public string UrlSegment { get; }
 
         public int SortOrder { get; set; }
 
@@ -127,6 +130,7 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
         public int Level { get; set; }
 
         public string Url { get; set; }
+        public IReadOnlyDictionary<string, PublishedCultureInfo> Cultures { get; }
 
         public PublishedItemType ItemType { get; set; }
 
@@ -137,13 +141,5 @@ namespace Our.Umbraco.Ditto.Tests.Mocks
         public IEnumerable<IPublishedContent> Children { get; set; }
 
         public IEnumerable<IPublishedProperty> Properties { get; set; }
-
-        public object this[string alias]
-        {
-            get
-            {
-                return GetProperty(alias);
-            }
-        }
     }
 }

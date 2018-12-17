@@ -36,16 +36,12 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Cache_Caches()
         {
-            var cacheHelper = new CacheHelper(
+            /* TODO var cacheHelper = new CacheHelper(
                 new ObjectCacheRuntimeCacheProvider(),
                 new StaticCacheProvider(),
-                new NullCacheProvider());
-
-            var logger = new ProfilingLogger(Mock.Of<ILogger>(), Mock.Of<IProfiler>());
-            var appCtx = new ApplicationContext(cacheHelper, logger);
-
-            ApplicationContext.EnsureContext(appCtx, true);
-
+                null,
+                new NullCacheProvider());*/
+            
             var prop1 = new MockPublishedContentProperty("myProperty1", "Test1");
             var prop2 = new MockPublishedContentProperty("myProperty2", "Test1");
             var prop3 = new MockPublishedContentProperty("myProperty3", "Test1");

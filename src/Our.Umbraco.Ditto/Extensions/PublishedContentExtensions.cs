@@ -133,7 +133,7 @@ namespace Our.Umbraco.Ditto
                 chainContext = new DittoChainContext();
             }
 
-            // Populate prcessor contexts collection with any passed in contexts
+            // Populate processor contexts collection with any passed in contexts
             chainContext.ProcessorContexts.AddRange(processorContexts);
 
             // Convert

@@ -2,8 +2,6 @@
 using System.Linq;
 using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
-using Umbraco.Core.Logging;
-using Umbraco.Core.ObjectResolution;
 
 namespace Our.Umbraco.Ditto.Tests
 {
@@ -120,6 +118,8 @@ namespace Our.Umbraco.Ditto.Tests
         {
             // Create a mock logger
             var mockLogger = new MockLogger();
+
+            /* TODO?
             //
             // TODO: [LK:2016-08-12] Could we initalize this in an `SetUpFixture` method?
             // Then it could apply across all unit-tests.
@@ -131,7 +131,7 @@ namespace Our.Umbraco.Ditto.Tests
             else
             {
                 ResolverBase<LoggerResolver>.Current = new LoggerResolver(mockLogger) { CanResolveBeforeFrozen = true };
-            }
+            } */
 
             // Create a hidden mapping
             var instanceName = "Instance Name";
