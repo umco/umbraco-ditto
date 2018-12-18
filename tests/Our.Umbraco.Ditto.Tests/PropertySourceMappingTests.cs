@@ -119,7 +119,7 @@ namespace Our.Umbraco.Ditto.Tests
             // Create a mock logger
             var mockLogger = new MockLogger();
 
-            /* TODO?
+            /* TODO : v8 : Not sure how to resolve this, probably DI replacement in v8
             //
             // TODO: [LK:2016-08-12] Could we initalize this in an `SetUpFixture` method?
             // Then it could apply across all unit-tests.

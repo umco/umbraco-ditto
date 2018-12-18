@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Web.Mvc;
-using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web.Models;
 using Umbraco.Web.Mvc;
@@ -14,6 +12,7 @@ namespace Our.Umbraco.Ditto
     public abstract class DittoView : DittoView<IPublishedContent>
     { }
 
+    // TODO : v8 : Culture is no longer on ContentModel (was RenderModel) something about variations I suppose
     /// <summary>
     /// Abstract class for a DittoView
     /// </summary>
@@ -42,14 +41,14 @@ namespace Our.Umbraco.Ditto
             var processorContexts = new List<DittoProcessorContext>();
 
             // Check to see if this is a Ditto transfer model
-			if (model is DittoTransferModel transferModel)
+            if (model is DittoTransferModel transferModel)
             {
                 model = transferModel.Model;
                 processorContexts = transferModel.ProcessorContexts;
             }
 
             // Check if the model is a Ditto base view-model; Use the assigned properties
-			if (model is BaseDittoViewModel baseDittoViewModel)
+            if (model is BaseDittoViewModel baseDittoViewModel)
             {
                 processorContexts.AddRange(baseDittoViewModel.ProcessorContexts);
 
@@ -63,7 +62,7 @@ namespace Our.Umbraco.Ditto
             }
 
             var content = default(IPublishedContent);
-            
+
             // Get current content / culture
             if (this.UmbracoContext.PublishedRequest != null)
             {
@@ -71,12 +70,12 @@ namespace Our.Umbraco.Ditto
             }
 
             // Process model
-			if (model is IPublishedContent publishedContent)
+            if (model is IPublishedContent publishedContent)
             {
                 content = publishedContent;
             }
 
-			if (model is ContentModel renderModel)
+            if (model is ContentModel renderModel)
             {
                 content = renderModel.Content;
             }

@@ -34,7 +34,7 @@ namespace Our.Umbraco.Ditto
 
                     if (string.IsNullOrWhiteSpace(html) == false)
                     {
-                        // TODO : html = TemplateUtilities.ParseInternalLinks(html);
+                        // TODO : V8 : html = TemplateUtilities.ParseInternalLinks(html); This has new params need to update to work
                     }
 
                     return new HtmlString(html);

@@ -21,7 +21,7 @@ namespace Our.Umbraco.Ditto.Tests
         [TestFixtureSetUp]
         public void Init()
         {
-            /* TODO ? */
+            /* TODO : v8 : Culture has changed quite a bit ? */
             /*if (!CultureDictionaryFactoryResolver.HasCurrent)
             {
                 var mockDictionary = new Mock<ICultureDictionary>();
@@ -41,7 +41,9 @@ namespace Our.Umbraco.Ditto.Tests
         [TestFixtureTearDown]
         public void Teardown()
         {
-            /*if (Resolution.IsFrozen)
+            /* TODO : v8 : Resolution is no longer available, replace with whatever v8 recommendation is
+             
+            if (Resolution.IsFrozen)
             {
                 Resolution.Reset();
             }*/

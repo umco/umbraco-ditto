@@ -98,7 +98,7 @@ namespace Our.Umbraco.Ditto
 										
                         var method = typeof(TypeLoader).GetMethod("GetTypes");
                         var generic = method.MakeGenericMethod(baseType);
-												return ((IEnumerable<Type>)generic.Invoke(Current.TypeLoader, new object[] { true, null })).ToArray();
+	                    return ((IEnumerable<Type>)generic.Invoke(Current.TypeLoader, new object[] { true, null })).ToArray();
                     });
             }
 

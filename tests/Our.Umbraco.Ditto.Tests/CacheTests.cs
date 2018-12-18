@@ -36,7 +36,8 @@ namespace Our.Umbraco.Ditto.Tests
         [Test]
         public void Cache_Caches()
         {
-            /* TODO var cacheHelper = new CacheHelper(
+            /* TODO : v8 : get this working again?
+             var cacheHelper = new CacheHelper(
                 new ObjectCacheRuntimeCacheProvider(),
                 new StaticCacheProvider(),
                 null,
