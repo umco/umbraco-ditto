@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Web.Mvc;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web.Models;
 using Umbraco.Web.Mvc;
 
@@ -13,6 +12,7 @@ namespace Our.Umbraco.Ditto
     public abstract class DittoView : DittoView<IPublishedContent>
     { }
 
+    // TODO : v8 : Culture is no longer on ContentModel (was RenderModel) something about variations I suppose
     /// <summary>
     /// Abstract class for a DittoView
     /// </summary>
@@ -41,16 +41,14 @@ namespace Our.Umbraco.Ditto
             var processorContexts = new List<DittoProcessorContext>();
 
             // Check to see if this is a Ditto transfer model
-            var transferModel = model as DittoTransferModel;
-            if (transferModel != null)
+            if (model is DittoTransferModel transferModel)
             {
                 model = transferModel.Model;
                 processorContexts = transferModel.ProcessorContexts;
             }
 
             // Check if the model is a Ditto base view-model; Use the assigned properties
-            var baseDittoViewModel = model as BaseDittoViewModel;
-            if (baseDittoViewModel != null)
+            if (model is BaseDittoViewModel baseDittoViewModel)
             {
                 processorContexts.AddRange(baseDittoViewModel.ProcessorContexts);
 
@@ -64,27 +62,22 @@ namespace Our.Umbraco.Ditto
             }
 
             var content = default(IPublishedContent);
-            var culture = CultureInfo.CurrentCulture;
 
             // Get current content / culture
-            if (this.UmbracoContext.PublishedContentRequest != null)
+            if (this.UmbracoContext.PublishedRequest != null)
             {
-                content = this.UmbracoContext.PublishedContentRequest.PublishedContent;
-                culture = this.UmbracoContext.PublishedContentRequest.Culture;
+                content = this.UmbracoContext.PublishedRequest.PublishedContent;
             }
 
             // Process model
-            var publishedContent = model as IPublishedContent;
-            if (publishedContent != null)
+            if (model is IPublishedContent publishedContent)
             {
                 content = publishedContent;
             }
 
-            var renderModel = model as RenderModel;
-            if (renderModel != null)
+            if (model is ContentModel renderModel)
             {
                 content = renderModel.Content;
-                culture = renderModel.CurrentCulture;
             }
 
             var typedModel = model as TViewModel;
@@ -96,7 +89,6 @@ namespace Our.Umbraco.Ditto
                 Model =
                     new DittoViewModel<TViewModel>(
                     content,
-                    culture,
                     processorContexts,
                     typedModel)
             };

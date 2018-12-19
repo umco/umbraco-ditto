@@ -4,10 +4,11 @@ using Moq;
 using NUnit.Framework;
 using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core;
+using Umbraco.Core.Cache;
 using Umbraco.Core.Configuration.UmbracoSettings;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
-using Umbraco.Core.ObjectResolution;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Profiling;
 using Umbraco.Core.Xml;
 using Umbraco.Web;
@@ -73,11 +74,10 @@ namespace Our.Umbraco.Ditto.Tests
 
             UmbracoContext.EnsureContext(
                 httpContext: Mock.Of<HttpContextBase>(),
-                applicationContext: new ApplicationContext(CacheHelper.CreateDisabledCacheHelper(), new ProfilingLogger(Mock.Of<ILogger>(), Mock.Of<IProfiler>())),
                 webSecurity: new Mock<WebSecurity>(null, null).Object,
                 umbracoSettings: Mock.Of<IUmbracoSettingsSection>(),
                 urlProviders: Enumerable.Empty<IUrlProvider>(),
-                replaceContext: true);
+                replace: true);
 
             if (!Resolution.IsFrozen)
                 Resolution.Freeze();

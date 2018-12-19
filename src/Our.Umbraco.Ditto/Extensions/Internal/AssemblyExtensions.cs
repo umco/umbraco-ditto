@@ -8,7 +8,7 @@ namespace Our.Umbraco.Ditto
     {
         /// <summary>
         /// Private var determining if we have a loadable app code assembly. We only want to do this once
-        /// per app recyle so we make it static and lazy so that it only populates when used.
+        /// per app recycle so we make it static and lazy so that it only populates when used.
         /// </summary>
         private static readonly Lazy<bool> HasLoadableAppCodeAssembly = new Lazy<bool>(() =>
         {

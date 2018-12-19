@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Umbraco.Core;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Our.Umbraco.Ditto
 {

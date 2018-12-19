@@ -5,8 +5,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Web;
-using Umbraco.Core.Models;
-using Umbraco.Web;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Our.Umbraco.Ditto
 {
@@ -28,7 +27,7 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// The default processor cache by flags
         /// </summary>
-        public static DittoCacheBy DefaultCacheBy = DittoCacheBy.ContentId | DittoCacheBy.ContentVersion | DittoCacheBy.PropertyName | DittoCacheBy.Culture;
+        public static DittoCacheBy DefaultCacheBy = DittoCacheBy.ContentId | DittoCacheBy.UpdateDate | DittoCacheBy.PropertyName | DittoCacheBy.Culture;
 
         /// <summary>
         /// The default source for umbraco property mappings
@@ -73,7 +72,7 @@ namespace Our.Umbraco.Ditto
 
             // Until `Umbraco.Core.Configuration.GlobalSettings.DebugMode` is available, we're using the legacy API.
             // ref: https://github.com/umbraco/Umbraco-CMS/blob/release-7.3.2/src/umbraco.businesslogic/GlobalSettings.cs#L129
-            return umbraco.GlobalSettings.DebugMode;
+            return global::Umbraco.Core.Configuration.GlobalSettings.DebugMode;
         }
 
         /// <summary>

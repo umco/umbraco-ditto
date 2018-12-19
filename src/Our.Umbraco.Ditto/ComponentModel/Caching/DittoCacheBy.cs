@@ -14,9 +14,9 @@ namespace Our.Umbraco.Ditto
         ContentId = 1,
 
         /// <summary>
-        /// The content version
+        /// The update date
         /// </summary>
-        ContentVersion = 2,
+        UpdateDate = 2,
 
         /// <summary>
         /// The property name

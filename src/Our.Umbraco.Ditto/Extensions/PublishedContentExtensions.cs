@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Our.Umbraco.Ditto
 {
@@ -123,7 +124,7 @@ namespace Our.Umbraco.Ditto
             // Check if the culture has been set, otherwise use from Umbraco, or fallback to a default
             if (culture == null)
             {
-                culture = ContextAccessor?.UmbracoContext?.PublishedContentRequest?.Culture ?? CultureInfo.CurrentCulture;
+                culture = ContextAccessor?.UmbracoContext?.PublishedRequest?.Culture ?? CultureInfo.CurrentCulture;
             }
 
             // Ensure a chain context
@@ -132,11 +133,11 @@ namespace Our.Umbraco.Ditto
                 chainContext = new DittoChainContext();
             }
 
-            // Populate prcessor contexts collection with any passed in contexts
+            // Populate processor contexts collection with any passed in contexts
             chainContext.ProcessorContexts.AddRange(processorContexts);
 
             // Convert
-            using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"As<{type.Name}>({content.DocumentTypeAlias} {content.Id})"))
+            using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"As<{type.Name}>({content.ContentType.Alias} {content.Id})"))
             {
                 var config = DittoTypeInfoCache.GetOrAdd(type);
 
@@ -308,8 +309,7 @@ namespace Our.Umbraco.Ditto
 
                     // Populate UmbracoContext & ApplicationContext
                     processorAttr.UmbracoContext = ContextAccessor.UmbracoContext;
-                    processorAttr.ApplicationContext = ContextAccessor.ApplicationContext;
-
+                    
                     // Process value
                     currentValue = processorAttr.ProcessValue(currentValue, ctx, chainContext);
                 }

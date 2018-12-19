@@ -1,5 +1,6 @@
 ﻿using System;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
 using Umbraco.Web;
@@ -89,7 +90,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         protected UmbracoHelper Umbraco
         {
-            get { return new UmbracoHelper(UmbracoContext); }
+            get { return new UmbracoHelper(UmbracoContext, Services); }
         }
 
         /// <summary>
@@ -105,7 +106,7 @@ namespace Our.Umbraco.Ditto
         /// </summary>
         protected virtual ProfilingLogger ProfilingLogger
         {
-            get { return ApplicationContext.ProfilingLogger; }
+            get { return Current.ProfilingLogger; }
         }
 
         /// <summary>
@@ -114,26 +115,13 @@ namespace Our.Umbraco.Ditto
         public virtual UmbracoContext UmbracoContext { get; internal set; }
 
         /// <summary>
-        /// Returns the current instance of ApplicationContext.
-        /// </summary>
-        public virtual ApplicationContext ApplicationContext { get; internal set; }
-
-        /// <summary>
         /// Returns the current instance of ServiceContext.
         /// </summary>
         protected ServiceContext Services
         {
-            get { return ApplicationContext.Services; }
+            get { return Current.Services; }
         }
-
-        /// <summary>
-        /// Returns the current instance of DatabaseContext.
-        /// </summary>
-        protected DatabaseContext DatabaseContext
-        {
-            get { return ApplicationContext.DatabaseContext; }
-        }
-
+		
         /// <summary>
         /// Processes the value.
         /// </summary>

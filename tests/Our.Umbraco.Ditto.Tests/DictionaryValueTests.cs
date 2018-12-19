@@ -2,7 +2,6 @@
 using Our.Umbraco.Ditto.Tests.Mocks;
 using Umbraco.Core.Dictionary;
 using Moq;
-using Umbraco.Core.ObjectResolution;
 
 namespace Our.Umbraco.Ditto.Tests
 {
@@ -22,7 +21,8 @@ namespace Our.Umbraco.Ditto.Tests
         [TestFixtureSetUp]
         public void Init()
         {
-            if (!CultureDictionaryFactoryResolver.HasCurrent)
+            /* TODO : v8 : Culture has changed quite a bit ? */
+            /*if (!CultureDictionaryFactoryResolver.HasCurrent)
             {
                 var mockDictionary = new Mock<ICultureDictionary>();
                 mockDictionary.SetupGet(p => p["hello"]).Returns("world");
@@ -35,16 +35,18 @@ namespace Our.Umbraco.Ditto.Tests
                 CultureDictionaryFactoryResolver.Current = new CultureDictionaryFactoryResolver(mockDictionaryFactory.Object);
 
                 Resolution.Freeze();
-            }
+            }*/
         }
         
         [TestFixtureTearDown]
         public void Teardown()
         {
+            /* TODO : v8 : Resolution is no longer available, replace with whatever v8 recommendation is
+             
             if (Resolution.IsFrozen)
             {
                 Resolution.Reset();
-            }
+            }*/
         }
 
         [Test]

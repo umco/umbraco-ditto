@@ -1,5 +1,7 @@
 ﻿using System;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
+using Umbraco.Core.Logging;
 
 namespace Our.Umbraco.Ditto
 {
@@ -27,9 +29,9 @@ namespace Our.Umbraco.Ditto
         /// <returns>Returns an instance of the disposable timer.</returns>
         public static DisposableTimer DebugDuration(Type loggerType, string startMessage)
         {
-            if (Ditto.IsDebuggingEnabled && Ditto.IsProfilingEnabled() && ApplicationContext.Current?.ProfilingLogger != null)
+            if (Ditto.IsDebuggingEnabled && Ditto.IsProfilingEnabled() && Current.ProfilingLogger != null)
             {
-                return ApplicationContext.Current.ProfilingLogger.DebugDuration(loggerType, startMessage, "Complete");
+                return Current.ProfilingLogger.DebugDuration(loggerType, startMessage, "Complete");
             }
 
             return default(DisposableTimer);
