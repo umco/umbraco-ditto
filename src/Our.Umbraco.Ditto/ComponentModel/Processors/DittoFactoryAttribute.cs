@@ -109,8 +109,7 @@ namespace Our.Umbraco.Ditto
 
                     return type != null ? x.As(type, chainContext: ChainContext) : null;
                 })
-                // Avoid deferred execution.
-                .ToArray();
+                .ToArray(); // Avoid deferred execution.
 
                 return EnumerableInvocations.Cast(baseType, items);
             }

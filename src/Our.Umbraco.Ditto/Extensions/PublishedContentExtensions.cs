@@ -81,9 +81,9 @@ namespace Our.Umbraco.Ditto
         {
             using (DittoDisposableTimer.DebugDuration(typeof(Ditto), $"IEnumerable As<{type.Name}>"))
             {
-                var typedItems = items.Select(x => x.As(type, culture, null, processorContexts, onConverting, onConverted, chainContext))
-                    // Avoid deferred execution.
-                    .ToArray();
+                var typedItems = items
+                    .Select(x => x.As(type, culture, null, processorContexts, onConverting, onConverted, chainContext))
+                    .ToArray(); // Avoid deferred execution.
 
                 // We need to cast back here as nothing is strong typed anymore.
                 return (IEnumerable<object>)EnumerableInvocations.Cast(type, typedItems);
