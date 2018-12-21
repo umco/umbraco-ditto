@@ -108,7 +108,9 @@ namespace Our.Umbraco.Ditto
                     var type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
 
                     return type != null ? x.As(type, chainContext: ChainContext) : null;
-                });
+                })
+                // Avoid deferred execution.
+                .ToArray();
 
                 return EnumerableInvocations.Cast(baseType, items);
             }
