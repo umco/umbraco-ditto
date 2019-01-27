@@ -225,7 +225,7 @@ namespace Our.Umbraco.Ditto
                 Current.Logger.Warn<UmbracoPropertyAttribute>($"The property {umbracoPropertyName} being mapped from the Umbraco properties collection hides an instance property of the same name on content type {content}. It is recommended that you avoid using Umbraco property aliases that conflict with IPublishedContent instance property names, but if you can't avoid this and you require access to the hidden property you can use the PropertySource parameter of the processors attribute to override the order in which properties are checked.");
             }
 
-            return content.Value(umbracoPropertyName); //TODO : v8 : recursive not currently available
+            return content.Value(umbracoPropertyName, fallback: recursive ? Fallback.ToAncestors : Fallback.ToDefaultValue);
         }
     }
 
