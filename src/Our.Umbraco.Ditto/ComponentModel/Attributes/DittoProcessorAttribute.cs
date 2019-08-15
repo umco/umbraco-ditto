@@ -198,5 +198,18 @@ namespace Our.Umbraco.Ditto
             var ctx = new DittoCacheContext(this, context.Content, context.TargetType, context.PropertyInfo, context.Culture);
             return this.GetCacheItem(ctx, this.ProcessValue);
         }
+
+        /// <summary>
+        /// Resets the value and context of the processor.
+        /// The intent here is to clear up any previous object references that were set in the Value.
+        /// </summary>
+        internal void Reset()
+        {
+            this.Value = null;
+            this.Context = null;
+            this.ChainContext = null;
+            //this.UmbracoContext = null;
+            //this.ApplicationContext = null;
+        }
     }
 }

@@ -328,6 +328,9 @@ namespace Our.Umbraco.Ditto
 
                     // Process value
                     currentValue = processorAttr.ProcessValue(currentValue, ctx, chainContext);
+
+                    // Reset the processor (since it is stored against the `DittoTypePropertyInfo` in memory).
+                    processorAttr.Reset();
 #if DEBUG
                 }
 #endif
