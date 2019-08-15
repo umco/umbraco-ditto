@@ -111,12 +111,17 @@ namespace Our.Umbraco.Ditto
         /// <summary>
         /// Returns the current instance of UmbracoContext.
         /// </summary>
-        public virtual UmbracoContext UmbracoContext { get; internal set; }
+        public virtual UmbracoContext UmbracoContext { get { return ContextAccessor.UmbracoContext; } }
 
         /// <summary>
         /// Returns the current instance of ApplicationContext.
         /// </summary>
-        public virtual ApplicationContext ApplicationContext { get; internal set; }
+        public virtual ApplicationContext ApplicationContext { get { return ContextAccessor.ApplicationContext; } }
+
+        /// <summary>
+        /// The context accessor (for access to ApplicationContext, UmbracoContext, et al)
+        /// </summary>
+        protected virtual IDittoContextAccessor ContextAccessor { get; set; }
 
         /// <summary>
         /// Returns the current instance of ServiceContext.
@@ -200,16 +205,14 @@ namespace Our.Umbraco.Ditto
         }
 
         /// <summary>
-        /// Resets the value and context of the processor.
-        /// The intent here is to clear up any previous object references that were set in the Value.
+        /// Creates a copy of the processor.
         /// </summary>
-        internal void Reset()
+        /// <returns></returns>
+        public virtual DittoProcessorAttribute Copy(IDittoContextAccessor contextAccessor)
         {
-            this.Value = null;
-            this.Context = null;
-            this.ChainContext = null;
-            //this.UmbracoContext = null;
-            //this.ApplicationContext = null;
+            var copy = (DittoProcessorAttribute)this.MemberwiseClone();
+            copy.ContextAccessor = contextAccessor;
+            return copy;
         }
     }
 }
