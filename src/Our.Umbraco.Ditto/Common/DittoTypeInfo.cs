@@ -45,15 +45,11 @@ namespace Our.Umbraco.Ditto
                 config.ConstructorIsValid = true;
             }
 
-            // attributes
-            //
-            config.CustomAttributes = type.GetCustomAttributes();
-
-            // cacheable
+            // attributes // cacheable
             //
             var conversionHandlers = new List<DittoConversionHandler>();
 
-            foreach (var attr in config.CustomAttributes)
+            foreach (var attr in type.GetCustomAttributes())
             {
                 if (attr is DittoCacheAttribute)
                 {
@@ -92,7 +88,6 @@ namespace Our.Umbraco.Ditto
 
                 var propertyConfig = new DittoTypePropertyInfo
                 {
-                    CustomAttributes = attributes,
                     PropertyInfo = property,
                 };
 
@@ -220,8 +215,6 @@ namespace Our.Umbraco.Ditto
 
         public bool IsOfTypePublishedContent { get; set; }
 
-        public IEnumerable<Attribute> CustomAttributes { get; set; }
-
         public bool HasLazyProperties { get; set; }
         public IEnumerable<DittoTypePropertyInfo> LazyProperties { get; set; }
         public IEnumerable<string> LazyPropertyNames { get; set; }
@@ -237,8 +230,6 @@ namespace Our.Umbraco.Ditto
         {
             public bool IsCacheable { get; set; }
             public DittoCacheAttribute CacheInfo { get; set; }
-
-            public IEnumerable<Attribute> CustomAttributes { get; set; }
 
             public IEnumerable<DittoProcessorAttribute> Processors { get; set; }
             public PropertyInfo PropertyInfo { get; set; }
