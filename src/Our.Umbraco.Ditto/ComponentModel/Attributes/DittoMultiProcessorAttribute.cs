@@ -46,18 +46,17 @@ namespace Our.Umbraco.Ditto
             foreach (var processorAttr in this.Attributes)
             {
 #if DEBUG
-                using (ProfilingLogger?.DebugDuration<DittoMultiProcessorAttribute>($"Processor '{processorAttr.GetType().Name}' ({this.Context.Content.Id})"))
+                using (ProfilingLogger?.DebugDuration<DittoMultiProcessorAttribute>($"Processor '{processorAttr}' ({this.Context.Content.Id})"))
                 {
 #endif
-                    // Get the right context type
-                    var newCtx = this.ChainContext.ProcessorContexts.GetOrCreate(this.Context, processorAttr.ContextType);
+                    // Make a copy of the processor instance, for object-referential reasons
+                    var copy = processorAttr.Copy(this.ContextAccessor);
 
-                    // Populate UmbracoContext & ApplicationContext
-                    processorAttr.UmbracoContext = this.UmbracoContext;
-                    processorAttr.ApplicationContext = this.ApplicationContext;
+                    // Get the right context type
+                    var newCtx = this.ChainContext.ProcessorContexts.GetOrCreate(this.Context, copy.ContextType);
 
                     // Process value
-                    this.Value = processorAttr.ProcessValue(this.Value, newCtx, this.ChainContext);
+                    this.Value = copy.ProcessValue(this.Value, newCtx, this.ChainContext);
 #if DEBUG
                 }
 #endif

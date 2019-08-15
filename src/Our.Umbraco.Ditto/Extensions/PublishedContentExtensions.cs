@@ -319,18 +319,14 @@ namespace Our.Umbraco.Ditto
                 using (ContextAccessor?.ApplicationContext?.ProfilingLogger?.DebugDuration(typeof(Ditto), $"Processor '{processorAttr}' ({content.Id})", "Complete"))
                 {
 #endif
-                    // Get the right context type
-                    var ctx = chainContext.ProcessorContexts.GetOrCreate(baseProcessorContext, processorAttr.ContextType);
+                    // Make a copy of the processor instance, for object-referential reasons
+                    var copy = processorAttr.Copy(ContextAccessor);
 
-                    // Populate UmbracoContext & ApplicationContext
-                    processorAttr.UmbracoContext = ContextAccessor.UmbracoContext;
-                    processorAttr.ApplicationContext = ContextAccessor.ApplicationContext;
+                    // Get the right context type
+                    var ctx = chainContext.ProcessorContexts.GetOrCreate(baseProcessorContext, copy.ContextType);
 
                     // Process value
-                    currentValue = processorAttr.ProcessValue(currentValue, ctx, chainContext);
-
-                    // Reset the processor (since it is stored against the `DittoTypePropertyInfo` in memory).
-                    processorAttr.Reset();
+                    currentValue = copy.ProcessValue(currentValue, ctx, chainContext);
 #if DEBUG
                 }
 #endif
